@@ -4,7 +4,13 @@ jdGenie内网维护版本
 
 ## Getting started
 
+<<<<<<< HEAD
 ./Genie_start.sh
+=======
+To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+
+Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+>>>>>>> b2f113aa866c62d9eb05dc7f6442bb32d98c6fd4
 
 ## Add your files
 
