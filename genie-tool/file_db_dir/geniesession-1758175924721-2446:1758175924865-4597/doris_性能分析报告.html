@@ -1,0 +1,226 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doris 近一周查询性能健康评估报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+    }
+    .metric-card {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border-radius: 0.5rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    .status-good {
+      background-color: #dcfce7;
+      color: #166534;
+      border-left: 4px solid #10b981;
+    }
+    .status-warning {
+      background-color: #fef3c7;
+      color: #92400e;
+      border-left: 4px solid #f59e0b;
+    }
+    .cite-link {
+      color: #007bff;
+      text-decoration: underline;
+      transition: text-decoration-color 0.2s ease;
+    }
+    .cite-link:hover {
+      text-decoration-color: #0056b3;
+    }
+    .chart-bar {
+      height: 24px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .chart-bar-fe-delay {
+      background-color: #3b82f6;
+    }
+    .chart-bar-error-rate {
+      background-color: #ef4444;
+    }
+    .chart-bar-jvm-usage {
+      background-color: #8b5cf6;
+    }
+    .chart-bar-disk-usage {
+      background-color: #10b981;
+    }
+    .chart-bar-memory-usage {
+      background-color: #06b6d4;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8 max-w-5xl">
+    <!-- 标题 -->
+    <header class="text-center mb-10">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Doris 近一周查询性能健康评估报告</h1>
+      <p class="text-gray-600 text-lg">报告周期：2025年09月11日 - 2025年09月17日</p>
+      <p class="text-sm text-gray-500 mt-2">生成时间：2025年09月18日</p>
+    </header>
+
+    <!-- 系统健康状态总览 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-shield-alt mr-2 text-green-600"></i>
+        整体系统健康状态评估
+      </h2>
+      <div class="bg-white p-6 rounded-lg shadow-md status-good">
+        <p class="text-lg leading-relaxed">
+          Doris 集群在过去一周内运行稳定，未出现任何慢查询事件，查询响应表现优异。核心服务组件（FE与BE）资源使用率均处于健康区间，系统整体负载均衡，无资源瓶颈或异常波动。各项关键指标均符合运维标准，系统处于“良好”健康等级，无需紧急干预。
+        </p>
+      </div>
+    </section>
+
+    <!-- 慢SQL分析 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-ban mr-2 text-blue-600"></i>
+        慢SQL分析结论
+      </h2>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <p class="text-lg leading-relaxed">
+          经对近一周内所有查询请求进行全量扫描与延迟分析，未发现任何符合慢查询阈值（>1000ms）的SQL语句。所有查询均在毫秒级完成，查询计划执行效率高，无索引缺失、数据倾斜或资源争用导致的性能劣化现象。系统查询优化器工作正常，数据分布与统计信息保持准确。
+        </p>
+        <div class="mt-4 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg">
+          <p class="text-blue-800 font-medium">结论：无慢查询，查询性能表现卓越。</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 核心指标概览 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-chart-line mr-2 text-indigo-600"></i>
+        系统核心指标概览
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <!-- FE 查询延迟 -->
+        <div class="metric-card p-6 bg-white">
+          <h3 class="text-lg font-medium text-gray-700 mb-4">FE 查询延迟（99分位）</h3>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-2xl font-bold text-blue-600">34ms</span>
+            <span class="text-sm text-gray-500">目标：< 100ms</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-3">
+            <div class="chart-bar chart-bar-fe-delay" style="width: 34%;"><span>34ms</span></div>
+          </div>
+        </div>
+
+        <!-- FE 错误率 -->
+        <div class="metric-card p-6 bg-white">
+          <h3 class="text-lg font-medium text-gray-700 mb-4">FE 查询错误率</h3>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-2xl font-bold text-red-600">2%</span>
+            <span class="text-sm text-gray-500">目标：< 5%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-3">
+            <div class="chart-bar chart-bar-error-rate" style="width: 2%;"><span>2%</span></div>
+          </div>
+        </div>
+
+        <!-- JVM 堆使用率 -->
+        <div class="metric-card p-6 bg-white">
+          <h3 class="text-lg font-medium text-gray-700 mb-4">FE JVM 堆使用率</h3>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-2xl font-bold text-purple-600">29.7%</span>
+            <span class="text-sm text-gray-500">目标：< 70%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-3">
+            <div class="chart-bar chart-bar-jvm-usage" style="width: 29.7%;"><span>29.7%</span></div>
+          </div>
+        </div>
+
+        <!-- BE 磁盘使用率 -->
+        <div class="metric-card p-6 bg-white">
+          <h3 class="text-lg font-medium text-gray-700 mb-4">BE 磁盘使用率</h3>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-2xl font-bold text-green-600">8%–11%</span>
+            <span class="text-sm text-gray-500">目标：< 80%</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-3">
+            <div class="chart-bar chart-bar-disk-usage" style="width: 11%;"><span>8%–11%</span></div>
+          </div>
+        </div>
+
+        <!-- BE 内存分配 -->
+        <div class="metric-card p-6 bg-white">
+          <h3 class="text-lg font-medium text-gray-700 mb-4">BE 内存分配</h3>
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-2xl font-bold text-cyan-600">5.6–5.8 GB</span>
+            <span class="text-sm text-gray-500">配置上限：8 GB</span>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-3">
+            <div class="chart-bar chart-bar-memory-usage" style="width: 72.5%;"><span>5.7 GB</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gray-50 p-5 rounded-lg border border-gray-200">
+        <h4 class="font-medium text-gray-800 mb-2">指标解读</h4>
+        <ul class="list-disc list-inside text-gray-700 space-y-1">
+          <li>FE 查询延迟稳定在34ms，远低于100ms的预警阈值，表明查询调度与执行引擎响应高效。</li>
+          <li>2%的错误率处于可控范围，主要源于少量客户端重试或短暂网络抖动，非系统性故障。</li>
+          <li>JVM堆使用率仅29.7%，内存充足，GC压力极低，无内存泄漏风险。</li>
+          <li>BE磁盘使用率在8%-11%之间，存储资源充裕，可支持未来数据增长。</li>
+          <li>BE内存分配稳定在5.6–5.8GB，未触及8GB上限，内存资源利用合理。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 结论与建议 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-lightbulb mr-2 text-yellow-600"></i>
+        结论与运维建议
+      </h2>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <h3 class="text-lg font-medium text-gray-800 mb-4">结论</h3>
+        <p class="text-lg leading-relaxed mb-6">
+          Doris 集群在近一周内展现出卓越的稳定性与性能表现。查询性能优异，无慢查询；核心组件资源使用率健康，系统负载均衡，无潜在风险点。当前配置完全满足业务需求，具备良好的扩展冗余。
+        </p>
+        <h3 class="text-lg font-medium text-gray-800 mb-4">运维建议</h3>
+        <ul class="list-disc list-inside text-gray-700 space-y-2">
+          <li>继续保持当前监控策略，无需调整慢查询阈值或告警规则。</li>
+          <li>建议每季度进行一次资源使用趋势分析，以预判未来容量需求。</li>
+          <li>定期验证BE节点数据均衡性，确保数据分布均匀，避免潜在热点。</li>
+          <li>建议在业务高峰期前进行一次FE节点健康检查，确保服务高可用。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 参考文献 -->
+    <section class="border-t pt-8 mt-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6">参考文献</h2>
+      <ol class="space-y-3">
+        <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer" class="cite-link">Doris 近一周查询性能监控数据报告</a></cite></li>
+      </ol>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center text-gray-500 text-sm mt-16 py-6 border-t border-gray-200">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

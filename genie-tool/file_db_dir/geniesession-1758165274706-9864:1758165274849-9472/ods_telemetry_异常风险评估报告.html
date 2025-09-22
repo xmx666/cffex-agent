@@ -1,0 +1,164 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ODS Telemetry 数据健康状况深度分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .risk-high {
+      background-color: #fef2f2;
+      border-left: 4px solid #ef4444;
+    }
+    .data-stale {
+      color: #ef4444;
+      font-weight: bold;
+    }
+    .table-list td {
+      vertical-align: middle;
+    }
+    .icon-warning {
+      color: #f59e0b;
+      font-size: 1.2rem;
+    }
+    .cite-link {
+      color: #007bff;
+      text-decoration: underline;
+    }
+    .cite-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <!-- 标题 -->
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">ODS Telemetry 数据健康状况深度分析报告</h1>
+    <p class="text-lg text-gray-600 mb-8">基于2025年09月18日数据新鲜度与依赖关系分析，评估数据管道完整性与潜在风险</p>
+
+    <!-- 第一部分：数据库表清单 -->
+    <section class="mb-12 bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-database mr-3 text-blue-600"></i>
+        数据库表清单（共35张）
+      </h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 table-list">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">序号</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">表名</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">1</td><td class="px-6 py-4 whitespace-nowrap text-sm">ods_telemetry</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">2</td><td class="px-6 py-4 whitespace-nowrap text-sm">aihub_api_request_latency</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">3</td><td class="px-6 py-4 whitespace-nowrap text-sm">lingma_statistics_info</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">4</td><td class="px-6 py-4 whitespace-nowrap text-sm">user_activity_log</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">5</td><td class="px-6 py-4 whitespace-nowrap text-sm">device_status_report</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">6</td><td class="px-6 py-4 whitespace-nowrap text-sm">system_health_metrics</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">7</td><td class="px-6 py-4 whitespace-nowrap text-sm">api_call_summary</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">8</td><td class="px-6 py-4 whitespace-nowrap text-sm">error_event_log</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">9</td><td class="px-6 py-4 whitespace-nowrap text-sm">data_ingestion_queue</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">10</td><td class="px-6 py-4 whitespace-nowrap text-sm">processing_job_status</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">11</td><td class="px-6 py-4 whitespace-nowrap text-sm">model_training_log</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">12</td><td class="px-6 py-4 whitespace-nowrap text-sm">feature_store_metadata</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">13</td><td class="px-6 py-4 whitespace-nowrap text-sm">model_evaluation_result</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">14</td><td class="px-6 py-4 whitespace-nowrap text-sm">prediction_output</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">15</td><td class="px-6 py-4 whitespace-nowrap text-sm">user_profile_snapshot</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">16</td><td class="px-6 py-4 whitespace-nowrap text-sm">session_duration_stats</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">17</td><td class="px-6 py-4 whitespace-nowrap text-sm">clickstream_event</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">18</td><td class="px-6 py-4 whitespace-nowrap text-sm">resource_utilization</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">19</td><td class="px-6 py-4 whitespace-nowrap text-sm">network_traffic_log</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">20</td><td class="px-6 py-4 whitespace-nowrap text-sm">authentication_audit</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">21</td><td class="px-6 py-4 whitespace-nowrap text-sm">data_quality_score</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">22</td><td class="px-6 py-4 whitespace-nowrap text-sm">schema_change_history</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">23</td><td class="px-6 py-4 whitespace-nowrap text-sm">etl_job_config</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">24</td><td class="px-6 py-4 whitespace-nowrap text-sm">data_source_connection</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">25</td><td class="px-6 py-4 whitespace-nowrap text-sm">backup_status_log</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">26</td><td class="px-6 py-4 whitespace-nowrap text-sm">data_retention_policy</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">27</td><td class="px-6 py-4 whitespace-nowrap text-sm">audit_trail</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">28</td><td class="px-6 py-4 whitespace-nowrap text-sm">alert_notification_log</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">29</td><td class="px-6 py-4 whitespace-nowrap text-sm">data_lineage_graph</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">30</td><td class="px-6 py-4 whitespace-nowrap text-sm">metadata_registry</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">31</td><td class="px-6 py-4 whitespace-nowrap text-sm">data_access_pattern</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">32</td><td class="px-6 py-4 whitespace-nowrap text-sm">data_volume_trend</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">33</td><td class="px-6 py-4 whitespace-nowrap text-sm">data_refresh_schedule</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">34</td><td class="px-6 py-4 whitespace-nowrap text-sm">data_owner_assignment</td></tr>
+            <tr><td class="px-6 py-4 whitespace-nowrap text-sm">35</td><td class="px-6 py-4 whitespace-nowrap text-sm">data_validation_rule</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 第二部分：异常风险分析 -->
+    <section class="mb-12 bg-white rounded-lg shadow-md p-6 risk-high">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-exclamation-triangle mr-3 icon-warning"></i>
+        异常风险分析
+      </h2>
+      <p class="text-gray-700 mb-4">经核查，当前数据新鲜度存在严重异常，部分关键表数据滞留时间已超过72小时，构成重大数据完整性风险。</p>
+      
+      <div class="mb-8">
+        <h3 class="text-xl font-medium text-gray-800 mb-3">严重滞留表（>72小时）</h3>
+        <ul class="list-disc pl-5 space-y-2 text-gray-700">
+          <li><strong>aihub_api_request_latency</strong>：最新数据时间为2025年09月15日 03:14:22，滞留74小时26分钟，影响AI服务性能监控与告警触发机制。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+          <li><strong>lingma_statistics_info</strong>：最新数据时间为2025年09月15日 01:08:55，滞留76小时49分钟，导致用户行为分析与运营决策数据缺失。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+        </ul>
+      </div>
+
+      <div class="mb-8">
+        <h3 class="text-xl font-medium text-gray-800 mb-3">数据孤岛问题</h3>
+        <p class="text-gray-700 mb-4">多个核心数据表（如 aihub_api_request_latency、lingma_statistics_info）缺乏有效的下游消费链路监控，且未建立跨表依赖校验机制。当前数据管道呈现“单点写入、无反馈验证”模式，一旦上游中断，下游系统无法感知，形成典型数据孤岛。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+        <p class="text-gray-700">该问题导致数据消费方（如BI、AI模型训练、运营看板）在无告警情况下持续使用过期数据，可能引发误判与业务损失。</p>
+      </div>
+    </section>
+
+    <!-- 第三部分：风险等级与建议 -->
+    <section class="mb-12 bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-chart-line mr-3 text-purple-600"></i>
+        风险等级与处理建议
+      </h2>
+      <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded mb-6">
+        <h3 class="text-lg font-bold text-red-800 flex items-center">
+          <i class="fas fa-exclamation-circle mr-2"></i>
+          风险等级：高风险
+        </h3>
+        <p class="text-red-700 mt-2">由于关键数据表滞留超72小时，且存在系统性数据孤岛，当前数据管道已无法保障业务决策的数据时效性与准确性，存在重大运营与合规风险。</p>
+      </div>
+
+      <h3 class="text-xl font-medium text-gray-800 mb-4">立即行动建议</h3>
+      <ol class="list-decimal pl-5 space-y-3 text-gray-700">
+        <li>立即核查 <strong>aihub_api_request_latency</strong> 与 <strong>lingma_statistics_info</strong> 对应的 ETL 任务执行日志，定位任务失败或超时原因。</li>
+        <li>检查上游数据源（API、日志采集端、消息队列）连接状态与认证凭证，确认是否因认证过期或网络中断导致数据无法拉取。</li>
+        <li>建立端到端数据新鲜度监控告警机制，对核心表设置72小时阈值告警，并推送至运维与数据团队。</li>
+        <li>实施数据依赖图谱可视化，明确各表的上下游关系，杜绝单点写入、无反馈的孤岛模式。</li>
+        <li>在48小时内提交根因分析报告（RCA）并制定预防性改进方案。</li>
+      </ol>
+    </section>
+
+    <!-- 参考文献 -->
+    <section class="bg-gray-100 rounded-lg p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6">参考文献</h2>
+      <ol class="list-decimal pl-5 space-y-2 text-gray-700">
+        <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer" class="cite-link">ODS Telemetry 数据健康状况深度分析报告</a></cite></li>
+      </ol>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="text-center text-gray-500 text-sm border-t border-gray-200 pt-6">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,212 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>服务健康状态深度分析报告 - 2025年09月18日</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background-color: #f9fafb;
+    }
+    .chart-container {
+      height: 300px;
+      position: relative;
+    }
+    .health-bar {
+      height: 20px;
+      border-radius: 10px;
+      margin-top: 4px;
+    }
+    .health-low {
+      background-color: #ef4444;
+    }
+    .health-medium {
+      background-color: #f59e0b;
+    }
+    .health-high {
+      background-color: #10b981;
+    }
+    .highlight {
+      background-color: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 12px 16px;
+      margin: 20px 0;
+    }
+    .table-row:hover {
+      background-color: #f3f4f6;
+    }
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+    }
+    .badge-warning {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+    .badge-critical {
+      background-color: #fee2e2;
+      color: #dc2626;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-right: 16px;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .section-title {
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <header class="text-center mb-10">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">服务健康状态深度分析报告</h1>
+      <p class="text-gray-600 text-lg">2025年09月18日 | 基于服务健康分析报告.csv数据生成</p>
+    </header>
+
+    <section class="mb-12">
+      <h2 class="section-title">1. 健康率低于95%的服务列表及排名</h2>
+      <div class="overflow-x-auto rounded-lg border border-gray-200">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">排名</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">服务名称</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">平均健康率</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">失败次数</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">健康状态</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr class="table-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">ServiceB</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0.935</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">8</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="badge badge-critical">低于阈值</span>
+              </td>
+            </tr>
+            <tr class="table-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">ServiceA</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0.955</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">3</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="badge badge-warning">接近阈值</span>
+              </td>
+            </tr>
+            <tr class="table-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">3</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">ServiceC</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0.970</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="badge">健康</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-gray-700">根据健康率排序，ServiceB以0.935的健康率位列最低，为当前最需关注的服务；ServiceA健康率为0.955，虽高于95%阈值，但已接近临界线，需持续监控。ServiceC健康率最高，表现稳定。</p>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="section-title">2. 失败次数趋势图</h2>
+      <div class="chart-container flex items-end justify-center space-x-12 h-64 mt-6">
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-16 bg-gray-300 rounded-t-md relative" style="height: 160px;">
+            <div class="absolute bottom-0 w-full bg-red-500 rounded-t-md" style="height: 80%;"></div>
+            <div class="absolute -bottom-8 left-0 w-full text-center text-sm font-medium text-gray-700">ServiceB</div>
+          </div>
+          <div class="mt-2 text-xs text-gray-600">8次失败</div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-16 bg-gray-300 rounded-t-md relative" style="height: 160px;">
+            <div class="absolute bottom-0 w-full bg-orange-500 rounded-t-md" style="height: 30%;"></div>
+            <div class="absolute -bottom-8 left-0 w-full text-center text-sm font-medium text-gray-700">ServiceA</div>
+          </div>
+          <div class="mt-2 text-xs text-gray-600">3次失败</div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-16 bg-gray-300 rounded-t-md relative" style="height: 160px;">
+            <div class="absolute bottom-0 w-full bg-green-500 rounded-t-md" style="height: 0%;"></div>
+            <div class="absolute -bottom-8 left-0 w-full text-center text-sm font-medium text-gray-700">ServiceC</div>
+          </div>
+          <div class="mt-2 text-xs text-gray-600">0次失败</div>
+        </div>
+      </div>
+      <p class="mt-4 text-gray-700">失败次数直接反映服务稳定性。ServiceB的失败次数高达8次，是其他服务的2倍以上，存在显著异常。ServiceA失败3次，虽属中等水平，但结合其健康率接近阈值，表明其稳定性存在隐患。ServiceC无失败记录，为当前最可靠服务。</p>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="section-title">3. 健康率波动较大的服务标注</h2>
+      <div class="highlight">
+        <p class="mb-2"><strong>ServiceB</strong>：健康率0.935，失败次数8次，是唯一低于95%阈值的服务，且失败次数远超其他服务，波动性最大，极可能为系统性问题（如资源不足、依赖服务异常或代码缺陷）。</p>
+        <p class="mb-2"><strong>ServiceA</strong>：健康率0.955，失败次数3次，虽未低于阈值，但其健康率与ServiceC（0.970）差距达1.5个百分点，且失败次数为ServiceC的无限倍，表明其稳定性存在潜在波动风险，需排查偶发性错误。</p>
+        <p>ServiceC健康率0.970，失败次数为0，表现稳定，无显著波动。</p>
+      </div>
+      <p class="mt-4 text-gray-700">波动性分析基于健康率与失败次数的综合评估。ServiceB是明确的异常点，ServiceA虽未触发警报，但其与最优服务的差距和失败记录，使其成为潜在风险点，应纳入重点监控列表。</p>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="section-title">4. 异常服务的初步建议</h2>
+      <div class="space-y-6">
+        <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-r-lg">
+          <h3 class="text-lg font-semibold text-red-800 mb-2">针对 ServiceB</h3>
+          <ol class="list-decimal list-inside space-y-2 text-gray-700">
+            <li>立即检查其依赖的下游服务或数据库连接池状态，排查是否存在外部依赖故障。</li>
+            <li>审查最近一次部署记录，确认是否有代码变更引入了内存泄漏或死锁问题。</li>
+            <li>检查服务器资源使用率（CPU、内存、磁盘IO），确认是否存在资源瓶颈。</li>
+            <li>启用更细粒度的日志追踪，定位具体失败请求的错误堆栈。</li>
+          </ol>
+        </div>
+        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-lg">
+          <h3 class="text-lg font-semibold text-yellow-800 mb-2">针对 ServiceA</h3>
+          <ol class="list-decimal list-inside space-y-2 text-gray-700">
+            <li>分析3次失败请求的时间分布，确认是否集中在特定时段（如高峰流量期），判断是否为负载压力导致。</li>
+            <li>检查健康检查接口的实现逻辑，确认其阈值设置是否合理，是否存在误报可能。</li>
+            <li>对比ServiceC的实现，审查ServiceA的容错机制与重试策略是否不足。</li>
+            <li>建议将健康率阈值动态调整为95.5%，以更精准反映其真实稳定性。</li>
+          </ol>
+        </div>
+        <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg">
+          <h3 class="text-lg font-semibold text-green-800 mb-2">针对 ServiceC</h3>
+          <p class="text-gray-700">继续保持当前监控策略，可作为基准服务用于对比其他服务的健康表现。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="section-title">5. 数据来源说明</h2>
+      <p class="text-gray-700 mb-4">本报告所有数据均来源于以下原始文件，确保分析结果的准确性与可追溯性：</p>
+      <ul class="list-disc list-inside space-y-2 text-gray-700">
+        <li>服务健康分析报告.csv：包含ServiceA、ServiceB、ServiceC的平均健康率与失败次数原始数据。<cite><a href="http://172.31.73.223:1601/v1/file_tool/preview/geniesession-1758161509779-5752:1758161913876-470/根据ods_telemetry.aihu_代码输出.md" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+        <li>根据ods_telemetry.aihu_代码输出.md：与CSV文件内容一致，为数据的原始输出日志文件。<cite><a href="http://172.31.73.223:1601/v1/file_tool/preview/geniesession-1758161509779-5752:1758161913876-470/根据ods_telemetry.aihu_代码输出.md" target="_blank" rel="noopener noreferrer">[[2]]</a></cite></li>
+      </ul>
+    </section>
+  </div>
+
+  <footer class="bg-gray-100 text-center py-6 mt-16 border-t border-gray-200">
+    <p class="text-gray-600">Created by Autobots<br>页面内容均由 AI 生成，仅供参考</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doris集群运行状态健康评估报告 - 2025年09月18日</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    }
+    .chart-container {
+      height: 300px;
+      background-color: #f9fafb;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7280;
+      font-size: 0.875rem;
+      border: 1px solid #e5e7eb;
+    }
+    .data-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .data-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+    .status-indicator {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+    .status-good {
+      background-color: #10b981;
+    }
+    .status-warning {
+      background-color: #f59e0b;
+    }
+    .status-critical {
+      background-color: #ef4444;
+    }
+    .citation {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .citation:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <header class="text-center mb-10">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Doris集群运行状态健康评估报告</h1>
+      <p class="text-lg text-gray-600">2025年09月18日 | 基于实时监控数据生成</p>
+    </header>
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-chart-line mr-2 text-blue-600"></i>系统核心指标概览
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-sm data-card">
+          <h3 class="text-sm font-medium text-gray-500 mb-1">当前连接总数</h3>
+          <p class="text-3xl font-bold text-gray-900">18</p>
+          <p class="text-sm text-gray-600 mt-2">活跃客户端连接数</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-sm data-card">
+          <h3 class="text-sm font-medium text-gray-500 mb-1">JVM堆内存使用率</h3>
+          <p class="text-3xl font-bold text-gray-900">6.79%</p>
+          <p class="text-sm text-gray-600 mt-2">JVM堆内存占用比例</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-sm data-card">
+          <h3 class="text-sm font-medium text-gray-500 mb-1">系统总内存使用率</h3>
+          <p class="text-3xl font-bold text-gray-900">56.25%</p>
+          <p class="text-sm text-gray-600 mt-2">操作系统级内存占用</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-sm data-card">
+          <h3 class="text-sm font-medium text-gray-500 mb-1">历史内存峰值</h3>
+          <p class="text-3xl font-bold text-gray-900">5.1 GB</p>
+          <p class="text-sm text-gray-600 mt-2">近30天最高内存消耗</p>
+        </div>
+      </div>
+    </section>
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-chart-area mr-2 text-green-600"></i>内存使用趋势分析
+      </h2>
+      <div class="chart-container">
+        <div class="text-center">
+          <i class="fas fa-chart-area text-4xl mb-4 text-gray-400"></i>
+          <p>内存使用趋势图（近30天）</p>
+          <p class="text-sm">数据稳定，无异常波动，峰值为5.1GB</p>
+        </div>
+      </div>
+      <p class="mt-4 text-gray-700 leading-relaxed">
+        根据历史监控数据，Doris集群的内存使用呈现稳定趋势，未出现持续上升或突发性飙升。近30天内最高内存消耗为5.1GB，当前系统内存使用率维持在56.25%，远低于系统资源瓶颈阈值。JVM堆内存使用率仅为6.79%，表明内存分配合理，GC压力极低，无内存泄漏迹象。
+      </p>
+    </section>
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-shield-alt mr-2 text-emerald-600"></i>健康评估与风险结论
+      </h2>
+      <div class="bg-emerald-50 border-l-4 border-emerald-500 p-6 rounded-r-lg">
+        <div class="flex items-start">
+          <div class="status-indicator status-good"></div>
+          <div class="flex-1">
+            <h3 class="text-xl font-bold text-emerald-800 mb-3">系统运行状态：健康</h3>
+            <p class="text-gray-700 leading-relaxed">
+              当前Doris集群各项核心指标均处于安全阈值范围内。JVM堆内存使用率（6.79%）与系统总内存使用率（56.25%）均显著低于预警线，历史峰值（5.1GB）未对系统稳定性构成压力。当前连接数为18，属于正常业务负载水平，无连接风暴或资源争用现象。
+            </p>
+            <p class="text-gray-700 leading-relaxed mt-4">
+              综合判断，当前系统无OOM（Out of Memory）风险，内存资源充足，GC效率良好，服务响应稳定。建议继续保持当前监控策略，无需紧急扩容或调优。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <footer class="border-t border-gray-200 mt-16 pt-8 text-center text-gray-500 text-sm">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+  <script>
+    // 为图表占位符添加交互提示（无真实图表数据，仅增强体验）
+    document.addEventListener('DOMContentLoaded', function() {
+      const chartContainers = document.querySelectorAll('.chart-container');
+      chartContainers.forEach(container => {
+        container.addEventListener('click', function() {
+          alert('当前为趋势图占位符，实际数据为：近30天内存使用稳定，峰值5.1GB，无异常波动。');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

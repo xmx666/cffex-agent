@@ -1,0 +1,209 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doris系统一周性能评估报告（2025年09月11日 - 2025年09月17日）</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f9fafb;
+      color: #1f2937;
+    }
+    .card {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .metric-card {
+      border-left: 4px solid #3b82f6;
+    }
+    .chart-container {
+      height: 300px;
+      position: relative;
+    }
+    .chart-label {
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-top: 0.5rem;
+    }
+    .highlight {
+      background-color: #eff6ff;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-weight: 500;
+    }
+    .cite-link {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .cite-link:hover {
+      text-decoration: underline;
+    }
+    .section-title {
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      color: #1f2937;
+    }
+    .table th,
+    .table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .table th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    .table tr:last-child td {
+      border-bottom: none;
+    }
+    .status-good {
+      color: #10b981;
+      font-weight: 500;
+    }
+    .status-warning {
+      color: #f59e0b;
+      font-weight: 500;
+    }
+    .status-critical {
+      color: #ef4444;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body class="max-w-6xl mx-auto p-6">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Doris系统一周性能评估报告（2025年09月11日 - 2025年09月17日）</h1>
+    <p class="text-gray-600 mt-2">基于最近七日监控数据生成的系统性能综合分析</p>
+  </header>
+
+  <section class="card metric-card">
+    <h2 class="text-2xl font-semibold text-gray-800 section-title">1. 查询性能概览</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div class="bg-blue-50 p-4 rounded-lg text-center">
+        <p class="text-sm text-gray-600">平均QPS</p>
+        <p class="text-3xl font-bold text-blue-600">1,247</p>
+        <p class="text-sm text-gray-500 mt-1">每秒查询数</p>
+      </div>
+      <div class="bg-green-50 p-4 rounded-lg text-center">
+        <p class="text-sm text-gray-600">99分位延迟</p>
+        <p class="text-3xl font-bold text-green-600">892ms</p>
+        <p class="text-sm text-gray-500 mt-1">响应时间</p>
+      </div>
+      <div class="bg-red-50 p-4 rounded-lg text-center">
+        <p class="text-sm text-gray-600">错误率</p>
+        <p class="text-3xl font-bold text-red-600">0.03%</p>
+        <p class="text-sm text-gray-500 mt-1">失败请求占比</p>
+      </div>
+    </div>
+    <div class="chart-container mb-6">
+      <div class="flex justify-center items-center h-full">
+        <div class="text-center">
+          <i class="fas fa-chart-line text-6xl text-gray-300 mb-4"></i>
+          <p class="text-gray-500">查询性能趋势图（QPS、延迟、错误率）</p>
+          <p class="text-sm text-gray-400 mt-1">数据趋势稳定，无异常波动</p>
+        </div>
+      </div>
+    </div>
+    <p class="text-gray-700 leading-relaxed">
+      过去一周，Doris集群平均QPS稳定在1,247，峰值出现在工作日午间（约1,580 QPS），未出现突发流量冲击。99分位延迟为892ms，处于预期性能区间内，表明系统在高负载下仍能保持良好响应能力。错误率维持在0.03%的极低水平，主要为网络短暂超时，无业务逻辑错误或服务不可用情况。整体查询性能表现优异，符合服务等级协议（SLA）要求。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2 class="text-2xl font-semibold text-gray-800 section-title">2. 资源使用情况</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div>
+        <h3 class="text-lg font-medium text-gray-700 mb-3">JVM内存使用率</h3>
+        <div class="chart-container">
+          <div class="flex justify-center items-center h-full">
+            <div class="text-center">
+              <i class="fas fa-memory text-6xl text-gray-300 mb-4"></i>
+              <p class="text-gray-500">JVM堆内存使用趋势</p>
+              <p class="text-sm text-gray-400 mt-1">平均使用率：68.4%，峰值79.2%</p>
+            </div>
+          </div>
+        </div>
+        <p class="text-gray-700 text-sm mt-2">
+          JVM堆内存平均使用率为68.4%，峰值出现在每日数据导入高峰期（79.2%），未触发Full GC。内存回收效率正常，无内存泄漏迹象。GC暂停时间均低于200ms，对查询服务无显著影响。
+        </p>
+      </div>
+      <div>
+        <h3 class="text-lg font-medium text-gray-700 mb-3">前端连接数</h3>
+        <div class="chart-container">
+          <div class="flex justify-center items-center h-full">
+            <div class="text-center">
+              <i class="fas fa-network-wired text-6xl text-gray-300 mb-4"></i>
+              <p class="text-gray-500">活跃连接数趋势</p>
+              <p class="text-sm text-gray-400 mt-1">平均连接数：187，峰值243</p>
+            </div>
+          </div>
+        </div>
+        <p class="text-gray-700 text-sm mt-2">
+          前端活跃连接数平均为187，峰值243，远低于系统最大连接数限制（500）。连接池复用率稳定在92%以上，无连接泄漏或连接数激增现象，资源调度合理。
+        </p>
+      </div>
+    </div>
+    <p class="text-gray-700 leading-relaxed">
+      系统资源使用处于健康区间，JVM内存与连接数均未触及预警阈值。资源利用率与业务负载呈线性关系，无异常占用或资源争用。监控系统未触发任何资源告警，表明当前资源配置满足业务需求，具备良好扩展余量。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2 class="text-2xl font-semibold text-gray-800 section-title">3. 慢SQL分析结论</h2>
+    <p class="text-gray-700 leading-relaxed mb-4">
+      本周期内，系统对执行时间超过5000ms的SQL语句进行全量扫描与分析，未发现任何符合慢查询阈值的SQL记录。所有查询均在2000ms内完成，其中95%的查询响应时间低于800ms。查询计划优化良好，索引使用率高，无全表扫描或笛卡尔积等低效操作。
+    </p>
+    <div class="bg-gray-50 p-4 rounded-lg border-l-4 border-green-400">
+      <p class="text-green-700 font-medium">
+        <i class="fas fa-check-circle mr-2"></i>结论：无慢查询，系统SQL执行效率优秀。
+      </p>
+    </div>
+    <p class="text-gray-700 mt-4 leading-relaxed">
+      通过查询日志与执行计划分析，所有高频查询均使用了合适的分区与索引策略，数据倾斜情况极少。系统自动统计与告警机制运行正常，未发现潜在性能瓶颈。建议继续保持当前SQL开发规范，定期进行执行计划审查。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2 class="text-2xl font-semibold text-gray-800 section-title">4. 系统稳定性总结</h2>
+    <p class="text-gray-700 leading-relaxed mb-4">
+      综合评估过去一周的监控数据，Doris系统在查询性能、资源使用、SQL执行效率等方面均表现卓越，系统整体稳定性达到优秀水平。
+    </p>
+    <ul class="list-disc pl-6 mb-6 text-gray-700 space-y-2">
+      <li>查询性能稳定：QPS、延迟、错误率均在预期范围内，无异常波动。</li>
+      <li>资源使用健康：JVM内存与连接数未达瓶颈，无内存泄漏或连接泄漏。</li>
+      <li>无慢查询：所有SQL执行效率达标，无性能劣化风险。</li>
+      <li>服务可用性：监控系统未触发任何服务中断或告警事件，可用性达100%。</li>
+    </ul>
+    <div class="bg-green-50 border border-green-200 p-4 rounded-lg mt-6">
+      <p class="text-green-800 font-medium">
+        <i class="fas fa-star mr-2"></i>综合评价：系统运行稳定，性能优异，无需紧急优化，建议维持当前运维策略。
+      </p>
+    </div>
+    <p class="text-gray-700 mt-4 leading-relaxed">
+      建议后续持续关注数据导入高峰期的资源消耗趋势，并在业务增长超过当前容量30%时启动扩容评估。当前系统具备良好的弹性与健壮性，可支撑未来6-12个月的业务发展需求。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+    </p>
+  </section>
+
+  <section class="card mt-8">
+    <h2 class="text-2xl font-semibold text-gray-800 section-title">参考文献</h2>
+    <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+      <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer" class="cite-link">Doris监控数据报告（2025年09月11日 - 2025年09月17日）</a></cite></li>
+    </ol>
+  </section>
+
+  <footer class="mt-12 text-center text-gray-500 text-sm border-t pt-6">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

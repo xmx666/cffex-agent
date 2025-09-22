@@ -1,0 +1,130 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doris 集群监控状态报告 - 2025年09月18日</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        .metric-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .progress-bar {
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.5s ease;
+        }
+        .font-family-chinese {
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        .status-ok {
+            background-color: #10b981;
+        }
+        .status-warning {
+            background-color: #f59e0b;
+        }
+        .status-critical {
+            background-color: #ef4444;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-family-chinese">
+    <div class="max-w-6xl mx-auto p-6">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800">Doris 集群监控状态报告</h1>
+            <p class="text-gray-600 mt-2">生成时间：2025年09月18日</p>
+        </header>
+
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">关键监控指标</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- FE节点连接总数 -->
+                <div class="bg-white rounded-lg shadow-md p-6 metric-card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-server text-blue-500 text-2xl mr-3"></i>
+                        <h3 class="text-lg font-medium text-gray-700">FE节点连接总数</h3>
+                    </div>
+                    <div class="text-4xl font-bold text-gray-900">14</div>
+                    <p class="text-gray-600 mt-2">当前活跃的FE客户端连接数量</p>
+                </div>
+
+                <!-- FE节点JVM堆内存使用率 -->
+                <div class="bg-white rounded-lg shadow-md p-6 metric-card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-memory text-purple-500 text-2xl mr-3"></i>
+                        <h3 class="text-lg font-medium text-gray-700">FE节点JVM堆内存使用率</h3>
+                    </div>
+                    <div class="mb-3">
+                        <div class="flex justify-between text-sm text-gray-600 mb-1">
+                            <span>使用率</span>
+                            <span>24.32%</span>
+                        </div>
+                        <div class="progress-bar bg-gray-200">
+                            <div class="progress-fill bg-purple-500" style="width: 24.32%"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">JVM堆内存使用处于健康水平</p>
+                </div>
+
+                <!-- BE节点总体内存使用率 -->
+                <div class="bg-white rounded-lg shadow-md p-6 metric-card">
+                    <div class="flex items-center mb-4">
+                        <i class="fas fa-database text-green-500 text-2xl mr-3"></i>
+                        <h3 class="text-lg font-medium text-gray-700">BE节点总体内存使用率</h3>
+                    </div>
+                    <div class="mb-3">
+                        <div class="flex justify-between text-sm text-gray-600 mb-1">
+                            <span>使用率</span>
+                            <span>56.25%</span>
+                        </div>
+                        <div class="progress-bar bg-gray-200">
+                            <div class="progress-fill bg-green-500" style="width: 56.25%"></div>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 text-sm">内存使用处于合理区间，无过载风险</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">BE节点监控数据未返回说明</h2>
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <p class="text-gray-700 mb-4">当前BE节点的监控数据未能成功返回，可能原因包括：</p>
+                <ul class="list-disc pl-6 text-gray-700 space-y-2 mb-4">
+                    <li>BE节点服务进程异常终止或未启动，导致监控采集端无法建立连接。</li>
+                    <li>网络策略或防火墙规则阻断了监控系统与BE节点之间的通信端口（默认9050/9060）。</li>
+                    <li>监控采集服务（如Prometheus）配置错误，未正确指向BE节点的监控地址或端点。</li>
+                    <li>BE节点负载过高，响应超时或拒绝了监控数据的拉取请求。</li>
+                    <li>监控数据采集周期与BE节点心跳周期不匹配，导致数据采集窗口内无有效响应。</li>
+                </ul>
+                <p class="text-gray-700">建议立即核查BE节点的运行状态、网络连通性及监控配置，确保数据采集链路正常。</p>
+            </div>
+        </section>
+
+        <footer class="mt-12 text-center text-gray-500 text-sm border-t pt-6">
+            Created by Autobots<br>
+            页面内容均由 AI 生成，仅供参考
+        </footer>
+    </div>
+</body>
+</html>

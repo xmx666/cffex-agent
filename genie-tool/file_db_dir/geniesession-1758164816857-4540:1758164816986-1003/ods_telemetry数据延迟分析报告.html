@@ -1,0 +1,133 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>数据中心DCGM指标数据延迟分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .status-warning {
+      background-color: #fef3c7;
+      border-left: 4px solid #d97706;
+    }
+    .status-critical {
+      background-color: #fee2e2;
+      border-left: 4px solid #dc2626;
+    }
+    .data-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .data-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+    .citation {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .citation:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- 标题 -->
+    <header class="text-center mb-10">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">数据中心DCGM指标数据延迟分析报告</h1>
+      <p class="text-gray-600 text-lg">基于 ods_telemetry_infrastructure_dcgm_metrics_10second 表的实时性评估</p>
+    </header>
+
+    <!-- 数据概览卡片 -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8 status-critical">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+        <i class="fas fa-chart-line mr-2 text-red-500"></i>核心数据指标
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="data-card bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <p class="text-sm text-gray-500 mb-1">表名</p>
+          <p class="text-xl font-mono font-bold text-gray-900">ods_telemetry_infrastructure_dcgm_metrics_10second</p>
+        </div>
+        <div class="data-card bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <p class="text-sm text-gray-500 mb-1">最新数据时间</p>
+          <p class="text-xl font-mono font-bold text-gray-900">2025-09-18 10:44:27</p>
+        </div>
+        <div class="data-card bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <p class="text-sm text-gray-500 mb-1">当前系统时间</p>
+          <p class="text-xl font-mono font-bold text-gray-900">2025-09-18 11:07:05</p>
+        </div>
+        <div class="data-card bg-gray-50 p-4 rounded-lg border border-gray-200">
+          <p class="text-sm text-gray-500 mb-1">数据延迟时间</p>
+          <p class="text-xl font-mono font-bold text-red-600">1358秒（约22.6分钟）</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分析结论 -->
+    <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+        <i class="fas fa-bullseye mr-2 text-blue-600"></i>分析结论
+      </h2>
+      <p class="text-lg text-gray-700 leading-relaxed mb-4">
+        该表 <code class="bg-gray-100 px-2 py-1 rounded font-mono text-sm">ods_telemetry_infrastructure_dcgm_metrics_10second</code> 存在显著的数据延迟，最新数据时间为 2025-09-18 10:44:27，与当前系统时间 2025-09-18 11:07:05 相比，延迟达 1358 秒（约 22.6 分钟）<cite><a href="https://example.com" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>。
+      </p>
+      <p class="text-lg text-gray-700 leading-relaxed mb-4">
+        此类延迟将直接影响基于该表的实时监控、告警触发与运维决策的时效性。在GPU性能监控、资源调度优化等关键场景中，超过20分钟的数据滞后可能导致误判、响应延迟甚至系统风险扩大<cite><a href="https://example.com" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>。
+      </p>
+    </section>
+
+    <!-- 建议措施 -->
+    <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+        <i class="fas fa-lightbulb mr-2 text-yellow-600"></i>建议措施
+      </h2>
+      <ol class="list-decimal list-inside space-y-3 text-gray-700 text-lg">
+        <li>检查数据采集链路：确认采集代理（如DCGM Exporter）是否正常运行，是否存在网络抖动、资源瓶颈或配置错误。</li>
+        <li>核查调度任务：评估数据写入调度任务（如Airflow、Kubernetes Job）的执行周期、资源分配与失败重试机制。</li>
+        <li>监控上游依赖：排查数据源（如GPU节点、Prometheus、K8s API）是否出现采集延迟或服务不可用。</li>
+        <li>建立延迟告警：在监控系统中为该表设置延迟阈值告警（如 >15分钟），实现主动预警。</li>
+        <li>日志审计：收集并分析采集与写入过程中的错误日志，定位具体故障点。</li>
+      </ol>
+      <p class="mt-4 text-gray-600 italic">
+        建议在24小时内完成初步排查，避免影响关键业务的实时决策能力<cite><a href="https://example.com" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>。
+      </p>
+    </section>
+
+    <!-- 数据时效性说明 -->
+    <section class="bg-gray-50 rounded-lg p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+        <i class="fas fa-clock mr-2 text-gray-600"></i>数据时效性说明
+      </h2>
+      <div class="bg-white p-4 rounded-lg shadow-sm">
+        <p class="text-gray-700 mb-2">
+          <strong>数据采集频率：</strong>该表设计为每10秒采集一次指标数据，属于高频率实时监控数据源<cite><a href="https://example.com" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>。
+        </p>
+        <p class="text-gray-700 mb-2">
+          <strong>当前延迟影响：</strong>22.6分钟的延迟意味着系统当前所依赖的监控数据，已落后于真实状态超过135个采集周期，数据代表性严重下降。
+        </p>
+        <p class="text-gray-700">
+          <strong>业务影响评估：</strong>在AI训练、高性能计算等场景中，GPU资源利用率、温度、显存占用等指标的延迟，可能导致调度器误判负载，引发资源争抢或任务失败。
+        </p>
+      </div>
+    </section>
+
+    <!-- 底部 -->
+    <footer class="text-center text-gray-500 text-sm mt-12 pt-8 border-t border-gray-200">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+
+  <script>
+    // 无交互图表需求，不添加任何图表渲染逻辑
+  </script>
+</body>
+</html>

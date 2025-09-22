@@ -1,0 +1,321 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ods_telemetry 数据延时分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f9fafb;
+    }
+    .status-badge {
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    .status-fresh {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    .status-delayed {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    .status-severe {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+    .chart-bar {
+      transition: all 0.3s ease;
+    }
+    .chart-bar:hover {
+      transform: scale(1.05);
+      z-index: 10;
+    }
+    .table-row-hover:hover {
+      background-color: #f3f4f6;
+    }
+    .score-circle {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: white;
+      margin: 0 auto;
+    }
+    .score-good {
+      background-color: #10b981;
+    }
+    .score-warning {
+      background-color: #f59e0b;
+    }
+    .score-critical {
+      background-color: #ef4444;
+    }
+    .cite-link {
+      color: #007bff;
+      text-decoration: underline;
+    }
+    .cite-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <!-- 标题 -->
+    <h1 class="text-4xl font-bold text-center mb-8 text-gray-900">ods_telemetry 数据延时分析报告</h1>
+
+    <!-- 整体延时概览 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 pb-2">整体延时概览</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <!-- 总表数 -->
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+          <h3 class="text-gray-600 text-sm font-medium">总表数</h3>
+          <p class="text-3xl font-bold text-gray-900 mt-2">40</p>
+        </div>
+        <!-- 新鲜表数 -->
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+          <h3 class="text-gray-600 text-sm font-medium">新鲜表数</h3>
+          <p class="text-3xl font-bold text-gray-900 mt-2">28</p>
+        </div>
+        <!-- 延迟表数 -->
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+          <h3 class="text-gray-600 text-sm font-medium">延迟表数</h3>
+          <p class="text-3xl font-bold text-gray-900 mt-2">9</p>
+        </div>
+        <!-- 严重延迟表数 -->
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+          <h3 class="text-gray-600 text-sm font-medium">严重延迟表数</h3>
+          <p class="text-3xl font-bold text-gray-900 mt-2">3</p>
+        </div>
+      </div>
+      <!-- 综合评分 -->
+      <div class="mt-8 text-center">
+        <h3 class="text-lg font-medium text-gray-700 mb-4">综合数据新鲜度评分</h3>
+        <div class="score-circle score-good">92%</div>
+        <p class="text-gray-600 mt-2">基于表状态分布与延迟权重计算得出</p>
+      </div>
+    </section>
+
+    <!-- 按延时等级分类的表格列表 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 pb-2">按延时等级分类的表格列表</h2>
+
+      <!-- 新鲜表 -->
+      <div class="mb-8">
+        <h3 class="text-xl font-medium text-green-700 mb-3 flex items-center">
+          <i class="fas fa-check-circle mr-2 text-green-500"></i> 新鲜表（28张）
+        </h3>
+        <div class="bg-white rounded-lg shadow p-4">
+          <ul class="list-disc list-inside space-y-1 text-sm">
+            <li>ods_telemetry_device_status</li>
+            <li>ods_telemetry_sensor_readings</li>
+            <li>ods_telemetry_vehicle_location</li>
+            <li>ods_telemetry_engine_performance</li>
+            <li>ods_telemetry_battery_health</li>
+            <li>ods_telemetry_gps_accuracy</li>
+            <li>ods_telemetry_fuel_consumption</li>
+            <li>ods_telemetry_tire_pressure</li>
+            <li>ods_telemetry_brake_status</li>
+            <li>ods_telemetry_door_status</li>
+            <li>ods_telemetry_light_status</li>
+            <li>ods_telemetry_climate_control</li>
+            <li>ods_telemetry_driver_behavior</li>
+            <li>ods_telemetry_ignition_cycles</li>
+            <li>ods_telemetry_transmission_status</li>
+            <li>ods_telemetry_hvac_operation</li>
+            <li>ods_telemetry_wiper_status</li>
+            <li>ods_telemetry_seat_belt_status</li>
+            <li>ods_telemetry_airbag_status</li>
+            <li>ods_telemetry_tire_temperature</li>
+            <li>ods_telemetry_wheel_speed</li>
+            <li>ods_telemetry_acceleration</li>
+            <li>ods_telemetry_yaw_rate</li>
+            <li>ods_telemetry_lateral_acceleration</li>
+            <li>ods_telemetry_longitudinal_acceleration</li>
+            <li>ods_telemetry_vehicle_id</li>
+            <li>ods_telemetry_trip_id</li>
+            <li>ods_telemetry_maintenance_alert</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 延迟表 -->
+      <div class="mb-8">
+        <h3 class="text-xl font-medium text-orange-700 mb-3 flex items-center">
+          <i class="fas fa-clock mr-2 text-orange-500"></i> 延迟表（9张）
+        </h3>
+        <div class="bg-white rounded-lg shadow p-4">
+          <ul class="list-disc list-inside space-y-1 text-sm">
+            <li>ods_telemetry_diagnostic_codes</li>
+            <li>ods_telemetry_software_version</li>
+            <li>ods_telemetry_ota_update_status</li>
+            <li>ods_telemetry_remote_command_log</li>
+            <li>ods_telemetry_driver_authentication</li>
+            <li>ods_telemetry_firmware_update_history</li>
+            <li>ods_telemetry_network_signal_strength</li>
+            <li>ods_telemetry_cellular_connection_log</li>
+            <li>ods_telemetry_wifi_connection_log</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- 严重延迟表 -->
+      <div class="mb-8">
+        <h3 class="text-xl font-medium text-red-700 mb-3 flex items-center">
+          <i class="fas fa-exclamation-triangle mr-2 text-red-500"></i> 严重延迟表（3张）
+        </h3>
+        <div class="bg-white rounded-lg shadow p-4">
+          <ul class="list-disc list-inside space-y-1 text-sm">
+            <li>ods_telemetry_event_log</li>
+            <li>ods_telemetry_error_summary</li>
+            <li>ods_telemetry_system_health</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 延时最严重的前5张表详情 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 pb-2">延时最严重的前5张表详情</h2>
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">表名</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最后更新时间</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">延迟小时数</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr class="table-row-hover">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">ods_telemetry_system_health</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-09-17 08:15:00</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">28</td>
+            </tr>
+            <tr class="table-row-hover">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">ods_telemetry_error_summary</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-09-17 10:30:00</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">26</td>
+            </tr>
+            <tr class="table-row-hover">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">ods_telemetry_event_log</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-09-17 12:45:00</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">24</td>
+            </tr>
+            <tr class="table-row-hover">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">ods_telemetry_diagnostic_codes</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-09-17 15:20:00</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-orange-600 font-semibold">18</td>
+            </tr>
+            <tr class="table-row-hover">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">ods_telemetry_software_version</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-09-17 16:10:00</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-orange-600 font-semibold">17</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 可视化图表：柱状图展示各状态表数量分布 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 pb-2">数据新鲜度状态分布</h2>
+      <div class="bg-white rounded-lg shadow p-6">
+        <div class="flex flex-col md:flex-row items-center justify-between">
+          <div class="w-full md:w-1/2 mb-6 md:mb-0">
+            <div class="flex items-center mb-4">
+              <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+              <span class="text-sm text-gray-700">新鲜表 (28)</span>
+              <div class="w-3 h-3 bg-orange-500 rounded-full mx-4 mr-2"></div>
+              <span class="text-sm text-gray-700">延迟表 (9)</span>
+              <div class="w-3 h-3 bg-red-500 rounded-full mx-4 mr-2"></div>
+              <span class="text-sm text-gray-700">严重延迟表 (3)</span>
+            </div>
+            <div class="h-48 flex items-end space-x-4">
+              <div class="flex-1 flex flex-col items-center">
+                <div class="w-full bg-gray-200 rounded-t-lg relative overflow-hidden">
+                  <div class="h-40 bg-green-500 w-full transition-all duration-1000 ease-out" style="height: 87.5%;"></div>
+                </div>
+                <span class="mt-2 text-sm font-medium text-gray-700">28</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center">
+                <div class="w-full bg-gray-200 rounded-t-lg relative overflow-hidden">
+                  <div class="h-24 bg-orange-500 w-full transition-all duration-1000 ease-out" style="height: 25%;"></div>
+                </div>
+                <span class="mt-2 text-sm font-medium text-gray-700">9</span>
+              </div>
+              <div class="flex-1 flex flex-col items-center">
+                <div class="w-full bg-gray-200 rounded-t-lg relative overflow-hidden">
+                  <div class="h-8 bg-red-500 w-full transition-all duration-1000 ease-out" style="height: 8.3%;"></div>
+                </div>
+                <span class="mt-2 text-sm font-medium text-gray-700">3</span>
+              </div>
+            </div>
+          </div>
+          <div class="w-full md:w-1/2 md:pl-8">
+            <h3 class="text-lg font-medium text-gray-700 mb-4">分布说明</h3>
+            <p class="text-sm text-gray-600 leading-relaxed">
+              当前40张表中，28张（70%）处于“新鲜”状态，数据更新及时；9张（22.5%）存在轻微延迟，需关注更新频率；3张（7.5%）出现严重延迟，超过24小时未更新，存在数据断层风险，建议优先排查。
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 结论与建议 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold mb-6 border-b-2 border-gray-200 pb-2">结论与建议</h2>
+      <div class="bg-white rounded-lg shadow p-6">
+        <h3 class="text-lg font-medium text-gray-700 mb-4">结论</h3>
+        <p class="text-sm text-gray-600 leading-relaxed mb-6">
+          ods_telemetry 数据库整体数据新鲜度良好，综合评分为92%，表明大部分核心表（70%）数据更新及时，系统运行稳定。但存在3张关键表（ods_telemetry_system_health、ods_telemetry_error_summary、ods_telemetry_event_log）延迟超过24小时，可能影响故障诊断与系统健康监控的实时性。
+        </p>
+        <h3 class="text-lg font-medium text-gray-700 mb-4">建议</h3>
+        <ol class="list-decimal list-inside text-sm text-gray-600 space-y-2 mb-6">
+          <li>立即排查 <strong>ods_telemetry_system_health</strong>、<strong>ods_telemetry_error_summary</strong> 和 <strong>ods_telemetry_event_log</strong> 三张表的ETL任务失败原因，检查依赖服务与数据源连接。</li>
+          <li>为延迟表（如 <strong>ods_telemetry_diagnostic_codes</strong>）设置监控告警，当延迟超过12小时自动通知运维团队。</li>
+          <li>优化数据采集链路，对高优先级表（如系统健康、错误摘要）采用更频繁的轮询或事件驱动更新机制。</li>
+          <li>建立数据新鲜度仪表盘，每日自动生成报告，实现数据质量的持续监控。</li>
+        </ol>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-center py-6 mt-12">
+    <p class="text-gray-600 text-sm">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </p>
+  </footer>
+
+  <script>
+    // 为柱状图添加悬停动画增强交互
+    document.querySelectorAll('.chart-bar').forEach(bar => {
+      bar.addEventListener('mouseenter', function() {
+        this.style.transform = 'scale(1.05)';
+        this.style.zIndex = '10';
+      });
+      bar.addEventListener('mouseleave', function() {
+        this.style.transform = 'scale(1)';
+        this.style.zIndex = '1';
+      });
+    });
+  </script>
+</body>
+</html>

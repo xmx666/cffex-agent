@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>数据库表结构详细说明报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+    }
+    .table-header {
+      background-color: #34495e;
+      color: white;
+      font-weight: 600;
+    }
+    .row-even {
+      background-color: #f2f2f2;
+    }
+    .row-odd {
+      background-color: white;
+    }
+    .field-name {
+      font-weight: 500;
+      color: #2c3e50;
+    }
+    .data-type {
+      color: #e74c3c;
+      font-weight: 500;
+    }
+    .nullable {
+      color: #f39c12;
+      font-weight: 500;
+    }
+    .comment {
+      color: #7f8c8d;
+      font-size: 0.9rem;
+    }
+    .section-title {
+      border-bottom: 2px solid #3498db;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+      color: #2c3e50;
+    }
+    .footer {
+      margin-top: 4rem;
+      padding: 1.5rem 0;
+      text-align: center;
+      color: #7f8c8d;
+      font-size: 0.9rem;
+      border-top: 1px solid #ecf0f1;
+    }
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -100px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.85rem;
+    }
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">数据库表结构详细说明报告</h1>
+    <p class="text-lg text-center mb-10 text-gray-600">生成日期：2025年09月18日</p>
+    <section class="mb-12">
+      <h2 class="section-title">表结构概览</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+          <thead>
+            <tr class="table-header">
+              <th class="py-3 px-4 text-left">字段名称</th>
+              <th class="py-3 px-4 text-left">数据类型</th>
+              <th class="py-3 px-4 text-left">是否可为空</th>
+              <th class="py-3 px-4 text-left">注释</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="row-odd">
+              <td class="py-3 px-4 border-b border-gray-200"><span class="field-name">service_name</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="data-type">varchar(255)</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="nullable">否</span></td>
+              <td class="py-3 px-4 border-b border-gray-200 comment"></td>
+            </tr>
+            <tr class="row-even">
+              <td class="py-3 px-4 border-b border-gray-200"><span class="field-name">service_showname</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="data-type">varchar(255)</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="nullable">否</span></td>
+              <td class="py-3 px-4 border-b border-gray-200 comment"></td>
+            </tr>
+            <tr class="row-odd">
+              <td class="py-3 px-4 border-b border-gray-200"><span class="field-name">service_system</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="data-type">varchar(255)</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="nullable">否</span></td>
+              <td class="py-3 px-4 border-b border-gray-200 comment"></td>
+            </tr>
+            <tr class="row-even">
+              <td class="py-3 px-4 border-b border-gray-200"><span class="field-name">service_type</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="data-type">varchar(255)</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="nullable">否</span></td>
+              <td class="py-3 px-4 border-b border-gray-200 comment"></td>
+            </tr>
+            <tr class="row-odd">
+              <td class="py-3 px-4 border-b border-gray-200"><span class="field-name">saas_showname</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="data-type">varchar(255)</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="nullable">否</span></td>
+              <td class="py-3 px-4 border-b border-gray-200 comment"></td>
+            </tr>
+            <tr class="row-even">
+              <td class="py-3 px-4 border-b border-gray-200"><span class="field-name">on_report</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="data-type">varchar(255)</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="nullable">否</span></td>
+              <td class="py-3 px-4 border-b border-gray-200 comment"></td>
+            </tr>
+            <tr class="row-odd">
+              <td class="py-3 px-4 border-b border-gray-200"><span class="field-name">data_tablename</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="data-type">varchar(255)</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="nullable">否</span></td>
+              <td class="py-3 px-4 border-b border-gray-200 comment"></td>
+            </tr>
+            <tr class="row-even">
+              <td class="py-3 px-4 border-b border-gray-200"><span class="field-name">tech_cate</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="data-type">varchar(255)</span></td>
+              <td class="py-3 px-4 border-b border-gray-200"><span class="nullable">否</span></td>
+              <td class="py-3 px-4 border-b border-gray-200 comment"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="mb-12">
+      <h2 class="section-title">字段说明补充</h2>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <p class="mb-4">本表用于记录在线服务的元信息，所有字段均为非空字符串类型，用于服务注册、分类与报表关联。字段命名规范清晰，便于系统间对接。无注释字段建议补充业务语义说明，提升可维护性。</p>
+      </div>
+    </section>
+    <section class="mb-12">
+      <h2 class="section-title">设计建议</h2>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <p class="mb-4">建议为各字段补充注释，明确业务含义，如service_type代表服务类型（AI/数据/监控等），tech_cate代表技术分类（NLP/CV/推荐等）。可考虑增加创建时间、更新时间等审计字段，便于数据治理。</p>
+      </div>
+    </section>
+  </div>
+  <footer class="footer">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

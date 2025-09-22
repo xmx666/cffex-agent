@@ -1,0 +1,88 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: genie-backend
+  profiles:
+    active: dev
+
+# LLM配置
+llm:
+  # 默认模型配置
+  default:
+    model: ${DEFAULT_MODEL:deepseek-ai/DeepSeek-R1}
+    api_key: ${OPENAI_API_KEY:sk-your-api-key}
+    base_url: ${OPENAI_BASE_URL:https://api.siliconflow.cn/v1}
+  
+  # 自定义LLM配置
+  custom:
+    base_url: ${CUSTOM_OPENAI_BASE_URL:https://api.siliconflow.cn/v1}
+    api_key: ${CUSTOM_OPENAI_API_KEY:sk-gnerfexlkohrjggyegfxwxtarftimtfllwoekftfvwcdujvj}
+    model: ${CUSTOM_MODEL_NAME:deepseek-ai/DeepSeek-R1}
+    timeout: ${LLM_TIMEOUT:30000}
+    max_tokens: ${LLM_MAX_TOKENS:4000}
+  
+  # 模型设置
+  settings:
+    deepseek-ai/DeepSeek-R1:
+      max_tokens: 4000
+      temperature: 0.7
+    gpt-4:
+      max_tokens: 4000
+      temperature: 0.7
+
+# 深度搜索工具配置
+autobots:
+  autoagent:
+    tool:
+      deep_search_tool:
+        desc: "这是一个搜索工具，可以通过搜索内外网知识"
+        params: "{\"type\":\"object\",\"properties\":{\"query\":{\"type\":\"string\",\"description\":\"需要搜索的query\"}},\"required\":[\"query\"]}"
+        file_desc:
+          truncate_len: ${DEEP_SEARCH_FILE_TRUNCATE_LEN:500}
+        message:
+          truncate_len: ${DEEP_SEARCH_MESSAGE_TRUNCATE_LEN:500}
+  
+  # 深度搜索服务配置
+  deep_search:
+    url: ${DEEP_SEARCH_URL:http://localhost:1601}
+    page_count: ${DEEP_SEARCH_PAGE_COUNT:5}
+    message_interval: ${DEEP_SEARCH_MESSAGE_INTERVAL:5,20}
+
+# 播客音频生成配置
+podcast:
+  audio_generation:
+    base_url: ${PODCAST_AUDIO_BASE_URL:https://api.example.com/podcast}
+    api_key: ${PODCAST_API_KEY:your-podcast-api-key}
+    timeout: ${PODCAST_TIMEOUT:60000}
+    max_duration: ${PODCAST_MAX_DURATION:3600}
+
+# 日志配置
+logging:
+  level:
+    com.jd.genie: ${LOG_LEVEL:INFO}
+    root: ${ROOT_LOG_LEVEL:WARN}
+  file:
+    name: ${LOG_FILE:/app/logs/genie-backend.log}
+    max-size: ${LOG_MAX_SIZE:100MB}
+    max-history: ${LOG_MAX_HISTORY:30}
+
+# 缓存配置
+cache:
+  redis:
+    host: ${REDIS_HOST:localhost}
+    port: ${REDIS_PORT:6379}
+    password: ${REDIS_PASSWORD:}
+    database: ${REDIS_DATABASE:0}
+  
+  local:
+    max-size: ${LOCAL_CACHE_MAX_SIZE:1000}
+    expire-after-write: ${LOCAL_CACHE_EXPIRE:3600}
+
+# 文件上传配置
+file:
+  upload:
+    max-size: ${FILE_MAX_SIZE:100MB}
+    allowed-types: ${FILE_ALLOWED_TYPES:jpg,jpeg,png,gif,pdf,doc,docx,txt}
+    storage-path: ${FILE_STORAGE_PATH:/app/temp/uploads} 

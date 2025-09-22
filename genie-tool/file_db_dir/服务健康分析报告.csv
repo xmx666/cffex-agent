@@ -1,0 +1,4 @@
+﻿service_name,avg_health_rate,total_failures
+ServiceA,0.955,3
+ServiceB,0.935,8
+ServiceC,0.97,0

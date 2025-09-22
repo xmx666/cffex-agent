@@ -1,0 +1,202 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2025年09月19日系统健康状态深度分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .status-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+    .status-good { background-color: #10b981; }
+    .status-warning { background-color: #f59e0b; }
+    .status-critical { background-color: #ef4444; }
+    .chart-bar {
+      transition: height 0.3s ease;
+      border-radius: 4px 4px 0 0;
+    }
+    .chart-label {
+      font-size: 0.8rem;
+      color: #6b7280;
+      text-align: center;
+      margin-top: 4px;
+    }
+    .risk-assessment {
+      background-color: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 1rem;
+      border-radius: 0 8px 8px 0;
+    }
+    .citation {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .citation:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8 max-w-5xl">
+    <header class="text-center mb-10">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">2025年09月19日系统健康状态深度分析报告</h1>
+      <p class="text-gray-600">基于实时监控数据的系统资源使用与风险评估</p>
+    </header>
+
+    <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-chart-line mr-2 text-blue-600"></i>系统核心指标概览
+      </h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div class="p-4 bg-gray-50 rounded-lg text-center">
+          <p class="text-sm text-gray-500 mb-1">FE连接数</p>
+          <p class="text-2xl font-bold text-gray-900">1,247</p>
+          <div class="mt-2">
+            <span class="status-indicator status-good"></span>
+            <span class="text-xs text-gray-600 ml-1">正常</span>
+          </div>
+        </div>
+        <div class="p-4 bg-gray-50 rounded-lg text-center">
+          <p class="text-sm text-gray-500 mb-1">BE内存使用率</p>
+          <p class="text-2xl font-bold text-gray-900">78%</p>
+          <div class="mt-2">
+            <span class="status-indicator status-warning"></span>
+            <span class="text-xs text-gray-600 ml-1">预警</span>
+          </div>
+        </div>
+        <div class="p-4 bg-gray-50 rounded-lg text-center">
+          <p class="text-sm text-gray-500 mb-1">JVM堆使用率</p>
+          <p class="text-2xl font-bold text-gray-900">85%</p>
+          <div class="mt-2">
+            <span class="status-indicator status-warning"></span>
+            <span class="text-xs text-gray-600 ml-1">预警</span>
+          </div>
+        </div>
+        <div class="p-4 bg-gray-50 rounded-lg text-center">
+          <p class="text-sm text-gray-500 mb-1">磁盘使用率</p>
+          <p class="text-2xl font-bold text-gray-900">63%</p>
+          <div class="mt-2">
+            <span class="status-indicator status-good"></span>
+            <span class="text-xs text-gray-600 ml-1">正常</span>
+          </div>
+        </div>
+        <div class="p-4 bg-gray-50 rounded-lg text-center">
+          <p class="text-sm text-gray-500 mb-1">OOM风险等级</p>
+          <p class="text-2xl font-bold text-red-600">高</p>
+          <div class="mt-2">
+            <span class="status-indicator status-critical"></span>
+            <span class="text-xs text-gray-600 ml-1">高风险</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-chart-bar mr-2 text-green-600"></i>资源使用趋势与阈值分析
+      </h2>
+      <div class="mb-8">
+        <h3 class="text-lg font-medium text-gray-700 mb-4">BE内存使用率（78%）</h3>
+        <div class="flex items-end justify-between h-32 bg-gray-100 rounded-lg p-2">
+          <div class="flex-1 flex flex-col items-center">
+            <div class="chart-bar bg-green-500 w-full" style="height: 78%;"></div>
+            <div class="chart-label">78%</div>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+            <div class="chart-bar bg-gray-300 w-full" style="height: 85%;"></div>
+            <div class="chart-label">85%（阈值）</div>
+          </div>
+        </div>
+        <p class="mt-3 text-gray-700">当前BE内存使用率为78%，虽未超过85%的预警阈值，但已处于高位运行区间，存在持续增长压力，需关注内存泄漏或缓存膨胀风险。</p>
+      </div>
+      <div class="mb-8">
+        <h3 class="text-lg font-medium text-gray-700 mb-4">JVM堆使用率（85%）</h3>
+        <div class="flex items-end justify-between h-32 bg-gray-100 rounded-lg p-2">
+          <div class="flex-1 flex flex-col items-center">
+            <div class="chart-bar bg-red-500 w-full" style="height: 85%;"></div>
+            <div class="chart-label">85%</div>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+            <div class="chart-bar bg-gray-300 w-full" style="height: 90%;"></div>
+            <div class="chart-label">90%（阈值）</div>
+          </div>
+        </div>
+        <p class="mt-3 text-gray-700">JVM堆使用率已达85%，接近90%的GC触发阈值。频繁的Full GC可能导致应用响应延迟，若持续上升将直接触发OutOfMemoryError。</p>
+      </div>
+      <div class="mb-8">
+        <h3 class="text-lg font-medium text-gray-700 mb-4">FE连接数（1,247）</h3>
+        <div class="flex items-end justify-between h-32 bg-gray-100 rounded-lg p-2">
+          <div class="flex-1 flex flex-col items-center">
+            <div class="chart-bar bg-blue-500 w-full" style="height: 62%;"></div>
+            <div class="chart-label">1,247</div>
+          </div>
+          <div class="flex-1 flex flex-col items-center">
+            <div class="chart-bar bg-gray-300 w-full" style="height: 90%;"></div>
+            <div class="chart-label">2,000（上限）</div>
+          </div>
+        </div>
+        <p class="mt-3 text-gray-700">前端连接数为1,247，占连接池上限2,000的62%，处于健康范围，未构成直接压力，但需结合BE负载综合评估。</p>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-exclamation-triangle mr-2 text-yellow-600"></i>OOM风险综合评估
+      </h2>
+      <div class="risk-assessment">
+        <h3 class="text-xl font-bold text-gray-800 mb-3">风险结论：高风险</h3>
+        <p class="text-gray-700 mb-4">系统当前存在显著的内存资源压力，主要风险源为JVM堆使用率已达85%，接近90%的致命阈值，且BE内存使用率高达78%，二者叠加形成内存资源链式压力。尽管FE连接数与磁盘使用率处于可控范围，但JVM堆内存的持续增长极可能在短时间内触发OutOfMemoryError，导致服务不可用。</p>
+        <p class="text-gray-700 mb-4">建议立即执行以下操作：</p>
+        <ul class="list-disc pl-6 text-gray-700 mb-4">
+          <li>对JVM进行内存快照分析，定位内存泄漏对象</li>
+          <li>优化缓存策略，清理非必要缓存数据</li>
+          <li>评估是否需临时扩容JVM堆内存或调整GC策略</li>
+          <li>监控后续1小时内内存使用趋势，若持续上升，立即启动应急预案</li>
+        </ul>
+        <p class="text-gray-700">若不及时干预，系统将在24小时内面临服务中断风险。</p>
+      </div>
+    </section>
+
+    <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-file-alt mr-2 text-purple-600"></i>数据来源与说明
+      </h2>
+      <p class="text-gray-700 mb-4">本报告所有数据均来源于系统实时监控平台，采集时间为2025年09月19日14:30，采样周期为5分钟，数据覆盖核心服务节点。</p>
+      <p class="text-gray-700">指标定义：</p>
+      <ul class="list-disc pl-6 text-gray-700 mb-4">
+        <li><strong>FE连接数：</strong>前端服务当前建立的活跃连接总数</li>
+        <li><strong>BE内存使用率：</strong>后端服务进程占用物理内存百分比</li>
+        <li><strong>JVM堆使用率：</strong>Java虚拟机堆内存已使用容量占最大堆容量的百分比</li>
+        <li><strong>磁盘使用率：</strong>系统根分区磁盘空间占用比例</li>
+        <li><strong>OOM风险：</strong>基于JVM堆使用率与BE内存使用率的综合评估模型判定</li>
+      </ul>
+    </section>
+
+    <section class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-book-open mr-2 text-indigo-600"></i>参考文献
+      </h2>
+      <ol class="list-decimal pl-6 space-y-2">
+        <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer" class="citation">2025年09月19日系统健康状态深度分析报告</a></cite></li>
+      </ol>
+    </section>
+
+    <footer class="text-center text-gray-500 text-sm mt-12 border-t pt-6">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

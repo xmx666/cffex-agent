@@ -1,0 +1,112 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>全球首个AI智能体安全测试标准发布</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.7;
+      color: #333;
+    }
+    .section-title {
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+      color: #007bff;
+    }
+    .highlight-box {
+      background-color: #f8f9ff;
+      border-left: 4px solid #007bff;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .citation {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .citation:hover {
+      text-decoration: underline;
+    }
+    .reference-list {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #eee;
+    }
+    .reference-item {
+      margin-bottom: 0.8rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-6 py-10 max-w-4xl">
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-800 mb-4">全球首个AI智能体安全测试标准发布</h1>
+      <p class="text-lg text-gray-600">由WDTA、蚂蚁集团与清华大学联合主导，构建全链路风险分析框架</p>
+      <p class="text-sm text-gray-500 mt-2">2025年09月17日</p>
+    </header>
+
+    <section class="mb-10">
+      <h2 class="section-title">标准发布方</h2>
+      <p class="mb-4">全球首个AI智能体安全测试标准由世界数字技术协会（WDTA）、蚂蚁集团与清华大学联合发布。该标准的制定汇聚了学术界、产业界与国际组织的权威力量，旨在为AI智能体系统的安全性提供系统性评估依据，推动行业建立统一、可量化的安全评估体系。</p>
+      <p>WDTA作为国际数字技术标准协调机构，主导框架的国际兼容性设计；蚂蚁集团基于其在金融级AI系统中的大规模实践经验，贡献真实场景下的风险案例与防御机制；清华大学人工智能研究院则提供理论建模与算法验证支持，确保标准的科学性与前瞻性。</p>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="section-title">核心内容：全链路风险分析框架</h2>
+      <div class="highlight-box">
+        <p>该标准首次提出“全链路风险分析框架”，覆盖AI智能体从数据输入、推理决策、行为输出到环境反馈的完整生命周期。框架包含四大核心模块：</p>
+        <ul class="list-disc pl-6 mt-3 space-y-2">
+          <li><strong>输入层风险</strong>：识别对抗样本、数据投毒与语义误导等攻击手段</li>
+          <li><strong>推理层风险</strong>：检测逻辑漏洞、价值对齐偏差与多轮对话诱导</li>
+          <li><strong>输出层风险</strong>：评估生成内容的合规性、偏见性与潜在危害</li>
+          <li><strong>环境反馈风险</strong>：监测智能体在动态环境中因自主学习引发的不可控行为演化</li>
+        </ul>
+        <p class="mt-4">该框架支持自动化测试工具集成，可对智能体进行压力测试、边界测试与伦理合规性扫描，实现从“黑盒评估”到“白盒可解释性分析”的跃迁。</p>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="section-title">重点应用领域</h2>
+      <p class="mb-4">该标准优先应用于高风险、强监管的两大核心领域：</p>
+      <div class="grid md:grid-cols-2 gap-8 mb-6">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-money-bill-wave text-blue-500 mr-2"></i>金融领域</h3>
+          <p>用于评估AI客服、智能投顾、反欺诈模型等系统在复杂交易场景中的行为一致性与合规性，防范因智能体误判导致的资产损失或系统性金融风险。</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold text-gray-800 mb-3 flex items-center"><i class="fas fa-heartbeat text-green-500 mr-2"></i>医疗领域</h3>
+          <p>应用于辅助诊断、药物推荐与患者交互机器人，确保AI系统在生命健康相关决策中不产生误导性输出、不违反医学伦理，保障患者安全。</p>
+        </div>
+      </div>
+      <p>标准同时为教育、政务、交通等领域的AI智能体部署提供通用性安全评估基准。</p>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="section-title">技术意义与行业影响</h2>
+      <p class="mb-4">此前，全球范围内缺乏针对AI智能体（而非传统AI模型）的系统性安全测试标准。多数评估仅关注模型准确率或单一攻击防御能力，忽视智能体在多轮交互、自主决策与环境适应中的动态风险。</p>
+      <p>本标准的发布填补了这一关键空白，首次将“智能体”作为独立安全评估对象，推动行业从“模型安全”向“系统安全”演进。它为监管机构提供了可执行的合规依据，为企业提供了可落地的开发规范，为用户建立了可信赖的使用预期。</p>
+      <p>该标准的实施将加速AI智能体在关键行业的合规落地，降低技术滥用风险，提升公众对AI系统的信任度，为全球AI治理树立新的里程碑。</p>
+    </section>
+
+    <section class="reference-list">
+      <h2 class="section-title mb-6">参考文献</h2>
+      <div class="reference-item">
+        [[1]]、<cite><a href="https://www.wdta.org/ai-agent-safety-standard" target="_blank" rel="noopener noreferrer">全球首个AI智能体安全测试标准发布</a></cite>
+      </div>
+    </section>
+
+    <footer class="text-center text-sm text-gray-500 mt-16 pt-8 border-t border-gray-200">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

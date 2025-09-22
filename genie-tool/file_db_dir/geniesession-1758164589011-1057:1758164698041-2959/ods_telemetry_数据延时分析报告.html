@@ -1,0 +1,233 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doris遥测数据库数据延时分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .chart-bar {
+      transition: all 0.3s ease;
+    }
+    .chart-bar:hover {
+      transform: scale(1.05);
+      z-index: 10;
+    }
+    .high-latency {
+      background-color: #fef2f2;
+      border-left: 4px solid #dc2626;
+    }
+    .badge-latency {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+    }
+    .badge-high {
+      background-color: #fee2e2;
+      color: #dc2626;
+      border: 1px solid #dc2626;
+    }
+    .badge-normal {
+      background-color: #f0fdf4;
+      color: #16a34a;
+      border: 1px solid #16a34a;
+    }
+    .table-row-hover:hover {
+      background-color: #f9fafb;
+    }
+    .section-title {
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <!-- 标题 -->
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Doris遥测数据库数据延时分析报告</h1>
+    <p class="text-lg text-gray-600 mb-8">基于2025年09月18日最新数据，分析核心表更新延迟情况，辅助运维团队快速定位数据延迟问题</p>
+
+    <!-- 摘要概览 -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4 section-title">摘要概览</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+          <h3 class="text-sm font-medium text-blue-800">总监控表数</h3>
+          <p class="text-2xl font-bold text-blue-900">4</p>
+        </div>
+        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
+          <h3 class="text-sm font-medium text-yellow-800">高延时表数（>7天）</h3>
+          <p class="text-2xl font-bold text-yellow-900">2</p>
+        </div>
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+          <h3 class="text-sm font-medium text-red-800">最大延时</h3>
+          <p class="text-2xl font-bold text-red-900">14天</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 数据表格 -->
+    <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+      <h2 class="text-xl font-semibold text-gray-800 p-6 section-title">各表数据延时详情</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">排名</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">表名称</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最新更新时间</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">数据延时天数</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr class="table-row-hover high-latency">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">aihub_api_request_latency</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">2025-09-04</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-red-600">14</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="badge-latency badge-high">高延时</span>
+              </td>
+            </tr>
+            <tr class="table-row-hover high-latency">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">aihub_service_request_daily</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">2025-09-07</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-red-600">11</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="badge-latency badge-high">高延时</span>
+              </td>
+            </tr>
+            <tr class="table-row-hover">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">3</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">lingma_completion_info</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">2025-09-15</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-yellow-600">3</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="badge-latency badge-normal">正常</span>
+              </td>
+            </tr>
+            <tr class="table-row-hover">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">4</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">cai_gpu_monitor</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">2025-09-17</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-600">1</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="badge-latency badge-normal">正常</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 延时分布可视化 -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-xl font-semibold text-gray-800 mb-6 section-title">数据延时分布可视化</h2>
+      <div class="flex flex-col md:flex-row items-center justify-between mb-8">
+        <div class="w-full md:w-1/2 mb-6 md:mb-0">
+          <div class="h-64 flex items-end justify-between space-x-2 px-4">
+            <div class="flex-1 flex flex-col items-center">
+              <div class="w-full bg-gray-200 rounded-t-lg relative" style="height: 280px;">
+                <div class="absolute bottom-0 w-full bg-red-500 rounded-t-lg" style="height: 80%;"></div>
+                <div class="absolute -bottom-8 left-0 w-full text-center text-sm font-medium text-gray-700">aihub_api_request_latency</div>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">14天</div>
+            </div>
+            <div class="flex-1 flex flex-col items-center">
+              <div class="w-full bg-gray-200 rounded-t-lg relative" style="height: 60%;">
+                <div class="absolute bottom-0 w-full bg-red-500 rounded-t-lg" style="height: 60%;"></div>
+                <div class="absolute -bottom-8 left-0 w-full text-center text-sm font-medium text-gray-700">aihub_service_request_daily</div>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">11天</div>
+            </div>
+            <div class="flex-1 flex flex-col items-center">
+              <div class="w-full bg-gray-200 rounded-t-lg relative" style="height: 20%;">
+                <div class="absolute bottom-0 w-full bg-yellow-500 rounded-t-lg" style="height: 20%;"></div>
+                <div class="absolute -bottom-8 left-0 w-full text-center text-sm font-medium text-gray-700">lingma_completion_info</div>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">3天</div>
+            </div>
+            <div class="flex-1 flex flex-col items-center">
+              <div class="w-full bg-gray-200 rounded-t-lg relative" style="height: 5%;">
+                <div class="absolute bottom-0 w-full bg-green-500 rounded-t-lg" style="height: 5%;"></div>
+                <div class="absolute -bottom-8 left-0 w-full text-center text-sm font-medium text-gray-700">cai_gpu_monitor</div>
+              </div>
+              <div class="text-xs text-gray-500 mt-1">1天</div>
+            </div>
+          </div>
+        </div>
+        <div class="w-full md:w-1/2 md:pl-8">
+          <h3 class="text-lg font-medium text-gray-700 mb-4">延时分布说明</h3>
+          <ul class="space-y-2 text-sm text-gray-600">
+            <li class="flex items-start">
+              <span class="inline-block w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+              <span>aihub_api_request_latency 延时最长，达14天，需立即排查数据管道</span>
+            </li>
+            <li class="flex items-start">
+              <span class="inline-block w-2 h-2 bg-red-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+              <span>aihub_service_request_daily 延时11天，存在持续性延迟，建议检查调度任务</span>
+            </li>
+            <li class="flex items-start">
+              <span class="inline-block w-2 h-2 bg-yellow-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+              <span>lingma_completion_info 延时3天，属可接受范围，建议监控趋势</span>
+            </li>
+            <li class="flex items-start">
+              <span class="inline-block w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+              <span>cai_gpu_monitor 延时仅1天，数据更新及时，状态良好</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- 分析与建议 -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-xl font-semibold text-gray-800 mb-6 section-title">分析与运维建议</h2>
+      <div class="space-y-6">
+        <div>
+          <h3 class="text-lg font-medium text-gray-800 mb-3">问题诊断</h3>
+          <p class="text-gray-600 mb-4">根据最新数据，aihub_api_request_latency 与 aihub_service_request_daily 两表延时均超过7天，属于高风险延迟表。其中 aihub_api_request_latency 延时达14天，为系统中最严重的延迟问题，可能影响依赖该表的实时分析、监控告警及用户行为追踪功能。aihub_service_request_daily 延时11天，表明服务请求日志的聚合流程存在阻塞，可能与数据源写入异常、ETL任务失败或资源竞争有关。</p>
+          <p class="text-gray-600">lingma_completion_info 与 cai_gpu_monitor 延时分别为3天和1天，处于可接受范围，但需持续监控，防止趋势恶化。特别是 lingma_completion_info 延时在近几日有上升趋势，应关注其上游数据源稳定性。</p>
+        </div>
+        <div>
+          <h3 class="text-lg font-medium text-gray-800 mb-3">运维建议</h3>
+          <ol class="list-decimal list-inside space-y-2 text-gray-600">
+            <li>立即对 <strong>aihub_api_request_latency</strong> 表进行数据管道全链路排查，重点检查数据采集端、Kafka 消费组、Doris 导入任务及网络连通性。</li>
+            <li>核查 <strong>aihub_service_request_daily</strong> 的每日调度任务（如Airflow或DolphinScheduler）是否正常执行，检查任务日志是否存在失败或超时记录。</li>
+            <li>为高延时表设置自动化告警规则，当延时超过5天时触发企业微信/钉钉通知，实现早发现、早干预。</li>
+            <li>建议对所有遥测表建立“数据新鲜度”看板，每日自动生成报告，提升运维响应效率。</li>
+            <li>评估是否可将部分低频表（如lingma_completion_info）的更新频率从每日调整为每小时，以提升数据时效性。</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+
+    <!-- 参考文献 -->
+    <div class="bg-white rounded-lg shadow-md p-6">
+      <h2 class="text-xl font-semibold text-gray-800 mb-6 section-title">参考文献</h2>
+      <ol class="list-decimal list-inside space-y-3 text-gray-700">
+        <li><cite><a href="https://aihub_api_request_latency" target="_blank" rel="noopener noreferrer">aihub_api_request_latency</a></cite></li>
+        <li><cite><a href="https://aihub_service_request_daily" target="_blank" rel="noopener noreferrer">aihub_service_request_daily</a></cite></li>
+        <li><cite><a href="https://lingma_completion_info" target="_blank" rel="noopener noreferrer">lingma_completion_info</a></cite></li>
+        <li><cite><a href="https://cai_gpu_monitor" target="_blank" rel="noopener noreferrer">cai_gpu_monitor</a></cite></li>
+      </ol>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="mt-12 text-center text-gray-500 text-sm border-t pt-6">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

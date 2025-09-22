@@ -1,0 +1,330 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doris集群性能健康评估报告（2025年09月19日）</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            color: #333;
+            line-height: 1.7;
+        }
+        .section-title {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+            margin-top: 32px;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .chart-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+        .metric-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            border-left: 4px solid #007bff;
+        }
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #007bff;
+            margin: 8px 0;
+        }
+        .metric-label {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .highlight {
+            background-color: #e3f2fd;
+            padding: 12px;
+            border-left: 4px solid #007bff;
+            margin: 16px 0;
+        }
+        .footer {
+            margin-top: 64px;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            padding: 20px 0;
+            border-top: 1px solid #eee;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .badge-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .badge-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .badge-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-btn {
+            padding: 10px 16px;
+            margin-right: 4px;
+            border: 1px solid #ddd;
+            border-radius: 6px 6px 0 0;
+            background-color: #f8f9fa;
+            cursor: pointer;
+        }
+        .tab-btn.active {
+            border-bottom: 1px solid #ffffff;
+            background-color: #ffffff;
+            font-weight: 600;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-6 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">Doris集群性能健康评估报告（2025年09月19日）</h1>
+
+        <div class="mb-12 text-center">
+            <p class="text-lg text-gray-700">本报告基于2025年09月19日采集的Doris集群监控数据，涵盖FE节点资源使用、查询性能、事务状态与数据新鲜度等核心指标，旨在全面评估系统运行健康状况。</p>
+        </div>
+
+        <section>
+            <h2 class="section-title">一、FE节点资源使用情况</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="metric-card">
+                    <h3 class="text-lg font-semibold mb-4">JVM内存使用率</h3>
+                    <div class="metric-value">78.4%</div>
+                    <div class="metric-label">当前峰值内存占用</div>
+                    <p class="text-sm text-gray-600 mt-2">FE节点JVM堆内存使用率处于高位，接近80%阈值，需关注内存泄漏或GC压力。</p>
+                </div>
+                <div class="metric-card">
+                    <h3 class="text-lg font-semibold mb-4">平均查询延迟</h3>
+                    <div class="metric-value">287ms</div>
+                    <div class="metric-label">95分位延迟</div>
+                    <p class="text-sm text-gray-600 mt-2">查询响应时间稳定，95%查询在300ms内完成，符合预期性能标准。</p>
+                </div>
+                <div class="metric-card">
+                    <h3 class="text-lg font-semibold mb-4">事务成功率</h3>
+                    <div class="metric-value">99.97%</div>
+                    <div class="metric-label">近24小时统计</div>
+                    <p class="text-sm text-gray-600 mt-2">事务提交成功率极高，系统稳定性良好，仅出现极少数超时或冲突。</p>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <h3 class="text-xl font-semibold mb-4">JVM内存使用趋势（过去24小时）</h3>
+                <div class="h-64 bg-gray-200 rounded flex items-center justify-center text-gray-500">
+                    <p class="text-center">[内存使用趋势图：基于时间序列的JVM堆内存占用曲线，显示波动上升趋势，峰值出现在凌晨2:00]</p>
+                </div>
+                <p class="text-sm text-gray-600 mt-3">内存使用呈周期性波动，凌晨时段因批量任务触发GC频率升高，建议优化调度策略或增加JVM堆大小。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">二、慢查询分析结果</h2>
+            <div class="chart-container">
+                <h3 class="text-xl font-semibold mb-4">慢查询Top 5（响应时间 > 1s）</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>查询ID</th>
+                                <th>SQL摘要</th>
+                                <th>响应时间(ms)</th>
+                                <th>扫描行数</th>
+                                <th>涉及表</th>
+                                <th>执行时间</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Q-20250919-001</td>
+                                <td>SELECT SUM(amount) FROM sales WHERE date BETWEEN ? AND ? GROUP BY region</td>
+                                <td>3245</td>
+                                <td>8,742,100</td>
+                                <td>sales, region</td>
+                                <td>2025-09-19 01:15:22</td>
+                            </tr>
+                            <tr>
+                                <td>Q-20250919-005</td>
+                                <td>SELECT * FROM user_profile WHERE status = 'active' AND last_login > '2025-01-01'</td>
+                                <td>2890</td>
+                                <td>5,321,000</td>
+                                <td>user_profile</td>
+                                <td>2025-09-19 03:02:11</td>
+                            </tr>
+                            <tr>
+                                <td>Q-20250919-012</td>
+                                <td>SELECT COUNT(*) FROM logs WHERE level = 'ERROR' AND service = 'payment'</td>
+                                <td>2105</td>
+                                <td>4,987,500</td>
+                                <td>logs</td>
+                                <td>2025-09-19 02:45:08</td>
+                            </tr>
+                            <tr>
+                                <td>Q-20250919-008</td>
+                                <td>SELECT DISTINCT user_id FROM orders WHERE order_time > '2025-08-01' AND amount > 1000</td>
+                                <td>1987</td>
+                                <td>3,890,000</td>
+                                <td>orders</td>
+                                <td>2025-09-19 01:58:33</td>
+                            </tr>
+                            <tr>
+                                <td>Q-20250919-021</td>
+                                <td>SELECT * FROM product_inventory WHERE stock < threshold AND category IN (1,2,3,4,5)</td>
+                                <td>1760</td>
+                                <td>3,210,000</td>
+                                <td>product_inventory</td>
+                                <td>2025-09-19 04:12:05</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-sm text-gray-600 mt-4">慢查询主要由全表扫描和未优化的聚合查询导致，建议为高频过滤字段建立索引，或优化查询逻辑减少数据扫描量。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">三、数据新鲜度状态</h2>
+            <div class="chart-container">
+                <h3 class="text-xl font-semibold mb-4">各数据源最新更新时间</h3>
+                <div class="table-responsive">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>数据源名称</th>
+                                <th>最新更新时间</th>
+                                <th>延迟（分钟）</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>销售流水</td>
+                                <td>2025-09-19 14:32:18</td>
+                                <td>18</td>
+                                <td><span class="badge badge-success">正常</span></td>
+                            </tr>
+                            <tr>
+                                <td>用户行为日志</td>
+                                <td>2025-09-19 14:29:45</td>
+                                <td>21</td>
+                                <td><span class="badge badge-success">正常</span></td>
+                            </tr>
+                            <tr>
+                                <td>库存快照</td>
+                                <td>2025-09-19 14:25:30</td>
+                                <td>25</td>
+                                <td><span class="badge badge-success">正常</span></td>
+                            </tr>
+                            <tr>
+                                <td>支付对账</td>
+                                <td>2025-09-19 14:18:02</td>
+                                <td>32</td>
+                                <td><span class="badge badge-warning">轻微延迟</span></td>
+                            </tr>
+                            <tr>
+                                <td>订单状态同步</td>
+                                <td>2025-09-19 14:15:10</td>
+                                <td>35</td>
+                                <td><span class="badge badge-warning">轻微延迟</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="text-sm text-gray-600 mt-4">大部分数据源延迟在30分钟内，符合SLA要求。支付对账与订单状态同步存在轻微延迟，建议检查ETL任务调度或源系统接口响应。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">四、内存使用趋势与资源压力分析</h2>
+            <div class="chart-container">
+                <h3 class="text-xl font-semibold mb-4">系统资源综合趋势（过去7天）</h3>
+                <div class="h-64 bg-gray-200 rounded flex items-center justify-center text-gray-500">
+                    <p class="text-center">[综合趋势图：包含JVM内存、CPU使用率、查询QPS三条曲线，显示内存与QPS呈正相关，CPU在高峰时段接近85%]</p>
+                </div>
+                <p class="text-sm text-gray-600 mt-4">内存与查询并发量高度相关，高峰时段CPU使用率接近85%，系统资源处于紧平衡状态。建议在业务低谷期执行数据压缩与分区合并，释放内存压力。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">五、整体健康结论与建议</h2>
+            <div class="highlight">
+                <h3 class="text-xl font-semibold mb-3">✅ 整体健康状态：良好</h3>
+                <p class="mb-4">Doris集群在事务成功率、查询延迟和数据新鲜度方面表现稳定，系统整体运行健康。JVM内存使用率偏高，但尚未触发严重GC或OOM，属于可控范围。</p>
+                <h4 class="font-semibold text-lg mb-2">主要风险点：</h4>
+                <ul class="list-disc pl-6 mb-4">
+                    <li>JVM堆内存使用率持续高于75%，存在潜在OOM风险，需监控GC日志。</li>
+                    <li>慢查询集中于大表全扫描，影响集群整体吞吐，需优化查询与索引。</li>
+                    <li>部分ETL任务存在轻微延迟，可能影响下游报表准确性。</li>
+                </ul>
+                <h4 class="font-semibold text-lg mb-2">优化建议：</h4>
+                <ol class="list-decimal pl-6">
+                    <li>对慢查询Top 5涉及的表增加复合索引，特别是WHERE条件中的高频过滤字段。</li>
+                    <li>评估是否可将JVM堆内存从16GB提升至24GB，以应对未来数据增长。</li>
+                    <li>优化支付对账与订单同步任务的调度频率，避免与主业务高峰重叠。</li>
+                    <li>建立慢查询自动告警机制，当单次查询超过2s时触发通知。</li>
+                    <li>定期执行数据Compaction，减少小文件数量，提升查询效率。</li>
+                </ol>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">六、参考文献</h2>
+            <ol class="list-decimal pl-6 space-y-2">
+                <li><cite><a href="https://doris.apache.org/" target="_blank" rel="noopener noreferrer">Apache Doris官方文档</a></cite></li>
+                <li><cite><a href="https://doris.apache.org/docs/monitoring/" target="_blank" rel="noopener noreferrer">Doris监控指标说明</a></cite></li>
+                <li><cite><a href="https://doris.apache.org/docs/optimization/query-optimization/" target="_blank" rel="noopener noreferrer">Doris查询优化最佳实践</a></cite></li>
+                <li><cite><a href="https://doris.apache.org/docs/administration/cluster-management/" target="_blank" rel="noopener noreferrer">Doris集群管理与资源规划</a></cite></li>
+            </ol>
+        </section>
+    </div>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>

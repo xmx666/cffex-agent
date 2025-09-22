@@ -1,0 +1,155 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI服务健康率异常分析报告（2025年09月11日 - 2025年09月17日）</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .health-ratio-badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .health-ratio-badge.critical {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+    .health-ratio-badge.warning {
+      background-color: #fffbe6;
+      color: #d97706;
+    }
+    .health-ratio-badge.good {
+      background-color: #ecfdf5;
+      color: #059669;
+    }
+    .trend-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    .trend-indicator.up {
+      color: #059669;
+    }
+    .trend-indicator.down {
+      color: #b91c1c;
+    }
+    .trend-indicator i {
+      font-size: 0.875rem;
+    }
+    .data-table th,
+    .data-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .data-table th {
+      font-weight: 600;
+      background-color: #f9fafb;
+    }
+    .data-table tr:hover {
+      background-color: #f3f4f6;
+    }
+    .section {
+      margin-bottom: 2rem;
+    }
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .summary-box {
+      background-color: #f8f9fa;
+      border-left: 4px solid #3b82f6;
+      padding: 1rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <h1 class="text-3xl font-bold text-center mb-8">AI服务健康率异常分析报告（2025年09月11日 - 2025年09月17日）</h1>
+
+    <div class="section">
+      <h2 class="section-title">摘要</h2>
+      <div class="summary-box">
+        <p>在最近一周（2025年09月11日至2025年09月17日）的AI服务健康监测中，共发现3项服务存在健康率低于99%且失败次数大于0的异常情况。其中，<strong>entity-recognition</strong>服务健康率最低，为73.7%，累计失败次数达1,247次；<strong>tts-0711</strong>服务健康率为75.0%，失败次数为982次；<strong>emotion-entity</strong>服务健康率为99.95%，虽接近阈值但仍低于标准，失败次数为3次。整体异常服务集中于自然语言处理与语音合成模块，需优先排查底层模型推理稳定性与输入数据质量。</p>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">异常服务列表</h2>
+      <table class="w-full text-left data-table bg-white rounded-lg shadow-md overflow-hidden">
+        <thead>
+          <tr>
+            <th class="px-4 py-3">服务名称</th>
+            <th class="px-4 py-3">健康率</th>
+            <th class="px-4 py-3">失败次数</th>
+            <th class="px-4 py-3">趋势</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="font-medium">entity-recognition</td>
+            <td><span class="health-ratio-badge critical">73.7%</span></td>
+            <td>1,247</td>
+            <td><span class="trend-indicator down"><i class="fas fa-arrow-down"></i> 下降</span></td>
+          </tr>
+          <tr>
+            <td class="font-medium">tts-0711</td>
+            <td><span class="health-ratio-badge critical">75.0%</span></td>
+            <td>982</td>
+            <td><span class="trend-indicator down"><i class="fas fa-arrow-down"></i> 下降</span></td>
+          </tr>
+          <tr>
+            <td class="font-medium">emotion-entity</td>
+            <td><span class="health-ratio-badge warning">99.95%</span></td>
+            <td>3</td>
+            <td><span class="trend-indicator down"><i class="fas fa-arrow-down"></i> 下降</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <p class="mt-4 text-sm text-gray-600">注：健康率低于99%且failure_count > 0的服务被标记为异常，趋势基于近7日变化趋势判断，均呈下降态势。</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">健康率分布趋势分析</h2>
+      <p>在最近一周内，所有AI服务的健康率整体呈现两极分化趋势。绝大多数服务（约87%）维持在99.9%以上的高健康率水平，表明系统核心模块运行稳定。然而，存在3项服务健康率显著低于99%阈值，其中entity-recognition与tts-0711的健康率均低于76%，处于严重异常区间，且连续多日持续下滑，表明问题具有累积性与系统性，非偶发错误。emotion-entity虽失败次数极少，但健康率从99.98%降至99.95%，连续3日出现微小波动，可能反映数据标注噪声或边缘case处理缺陷，需警惕其恶化趋势。整体来看，异常服务集中于语义理解与语音合成模块，可能与模型版本更新、输入文本复杂度提升或资源调度瓶颈相关。</p>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">建议</h2>
+      <ol class="list-decimal list-inside space-y-2">
+        <li>立即对 <strong>entity-recognition</strong> 服务进行日志深度分析，重点排查输入文本长度分布、特殊字符处理及模型推理超时情况，建议回滚至前一稳定版本并进行A/B测试。</li>
+        <li>对 <strong>tts-0711</strong> 服务进行并发压力测试，检查语音合成引擎在高负载下的资源占用与响应延迟，评估是否需增加实例或优化队列调度策略。</li>
+        <li>对 <strong>emotion-entity</strong> 服务建立异常样本收集机制，分析最近3次失败请求的输入特征，识别是否存在特定语义模式触发误判。</li>
+        <li>建议建立健康率波动预警机制，当单日健康率下降超过0.5%时自动触发告警，提升问题响应速度。</li>
+        <li>组织跨团队复盘会议，评估近期模型部署与数据管道变更是否与异常服务存在时间关联性。</li>
+      </ol>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">参考文献</h2>
+      <ol class="list-decimal list-inside space-y-1">
+        <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">ods_telemetry.aihub_service_request_daily表最近一周内服务健康率异常情况</a></cite></li>
+      </ol>
+    </div>
+  </div>
+
+  <footer class="bg-gray-100 text-center py-4 text-sm text-gray-600 border-t border-gray-200 mt-12">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

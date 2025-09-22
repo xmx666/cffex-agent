@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  genie:
+    image: genie_running:latest
+    container_name: genie-ubuntu-stable
+    entrypoint: ["/bin/bash", "-c", "tail -f /dev/null"]
+    ports:
+      - "3000:3000"   # 前端
+      - "8080:8080"   # 后端
+      - "1601:1601"   # 工具服务
+      - "8188:8188"   # MCP客户端
+    volumes:
+      - /opt/genie:/app
+      - /opt/genie/logs:/app/logs
+      - /opt/genie/temp:/app/temp
+      - /opt/genie/cache:/app/cache
+    environment:
+      - LANG=zh_CN.UTF-8
+      - LC_ALL=zh_CN.UTF-8
+      - LC_CTYPE=zh_CN.UTF-8
+      - JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF-8 -Duser.language=zh -Duser.country=CN
+    restart: unless-stopped
+    working_dir: /app
+    command: ["/bin/bash", "-c", "tail -f /dev/null"]
+
+networks:
+  default:
+    name: genie-network
