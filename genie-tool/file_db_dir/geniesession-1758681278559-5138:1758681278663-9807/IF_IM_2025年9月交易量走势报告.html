@@ -1,0 +1,357 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2025年9月IF与IM产品日成交量走势分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .chart-container {
+      position: relative;
+      height: 500px;
+      margin: 2rem 0;
+    }
+    .chart-line {
+      fill: none;
+      stroke-width: 3;
+    }
+    .chart-point {
+      r: 5;
+      stroke-width: 2;
+    }
+    .tooltip {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.3s;
+      z-index: 10;
+    }
+    .peak-label {
+      font-weight: bold;
+      font-size: 14px;
+      fill: #007bff;
+    }
+    .axis-label {
+      font-size: 14px;
+      fill: #333;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-right: 2rem;
+    }
+    .legend-color {
+      width: 16px;
+      height: 16px;
+      display: inline-block;
+      margin-right: 8px;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 1.5rem 0;
+    }
+    .data-table th,
+    .data-table td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+    .data-table th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+    }
+    .data-table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">2025年9月IF与IM产品日成交量走势分析报告</h1>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-700">数据概览</h2>
+      <p class="mb-6 text-gray-600">本报告基于2025年9月共21个交易日的IF与IM产品日成交量数据，全面呈现两类产品的交易活跃度变化趋势。数据来源完整覆盖整月交易日，无缺失记录。</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-medium mb-2 text-blue-600">IF产品</h3>
+          <p class="text-lg"><strong>最大成交量：</strong>23,500（2025年9月30日）</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-medium mb-2 text-green-600">IM产品</h3>
+          <p class="text-lg"><strong>最大成交量：</strong>14,000（2025年9月30日）</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-700">成交量趋势双折线图</h2>
+      <div class="chart-container relative">
+        <svg width="100%" height="100%" viewBox="0 0 900 500" preserveAspectRatio="xMidYMid meet">
+          <!-- 背景网格 -->
+          <g stroke="#eee" stroke-width="1">
+            <!-- 水平网格线 -->
+            <line x1="0" y1="50" x2="900" y2="50" />
+            <line x1="0" y1="125" x2="900" y2="125" />
+            <line x1="0" y1="200" x2="900" y2="200" />
+            <line x1="0" y1="275" x2="900" y2="275" />
+            <line x1="0" y1="350" x2="900" y2="350" />
+            <line x1="0" y1="425" x2="900" y2="425" />
+            <!-- 垂直网格线 -->
+            <g>
+              <!-- 每隔3天画一条 -->
+              <line x1="0" y1="0" x2="0" y2="500" />
+              <line x1="45" y1="0" x2="45" y2="500" />
+              <line x1="90" y1="0" x2="90" y2="500" />
+              <line x1="135" y1="0" x2="135" y2="500" />
+              <line x1="180" y1="0" x2="180" y2="500" />
+              <line x1="225" y1="0" x2="225" y2="500" />
+              <line x1="270" y1="0" x2="270" y2="500" />
+              <line x1="315" y1="0" x2="315" y2="500" />
+              <line x1="360" y1="0" x2="360" y2="500" />
+              <line x1="405" y1="0" x2="405" y2="500" />
+              <line x1="450" y1="0" x2="450" y2="500" />
+              <line x1="495" y1="0" x2="495" y2="500" />
+              <line x1="540" y1="0" x2="540" y2="500" />
+              <line x1="585" y1="0" x2="585" y2="500" />
+              <line x1="630" y1="0" x2="630" y2="500" />
+              <line x1="675" y1="0" x2="675" y2="500" />
+              <line x1="720" y1="0" x2="720" y2="500" />
+              <line x1="765" y1="0" x2="765" y2="500" />
+              <line x1="810" y1="0" x2="810" y2="500" />
+              <line x1="855" y1="0" x2="855" y2="500" />
+              <line x1="900" y1="0" x2="900" y2="500" />
+            </g>
+          </g>
+
+          <!-- IF成交量折线 -->
+          <polyline
+            class="chart-line"
+            stroke="#007bff"
+            points="
+              0,400
+              45,375
+              90,410
+              135,365
+              180,385
+              225,395
+              270,370
+              315,350
+              360,330
+              405,340
+              450,320
+              495,300
+              540,280
+              585,260
+              630,240
+              675,250
+              720,230
+              765,215
+              810,200
+              855,170
+              900,150
+            "
+          />
+
+          <!-- IM成交量折线 -->
+          <polyline
+            class="chart-line"
+            stroke="#28a745"
+            points="
+              0,430
+              45,415
+              90,425
+              135,410
+              180,415
+              225,420
+              270,410
+              315,395
+              360,380
+              405,390
+              450,375
+              495,360
+              540,340
+              585,325
+              630,310
+              675,315
+              720,300
+              765,285
+              810,270
+              855,250
+              900,230
+            "
+          />
+
+          <!-- IF峰值点 -->
+          <circle class="chart-point" cx="900" cy="150" fill="#007bff" stroke="#007bff" />
+          <text class="peak-label" x="910" y="145" text-anchor="start">23,500</text>
+
+          <!-- IM峰值点 -->
+          <circle class="chart-point" cx="900" cy="230" fill="#28a745" stroke="#28a745" />
+          <text class="peak-label" x="910" y="225" text-anchor="start">14,000</text>
+
+          <!-- 坐标轴 -->
+          <line x1="0" y1="450" x2="900" y2="450" stroke="#333" stroke-width="2" />
+          <line x1="0" y1="0" x2="0" y2="450" stroke="#333" stroke-width="2" />
+
+          <!-- Y轴标签 -->
+          <text class="axis-label" x="-30" y="250" transform="rotate(-90, -30, 250)" text-anchor="middle">成交量（手）</text>
+          <!-- X轴标签 -->
+          <text class="axis-label" x="450" y="490" text-anchor="middle">交易日期</text>
+
+          <!-- Y轴刻度 -->
+          <text class="axis-label" x="-10" y="455" text-anchor="end">0</text>
+          <text class="axis-label" x="-10" y="380" text-anchor="end">5,000</text>
+          <text class="axis-label" x="-10" y="305" text-anchor="end">10,000</text>
+          <text class="axis-label" x="-10" y="230" text-anchor="end">15,000</text>
+          <text class="axis-label" x="-10" y="155" text-anchor="end">20,000</text>
+          <text class="axis-label" x="-10" y="80" text-anchor="end">25,000</text>
+
+          <!-- X轴刻度标签 -->
+          <g font-size="12" fill="#333" text-anchor="middle">
+            <text x="0" y="470">09-02</text>
+            <text x="45" y="470">09-03</text>
+            <text x="90" y="470">09-04</text>
+            <text x="135" y="470">09-05</text>
+            <text x="180" y="470">09-08</text>
+            <text x="225" y="470">09-09</text>
+            <text x="270" y="470">09-10</text>
+            <text x="315" y="470">09-11</text>
+            <text x="360" y="470">09-12</text>
+            <text x="405" y="470">09-15</text>
+            <text x="450" y="470">09-16</text>
+            <text x="495" y="470">09-17</text>
+            <text x="540" y="470">09-18</text>
+            <text x="585" y="470">09-19</text>
+            <text x="630" y="470">09-22</text>
+            <text x="675" y="470">09-23</text>
+            <text x="720" y="470">09-24</text>
+            <text x="765" y="470">09-25</text>
+            <text x="810" y="470">09-26</text>
+            <text x="855" y="470">09-29</text>
+            <text x="900" y="470">09-30</text>
+          </g>
+        </svg>
+
+        <!-- 工具提示 -->
+        <div class="tooltip" id="tooltip"></div>
+      </div>
+
+      <div class="flex justify-center mt-6">
+        <div class="flex items-center">
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #007bff;"></div>
+            <span>IF成交量</span>
+          </div>
+          <div class="legend-item">
+            <div class="legend-color" style="background-color: #28a745;"></div>
+            <span>IM成交量</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-700">详细交易数据表</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>交易日期</th>
+            <th>IF成交量（手）</th>
+            <th>IM成交量（手）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>2025-09-02</td><td>15,200</td><td>8,500</td></tr>
+          <tr><td>2025-09-03</td><td>16,800</td><td>9,200</td></tr>
+          <tr><td>2025-09-04</td><td>14,300</td><td>8,800</td></tr>
+          <tr><td>2025-09-05</td><td>17,100</td><td>9,500</td></tr>
+          <tr><td>2025-09-08</td><td>16,200</td><td>9,100</td></tr>
+          <tr><td>2025-09-09</td><td>15,800</td><td>8,900</td></tr>
+          <tr><td>2025-09-10</td><td>16,900</td><td>9,300</td></tr>
+          <tr><td>2025-09-11</td><td>17,500</td><td>9,700</td></tr>
+          <tr><td>2025-09-12</td><td>18,200</td><td>10,100</td></tr>
+          <tr><td>2025-09-15</td><td>17,800</td><td>9,900</td></tr>
+          <tr><td>2025-09-16</td><td>18,500</td><td>10,300</td></tr>
+          <tr><td>2025-09-17</td><td>19,100</td><td>10,700</td></tr>
+          <tr><td>2025-09-18</td><td>19,800</td><td>11,200</td></tr>
+          <tr><td>2025-09-19</td><td>20,500</td><td>11,600</td></tr>
+          <tr><td>2025-09-22</td><td>21,200</td><td>12,000</td></tr>
+          <tr><td>2025-09-23</td><td>20,800</td><td>11,800</td></tr>
+          <tr><td>2025-09-24</td><td>21,500</td><td>12,300</td></tr>
+          <tr><td>2025-09-25</td><td>22,000</td><td>12,700</td></tr>
+          <tr><td>2025-09-26</td><td>22,500</td><td>13,100</td></tr>
+          <tr><td>2025-09-29</td><td>23,000</td><td>13,500</td></tr>
+          <tr><td>2025-09-30</td><td>23,500</td><td>14,000</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-700">趋势分析与结论</h2>
+      <p class="mb-4 text-gray-600">从2025年9月的交易数据可见，IF与IM产品成交量均呈现持续、稳定的上升趋势，且在月末达到峰值。IF产品从月初的15,200手稳步增长至月末的23,500手，增幅达54.6%；IM产品则从8,500手增长至14,000手，增幅达64.7%。两者在月末（9月30日）同步达到历史最高值，表明市场在月末存在显著的交易活跃度提升现象，可能与结算周期、资金调仓或市场预期集中释放有关。</p>
+      <p class="mb-4 text-gray-600">值得注意的是，IF与IM的成交量走势高度同步，相关性极强，说明两类产品的交易行为受共同市场因素驱动，如股指期货整体流动性变化、投资者风险偏好调整或宏观经济预期波动等。尽管IF成交量始终高于IM，但IM的增长速率略快，暗示其市场参与度正在加速提升。</p>
+      <p class="text-gray-600">整体来看，2025年9月IF与IM产品均表现出强劲的市场吸引力，交易活跃度逐日攀升，尤其在月末形成显著高峰，反映出市场参与者对这两类金融衍生品的配置需求持续增强。</p>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-700">参考文献</h2>
+      <ol class="list-decimal list-inside space-y-2">
+        <li><cite><a href="http://172.31.73.223:1601/v1/file_tool/preview/geniesession-1758681278559-5138:1758681278663-9807/将IF和IM产品在2025年9月的日成交_代码输出.md" target="_blank" rel="noopener noreferrer">将IF和IM产品在2025年9月的日成交_代码输出.md</a></cite></li>
+        <li><cite><a href="#" target="_blank" rel="noopener noreferrer">IF_IM_2025年9月成交量数据.csv</a></cite></li>
+      </ol>
+    </section>
+  </div>
+
+  <footer class="bg-gray-800 text-white text-center py-6 mt-16">
+    <p>Created by Autobots<br>页面内容均由 AI 生成，仅供参考</p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tooltip = document.getElementById('tooltip');
+      const svg = document.querySelector('.chart-container svg');
+      const points = svg.querySelectorAll('circle');
+
+      svg.addEventListener('mousemove', function(e) {
+        const rect = svg.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        // 简单的悬停检测（仅在点附近显示）
+        points.forEach(point => {
+          const cx = parseFloat(point.getAttribute('cx'));
+          const cy = parseFloat(point.getAttribute('cy'));
+          const distance = Math.sqrt(Math.pow(x - cx, 2) + Math.pow(y - cy, 2));
+          if (distance < 15) {
+            const date = point.closest('svg').querySelectorAll('text')[21 + parseInt(cx / 45)].textContent;
+            const value = point.nextSibling.textContent;
+            tooltip.innerHTML = `<strong>${date}</strong><br>IF: ${value}`;
+            tooltip.style.opacity = 1;
+            tooltip.style.left = (e.clientX + 10) + 'px';
+            tooltip.style.top = (e.clientY - 40) + 'px';
+          }
+        });
+      });
+
+      svg.addEventListener('mouseout', function() {
+        tooltip.style.opacity = 0;
+      });
+    });
+  </script>
+</body>
+</html>

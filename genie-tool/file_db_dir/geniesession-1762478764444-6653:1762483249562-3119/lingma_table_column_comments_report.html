@@ -1,0 +1,345 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>灵马数据表字段注释说明文档</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .table-section {
+      margin-bottom: 48px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 24px;
+    }
+    .table-title {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1f2937;
+      border-bottom: 2px solid #e0e7ff;
+      padding-bottom: 12px;
+      margin-bottom: 24px;
+    }
+    .table-header {
+      background-color: #f3f4f6;
+      font-weight: 600;
+      color: #1f2937;
+      border-bottom: 1px solid #e0e7ff;
+    }
+    .table-row:nth-child(even) {
+      background-color: #fafafa;
+    }
+    .field-name {
+      font-weight: 500;
+      color: #1f2937;
+    }
+    .field-type {
+      color: #6b7280;
+      font-size: 14px;
+    }
+    .field-comment {
+      color: #374151;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .section-index {
+      font-size: 18px;
+      font-weight: 500;
+      color: #4f46e5;
+      margin-bottom: 16px;
+    }
+    footer {
+      margin-top: 64px;
+      text-align: center;
+      color: #6b7280;
+      font-size: 14px;
+      padding: 24px 0;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body class="max-w-6xl mx-auto px-6 py-10">
+  <h1 class="text-3xl font-bold text-center mb-10 text-gray-800">灵马数据表字段注释说明文档</h1>
+  <p class="text-center text-gray-600 mb-12">生成日期：2025年11月07日</p>
+
+  <div class="table-section">
+    <h2 class="table-title">表名：lingma_user</h2>
+    <table class="w-full table-auto border-collapse text-sm">
+      <thead>
+        <tr class="table-header">
+          <th class="px-4 py-3 text-left">字段名</th>
+          <th class="px-4 py-3 text-left">数据类型</th>
+          <th class="px-4 py-3 text-left">中文注释</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">user_id</span></td>
+          <td class="px-4 py-3"><span class="field-type">bigint</span></td>
+          <td class="px-4 py-3"><span class="field-comment">用户唯一标识符</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">username</span></td>
+          <td class="px-4 py-3"><span class="field-type">varchar(50)</span></td>
+          <td class="px-4 py-3"><span class="field-comment">用户名</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">email</span></td>
+          <td class="px-4 py-3"><span class="field-type">varchar(100)</span></td>
+          <td class="px-4 py-3"><span class="field-comment">用户邮箱地址</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">phone</span></td>
+          <td class="px-4 py-3"><span class="field-type">varchar(20)</span></td>
+          <td class="px-4 py-3"><span class="field-comment">用户手机号码</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">password_hash</span></td>
+          <td class="px-4 py-3"><span class="field-type">varchar(255)</span></td>
+          <td class="px-4 py-3"><span class="field-comment">用户密码哈希值</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">created_at</span></td>
+          <td class="px-4 py-3"><span class="field-type">datetime</span></td>
+          <td class="px-4 py-3"><span class="field-comment">用户创建时间</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">updated_at</span></td>
+          <td class="px-4 py-3"><span class="field-type">datetime</span></td>
+          <td class="px-4 py-3"><span class="field-comment">用户信息最后更新时间</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">status</span></td>
+          <td class="px-4 py-3"><span class="field-type">tinyint</span></td>
+          <td class="px-4 py-3"><span class="field-comment">用户状态：0-禁用，1-启用</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-section">
+    <h2 class="table-title">表名：lingma_order</h2>
+    <table class="w-full table-auto border-collapse text-sm">
+      <thead>
+        <tr class="table-header">
+          <th class="px-4 py-3 text-left">字段名</th>
+          <th class="px-4 py-3 text-left">数据类型</th>
+          <th class="px-4 py-3 text-left">中文注释</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">order_id</span></td>
+          <td class="px-4 py-3"><span class="field-type">bigint</span></td>
+          <td class="px-4 py-3"><span class="field-comment">订单唯一标识符</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">user_id</span></td>
+          <td class="px-4 py-3"><span class="field-type">bigint</span></td>
+          <td class="px-4 py-3"><span class="field-comment">关联用户ID</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">order_no</span></td>
+          <td class="px-4 py-3"><span class="field-type">varchar(50)</span></td>
+          <td class="px-4 py-3"><span class="field-comment">订单编号</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">total_amount</span></td>
+          <td class="px-4 py-3"><span class="field-type">decimal(10,2)</span></td>
+          <td class="px-4 py-3"><span class="field-comment">订单总金额</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">status</span></td>
+          <td class="px-4 py-3"><span class="field-type">tinyint</span></td>
+          <td class="px-4 py-3"><span class="field-comment">订单状态：0-待支付，1-已支付，2-已取消，3-已完成</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">payment_method</span></td>
+          <td class="px-4 py-3"><span class="field-type">varchar(20)</span></td>
+          <td class="px-4 py-3"><span class="field-comment">支付方式：alipay, wechat, bank</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">created_at</span></td>
+          <td class="px-4 py-3"><span class="field-type">datetime</span></td>
+          <td class="px-4 py-3"><span class="field-comment">订单创建时间</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">paid_at</span></td>
+          <td class="px-4 py-3"><span class="field-type">datetime</span></td>
+          <td class="px-4 py-3"><span class="field-comment">订单支付时间</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">completed_at</span></td>
+          <td class="px-4 py-3"><span class="field-type">datetime</span></td>
+          <td class="px-4 py-3"><span class="field-comment">订单完成时间</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-section">
+    <h2 class="table-title">表名：lingma_product</h2>
+    <table class="w-full table-auto border-collapse text-sm">
+      <thead>
+        <tr class="table-header">
+          <th class="px-4 py-3 text-left">字段名</th>
+          <th class="px-4 py-3 text-left">数据类型</th>
+          <th class="px-4 py-3 text-left">中文注释</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">product_id</span></td>
+          <td class="px-4 py-3"><span class="field-type">bigint</span></td>
+          <td class="px-4 py-3"><span class="field-comment">商品唯一标识符</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">product_name</span></td>
+          <td class="px-4 py-3"><span class="field-type">varchar(100)</span></td>
+          <td class="px-4 py-3"><span class="field-comment">商品名称</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">category_id</span></td>
+          <td class="px-4 py-3"><span class="field-type">bigint</span></td>
+          <td class="px-4 py-3"><span class="field-comment">商品分类ID</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">price</span></td>
+          <td class="px-4 py-3"><span class="field-type">decimal(10,2)</span></td>
+          <td class="px-4 py-3"><span class="field-comment">商品单价</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">stock</span></td>
+          <td class="px-4 py-3"><span class="field-type">int</span></td>
+          <td class="px-4 py-3"><span class="field-comment">商品库存数量</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">description</span></td>
+          <td class="px-4 py-3"><span class="field-type">text</span></td>
+          <td class="px-4 py-3"><span class="field-comment">商品详细描述</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">status</span></td>
+          <td class="px-4 py-3"><span class="field-type">tinyint</span></td>
+          <td class="px-4 py-3"><span class="field-comment">商品状态：0-下架，1-上架</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">created_at</span></td>
+          <td class="px-4 py-3"><span class="field-type">datetime</span></td>
+          <td class="px-4 py-3"><span class="field-comment">商品创建时间</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">updated_at</span></td>
+          <td class="px-4 py-3"><span class="field-type">datetime</span></td>
+          <td class="px-4 py-3"><span class="field-comment">商品信息最后更新时间</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-section">
+    <h2 class="table-title">表名：lingma_order_item</h2>
+    <table class="w-full table-auto border-collapse text-sm">
+      <thead>
+        <tr class="table-header">
+          <th class="px-4 py-3 text-left">字段名</th>
+          <th class="px-4 py-3 text-left">数据类型</th>
+          <th class="px-4 py-3 text-left">中文注释</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">item_id</span></td>
+          <td class="px-4 py-3"><span class="field-type">bigint</span></td>
+          <td class="px-4 py-3"><span class="field-comment">订单项唯一标识符</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">order_id</span></td>
+          <td class="px-4 py-3"><span class="field-type">bigint</span></td>
+          <td class="px-4 py-3"><span class="field-comment">关联订单ID</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">product_id</span></td>
+          <td class="px-4 py-3"><span class="field-type">bigint</span></td>
+          <td class="px-4 py-3"><span class="field-comment">关联商品ID</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">quantity</span></td>
+          <td class="px-4 py-3"><span class="field-type">int</span></td>
+          <td class="px-4 py-3"><span class="field-comment">购买数量</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">unit_price</span></td>
+          <td class="px-4 py-3"><span class="field-type">decimal(10,2)</span></td>
+          <td class="px-4 py-3"><span class="field-comment">商品单价（下单时）</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">total_price</span></td>
+          <td class="px-4 py-3"><span class="field-type">decimal(10,2)</span></td>
+          <td class="px-4 py-3"><span class="field-comment">该订单项总金额</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="table-section">
+    <h2 class="table-title">表名：lingma_category</h2>
+    <table class="w-full table-auto border-collapse text-sm">
+      <thead>
+        <tr class="table-header">
+          <th class="px-4 py-3 text-left">字段名</th>
+          <th class="px-4 py-3 text-left">数据类型</th>
+          <th class="px-4 py-3 text-left">中文注释</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">category_id</span></td>
+          <td class="px-4 py-3"><span class="field-type">bigint</span></td>
+          <td class="px-4 py-3"><span class="field-comment">分类唯一标识符</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">category_name</span></td>
+          <td class="px-4 py-3"><span class="field-type">varchar(50)</span></td>
+          <td class="px-4 py-3"><span class="field-comment">分类名称</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">parent_id</span></td>
+          <td class="px-4 py-3"><span class="field-type">bigint</span></td>
+          <td class="px-4 py-3"><span class="field-comment">父分类ID，0表示顶级分类</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">sort_order</span></td>
+          <td class="px-4 py-3"><span class="field-type">int</span></td>
+          <td class="px-4 py-3"><span class="field-comment">分类排序权重，数值越小越靠前</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">status</span></td>
+          <td class="px-4 py-3"><span class="field-type">tinyint</span></td>
+          <td class="px-4 py-3"><span class="field-comment">分类状态：0-禁用，1-启用</span></td>
+        </tr>
+        <tr class="table-row">
+          <td class="px-4 py-3"><span class="field-name">created_at</span></td>
+          <td class="px-4 py-3"><span class="field-type">datetime</span></td>
+          <td class="px-4 py-3"><span class="field-comment">分类创建时间</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <footer>
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

@@ -1,0 +1,555 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>沪深300股指期货IF2509与IF2512月度交易数据分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f9fafb;
+      color: #333;
+    }
+    .chart-container {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .chart-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 16px;
+    }
+    .data-point {
+      font-weight: 600;
+      color: #007bff;
+    }
+    .highlight {
+      background-color: #e0f2ff;
+      border-left: 4px solid #007bff;
+      padding: 16px;
+      margin: 24px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .table-container {
+      overflow-x: auto;
+      margin: 24px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: right;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+      color: #374151;
+    }
+    tr:hover {
+      background-color: #f9fafb;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 20px;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 64px;
+      padding: 24px;
+      color: #6b7280;
+      font-size: 0.9rem;
+      border-top: 1px solid #e0e0e0;
+    }
+  </style>
+</head>
+<body class="max-w-7xl mx-auto px-6 py-8">
+  <h1 class="text-3xl font-bold text-gray-800 mb-8">沪深300股指期货IF2509与IF2512月度交易数据分析报告</h1>
+
+  <div class="chart-container">
+    <h2 class="chart-title">价格走势分析（收盘价）</h2>
+    <div class="h-80 flex items-end justify-between px-4" style="position: relative;">
+      <div class="w-full flex flex-col justify-end h-full" style="position: relative;">
+        <div class="absolute inset-0 flex items-end space-x-1">
+          <div class="w-4 bg-blue-500 rounded-t" style="height: 68%;"></div>
+          <div class="w-4 bg-blue-500 rounded-t" style="height: 67%;"></div>
+          <div class="w-4 bg-blue-500 rounded-t" style="height: 66%;"></div>
+          <div class="w-4 bg-blue-500 rounded-t" style="height: 64%;"></div>
+          <div class="w-4 bg-blue-500 rounded-t" style="height: 67%;"></div>
+          <div class="w-4 bg-blue-500 rounded-t" style="height: 67%;"></div>
+          <div class="w-4 bg-blue-500 rounded-t" style="height: 66%;"></div>
+          <div class="w-4 bg-blue-500 rounded-t" style="height: 66%;"></div>
+          <div class="w-4 bg-blue-500 rounded-t" style="height: 70%;"></div>
+          <div class="w-4 bg-blue-500 rounded-t" style="height: 69%;"></div>
+          <div class="w-4 bg-blue-500 rounded-t" style="height: 69%;"></div>
+          <div class="w-4 bg-blue-500 rounded-t" style="height: 68%;"></div>
+          <div class="w-4 bg-blue-500 rounded-t" style="height: 69%;"></div>
+          <div class="w-4 bg-green-500 rounded-t" style="height: 67%;"></div>
+          <div class="w-4 bg-green-500 rounded-t" style="height: 67%;"></div>
+          <div class="w-4 bg-green-500 rounded-t" style="height: 68%;"></div>
+          <div class="w-4 bg-green-500 rounded-t" style="height: 68%;"></div>
+          <div class="w-4 bg-green-500 rounded-t" style="height: 69%;"></div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-500 mt-2 px-1">
+          <span>09/01</span>
+          <span>09/02</span>
+          <span>09/03</span>
+          <span>09/04</span>
+          <span>09/05</span>
+          <span>09/08</span>
+          <span>09/09</span>
+          <span>09/10</span>
+          <span>09/11</span>
+          <span>09/12</span>
+          <span>09/15</span>
+          <span>09/16</span>
+          <span>09/17</span>
+          <span>09/18</span>
+          <span>09/19</span>
+          <span>09/22</span>
+          <span>09/23</span>
+          <span>09/24</span>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center mt-4 text-sm">
+      <div class="legend-item">
+        <div class="legend-color bg-blue-500"></div>
+        <span>IF2509（主力合约）</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color bg-green-500"></div>
+        <span>IF2512（次主力合约）</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">成交量与持仓量变化趋势</h2>
+    <div class="h-80 flex items-end justify-between px-4" style="position: relative;">
+      <div class="w-full flex flex-col justify-end h-full" style="position: relative;">
+        <div class="absolute inset-0 flex items-end space-x-1">
+          <div class="w-4 bg-purple-400 rounded-t" style="height: 45%;"></div>
+          <div class="w-4 bg-purple-400 rounded-t" style="height: 59%;"></div>
+          <div class="w-4 bg-purple-400 rounded-t" style="height: 58%;"></div>
+          <div class="w-4 bg-purple-400 rounded-t" style="height: 64%;"></div>
+          <div class="w-4 bg-purple-400 rounded-t" style="height: 47%;"></div>
+          <div class="w-4 bg-purple-400 rounded-t" style="height: 40%;"></div>
+          <div class="w-4 bg-purple-400 rounded-t" style="height: 35%;"></div>
+          <div class="w-4 bg-purple-400 rounded-t" style="height: 37%;"></div>
+          <div class="w-4 bg-purple-400 rounded-t" style="height: 46%;"></div>
+          <div class="w-4 bg-purple-400 rounded-t" style="height: 40%;"></div>
+          <div class="w-4 bg-purple-400 rounded-t" style="height: 35%;"></div>
+          <div class="w-4 bg-purple-400 rounded-t" style="height: 36%;"></div>
+          <div class="w-4 bg-purple-400 rounded-t" style="height: 35%;"></div>
+          <div class="w-4 bg-orange-400 rounded-t" style="height: 45%;"></div>
+          <div class="w-4 bg-orange-400 rounded-t" style="height: 38%;"></div>
+          <div class="w-4 bg-orange-400 rounded-t" style="height: 31%;"></div>
+          <div class="w-4 bg-orange-400 rounded-t" style="height: 48%;"></div>
+          <div class="w-4 bg-orange-400 rounded-t" style="height: 41%;"></div>
+        </div>
+        <div class="absolute inset-x-0 bottom-0 flex items-end space-x-1 mt-1">
+          <div class="w-4 bg-blue-300 rounded-t" style="height: 55%;"></div>
+          <div class="w-4 bg-blue-300 rounded-t" style="height: 59%;"></div>
+          <div class="w-4 bg-blue-300 rounded-t" style="height: 55%;"></div>
+          <div class="w-4 bg-blue-300 rounded-t" style="height: 58%;"></div>
+          <div class="w-4 bg-blue-300 rounded-t" style="height: 48%;"></div>
+          <div class="w-4 bg-blue-300 rounded-t" style="height: 47%;"></div>
+          <div class="w-4 bg-blue-300 rounded-t" style="height: 42%;"></div>
+          <div class="w-4 bg-blue-300 rounded-t" style="height: 43%;"></div>
+          <div class="w-4 bg-blue-300 rounded-t" style="height: 44%;"></div>
+          <div class="w-4 bg-blue-300 rounded-t" style="height: 40%;"></div>
+          <div class="w-4 bg-blue-300 rounded-t" style="height: 34%;"></div>
+          <div class="w-4 bg-blue-300 rounded-t" style="height: 31%;"></div>
+          <div class="w-4 bg-blue-300 rounded-t" style="height: 24%;"></div>
+          <div class="w-4 bg-red-300 rounded-t" style="height: 57%;"></div>
+          <div class="w-4 bg-red-300 rounded-t" style="height: 56%;"></div>
+          <div class="w-4 bg-red-300 rounded-t" style="height: 55%;"></div>
+          <div class="w-4 bg-red-300 rounded-t" style="height: 58%;"></div>
+          <div class="w-4 bg-red-300 rounded-t" style="height: 54%;"></div>
+        </div>
+        <div class="absolute bottom-0 left-0 right-0 flex justify-between text-xs text-gray-500 mt-4 px-1">
+          <span>09/01</span>
+          <span>09/02</span>
+          <span>09/03</span>
+          <span>09/04</span>
+          <span>09/05</span>
+          <span>09/08</span>
+          <span>09/09</span>
+          <span>09/10</span>
+          <span>09/11</span>
+          <span>09/12</span>
+          <span>09/15</span>
+          <span>09/16</span>
+          <span>09/17</span>
+          <span>09/18</span>
+          <span>09/19</span>
+          <span>09/22</span>
+          <span>09/23</span>
+          <span>09/24</span>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center mt-4 text-sm">
+      <div class="legend-item">
+        <div class="legend-color bg-purple-400"></div>
+        <span>成交量（IF2509）</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color bg-orange-400"></div>
+        <span>成交量（IF2512）</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color bg-blue-300"></div>
+        <span>持仓量（IF2509）</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color bg-red-300"></div>
+        <span>持仓量（IF2512）</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <h3 class="text-xl font-semibold mb-3">关键价格波动日期标注</h3>
+    <ul class="list-disc pl-6 space-y-2">
+      <li><span class="data-point">最高收盘价：4562.0</span>，出现在2025年9月11日（IF2509合约），当日最高价达4562.2，为月内峰值，反映市场多头情绪强劲。</li>
+      <li><span class="data-point">最低收盘价：4349.4</span>，出现在2025年9月4日（IF2509合约），当日最低价4306.2，为月内低点，显示市场短期承压。</li>
+      <li><span class="data-point">最高开盘价：4557.0</span>，出现在2025年9月12日（IF2509合约），开盘即高开，延续前日上涨动能。</li>
+      <li><span class="data-point">最低开盘价：4351.2</span>，出现在2025年9月5日（IF2509合约），开盘跳空低开，市场情绪转弱。</li>
+      <li>IF2512合约于9月18日开始交易，首日收盘价4448.2，低于IF2509当日收盘价，符合主力合约切换的价差规律。</li>
+    </ul>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">交易数据明细表</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>合约代码</th>
+            <th>交易日期</th>
+            <th>产品名称</th>
+            <th>是否主力</th>
+            <th>收盘价</th>
+            <th>开盘价</th>
+            <th>最高价</th>
+            <th>最低价</th>
+            <th>成交量</th>
+            <th>成交额</th>
+            <th>持仓量</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>IF2509</td>
+            <td>2025-09-01</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4510.6</td>
+            <td>4517</td>
+            <td>4527.2</td>
+            <td>4480</td>
+            <td>94140</td>
+            <td>127180339860</td>
+            <td>137802</td>
+          </tr>
+          <tr>
+            <td>IF2509</td>
+            <td>2025-09-02</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4481.2</td>
+            <td>4516</td>
+            <td>4540.6</td>
+            <td>4446</td>
+            <td>122523</td>
+            <td>165115554120</td>
+            <td>146527</td>
+          </tr>
+          <tr>
+            <td>IF2509</td>
+            <td>2025-09-03</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4430</td>
+            <td>4501.4</td>
+            <td>4508.6</td>
+            <td>4408</td>
+            <td>120700</td>
+            <td>161204495400</td>
+            <td>137484</td>
+          </tr>
+          <tr>
+            <td>IF2509</td>
+            <td>2025-09-04</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4349.4</td>
+            <td>4437</td>
+            <td>4453.6</td>
+            <td>4306.2</td>
+            <td>133914</td>
+            <td>175611275400</td>
+            <td>144443</td>
+          </tr>
+          <tr>
+            <td>IF2509</td>
+            <td>2025-09-05</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4456.6</td>
+            <td>4351.2</td>
+            <td>4470</td>
+            <td>4344.2</td>
+            <td>98192</td>
+            <td>129792885240</td>
+            <td>126309</td>
+          </tr>
+          <tr>
+            <td>IF2509</td>
+            <td>2025-09-08</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4453</td>
+            <td>4464</td>
+            <td>4478.8</td>
+            <td>4424</td>
+            <td>83936</td>
+            <td>112065358080</td>
+            <td>122548</td>
+          </tr>
+          <tr>
+            <td>IF2509</td>
+            <td>2025-09-09</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4426.2</td>
+            <td>4438</td>
+            <td>4463</td>
+            <td>4401.2</td>
+            <td>73565</td>
+            <td>97875760080</td>
+            <td>112541</td>
+          </tr>
+          <tr>
+            <td>IF2509</td>
+            <td>2025-09-10</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4432.4</td>
+            <td>4430.8</td>
+            <td>4461.8</td>
+            <td>4405</td>
+            <td>76988</td>
+            <td>102446161800</td>
+            <td>113485</td>
+          </tr>
+          <tr>
+            <td>IF2509</td>
+            <td>2025-09-11</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4562</td>
+            <td>4424</td>
+            <td>4562.2</td>
+            <td>4413.6</td>
+            <td>96412</td>
+            <td>129984625920</td>
+            <td>115085</td>
+          </tr>
+          <tr>
+            <td>IF2509</td>
+            <td>2025-09-12</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4523.2</td>
+            <td>4557</td>
+            <td>4565.8</td>
+            <td>4517</td>
+            <td>83488</td>
+            <td>113762601840</td>
+            <td>103677</td>
+          </tr>
+          <tr>
+            <td>IF2509</td>
+            <td>2025-09-15</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4527.8</td>
+            <td>4533</td>
+            <td>4563.6</td>
+            <td>4518.8</td>
+            <td>73627</td>
+            <td>100293488040</td>
+            <td>86544</td>
+          </tr>
+          <tr>
+            <td>IF2509</td>
+            <td>2025-09-16</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4516.8</td>
+            <td>4542</td>
+            <td>4554</td>
+            <td>4489.6</td>
+            <td>76486</td>
+            <td>103642389000</td>
+            <td>79227</td>
+          </tr>
+          <tr>
+            <td>IF2509</td>
+            <td>2025-09-17</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4553.2</td>
+            <td>4518</td>
+            <td>4559.2</td>
+            <td>4497.2</td>
+            <td>72782</td>
+            <td>99000045300</td>
+            <td>61553</td>
+          </tr>
+          <tr>
+            <td>IF2512</td>
+            <td>2025-09-18</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4448.2</td>
+            <td>4512</td>
+            <td>4545</td>
+            <td>4405.8</td>
+            <td>95637</td>
+            <td>128821393800</td>
+            <td>152375</td>
+          </tr>
+          <tr>
+            <td>IF2512</td>
+            <td>2025-09-19</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4464.4</td>
+            <td>4455</td>
+            <td>4490</td>
+            <td>4440.8</td>
+            <td>80743</td>
+            <td>108090924660</td>
+            <td>151383</td>
+          </tr>
+          <tr>
+            <td>IF2512</td>
+            <td>2025-09-22</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4484</td>
+            <td>4475</td>
+            <td>4488</td>
+            <td>4447.2</td>
+            <td>65934</td>
+            <td>88365967920</td>
+            <td>149528</td>
+          </tr>
+          <tr>
+            <td>IF2512</td>
+            <td>2025-09-23</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4483.8</td>
+            <td>4495</td>
+            <td>4513</td>
+            <td>4408.8</td>
+            <td>101402</td>
+            <td>135553919280</td>
+            <td>159890</td>
+          </tr>
+          <tr>
+            <td>IF2512</td>
+            <td>2025-09-24</td>
+            <td>沪深300股指期货</td>
+            <td>true</td>
+            <td>4530</td>
+            <td>4468.8</td>
+            <td>4531.2</td>
+            <td>4463.2</td>
+            <td>86527</td>
+            <td>116848635960</td>
+            <td>151864</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <h3 class="text-xl font-semibold mb-3">市场趋势与影响因素分析</h3>
+    <p class="mb-4">2025年9月，沪深300股指期货主力合约IF2509呈现先抑后扬的震荡上行走势。月初受市场情绪影响，价格从4510.6回落至4349.4的月内低点，伴随成交量放大与持仓量上升，显示空头力量主导，市场存在阶段性调整压力。9月11日价格强势反弹至4562.0，创下月内新高，同时成交量维持高位，表明多头资金积极入场，市场情绪逆转。此后价格虽小幅回落，但未跌破关键支撑，显示多头力量仍具韧性。</p>
+    <p class="mb-4">IF2512合约于9月18日成为主力合约，其价格走势与IF2509高度相关，但整体略低，符合远月合约贴水的正常结构。持仓量在IF2512合约上持续攀升，从152375增至159890，显示市场资金正逐步向次主力合约迁移，为合约换月提供流动性支持。成交量在主力切换期间保持活跃，未出现明显萎缩，说明市场流动性充足，交易结构平稳过渡。</p>
+    <p>综合来看，本月市场波动主要受宏观经济预期、政策信号及市场情绪驱动。价格在关键点位（如4450、4550）形成强支撑与阻力，技术面特征明显。资金从IF2509向IF2512的迁移，预示着市场对9月合约到期后行情的预期趋于稳定，投资者正为下一合约周期做准备。</p>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">核心数据摘要</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+      <div class="bg-blue-50 p-6 rounded-lg">
+        <div class="text-2xl font-bold text-blue-600">4562.0</div>
+        <div class="text-sm text-gray-600">月内最高收盘价</div>
+        <div class="text-xs text-gray-500 mt-1">2025-09-11</div>
+      </div>
+      <div class="bg-red-50 p-6 rounded-lg">
+        <div class="text-2xl font-bold text-red-600">4349.4</div>
+        <div class="text-sm text-gray-600">月内最低收盘价</div>
+        <div class="text-xs text-gray-500 mt-1">2025-09-04</div>
+      </div>
+      <div class="bg-green-50 p-6 rounded-lg">
+        <div class="text-2xl font-bold text-green-600">135,553,919,280</div>
+        <div class="text-sm text-gray-600">单日最高成交额</div>
+        <div class="text-xs text-gray-500 mt-1">2025-09-23</div>
+      </div>
+      <div class="bg-purple-50 p-6 rounded-lg">
+        <div class="text-2xl font-bold text-purple-600">159,890</div>
+        <div class="text-sm text-gray-600">最高持仓量</div>
+        <div class="text-xs text-gray-500 mt-1">2025-09-23</div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const bars = document.querySelectorAll('.w-4');
+      bars.forEach(bar => {
+        bar.addEventListener('mouseenter', function() {
+          this.style.transform = 'scaleY(1.2)';
+          this.style.zIndex = '10';
+        });
+        bar.addEventListener('mouseleave', function() {
+          this.style.transform = 'scaleY(1)';
+          this.style.zIndex = '1';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

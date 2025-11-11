@@ -1,0 +1,128 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>上层应用名称清单</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f8f9fa;
+    }
+    .section-title {
+      font-weight: 700;
+      color: #1e293b;
+      border-bottom: 2px solid #3b82f6;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    .app-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .app-item {
+      background-color: white;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      border-left: 4px solid #3b82f6;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .app-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .app-item i {
+      color: #3b82f6;
+      margin-right: 0.5rem;
+    }
+    .print-only {
+      display: none;
+    }
+    @media print {
+      body {
+        background-color: white;
+      }
+      .print-only {
+        display: block;
+        margin-top: 1rem;
+        color: #6b7280;
+        font-size: 0.9rem;
+        text-align: center;
+      }
+      .no-print {
+        display: none;
+      }
+      .app-item {
+        box-shadow: none;
+        border-left-color: #000;
+      }
+    }
+  </style>
+</head>
+<body class="py-8 px-4 md:px-8">
+  <div class="max-w-4xl mx-auto">
+    <header class="text-center mb-10">
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">上层应用名称清单</h1>
+      <p class="text-gray-600 text-lg">截至2025年10月13日</p>
+    </header>
+
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="section-title">应用列表</h2>
+      <ul class="app-list">
+        <li class="app-item"><i class="fas fa-robot"></i> UI测试自动化</li>
+        <li class="app-item"><i class="fas fa-user-circle"></i> 会员通智能体</li>
+        <li class="app-item"><i class="fas fa-balance-scale"></i> 数智纪检</li>
+        <li class="app-item"><i class="fas fa-question-circle"></i> 制度智能问答</li>
+        <li class="app-item"><i class="fas fa-code"></i> 单测智能体</li>
+        <li class="app-item"><i class="fas fa-comment-dots"></i> 小金灵码问答机器人</li>
+        <li class="app-item"><i class="fas fa-newspaper"></i> 中金所头条</li>
+        <li class="app-item"><i class="fas fa-chart-line"></i> 会员通舆情</li>
+        <li class="app-item"><i class="fas fa-user-tie"></i> 小金同学</li>
+        <li class="app-item"><i class="fas fa-ai-generating"></i> 智能小金</li>
+        <li class="app-item"><i class="fas fa-search-dollar"></i> 监查智能体</li>
+        <li class="app-item"><i class="fas fa-file-upload"></i> 知识文档入库</li>
+        <li class="app-item"><i class="fas fa-file-contract"></i> 合同信息抽取</li>
+        <li class="app-item"><i class="fas fa-search"></i> 小金智搜</li>
+        <li class="app-item"><i class="fas fa-file-word"></i> WPS写作插件</li>
+        <li class="app-item"><i class="fas fa-shield-alt"></i> 智能代码审查</li>
+        <li class="app-item"><i class="fas fa-phone"></i> 电话妙计</li>
+        <li class="app-item"><i class="fas fa-file-invoice-dollar"></i> 办公招标文件审核</li>
+      </ul>
+    </div>
+
+    <div class="text-center no-print">
+      <button onclick="window.print()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-8 rounded-lg shadow transition duration-300 flex items-center mx-auto">
+        <i class="fas fa-print mr-2"></i> 打印此清单
+      </button>
+    </div>
+
+    <div class="print-only">
+      打印时间：2025年10月13日 | 本清单由系统自动生成，内容完整无删减
+    </div>
+
+    <footer class="mt-12 text-center text-gray-500 text-sm border-t pt-6">
+      Created by Autobots<br>
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const appItems = document.querySelectorAll('.app-item');
+      appItems.forEach(item => {
+        item.addEventListener('click', function() {
+          this.classList.toggle('bg-blue-50');
+          this.querySelector('i').classList.toggle('text-blue-600');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

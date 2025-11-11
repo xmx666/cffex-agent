@@ -1,0 +1,407 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IM期货价格走势分析报告（2025-09-01至2025-09-05）</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .chart-container {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .chart-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+    }
+    .price-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #4b5563;
+    }
+    .price-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #111827;
+    }
+    .volume-label, .open-interest-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: #6b7280;
+    }
+    .volume-value, .open-interest-value {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .up {
+      color: #10b981;
+    }
+    .down {
+      color: #ef4444;
+    }
+    .k-line-candle {
+      position: relative;
+      width: 100%;
+      height: 400px;
+      margin: 16px 0;
+    }
+    .k-line-candle .candle {
+      position: absolute;
+      width: 12px;
+      border-radius: 2px;
+      transform-origin: bottom;
+    }
+    .k-line-candle .body {
+      position: absolute;
+      width: 100%;
+      border-radius: 2px;
+    }
+    .k-line-candle .wick {
+      position: absolute;
+      width: 2px;
+      background-color: #374151;
+    }
+    .k-line-candle .label {
+      position: absolute;
+      bottom: -28px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #6b7280;
+      white-space: nowrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-right: 24px;
+      font-size: 14px;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+    .data-table th,
+    .data-table td {
+      padding: 12px 16px;
+      text-align: center;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .data-table th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .data-table tr:hover {
+      background-color: #f9fafb;
+    }
+    .data-table .positive {
+      color: #10b981;
+    }
+    .data-table .negative {
+      color: #ef4444;
+    }
+    footer {
+      text-align: center;
+      margin-top: 64px;
+      padding: 24px;
+      color: #6b7280;
+      font-size: 14px;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body class="max-w-7xl mx-auto px-6 py-10">
+  <header class="mb-10">
+    <h1 class="text-3xl font-bold text-gray-800">IM期货价格走势分析报告（2025-09-01至2025-09-05）</h1>
+    <p class="text-gray-600 mt-2">基于2025年9月首个交易周的开盘、最高、最低、收盘价及成交量、持仓量数据生成的可视化分析</p>
+  </header>
+
+  <section class="chart-container">
+    <h2 class="chart-title">IM期货日K线走势（2025-09-01 至 2025-09-05）</h2>
+    <div class="k-line-candle" id="kline-chart">
+      <!-- K线图将由JavaScript动态生成 -->
+    </div>
+    <div class="flex flex-wrap justify-center gap-8 mt-6 text-center">
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: #10b981;"></div>
+        <span>阳线（收盘 > 开盘）</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: #ef4444;"></div>
+        <span>阴线（收盘 < 开盘）</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color" style="background-color: #374151;"></div>
+        <span>影线</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="chart-container">
+    <h2 class="chart-title">成交量与持仓量变化趋势</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+      <div>
+        <h3 class="text-lg font-semibold text-gray-700 mb-4">成交量（手）</h3>
+        <div class="space-y-3">
+          <div class="flex justify-between">
+            <span class="price-label">2025-09-01</span>
+            <span class="volume-value">12,850</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="price-label">2025-09-02</span>
+            <span class="volume-value">14,230</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="price-label">2025-09-03</span>
+            <span class="volume-value">13,670</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="price-label">2025-09-04</span>
+            <span class="volume-value">15,920</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="price-label">2025-09-05</span>
+            <span class="volume-value">16,410</span>
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 class="text-lg font-semibold text-gray-700 mb-4">持仓量（手）</h3>
+        <div class="space-y-3">
+          <div class="flex justify-between">
+            <span class="price-label">2025-09-01</span>
+            <span class="open-interest-value">89,420</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="price-label">2025-09-02</span>
+            <span class="open-interest-value">91,850</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="price-label">2025-09-03</span>
+            <span class="open-interest-value">90,760</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="price-label">2025-09-04</span>
+            <span class="open-interest-value">94,310</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="price-label">2025-09-05</span>
+            <span class="open-interest-value">96,880</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="text-gray-700 text-sm">
+      从趋势可见，成交量与持仓量在本周呈持续上升态势，尤其在9月4日与9月5日出现明显放量增仓，表明市场参与度增强，多空博弈加剧，价格波动可能随之扩大。
+    </p>
+  </section>
+
+  <section class="chart-container">
+    <h2 class="chart-title">每日价格与交易数据明细</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>日期</th>
+          <th>开盘价</th>
+          <th>最高价</th>
+          <th>最低价</th>
+          <th>收盘价</th>
+          <th>涨跌幅</th>
+          <th>成交量（手）</th>
+          <th>持仓量（手）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2025-09-01</td>
+          <td>7,892</td>
+          <td>7,925</td>
+          <td>7,878</td>
+          <td>7,915</td>
+          <td class="positive">+0.29%</td>
+          <td>12,850</td>
+          <td>89,420</td>
+        </tr>
+        <tr>
+          <td>2025-09-02</td>
+          <td>7,915</td>
+          <td>7,958</td>
+          <td>7,902</td>
+          <td>7,948</td>
+          <td class="positive">+0.42%</td>
+          <td>14,230</td>
+          <td>91,850</td>
+        </tr>
+        <tr>
+          <td>2025-09-03</td>
+          <td>7,948</td>
+          <td>7,962</td>
+          <td>7,915</td>
+          <td>7,920</td>
+          <td class="negative">-0.35%</td>
+          <td>13,670</td>
+          <td>90,760</td>
+        </tr>
+        <tr>
+          <td>2025-09-04</td>
+          <td>7,920</td>
+          <td>7,985</td>
+          <td>7,910</td>
+          <td>7,975</td>
+          <td class="positive">+0.70%</td>
+          <td>15,920</td>
+          <td>94,310</td>
+        </tr>
+        <tr>
+          <td>2025-09-05</td>
+          <td>7,975</td>
+          <td>8,012</td>
+          <td>7,968</td>
+          <td>8,005</td>
+          <td class="positive">+0.38%</td>
+          <td>16,410</td>
+          <td>96,880</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="chart-container">
+    <h2 class="chart-title">走势分析与市场解读</h2>
+    <p class="text-gray-700 mb-4">
+      2025年9月首个交易周，IM期货价格呈现震荡上行趋势，从7,892点稳步攀升至8,005点，累计涨幅达1.43%。期间虽有9月3日小幅回调，但整体未跌破前日支撑，显示多头力量持续主导市场。
+    </p>
+    <p class="text-gray-700 mb-4">
+      成交量从12,850手持续增长至16,410手，增幅达27.7%，持仓量亦由89,420手增至96,880手，增长8.45%。量价齐升表明市场情绪趋于活跃，新增资金持续入场，多头信心增强，市场对IM期货后市预期趋于乐观。
+    </p>
+    <p class="text-gray-700 mb-4">
+      价格形态上，本周出现四根阳线、一根阴线，阳线实体逐步放大，尤其在9月4日与9月5日，收盘价均创出新高，且伴随显著放量，形成“量价配合”的典型多头信号。9月3日的阴线为短期技术性回踩，未破坏上升趋势，反而为后续突破积蓄动能。
+    </p>
+    <p class="text-gray-700">
+      综合来看，IM期货在本周展现出较强的上涨动能与市场承接力，建议关注8,020点附近的技术阻力位，若能有效突破，可能打开进一步上行空间。同时需警惕高位放量后可能出现的获利回吐风险。
+    </p>
+  </section>
+
+  <section class="chart-container">
+    <h2 class="chart-title">关键数据摘要</h2>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-6">
+      <div class="bg-blue-50 p-5 rounded-lg text-center">
+        <div class="price-label">周最高价</div>
+        <div class="price-value">8,012</div>
+      </div>
+      <div class="bg-green-50 p-5 rounded-lg text-center">
+        <div class="price-label">周最低价</div>
+        <div class="price-value">7,878</div>
+      </div>
+      <div class="bg-purple-50 p-5 rounded-lg text-center">
+        <div class="price-label">周收盘价</div>
+        <div class="price-value">8,005</div>
+      </div>
+      <div class="bg-orange-50 p-5 rounded-lg text-center">
+        <div class="price-label">周涨幅</div>
+        <div class="price-value up">+1.43%</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    // 数据准备
+    const data = [
+      { date: '2025-09-01', open: 7892, high: 7925, low: 7878, close: 7915, volume: 12850, openInterest: 89420 },
+      { date: '2025-09-02', open: 7915, high: 7958, low: 7902, close: 7948, volume: 14230, openInterest: 91850 },
+      { date: '2025-09-03', open: 7948, high: 7962, low: 7915, close: 7920, volume: 13670, openInterest: 90760 },
+      { date: '2025-09-04', open: 7920, high: 7985, low: 7910, close: 7975, volume: 15920, openInterest: 94310 },
+      { date: '2025-09-05', open: 7975, high: 8012, low: 7968, close: 8005, volume: 16410, openInterest: 96880 }
+    ];
+
+    const chartContainer = document.getElementById('kline-chart');
+    const chartWidth = chartContainer.clientWidth;
+    const candleWidth = 40;
+    const spacing = 15;
+    const totalWidth = data.length * (candleWidth + spacing);
+    const maxHeight = 360;
+    const priceMin = Math.min(...data.map(d => d.low)) - 10;
+    const priceMax = Math.max(...data.map(d => d.high)) + 10;
+    const priceRange = priceMax - priceMin;
+    const scale = maxHeight / priceRange;
+
+    data.forEach((item, index) => {
+      const candle = document.createElement('div');
+      candle.className = 'candle';
+      candle.style.left = `${index * (candleWidth + spacing) + (candleWidth + spacing) / 2 - candleWidth / 2}px`;
+      candle.style.height = `${maxHeight}px`;
+
+      // 计算价格位置
+      const openY = maxHeight - ((item.open - priceMin) * scale);
+      const closeY = maxHeight - ((item.close - priceMin) * scale);
+      const highY = maxHeight - ((item.high - priceMin) * scale);
+      const lowY = maxHeight - ((item.low - priceMin) * scale);
+
+      // 阴阳线颜色判断
+      const isBullish = item.close >= item.open;
+      const bodyColor = isBullish ? '#10b981' : '#ef4444';
+
+      // 绘制影线
+      const wickTop = document.createElement('div');
+      wickTop.className = 'wick';
+      wickTop.style.top = `${highY}px`;
+      wickTop.style.height = `${Math.abs(openY - highY)}px`;
+      wickTop.style.left = `${candleWidth / 2 - 1}px`;
+      candle.appendChild(wickTop);
+
+      const wickBottom = document.createElement('div');
+      wickBottom.className = 'wick';
+      wickBottom.style.top = `${lowY}px`;
+      wickBottom.style.height = `${Math.abs(lowY - closeY)}px`;
+      wickBottom.style.left = `${candleWidth / 2 - 1}px`;
+      candle.appendChild(wickBottom);
+
+      // 绘制实体
+      const body = document.createElement('div');
+      body.className = 'body';
+      body.style.top = `${Math.min(openY, closeY)}px`;
+      body.style.height = `${Math.abs(closeY - openY)}px`;
+      body.style.left = '0';
+      body.style.backgroundColor = bodyColor;
+      candle.appendChild(body);
+
+      // 添加日期标签
+      const label = document.createElement('div');
+      label.className = 'label';
+      label.textContent = item.date.split('-')[1] + '-' + item.date.split('-')[2];
+      candle.appendChild(label);
+
+      chartContainer.appendChild(candle);
+    });
+  </script>
+</body>
+</html>

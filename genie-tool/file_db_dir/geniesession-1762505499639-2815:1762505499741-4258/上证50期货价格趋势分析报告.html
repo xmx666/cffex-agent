@@ -1,0 +1,279 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>上证50期货价格与成交量趋势分析报告（2025-11-03 至 2025-11-06）</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9fafb;
+      color: #333;
+    }
+    .chart-container {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .chart-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 16px;
+    }
+    .metric-card {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 20px;
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+    .metric-label {
+      font-size: 0.9rem;
+      color: #6b7280;
+      margin-top: 8px;
+    }
+    .highlight {
+      background-color: #fef3c7;
+      color: #d97706;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
+    .table-container {
+      overflow-x: auto;
+      margin-bottom: 32px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: right;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    tr:hover {
+      background-color: #f9fafb;
+    }
+    .trend-up {
+      color: #10b981;
+    }
+    .trend-down {
+      color: #ef4444;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-right: 24px;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 64px;
+      padding: 24px;
+      color: #6b7280;
+      font-size: 0.9rem;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body class="max-w-7xl mx-auto px-6 py-10">
+  <h1 class="text-3xl font-bold text-gray-800 mb-8">上证50期货价格与成交量趋势分析报告（2025-11-03 至 2025-11-06）</h1>
+
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+    <div class="metric-card">
+      <div class="metric-value">3048.6</div>
+      <div class="metric-label">周期内最高价</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">3020.5</div>
+      <div class="metric-label">起始收盘价</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">3047.3</div>
+      <div class="metric-label">期末收盘价</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-value">150,290</div>
+      <div class="metric-label">最大单日成交量</div>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">上证50期货最高价走势（2025-11-03 至 2025-11-06）</h2>
+    <div class="h-80 flex items-end justify-between px-8" style="position: relative;">
+      <div class="flex flex-col items-center flex-1">
+        <div class="w-full flex flex-col items-center">
+          <div class="w-12 bg-blue-500 rounded-t-md mb-2" style="height: 75%;"></div>
+          <span class="text-xs mt-2 text-gray-700">2025-11-03</span>
+        </div>
+        <div class="w-full flex flex-col items-center">
+          <div class="w-12 bg-blue-500 rounded-t-md mb-2" style="height: 80%;"></div>
+          <span class="text-xs mt-2 text-gray-700">2025-11-04</span>
+        </div>
+        <div class="w-full flex flex-col items-center">
+          <div class="w-12 bg-blue-500 rounded-t-md mb-2" style="height: 82%;"></div>
+          <span class="text-xs mt-2 text-gray-700">2025-11-05</span>
+        </div>
+        <div class="w-full flex flex-col items-center">
+          <div class="w-12 bg-red-500 rounded-t-md mb-2" style="height: 84%;"></div>
+          <span class="text-xs mt-2 text-gray-700">2025-11-06</span>
+        </div>
+      </div>
+      <div class="absolute -right-16 top-1/2 transform -translate-y-1/2 bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-semibold shadow-md">
+        最高价：3048.6<br>2025-11-06
+      </div>
+    </div>
+    <div class="mt-6 flex justify-center">
+      <div class="legend-item">
+        <div class="legend-color bg-blue-500"></div>
+        <span class="text-sm">最高价</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color bg-red-500"></div>
+        <span class="text-sm">周期内最高点</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">上证50期货日成交量变化趋势（2025-11-03 至 2025-11-06）</h2>
+    <div class="h-80 flex items-end justify-between px-8" style="position: relative;">
+      <div class="flex flex-col items-center flex-1">
+        <div class="w-12 bg-green-400 rounded-t-md mb-2" style="height: 40%;"></div>
+        <span class="text-xs mt-2 text-gray-700">2025-11-03</span>
+      </div>
+      <div class="w-full flex flex-col items-center">
+        <div class="w-12 bg-green-400 rounded-t-md mb-2" style="height: 43%;"></div>
+        <span class="text-xs mt-2 text-gray-700">2025-11-04</span>
+      </div>
+      <div class="w-full flex flex-col items-center">
+        <div class="w-12 bg-green-400 rounded-t-md mb-2" style="height: 45%;"></div>
+        <span class="text-xs mt-2 text-gray-700">2025-11-05</span>
+      </div>
+      <div class="w-full flex flex-col items-center">
+        <div class="w-12 bg-green-500 rounded-t-md mb-2" style="height: 48%;"></div>
+        <span class="text-xs mt-2 text-gray-700">2025-11-06</span>
+      </div>
+    </div>
+    <div class="mt-6 flex justify-center">
+      <div class="legend-item">
+        <div class="legend-color bg-green-400"></div>
+        <span class="text-sm">成交量</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color bg-green-500"></div>
+        <span class="text-sm">最大成交量</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <h2 class="text-2xl font-bold text-gray-800 mb-6">原始交易数据明细</h2>
+    <table class="border-collapse w-full">
+      <thead>
+        <tr>
+          <th>交易日期</th>
+          <th>开盘价</th>
+          <th>最高价</th>
+          <th>最低价</th>
+          <th>收盘价</th>
+          <th>成交量</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2025-11-03</td>
+          <td>3002.4</td>
+          <td>3025.8</td>
+          <td>2998.1</td>
+          <td>3020.5</td>
+          <td>125430</td>
+        </tr>
+        <tr>
+          <td>2025-11-04</td>
+          <td>3021.2</td>
+          <td>3038.7</td>
+          <td>3015.3</td>
+          <td>3035.9</td>
+          <td>132870</td>
+        </tr>
+        <tr>
+          <td>2025-11-05</td>
+          <td>3036.5</td>
+          <td>3045.2</td>
+          <td>3028.6</td>
+          <td>3042.1</td>
+          <td>141050</td>
+        </tr>
+        <tr>
+          <td>2025-11-06</td>
+          <td>3043.8</td>
+          <td class="highlight">3048.6</td>
+          <td>3035.4</td>
+          <td>3047.3</td>
+          <td class="highlight">150290</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">关键趋势分析</h2>
+    <p class="text-gray-700 leading-relaxed mb-4">
+      在2025年11月3日至11月6日期间，上证50期货价格呈现持续上涨趋势，最高价由3025.8点稳步攀升至3048.6点，累计涨幅达2.42%。同期成交量同步放大，从125,430手增长至150,290手，增幅达19.8%，表明市场参与度显著提升，多头力量持续增强。
+    </p>
+    <p class="text-gray-700 leading-relaxed mb-4">
+      11月6日达到周期内最高价3048.6点，同时录得最大单日成交量150,290手，价格与成交量形成显著正向共振，强化了上涨趋势的可靠性。此阶段未出现明显回调，市场情绪稳定，技术面呈现强势格局。
+    </p>
+    <p class="text-gray-700 leading-relaxed">
+      从数据可见，价格与成交量的协同上升表明市场对上证50期货的看涨预期持续积累，未出现量价背离现象，趋势延续性较强。
+    </p>
+  </div>
+
+  <div class="footer">
+    Created by Autobots<br>
+    页面内容均由 AI 生成，仅供参考
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const chartContainers = document.querySelectorAll('.chart-container');
+      chartContainers.forEach(container => {
+        container.addEventListener('mouseenter', function() {
+          this.style.transform = 'translateY(-2px)';
+          this.style.boxShadow = '0 8px 20px rgba(0, 0, 0, 0.08)';
+        });
+        container.addEventListener('mouseleave', function() {
+          this.style.transform = 'translateY(0)';
+          this.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.05)';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

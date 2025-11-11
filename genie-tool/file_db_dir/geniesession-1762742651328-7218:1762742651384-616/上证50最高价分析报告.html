@@ -1,0 +1,261 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>上证50股指期货近五日最高价趋势分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9fafb;
+      color: #333;
+    }
+    .chart-container {
+      height: 400px;
+      position: relative;
+      margin: 2rem 0;
+    }
+    .chart-line {
+      fill: none;
+      stroke: #3b82f6;
+      stroke-width: 3;
+    }
+    .chart-point {
+      fill: #3b82f6;
+      stroke: white;
+      stroke-width: 2;
+    }
+    .peak-point {
+      fill: #ef4444;
+      stroke: white;
+      stroke-width: 2;
+      r: 6;
+    }
+    .chart-label {
+      font-size: 14px;
+      fill: #6b7280;
+    }
+    .data-table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 1.5rem;
+    }
+    .data-table th,
+    .data-table td {
+      border: 1px solid #e5e7eb;
+      padding: 0.75rem;
+      text-align: center;
+    }
+    .data-table th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .data-table tr:nth-child(even) {
+      background-color: #f9fafb;
+    }
+    .trend-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 500;
+      color: #10b981;
+    }
+    .trend-indicator.up::before {
+      content: "↑";
+    }
+    .trend-indicator.down::before {
+      content: "↓";
+    }
+    .trend-indicator.down {
+      color: #ef4444;
+    }
+    footer {
+      margin-top: 4rem;
+      padding: 1.5rem;
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.9rem;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body class="max-w-5xl mx-auto px-6 py-8">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">上证50股指期货近五日最高价趋势分析报告</h1>
+    <p class="text-gray-600 mt-2">基于2025年11月3日至11月7日交易数据生成</p>
+  </header>
+
+  <section class="mb-10">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">时间序列折线图：最高价走势</h2>
+    <div class="chart-container">
+      <svg width="100%" height="100%" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet">
+        <!-- 坐标轴 -->
+        <line x1="50" y1="350" x2="550" y2="350" stroke="#d1d5db" stroke-width="1" />
+        <line x1="50" y1="50" x2="50" y2="350" stroke="#d1d5db" stroke-width="1" />
+        
+        <!-- 数据线 -->
+        <polyline class="chart-line" points="
+          50,330.5
+          150,329.2
+          250,330.8
+          350,322.8
+          450,322.9
+        " />
+
+        <!-- 数据点 -->
+        <circle class="chart-point" cx="50" cy="330.5" r="4" />
+        <circle class="chart-point" cx="150" cy="329.2" r="4" />
+        <circle class="chart-point" cx="250" cy="330.8" r="4" />
+        <circle class="chart-point" cx="350" cy="322.8" r="4" />
+        <circle class="peak-point" cx="450" cy="322.9" r="6" />
+
+        <!-- X轴标签 -->
+        <text class="chart-label" x="50" y="370" text-anchor="middle">2025-11-03</text>
+        <text class="chart-label" x="150" y="370" text-anchor="middle">2025-11-04</text>
+        <text class="chart-label" x="250" y="370" text-anchor="middle">2025-11-05</text>
+        <text class="chart-label" x="350" y="370" text-anchor="middle">2025-11-06</text>
+        <text class="chart-label" x="450" y="370" text-anchor="middle">2025-11-07</text>
+
+        <!-- Y轴标签 -->
+        <text class="chart-label" x="30" y="335" text-anchor="end">3019</text>
+        <text class="chart-label" x="30" y="310" text-anchor="end">3024</text>
+        <text class="chart-label" x="30" y="285" text-anchor="end">3029</text>
+        <text class="chart-label" x="30" y="260" text-anchor="end">3034</text>
+        <text class="chart-label" x="30" y="235" text-anchor="end">3039</text>
+        <text class="chart-label" x="30" y="210" text-anchor="end">3044</text>
+        <text class="chart-label" x="30" y="185" text-anchor="end">3049</text>
+
+        <!-- 最高价标注 -->
+        <text class="chart-label" x="470" y="318" text-anchor="start" fill="#ef4444">最高值: 3048.6</text>
+      </svg>
+    </div>
+    <p class="text-gray-700 mt-4">
+      上证50股指期货近五日最高价呈现波动上行趋势，从11月3日的3021.0点逐步攀升至11月6日的3048.6点，达到近期峰值。11月7日小幅回落至3047.8点，但仍维持在高位区间。整体走势显示市场在短期内保持较强买盘支撑，但存在小幅获利回吐压力。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+    </p>
+  </section>
+
+  <section class="mb-10">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">详细数据表格</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>交易日期</th>
+          <th>产品名称</th>
+          <th>最高价（点）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2025-11-03</td>
+          <td>上证50股指期货</td>
+          <td>3021.0</td>
+        </tr>
+        <tr>
+          <td>2025-11-04</td>
+          <td>上证50股指期货</td>
+          <td>3024.4</td>
+        </tr>
+        <tr>
+          <td>2025-11-05</td>
+          <td>上证50股指期货</td>
+          <td>3019.6</td>
+        </tr>
+        <tr>
+          <td>2025-11-06</td>
+          <td>上证50股指期货</td>
+          <td>3048.6</td>
+        </tr>
+        <tr>
+          <td>2025-11-07</td>
+          <td>上证50股指期货</td>
+          <td>3047.8</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="text-gray-700 mt-4">
+      数据来源于上证50_近期最高价数据.csv文件，涵盖2025年11月3日至11月7日共五个交易日的每日最高价记录，数据完整、无缺失，可作为短期趋势分析的可靠依据。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+    </p>
+  </section>
+
+  <section class="mb-10">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">趋势简要说明</h2>
+    <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
+      <p class="text-gray-800 leading-relaxed">
+        从五日数据来看，上证50股指期货最高价在11月3日至11月6日期间呈现持续上升态势，累计涨幅达27.6点（+0.91%），其中11月6日达到3048.6点的阶段性高点，为近五日峰值。11月7日虽小幅回调0.8点，但未跌破前一日支撑，表明市场在高位仍具承接力。整体趋势反映投资者对大盘蓝筹股的短期信心增强，可能受政策预期或市场流动性改善驱动。建议持续关注后续交易日是否形成有效突破或回调确认。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+      </p>
+    </div>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">关键指标摘要</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white p-5 rounded-lg shadow-md text-center">
+        <h3 class="text-lg font-medium text-gray-700 mb-2">起始价</h3>
+        <p class="text-2xl font-bold text-gray-900">3021.0</p>
+        <p class="text-sm text-gray-500">2025-11-03</p>
+      </div>
+      <div class="bg-white p-5 rounded-lg shadow-md text-center">
+        <h3 class="text-lg font-medium text-gray-700 mb-2">峰值价</h3>
+        <p class="text-2xl font-bold text-red-600">3048.6</p>
+        <p class="text-sm text-gray-500">2025-11-06</p>
+      </div>
+      <div class="bg-white p-5 rounded-lg shadow-md text-center">
+        <h3 class="text-lg font-medium text-gray-700 mb-2">期末价</h3>
+        <p class="text-2xl font-bold text-gray-900">3047.8</p>
+        <p class="text-sm text-gray-500">2025-11-07</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">参考文献</h2>
+    <ol class="list-decimal list-inside space-y-2 text-gray-700">
+      <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">上证50_近期最高价数据.csv</a></cite></li>
+    </ol>
+  </section>
+
+  <footer>
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    // 为图表添加交互提示（可选增强）
+    document.querySelectorAll('.chart-point, .peak-point').forEach(point => {
+      point.addEventListener('mouseover', function() {
+        const svg = this.closest('svg');
+        const rect = svg.getBoundingClientRect();
+        const x = this.cx.baseVal.value;
+        const y = this.cy.baseVal.value;
+        const tooltip = document.createElement('div');
+        tooltip.style.position = 'absolute';
+        tooltip.style.backgroundColor = '#333';
+        tooltip.style.color = 'white';
+        tooltip.style.padding = '6px 10px';
+        tooltip.style.borderRadius = '4px';
+        tooltip.style.fontSize = '12px';
+        tooltip.style.zIndex = '1000';
+        tooltip.style.pointerEvents = 'none';
+        tooltip.style.left = (rect.left + x + 10) + 'px';
+        tooltip.style.top = (rect.top + y - 40) + 'px';
+        tooltip.textContent = this.classList.contains('peak-point') ? '峰值: 3048.6' : '3047.8';
+        document.body.appendChild(tooltip);
+
+        this.setAttribute('r', '8');
+      });
+
+      point.addEventListener('mouseout', function() {
+        const tooltip = document.querySelector('div[style*="position: absolute"]');
+        if (tooltip) tooltip.remove();
+        this.setAttribute('r', this.classList.contains('peak-point') ? '6' : '4');
+      });
+    });
+  </script>
+</body>
+</html>

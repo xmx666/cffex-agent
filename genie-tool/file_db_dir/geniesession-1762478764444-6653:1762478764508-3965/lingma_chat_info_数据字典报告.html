@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lingma_chat_info 数据字典报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f8f9fa;
+    }
+    .data-table th {
+      background-color: #3b82f6;
+      color: white;
+      font-weight: 600;
+    }
+    .data-table tr:nth-child(even) {
+      background-color: #f1f5f9;
+    }
+    .data-table tr:hover {
+      background-color: #e0e7ff;
+    }
+    .section-header {
+      border-left: 4px solid #3b82f6;
+      padding-left: 1rem;
+      margin: 2rem 0 1.5rem 0;
+    }
+    .badge {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+    }
+    .badge-consulting {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+    .badge-feedback {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    .badge-support {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    .footer {
+      margin-top: 4rem;
+      padding: 1.5rem 0;
+      text-align: center;
+      color: #6b7280;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">lingma_chat_info 数据字典报告</h1>
+      <p class="text-lg text-gray-600">用于内部数据治理平台展示，字段定义与使用场景说明</p>
+      <div class="mt-4 text-sm text-gray-500">
+        最后更新：2025年11月07日
+      </div>
+    </header>
+    <section class="section-header">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">数据表概述</h2>
+      <p class="text-gray-700 leading-relaxed">
+        <code>lingma_chat_info</code> 表用于记录用户与系统之间的聊天会话元数据，支持对话行为分析、用户服务轨迹追踪及开发工具使用偏好统计。该表为数据治理平台中关键的交互行为数据源，为产品优化、用户支持效率提升与IDE使用趋势研究提供基础数据支撑。<cite><a href="https://lingma_chat_info_字段注释说明.md" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+      </p>
+    </section>
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 section-header">字段详细说明</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white border border-gray-200 rounded-lg shadow-sm data-table">
+          <thead>
+            <tr>
+              <th class="py-3 px-6 text-left text-xs font-medium uppercase tracking-wider">字段名称</th>
+              <th class="py-3 px-6 text-left text-xs font-medium uppercase tracking-wider">中文说明</th>
+              <th class="py-3 px-6 text-left text-xs font-medium uppercase tracking-wider">数据类型</th>
+              <th class="py-3 px-6 text-left text-xs font-medium uppercase tracking-wider">使用场景</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-gray-200">
+            <tr>
+              <td class="py-4 px-6 font-medium text-gray-900">uuid</td>
+              <td class="py-4 px-6 text-gray-700">唯一聊天会话标识符，用于追踪独立对话实例</td>
+              <td class="py-4 px-6 text-gray-600">字符串</td>
+              <td class="py-4 px-6 text-gray-700">作为主键关联会话日志、用户行为分析与会话质量评估，确保每条对话可唯一追溯，避免数据重复或混淆。</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-6 font-medium text-gray-900">user_id</td>
+              <td class="py-4 px-6 text-gray-700">用户系统唯一标识，关联用户身份信息</td>
+              <td class="py-4 px-6 text-gray-600">字符串</td>
+              <td class="py-4 px-6 text-gray-700">用于用户身份识别与权限校验，支持跨系统用户行为聚合分析，如活跃用户统计、用户留存率计算等。</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-6 font-medium text-gray-900">display_name</td>
+              <td class="py-4 px-6 text-gray-700">用户在界面中显示的名称，非唯一</td>
+              <td class="py-4 px-6 text-gray-600">字符串</td>
+              <td class="py-4 px-6 text-gray-700">用于前端界面展示，提升用户体验，便于客服人员快速识别用户身份，不用于系统内唯一性校验。</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-6 font-medium text-gray-900">chat_type</td>
+              <td class="py-4 px-6 text-gray-700">聊天类型，如：咨询、反馈、技术支持等</td>
+              <td class="py-4 px-6 text-gray-600">字符串</td>
+              <td class="py-4 px-6 text-gray-700">用于分类统计不同服务类型的需求分布，辅助资源分配与服务流程优化，例如分析技术支持请求的峰值时段。</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-6 font-medium text-gray-900">chat_turns</td>
+              <td class="py-4 px-6 text-gray-700">单次会话的对话轮数，反映交互深度</td>
+              <td class="py-4 px-6 text-gray-600">字符串</td>
+              <td class="py-4 px-6 text-gray-700">衡量用户与系统交互的复杂度，用于评估对话机器人效率、识别高难度问题场景，支持用户满意度与服务响应模型优化。</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-6 font-medium text-gray-900">ide</td>
+              <td class="py-4 px-6 text-gray-700">使用的集成开发环境，如VSCode、PyCharm等</td>
+              <td class="py-4 px-6 text-gray-600">字符串</td>
+              <td class="py-4 px-6 text-gray-700">用于分析开发者工具使用偏好，指导产品功能适配与插件开发优先级，支持技术栈趋势研究与开发环境支持策略制定。</td>
+            </tr>
+            <tr>
+              <td class="py-4 px-6 font-medium text-gray-900">update_time</td>
+              <td class="py-4 px-6 text-gray-700">记录最后更新时间，用于数据时效性管理</td>
+              <td class="py-4 px-6 text-gray-600">字符串</td>
+              <td class="py-4 px-6 text-gray-700">支持数据同步、增量更新与数据清洗任务调度，确保数据仓库中该表的实时性与一致性，避免陈旧数据影响分析结果。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="section-header">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">补充说明</h2>
+      <ul class="list-disc pl-6 text-gray-700 space-y-2 mb-6">
+        <li>所有字段均为字符串类型，便于灵活存储与跨系统兼容，实际业务中可根据需要在数据仓库层进行类型转换。</li>
+        <li><code>chat_type</code> 的枚举值应由业务系统统一维护，建议在元数据管理平台中建立标准字典表，避免自由文本导致的分类混乱。</li>
+        <li><code>uuid</code> 与 <code>user_id</code> 为关键索引字段，建议在数据库中建立联合索引以提升查询性能。</li>
+        <li><code>update_time</code> 字段建议采用 ISO 8601 格式（如：2025-11-07T10:30:00Z）以确保时区一致性。</li>
+      </ul>
+    </section>
+    <section class="section-header">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">数据使用建议</h2>
+      <p class="text-gray-700 leading-relaxed mb-4">
+        本数据字典为数据治理平台的核心参考依据，建议数据分析师、产品运营与开发团队在使用 <code>lingma_chat_info</code> 表时严格遵循字段定义，避免语义误用。在构建报表或模型时，应优先使用 <code>uuid</code> 作为会话粒度的唯一标识，结合 <code>chat_turns</code> 与 <code>chat_type</code> 进行多维分析，以挖掘用户行为模式与服务瓶颈。<cite><a href="https://lingma_chat_info_字段注释说明.md" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+      </p>
+    </section>
+  </div>
+  <footer class="footer">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

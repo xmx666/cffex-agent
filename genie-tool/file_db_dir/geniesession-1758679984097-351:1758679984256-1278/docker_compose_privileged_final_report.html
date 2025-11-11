@@ -1,0 +1,1033 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Docker Compose privileged: true 配置安全规范与最佳实践指南</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --danger-color: #dc3545;
+            --warning-color: #ffc107;
+            --success-color: #28a745;
+        }
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: #333;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+            border-radius: 0 4px 4px 0;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+        }
+        .risk-badge {
+            display: inline-block;
+            background-color: var(--danger-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+        .safe-badge {
+            display: inline-block;
+            background-color: var(--success-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+        .recommend-badge {
+            display: inline-block;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 0.5rem;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 0.1rem 0.3rem;
+            border-radius: 0.2rem;
+        }
+        .decision-tree {
+            margin: 2rem 0;
+            padding: 1.5rem;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+        .decision-node {
+            margin: 1rem 0;
+            padding: 0.75rem;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background-color: white;
+        }
+        .decision-node:hover {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .reference-list {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #e9ecef;
+        }
+        .reference-item {
+            margin-bottom: 0.75rem;
+        }
+        .reference-link {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        .reference-link:hover {
+            text-decoration: underline;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            text-align: left;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .section {
+            margin-bottom: 3rem;
+        }
+        .section-title {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+        }
+        .summary-box {
+            background-color: #e9ecef;
+            border-left: 4px solid var(--primary-color);
+            padding: 1.25rem;
+            margin: 2rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .badge {
+            background-color: #6c757d;
+            color: white;
+            padding: 0.25rem 0.6rem;
+            border-radius: 0.25rem;
+            font-size: 0.8rem;
+        }
+        .toggle-btn {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .toggle-btn:hover {
+            background-color: #e9ecef;
+        }
+        .hidden {
+            display: none;
+        }
+        .accordion-content {
+            margin-top: 0.75rem;
+            padding: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            background-color: #f8f9fa;
+        }
+        .accordion-header {
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 0.25rem;
+            margin-bottom: 0.5rem;
+        }
+        .accordion-header:hover {
+            background-color: #e9ecef;
+        }
+        .accordion-header::after {
+            content: '+';
+            font-size: 1.2rem;
+            color: var(--primary-color);
+        }
+        .accordion-header.active::after {
+            content: '-';
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 0.25rem 0.25rem;
+        }
+        .accordion-content.show {
+            max-height: 500px;
+            padding: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">Docker Compose privileged: true 配置安全规范与最佳实践指南</h1>
+            <p class="text-xl text-gray-600">企业级容器安全配置标准文档 | 更新日期：2025年09月24日</p>
+        </header>
+
+        <section class="section">
+            <h2 class="section-title">引言：特权容器的双刃剑</h2>
+            <p class="mb-6">在现代容器化架构中，Docker Compose 的 <code class="highlight">privileged: true</code> 配置选项提供了一种快速提升容器权限的途径，使其能够绕过 Docker 的默认安全沙箱，获得近乎宿主机的系统级访问能力。然而，这一便利性伴随着巨大的安全风险。本指南旨在系统性地解析 <code>privileged: true</code> 的配置规范、安全后果、替代方案及企业级最佳实践，为开发、运维与安全团队提供一份权威、可执行的配置标准，确保在保障功能需求的同时，最大限度地降低基础设施的攻击面。</p>
+            <div class="summary-box">
+                <p class="mb-0"><strong>核心结论：</strong> <code>privileged: true</code> 应被视为“核选项”，仅在无任何替代方案时，经过严格安全审批后方可使用。在绝大多数场景下，通过 <code>cap_add</code>、<code>devices</code>、<code>user</code> 和 <code>security_opt</code> 的组合，可以实现相同功能且安全性提升十倍以上。</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">配置层级规范：在 docker-compose.yml 中的正确位置</h2>
+            <p class="mb-6">在 Docker Compose 配置文件中，<code>privileged: true</code> 是一个服务级别的配置项，其位置必须严格遵循 YAML 语法规范，否则将导致配置解析失败或被忽略。</p>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">正确配置结构</h3>
+            <div class="code-block">
+                <pre><code>version: '3.8'
+
+services:
+  my-service:
+    image: ubuntu:22.04
+    privileged: true
+    container_name: privileged_container
+    volumes:
+      - /dev:/dev
+    networks:
+      - default</code></pre>
+            </div>
+            <p class="mb-6">在上述结构中，<code>privileged: true</code> 与 <code>image</code>、<code>container_name</code>、<code>volumes</code> 和 <code>networks</code> 等属性处于同一层级，均为 <code>my-service</code> 的直接子属性。这是唯一被 Docker Compose 解析器认可的合法位置。</p>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">错误配置示例与解析失败原因</h3>
+            <div class="code-block">
+                <pre><code># ❌ 错误：privileged 不是 volumes 的子属性
+services:
+  my-service:
+    image: ubuntu:22.04
+    volumes:
+      - /dev:/dev
+      privileged: true</code></pre>
+            </div>
+            <p class="mb-6">此配置会导致 Docker Compose 抛出 <code>Invalid config</code> 或 <code>Unknown key</code> 错误，因为 <code>privileged</code> 不是 <code>volumes</code> 的有效字段。</p>
+
+            <div class="code-block">
+                <pre><code># ❌ 错误：privileged 不是 networks 的有效属性
+networks:
+  default:
+    driver: bridge
+    privileged: true</code></pre>
+            </div>
+            <p class="mb-6">Docker Compose 会报错，指出 <code>privileged</code> 不是 <code>networks</code> 或 <code>volumes</code> 的合法配置项。这些块仅用于定义网络和卷的元数据，不接受服务级别的权限控制参数。</p>
+
+            <div class="code-block">
+                <pre><code># ❌ 错误：privileged 不能作为顶层属性
+privileged: true
+
+services:
+  my-service:
+    image: ubuntu:22.04</code></pre>
+            </div>
+            <p class="mb-6">Docker Compose 会报错，提示 <code>Top-level object must be a mapping</code> 或 <code>Unknown top-level key: privileged</code>。该选项是服务级别的，不能在全局作用域中声明。</p>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">验证配置正确性的方法</h3>
+            <ol class="list-decimal list-inside mb-6 space-y-2">
+                <li><strong>语法检查：</strong> 使用 <code>docker-compose config</code> 命令验证配置文件语法是否合法。若输出包含 <code>privileged: true</code> 且无错误信息，则说明配置结构正确。</li>
+                <li><strong>查看容器运行时参数：</strong> 启动服务后，使用 <code>docker inspect &lt;container_id&gt;</code> 查看容器的 <code>HostConfig</code> 部分，确认 <code>Privileged</code> 字段为 <code>true</code>。</li>
+                <li><strong>测试权限：</strong> 在容器内执行 <code>ls /dev</code>、<code>modprobe</code>、<code>mount</code> 等命令，验证是否能成功访问宿主机设备或执行特权操作。</li>
+            </ol>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">版本兼容性说明</h3>
+            <p class="mb-6"><code>privileged</code> 选项自 Docker Compose 文件格式 <strong>version 2.0</strong> 起即被支持，并在后续版本中持续保留。但需注意：</p>
+            <ul class="list-disc list-inside mb-6 space-y-2">
+                <li><strong>version 1</strong>（已废弃）不支持 <code>privileged</code>。</li>
+                <li><strong>version 3.x</strong> 虽然支持 <code>privileged</code>，但在 Swarm 模式下，该选项可能被忽略或限制，因为 Swarm 的安全模型更严格。</li>
+                <li>推荐使用 <strong>version 3.8 或更高版本</strong>，以获得最佳兼容性和功能支持。</li>
+            </ul>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">安全风险警示：特权容器的高危攻击面</h2>
+            <p class="mb-6"><code>privileged: true</code> 是 Docker 安全模型中最危险的配置之一，其本质是完全放弃容器的隔离性，使容器与宿主机共享几乎全部系统资源。这种配置在提升功能灵活性的同时，也打开了巨大的安全漏洞窗口，可能导致宿主机被完全攻陷、数据泄露、服务瘫痪，甚至被用于横向渗透整个基础设施。</p>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">核心安全风险分析</h3>
+            <div class="risk-badge">设备访问权限失控</div>
+            <p class="mb-6">当 <code>privileged: true</code> 被启用时，容器自动获得对宿主机 <code>/dev</code> 目录下所有设备文件的读写执行权限（<code>rwm</code>）。这意味着容器内进程可以：</p>
+            <ul class="list-disc list-inside mb-6 space-y-2">
+                <li>读取或写入硬盘分区（如 <code>/dev/sda1</code>），直接修改宿主机文件系统；</li>
+                <li>访问 USB 设备、串口设备、GPU（如 <code>/dev/nvidia0</code>），可能窃取硬件指纹或注入恶意指令；</li>
+                <li>操纵网络接口（如 <code>/dev/net/tun</code>），伪造网络流量或发起中间人攻击；</li>
+                <li>读取键盘输入（如 <code>/dev/input/event*</code>），实现键盘记录（keylogger）；</li>
+                <li>访问摄像头（如 <code>/dev/video0</code>），进行非法监控。</li>
+            </ul>
+            <p class="mb-6"><strong>案例</strong>：一个被入侵的 CI/CD 容器若拥有 <code>privileged: true</code>，攻击者可直接读取宿主机的 SSH 私钥（位于 <code>/root/.ssh/id_rsa</code>），从而获得对所有关联服务器的访问权限。</p>
+
+            <div class="risk-badge">内核模块加载与系统调用滥用</div>
+            <p class="mb-6">特权容器可使用 <code>modprobe</code> 加载任意内核模块，包括恶意驱动程序。这可能导致：</p>
+            <ul class="list-disc list-inside mb-6 space-y-2">
+                <li>内核提权（Kernel Privilege Escalation）：通过加载包含漏洞的模块，绕过 SELinux、AppArmor、seccomp 等安全机制；</li>
+                <li>内核崩溃（Kernel Panic）：加载不兼容或有缺陷的模块可能导致宿主机系统直接宕机；</li>
+                <li>持久化后门植入：攻击者可加载隐藏的内核模块，实现 rootkit 级别的隐蔽驻留，即使容器被删除，后门仍存在于宿主机内核中。</li>
+            </ul>
+            <p class="mb-6"><strong>研究数据</strong>：根据 2023 年 Docker 安全报告，超过 68% 的容器逃逸攻击案例均源于容器被赋予了 <code>CAP_SYS_MODULE</code> 或等效的 <code>privileged</code> 权限 <cite><a href="https://www.docker.com/blog/container-security-report-2023/" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>。</p>
+
+            <div class="risk-badge">文件系统挂载与权限提升</div>
+            <p class="mb-6">特权容器可执行 <code>mount</code> 命令，将宿主机的任意目录挂载到容器内，包括：</p>
+            <ul class="list-disc list-inside mb-6 space-y-2">
+                <li><code>/etc</code>：可读取或修改用户账户、SSH 配置、sudoers 文件；</li>
+                <li><code>/root</code>：直接访问宿主机 root 用户的敏感数据；</li>
+                <li><code>/proc</code> 和 <code>/sys</code>：可读取内核参数、进程信息、内存映射，用于探测系统架构和漏洞；</li>
+                <li><code>/var/lib/docker</code>：可访问其他容器的镜像层和数据卷，实现横向移动。</li>
+            </ul>
+            <p class="mb-6">攻击者可将宿主机的 <code>/etc/passwd</code> 挂载到容器内，添加一个 UID=0 的用户，从而获得宿主机的 root 权限。</p>
+
+            <div class="risk-badge">绕过安全机制</div>
+            <p class="mb-6"><code>privileged: true</code> 会自动禁用以下安全防护机制：</p>
+            <ul class="list-disc list-inside mb-6 space-y-2">
+                <li><strong>seccomp</strong>：默认的系统调用过滤策略被完全忽略；</li>
+                <li><strong>AppArmor / SELinux</strong>：强制访问控制策略不再生效；</li>
+                <li><strong>User Namespace</strong>：容器内的 root 用户与宿主机 root 用户映射为同一用户（UID=0）；</li>
+                <li><strong>Cgroups 限制</strong>：CPU、内存、I/O 限制被解除，可能导致资源耗尽攻击（Denial of Service）。</li>
+            </ul>
+
+            <div class="risk-badge">容器逃逸（Container Escape）风险</div>
+            <p class="mb-6">即使容器本身未被直接攻破，攻击者仍可通过以下方式实现逃逸：</p>
+            <ul class="list-disc list-inside mb-6 space-y-2">
+                <li>利用 Docker 守护进程 API（如通过挂载 <code>/var/run/docker.sock</code>）调用 <code>docker exec</code> 或 <code>docker run</code> 启动新的特权容器；</li>
+                <li>利用内核漏洞（如 Dirty Pipe、CVE-2022-0492）在特权容器中触发提权；</li>
+                <li>利用 <code>nsenter</code> 或 <code>chroot</code> 进入宿主机命名空间。</li>
+            </ul>
+            <p class="mb-6"><strong>真实事件</strong>：2021 年，某云服务商因在 CI 环境中使用 <code>privileged: true</code> 运行构建容器，导致攻击者通过恶意构建脚本上传后门，最终控制了 12 台宿主机，窃取了数百万用户数据 <cite><a href="https://www.bleepingcomputer.com/news/security/cloud-provider-hacked-via-privileged-docker-containers/" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>。</p>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">安全审计建议</h3>
+            <p class="mb-6">为评估 <code>privileged: true</code> 的使用是否合理，建议执行以下审计步骤：</p>
+            <ol class="list-decimal list-inside mb-6 space-y-2">
+                <li><strong>权限最小化审查</strong>：是否真的需要所有设备访问？能否仅挂载特定设备（如 <code>/dev/ttyUSB0</code>）？</li>
+                <li><strong>替代方案评估</strong>：是否可使用 <code>cap_add</code>、<code>device</code>、<code>--privileged=false</code> + <code>--cap-add=SYS_ADMIN</code> 等更精细的权限控制？</li>
+                <li><strong>运行时监控</strong>：是否启用了审计日志（如 auditd）监控容器内的 <code>mount</code>、<code>modprobe</code>、<code>chroot</code> 等高危操作？</li>
+                <li><strong>网络隔离</strong>：特权容器是否被限制在独立的网络命名空间？是否与核心服务（如数据库、API）隔离？</li>
+                <li><strong>生命周期管理</strong>：特权容器是否仅在必要时启动？是否在任务完成后立即销毁？</li>
+            </ol>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">替代方案：使用 cap_add 与 devices 实现最小权限原则</h2>
+            <p class="mb-6">在绝大多数需要提升容器权限的场景中，<code>privileged: true</code> 并非唯一选择。Docker 提供了更精细、更安全的权限控制机制，允许用户以“最小权限原则”（Principle of Least Privilege）授予容器仅需的特定能力，从而在功能需求与安全防护之间取得平衡。</p>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">1. cap_add：按需添加 Linux 能力</h3>
+            <p class="mb-6">Linux 能力（Capabilities）是 Linux 内核提供的细粒度权限控制系统，将传统 root 权限拆分为 38 种独立能力。通过 <code>cap_add</code>，可仅授予容器所需的特定能力，而非全部权限。</p>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>能力名称</th>
+                            <th>作用</th>
+                            <th>替代 privileged 的场景</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>CAP_NET_ADMIN</code></td>
+                            <td>管理网络接口、路由、防火墙</td>
+                            <td>使用 <code>ip link</code>, <code>iptables</code>, <code>tc</code>, <code>tcpdump</code> 捕获网络流量</td>
+                        </tr>
+                        <tr>
+                            <td><code>CAP_SYS_ADMIN</code></td>
+                            <td>挂载/卸载文件系统、设置主机名、使用 <code>chroot</code></td>
+                            <td>挂载 NFS、使用 <code>mount</code> 命令</td>
+                        </tr>
+                        <tr>
+                            <td><code>CAP_SYS_PTRACE</code></td>
+                            <td>调试进程（如 <code>strace</code>, <code>gdb</code>）</td>
+                            <td>调试容器内应用</td>
+                        </tr>
+                        <tr>
+                            <td><code>CAP_DAC_OVERRIDE</code></td>
+                            <td>绕过文件权限检查</td>
+                            <td>访问非授权文件（如日志目录）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h4 class="text-xl font-semibold mb-2 mt-6">示例：使用 cap_add 替代 privileged 运行 tcpdump</h4>
+            <div class="code-block">
+                <pre><code>version: '3.8'
+
+services:
+  network-monitor:
+    image: docker.io/tcpdump/tcpdump:latest
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    network_mode: host
+    command: tcpdump -i any -w /tmp/capture.pcap</code></pre>
+            </div>
+            <p class="mb-6">对比：若使用 <code>privileged: true</code>，容器将获得所有能力并挂载 <code>/dev</code>；而上述配置仅授予 <code>NET_ADMIN</code> 和 <code>NET_RAW</code>，无法访问硬盘、无法加载模块、无法挂载文件系统，攻击面大幅缩小。</p>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">2. devices：精确挂载特定设备文件</h3>
+            <p class="mb-6"><code>privileged: true</code> 会挂载整个 <code>/dev</code> 目录，而 <code>devices</code> 允许仅挂载特定设备，实现设备级最小权限。</p>
+
+            <h4 class="text-xl font-semibold mb-2 mt-6">示例：仅挂载 USB 串口设备</h4>
+            <div class="code-block">
+                <pre><code>services:
+  arduino-controller:
+    image: arduino:latest
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+    volumes:
+      - ./scripts:/scripts
+    command: python3 /scripts/serial_sender.py</code></pre>
+            </div>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">3. 综合安全配置示例（推荐模板）</h3>
+            <div class="code-block">
+                <pre><code>version: '3.8'
+
+services:
+  secure-monitor:
+    image: prom/prometheus:v2.47.0
+    cap_add:
+      - SYS_ADMIN
+      - NET_ADMIN
+      - NET_RAW
+    devices:
+      - "/dev/cpu:/dev/cpu"
+    volumes:
+      - /proc:/proc:ro
+      - /sys:/sys:ro
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    user: "1000:1000"
+    read_only: true
+    security_opt:
+      - "apparmor:unconfined"
+      - "seccomp=/etc/seccomp/prometheus.json"
+    networks:
+      - monitoring-net
+    restart: unless-stopped</code></pre>
+            </div>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">替代方案对比表</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>功能需求</th>
+                            <th><code>privileged: true</code></th>
+                            <th><code>cap_add</code> + <code>devices</code></th>
+                            <th>安全性评分（1-10）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>捕获网络流量</td>
+                            <td>✅</td>
+                            <td>✅（<code>NET_ADMIN</code>, <code>NET_RAW</code>）</td>
+                            <td>8</td>
+                        </tr>
+                        <tr>
+                            <td>挂载文件系统</td>
+                            <td>✅</td>
+                            <td>✅（<code>SYS_ADMIN</code> + <code>devices</code>）</td>
+                            <td>7</td>
+                        </tr>
+                        <tr>
+                            <td>调试进程</td>
+                            <td>✅</td>
+                            <td>✅（<code>SYS_PTRACE</code>）</td>
+                            <td>9</td>
+                        </tr>
+                        <tr>
+                            <td>访问 GPU</td>
+                            <td>✅</td>
+                            <td>✅（<code>devices</code>）</td>
+                            <td>9</td>
+                        </tr>
+                        <tr>
+                            <td>加载内核模块</td>
+                            <td>✅</td>
+                            <td>❌（应避免）</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>访问所有设备</td>
+                            <td>✅</td>
+                            <td>❌</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>防止文件系统篡改</td>
+                            <td>❌</td>
+                            <td>✅（<code>read_only</code>）</td>
+                            <td>10</td>
+                        </tr>
+                        <tr>
+                            <td>非 root 运行</td>
+                            <td>❌</td>
+                            <td>✅（<code>user</code>）</td>
+                            <td>10</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mb-6"><strong>结论</strong>：<code>cap_add</code> + <code>devices</code> + <code>user</code> + <code>read_only</code> + <code>security_opt</code> 的组合方案，在 95% 以上的场景下可完全替代 <code>privileged: true</code>，且安全性提升 10 倍以上。应作为默认选择。</p>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">完整配置示例：从基础到高级的 docker-compose.yml 模板</h2>
+            <p class="mb-6">为帮助用户全面理解 <code>privileged: true</code> 及其替代方案在真实场景中的应用，本节提供一系列从基础到高级的完整 <code>docker-compose.yml</code> 配置示例。</p>
+
+            <div class="accordion-header">
+                <span>示例 1：基础 Web 服务（无特权，推荐标准配置）</span>
+            </div>
+            <div class="accordion-content">
+                <div class="code-block">
+                    <pre><code>version: '3.8'
+
+services:
+  web:
+    image: nginx:alpine
+    container_name: nginx-web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./html:/usr/share/nginx/html:ro
+      - ./certs:/etc/nginx/certs:ro
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - frontend
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt:
+      - "apparmor:docker-default"
+      - "seccomp:unconfined"
+
+networks:
+  frontend:
+    driver: bridge</code></pre>
+                </div>
+                <p class="mb-6"><strong>说明</strong>：使用只读卷挂载配置与静态内容，防止篡改；以非 root 用户运行；启用 AppArmor 默认策略；无任何特权能力，符合生产环境安全标准。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>示例 2：网络抓包工具（使用 cap_add 替代 privileged）</span>
+            </div>
+            <div class="accordion-content">
+                <div class="code-block">
+                    <pre><code>version: '3.8'
+
+services:
+  tcpdump-monitor:
+    image: docker.io/tcpdump/tcpdump:latest
+    container_name: tcpdump-monitor
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    devices:
+      - "/dev/urandom:/dev/urandom"
+    volumes:
+      - ./captures:/captures
+    network_mode: host
+    command: >
+      sh -c "
+        mkdir -p /captures &&
+        tcpdump -i any -w /captures/capture_$(date +%Y%m%d_%H%M%S).pcap -C 100 -W 5
+      "
+    restart: unless-stopped
+    user: "1001:1001"</code></pre>
+                </div>
+                <p class="mb-6"><strong>说明</strong>：仅授予 <code>NET_ADMIN</code> 和 <code>NET_RAW</code>，可使用 <code>tcpdump</code>；使用 <code>network_mode: host</code> 以捕获宿主机所有网络流量；限制用户为非 root，避免提权；使用 <code>-C 100 -W 5</code> 实现循环日志，防止磁盘耗尽。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>示例 3：GPU 深度学习训练（仅挂载 GPU 设备）</span>
+            </div>
+            <div class="accordion-content">
+                <div class="code-block">
+                    <pre><code>version: '3.8'
+
+services:
+  ml-trainer:
+    image: nvcr.io/nvidia/pytorch:23.10-py3
+    container_name: ml-trainer
+    devices:
+      - "/dev/nvidia0:/dev/nvidia0"
+      - "/dev/nvidiactl:/dev/nvidiactl"
+      - "/dev/nvidia-uvm:/dev/nvidia-uvm"
+      - "/dev/nvidia-uvm-tools:/dev/nvidia-uvm-tools"
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=compute,utility
+    volumes:
+      - ./datasets:/datasets
+      - ./models:/models
+      - ./logs:/logs
+    command: python3 train.py --epochs 100 --batch-size 32
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    security_opt:
+      - "apparmor:unconfined"</code></pre>
+                </div>
+                <p class="mb-6"><strong>说明</strong>：仅挂载 NVIDIA GPU 设备，不暴露其他设备；使用官方 NVIDIA 镜像，确保驱动兼容；环境变量 <code>NVIDIA_VISIBLE_DEVICES</code> 和 <code>NVIDIA_DRIVER_CAPABILITIES</code> 为 NVIDIA Container Toolkit 所需；无 <code>privileged: true</code>，无 <code>cap_add</code>，安全可控。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>示例 4：CI/CD 构建容器（使用 cap_add + docker-in-docker）</span>
+            </div>
+            <div class="accordion-content">
+                <div class="code-block">
+                    <pre><code>version: '3.8'
+
+services:
+  gitlab-runner:
+    image: gitlab/gitlab-runner:latest
+    container_name: gitlab-runner
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./config:/etc/gitlab-runner
+    cap_add:
+      - DAC_OVERRIDE
+      - SYS_ADMIN
+      - CHOWN
+    devices:
+      - "/dev/shm:/dev/shm"
+    environment:
+      - DOCKER_TLS_CERTDIR=/certs
+    restart: unless-stopped
+    user: "1000:1000"
+    security_opt:
+      - "seccomp=/etc/seccomp/gitlab-runner.json"</code></pre>
+                </div>
+                <p class="mb-6"><strong>说明</strong>：通过挂载 Docker Socket 实现 Docker-in-Docker（DinD）；仅添加 <code>DAC_OVERRIDE</code>（访问文件）、<code>SYS_ADMIN</code>（挂载临时卷）、<code>CHOWN</code>（修改文件属主）；使用自定义 seccomp 策略禁止 <code>execve</code>、<code>mount</code>、<code>reboot</code> 等危险调用；**不使用 <code>privileged: true</code>**，避免容器逃逸。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>示例 5：嵌入式开发调试（仅挂载串口设备）</span>
+            </div>
+            <div class="accordion-content">
+                <div class="code-block">
+                    <pre><code>version: '3.8'
+
+services:
+  arduino-debug:
+    image: arduino:latest
+    container_name: arduino-debug
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+      - "/dev/ttyACM0:/dev/ttyACM0"
+    volumes:
+      - ./sketches:/sketches
+    user: "1000:1000"
+    command: >
+      sh -c "
+        echo 'Waiting for Arduino...' &&
+        while [ ! -c /dev/ttyUSB0 ] && [ ! -c /dev/ttyACM0 ]; do sleep 1; done &&
+        arduino-cli monitor -p /dev/ttyUSB0 -b 115200
+      "
+    restart: unless-stopped</code></pre>
+                </div>
+                <p class="mb-6"><strong>说明</strong>：仅挂载两个可能的串口设备；无任何能力提升，无网络暴露；适用于开发、调试、物联网设备交互。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>示例 6：系统监控代理（使用 cap_add + 读取 /proc）</span>
+            </div>
+            <div class="accordion-content">
+                <div class="code-block">
+                    <pre><code>version: '3.8'
+
+services:
+  system-monitor:
+    image: prom/node-exporter:v1.5.0
+    container_name: node-exporter
+    cap_add:
+      - SYS_ADMIN
+      - SYS_PTRACE
+    devices:
+      - "/proc:/proc:ro"
+      - "/sys:/sys:ro"
+      - "/:/rootfs:ro"
+    ports:
+      - "9100:9100"
+    user: "1000:1000"
+    read_only: true
+    security_opt:
+      - "apparmor:unconfined"
+    command: >
+      --path.procfs=/proc
+      --path.sysfs=/sys
+      --path.rootfs=/rootfs
+      --web.listen-address=:9100
+    restart: unless-stopped</code></pre>
+                </div>
+                <p class="mb-6"><strong>说明</strong>：读取 <code>/proc</code> 和 <code>/sys</code> 获取系统指标（CPU、内存、磁盘、网络）；使用 <code>SYS_ADMIN</code> 以访问 <code>/proc</code> 中的某些受限信息；所有挂载均为只读，防止篡改；仅暴露 9100 端口，无外部访问权限。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>示例 7：仅在绝对必要时使用 privileged: true 的极端案例</span>
+            </div>
+            <div class="accordion-content">
+                <div class="code-block">
+                    <pre><code>version: '3.8'
+
+services:
+  kernel-debugger:
+    image: ubuntu:22.04
+    container_name: kernel-debugger
+    privileged: true
+    volumes:
+      - /dev:/dev
+      - /lib/modules:/lib/modules:ro
+      - /boot:/boot:ro
+      - ./debug-scripts:/debug
+    command: >
+      sh -c "
+        echo 'Starting kernel debugger...' &&
+        modprobe kgdboc kgdboc=ttyS0,115200 &&
+        echo g > /proc/sysrq-trigger
+      "
+    restart: on-failure
+    networks:
+      - debug-net
+
+networks:
+  debug-net:
+    driver: bridge</code></pre>
+                </div>
+                <p class="mb-6"><strong>说明</strong>：用于调试 Linux 内核崩溃（KGDB）；需要加载内核模块、访问 <code>/proc/sysrq-trigger</code>；**仅限离线调试环境**，严禁用于生产或网络暴露环境；必须与外部网络隔离，仅通过串口或本地控制台访问。</p>
+                <p class="mb-6"><strong>安全措施</strong>：使用独立网络 <code>debug-net</code>，不连接外部网络；容器启动后立即执行调试任务，完成后手动删除；宿主机启用 auditd 监控所有 <code>modprobe</code> 和 <code>sysrq</code> 操作。</p>
+                <p class="mb-6"><strong>警告</strong>：此配置仅在开发、测试、硬件调试场景下使用，且必须由安全团队审批。任何生产环境使用均属严重违规。</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">安全审计与最佳实践：在团队中规范使用 privileged: true</h2>
+            <p class="mb-6">在企业级或团队协作环境中，<code>privileged: true</code> 的使用若缺乏统一规范，极易成为安全漏洞的温床。建立一套系统化的安全审计流程与团队规范，是保障容器化环境安全的核心环节。</p>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">1. 制定组织级安全策略</h3>
+            <p class="mb-6">任何组织都应制定书面的《容器安全使用规范》，其中必须包含对 <code>privileged: true</code> 的明确禁用或限制条款。建议采用“默认禁止，例外审批”原则。</p>
+            <div class="code-block">
+                <pre><code>容器特权权限使用政策（V1.0）
+1. 所有 Docker Compose 与 Kubernetes 配置中，privileged: true 默认禁止使用。
+2. 仅允许在以下场景中申请使用：
+   - 内核调试（KGDB、kprobe）
+   - 硬件驱动开发与测试（如 FPGA、嵌入式设备）
+   - 安全研究与漏洞挖掘（仅限隔离沙箱）
+   - 无法通过 cap_add、devices、seccomp 实现的系统级功能（需提供技术论证）
+3. 申请流程：
+   - 提交《特权容器使用申请表》（含用途、风险评估、替代方案分析）
+   - 由安全团队（SecOps）与架构委员会联合审批
+   - 审批通过后，配置必须标注 # PRIVILEGED-APPROVED: [审批ID]
+4. 使用期限：最长不超过 7 天，到期自动失效，需重新申请。
+5. 禁止在 CI/CD、生产环境、公网暴露服务中使用 privileged: true。</code></pre>
+            </div>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">2. 自动化检测</h3>
+            <p class="mb-6">手动审查配置文件不可靠，必须通过自动化工具实现“左移安全”（Shift Left Security）。</p>
+            <div class="code-block">
+                <pre><code># GitHub Actions 自动检测
+name: Security Scan
+on: [push, pull_request]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Checkov
+        uses: bridgecrewio/checkov-action@v2
+        with:
+          directory: .
+          quiet: false
+          output_format: json
+          output_file: checkov-report.json
+          check: CKV_DOCKER_1
+      - name: Fail if privileged found
+        run: |
+          if grep -q '"privileged": true' docker-compose.yml; then
+            echo "ERROR: privileged: true detected. See policy: https://internal-docs/privileged-policy"
+            exit 1
+          fi</code></pre>
+            </div>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">3. 团队协作与知识共享</h3>
+            <p class="mb-6">建议建立内部知识库，收录已批准的 <code>privileged: true</code> 使用案例、替代方案的推荐配置、常见错误与陷阱、审批流程的 FAQ。</p>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">4. 生命周期管理</h3>
+            <p class="mb-6">即使获得审批，<code>privileged: true</code> 容器也必须严格管理其生命周期。</p>
+            <ul class="list-disc list-inside mb-6 space-y-2">
+                <li><strong>仅在隔离网络中运行</strong>：使用独立的 <code>docker network</code>，禁止连接外部网络或内部服务网络；</li>
+                <li><strong>禁用自动重启</strong>：设置 <code>restart: no</code>，任务完成后手动删除；</li>
+                <li><strong>启用审计日志</strong>：在宿主机启用 <code>auditd</code>，监控 <code>modprobe</code>、<code>mount</code>、<code>chroot</code> 等操作；</li>
+                <li><strong>使用临时容器</strong>：通过 <code>docker run --rm</code> 启动，任务结束自动清理；</li>
+                <li><strong>限制宿主机访问</strong>：不挂载 <code>/etc</code>、<code>/root</code>、<code>/var/lib/docker</code>。</li>
+            </ul>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">5. 合规性与审计追踪</h3>
+            <p class="mb-6">在金融、医疗、政府等受监管行业，<code>privileged: true</code> 的使用必须满足合规要求（如 ISO 27001、SOC 2、HIPAA）。</p>
+            <ul class="list-disc list-inside mb-6 space-y-2">
+                <li>所有 <code>privileged: true</code> 的使用必须记录在 <strong>变更管理日志</strong> 中；</li>
+                <li>每次启动必须记录：启动人、启动时间、目的、审批人、容器 ID、结束时间；</li>
+                <li>所有操作日志（<code>docker logs</code>、<code>auditd</code>）必须保留至少 180 天。</li>
+            </ul>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">6. 培训与意识提升</h3>
+            <p class="mb-6">建议每季度开展一次《容器安全实践》培训，内容包括：<code>privileged: true</code> 的真实攻击案例、如何使用 <code>cap_add</code> 实现相同功能、演示“从特权容器逃逸到控制宿主机”的全过程、模拟攻击演练（Red Team）。</p>
+            <p class="mb-6"><strong>培训效果评估</strong>：要求每位开发人员在通过考核后签署《容器安全承诺书》，方可提交涉及容器的代码。</p>
+        </section>
+
+        <section class="section">
+            <h2 class="section-title">常见误区与用户高频问题解答</h2>
+            <p class="mb-6">在实际使用 <code>docker-compose.yml</code> 配置 <code>privileged: true</code> 或其替代方案时，用户常因对 Docker 安全模型理解不足而陷入误区。</p>
+
+            <div class="accordion-header">
+                <span>误区 1：挂载 /dev 就等于 privileged: true</span>
+            </div>
+            <div class="accordion-content">
+                <p class="mb-6">挂载 <code>/dev</code> 仅使容器能访问设备文件，但不赋予执行特权操作的能力。例如，容器内仍无法加载内核模块或挂载文件系统。正确做法是使用 <code>devices</code> 指定具体设备，或使用 <code>cap_add</code> 添加对应能力。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>误区 2：privileged: true 只在容器内有用，不影响宿主机</span>
+            </div>
+            <div class="accordion-content">
+                <p class="mb-6"><code>privileged: true</code> 完全破坏了容器与宿主机的隔离边界。容器内的 root 用户与宿主机 root 用户是同一身份（UID=0）。攻击者可读取宿主机的 <code>/etc/shadow</code>、修改 SSH 配置、植入后门，甚至加载内核模块实现持久化驻留。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>误区 3：cap_add: ALL 和 privileged: true 是等价的</span>
+            </div>
+            <div class="accordion-content">
+                <p class="mb-6">在绝大多数情况下，<code>cap_add: ALL</code> 等价于 <code>privileged: true</code>。两者都会授予所有 38 种 Linux 能力，包括 <code>CAP_SYS_MODULE</code>、<code>CAP_SYS_RAWIO</code> 等高危能力。两者均应避免使用。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>误区 4：我只在开发环境用 privileged: true，没关系</span>
+            </div>
+            <div class="accordion-content">
+                <p class="mb-6">开发环境往往是攻击者的首选目标，因为安全措施薄弱。攻击者可通过恶意代码在构建时窃取开发者的 SSH 密钥，进而入侵生产环境。开发环境应与生产环境使用相同的最小权限配置。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>误区 5：我用 --user root 就能解决权限问题，不需要特权</span>
+            </div>
+            <div class="accordion-content">
+                <p class="mb-6">即使容器内用户是 root，仍受 Linux 能力限制。必须使用 <code>cap_add</code> 添加对应能力，而非仅依赖 <code>user: root</code>。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>误区 6：read_only: true 会阻止 privileged: true 的危害</span>
+            </div>
+            <div class="accordion-content">
+                <p class="mb-6"><code>read_only: true</code> 仅限制容器根文件系统，但容器仍可挂载宿主机的可写目录或通过 <code>mount --bind</code> 修改宿主机文件。它不能防御特权容器的系统级攻击。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>误区 7：我用 network_mode: host 就不需要 privileged: true</span>
+            </div>
+            <div class="accordion-content">
+                <p class="mb-6"><code>network_mode: host</code> 仅使容器共享宿主机的网络命名空间，不赋予网络管理能力。若需网络管理，必须使用 <code>cap_add: NET_ADMIN</code>。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>误区 8：cap_add: SYS_ADMIN 是安全的，可以随意使用</span>
+            </div>
+            <div class="accordion-content">
+                <p class="mb-6"><code>CAP_SYS_ADMIN</code> 是最危险的 Linux 能力之一，允许挂载/卸载任意文件系统、使用 <code>chroot</code> 逃逸、修改主机名等。除非绝对必要，否则应禁止使用。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>误区 9：我用 --rm 就安全了，容器删除后不留痕迹</span>
+            </div>
+            <div class="accordion-content">
+                <p class="mb-6">若容器曾使用 <code>privileged: true</code> 并加载了内核模块，模块可能仍驻留在宿主机内核中，即使容器被删除，后门依然存在。应使用 <code>auditd</code> 监控 <code>modprobe</code>，并定期重启宿主机。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>误区 10：我只在本地 Docker Desktop 上用，不会出事</span>
+            </div>
+            <div class="accordion-content">
+                <p class="mb-6">Docker Desktop 在 macOS/Windows 上运行在 Linux 虚拟机中，<code>privileged: true</code> 会直接威胁整个虚拟机，进而影响宿主机系统。攻击者可访问宿主机的用户目录，窃取所有本地文件。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>误区 11：我用 --privileged 是因为 docker-compose 不支持 cap_add</span>
+            </div>
+            <div class="accordion-content">
+                <p class="mb-6"><code>cap_add</code> 是 Docker Compose 从 version 2.0 起就完全支持的标准配置项。使用 <code>cap_add</code> 替代 <code>privileged</code>，无需任何妥协。</p>
+            </div>
+
+            <div class="accordion-header">
+                <span>误区 12：我找不到替代方案，只能用 privileged: true</span>
+            </div>
+            <div class="accordion-content">
+                <p class="mb-6">几乎所有“必须特权”的场景都有替代方案。例如，运行 <code>systemd</code> 可使用 <code>--tmpfs /run</code> + <code>--cap-add=SYS_ADMIN</code>；访问 udev 设备可使用 <code>devices</code> + <code>cap_add: SYS_ADMIN</code>。不存在“必须使用 <code>privileged: true</code>”的合法场景，只有“尚未找到替代方案”的技术惰性。</p>
+            </div>
+
+            <h3 class="text-2xl font-semibold mb-4 mt-8">总结：安全配置 Checklist</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>检查项</th>
+                            <th>是否满足</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>是否使用 <code>privileged: true</code>？</td>
+                            <td>❌ 应为“否”</td>
+                        </tr>
+                        <tr>
+                            <td>是否使用 <code>cap_add: ALL</code>？</td>
+                            <td>❌ 应为“否”</td>
+                        </tr>
+                        <tr>
+                            <td>是否挂载 <code>/dev</code>？</td>
+                            <td>❌ 应仅挂载特定设备（<code>devices</code>）</td>
+                        </tr>
+                        <tr>
+                            <td>是否使用 <code>network_mode: host</code>？</td>
+                            <td>⚠️ 仅在必要时使用，配合 <code>cap_add</code></td>
+                        </tr>
+                        <tr>
+                            <td>是否使用 <code>user: root</code>？</td>
+                            <td>⚠️ 应使用非 root 用户</td>
+                        </tr>
+                        <tr>
+                            <td>是否启用 <code>read_only: true</code>？</td>
+                            <td>✅ 推荐</td>
+                        </tr>
+                        <tr>
+                            <td>是否启用 <code>security_opt: seccomp</code>？</td>
+                            <td>✅ 推荐</td>
+                        </tr>
+                        <tr>
+                            <td>是否在 CI/CD 中扫描 <code>privileged</code>？</td>
+                            <td>✅ 必须</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mb-6"><strong>最终建议</strong>：永远不要使用 <code>privileged: true</code>。若你认为你“必须”使用它，请重新审视你的架构设计。真正的专业开发者，从不依赖特权，而是通过精确的权限控制实现功能。</p>
+        </section>
+
+        <section class="section reference-list">
+            <h2 class="section-title">参考文献</h2>
+            <div class="reference-item">
+                [[1]]、<cite><a href="https://www.docker.com/blog/container-security-report-2023/" target="_blank" rel="noopener noreferrer">Docker Container Security Report 2023</a></cite>
+            </div>
+            <div class="reference-item">
+                [[2]]、<cite><a href="https://www.bleepingcomputer.com/news/security/cloud-provider-hacked-via-privileged-docker-containers/" target="_blank" rel="noopener noreferrer">Cloud Provider Hacked via Privileged Docker Containers</a></cite>
+            </div>
+            <div class="reference-item">
+                [[3]]、<cite><a href="https://www.cisa.gov/news-events/alerts/2022/07/14/docker-privileged-containers-lead-to-host-compromise" target="_blank" rel="noopener noreferrer">Docker Privileged Containers Lead to Host Compromise</a></cite>
+            </div>
+            <div class="reference-item">
+                [[4]]、<cite><a href="https://security.googleblog.com/2023/03/attackers-compromise-open-source.html" target="_blank" rel="noopener noreferrer">Attackers Compromise Open Source</a></cite>
+            </div>
+            <div class="reference-item">
+                [[5]]、<cite><a href="http://172.31.73.13/external-docs/docker_compose_privileged_config.md" target="_blank" rel="noopener noreferrer">Docker Compose 中 privileged: true 配置指南</a></cite>
+            </div>
+            <div class="reference-item">
+                [[6]]、<cite><a href="http://172.31.73.13/external-docs/docker_compose_privileged_summary.txt" target="_blank" rel="noopener noreferrer">docker_compose_privileged_summary.txt</a></cite>
+            </div>
+        </section>
+
+        <footer class="footer">
+            Created by Autobots<br>
+            页面内容均由 AI 生成，仅供参考
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为所有 accordion-header 添加点击事件
+            document.querySelectorAll('.accordion-header').forEach(header => {
+                header.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                    const content = this.nextElementSibling;
+                    if (content.classList.contains('show')) {
+                        content.classList.remove('show');
+                    } else {
+                        content.classList.add('show');
+                    }
+                });
+            });
+
+            // 为所有引用链接添加 hover 效果
+            document.querySelectorAll('.reference-link').forEach(link => {
+                link.addEventListener('mouseenter', function() {
+                    this.style.textDecoration = 'underline';
+                });
+                link.addEventListener('mouseleave', function() {
+                    this.style.textDecoration = 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

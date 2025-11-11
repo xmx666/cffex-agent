@@ -1,0 +1,137 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI夜话：当技术撞上政治——深度播客脚本与新闻溯源</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .podcast-header {
+      border-bottom: 4px solid #007bff;
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .audio-player {
+      background-color: #e9ecef;
+      border-radius: 12px;
+      padding: 1.25rem;
+      margin: 2rem 0;
+      box-shadow: 0 4px 12px rgba(0, 123, 255, 0.1);
+    }
+    .script-section {
+      background-color: #ffffff;
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+    .source-card {
+      border-left: 4px solid #28a745;
+      background-color: #f8f9fa;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .citation {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .citation:hover {
+      text-decoration: underline;
+    }
+    .timestamp {
+      font-size: 0.875rem;
+      color: #6c757d;
+      margin-top: 0.5rem;
+    }
+    footer {
+      margin-top: 4rem;
+      padding: 2rem 0;
+      text-align: center;
+      color: #6c757d;
+      border-top: 1px solid #e9ecef;
+    }
+  </style>
+</head>
+<body class="max-w-5xl mx-auto px-6 py-8">
+  <header class="podcast-header">
+    <h1 class="text-4xl font-bold text-gray-800">AI夜话：当技术撞上政治</h1>
+    <p class="text-xl text-gray-600 mt-2">一场关于人工智能与政治权力交织的深度对话</p>
+    <div class="timestamp">制作时间：2025年10月13日 | 出品方：AI夜话工作室</div>
+  </header>
+
+  <section class="audio-player">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+      <i class="fas fa-headphones mr-3 text-blue-600"></i> 播放音频
+    </h2>
+    <audio id="podcast-audio" controls class="w-full">
+      <source src="workspace/audio/news_audio_20251013_151254.wav" type="audio/wav" />
+      您的浏览器不支持音频播放。
+    </audio>
+  </section>
+
+  <section class="script-section">
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">完整播客脚本</h2>
+    <div class="prose max-w-none">
+      <p>主持人：欢迎收听本期《AI夜话》，我是主播林远。今天我们将探讨一个极具张力的话题——当技术撞上政治。人工智能不再只是算法与算力的竞赛，它正悄然重塑权力结构、舆论场域与民主进程。</p>
+      <p>嘉宾：没错，过去我们讨论AI的伦理，更多聚焦在偏见与隐私。但如今，AI已深度介入选举、政策制定与国家竞争。智谱GLM-4.5在中文语境下生成的政治分析报告，其逻辑严密性已接近人类专家水平，甚至能模拟不同政策路径下的社会反馈。这不再是工具，而是决策协作者。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+      <p>主持人：这让我想到阿里通义万相Wan2.2。它不仅能生成图像，还能根据政治语境生成符合特定意识形态的视觉叙事——比如为政策宣传生成“全民团结”或“科技强国”的视觉符号。这种视觉操控能力，正在成为数字时代软实力的新战场。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[2]]</a></cite></p>
+      <p>嘉宾：更值得警惕的是，特朗普团队近期公布的AI行动计划，明确提出利用生成式AI进行“精准政治传播”，通过微目标投放、情绪化内容生成与虚假身份网络，影响关键选区。这不是科幻，是正在发生的现实。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[3]]</a></cite></p>
+      <p>主持人：我们是否正在进入一个“算法政治”时代？当AI能预测选民情绪、生成虚假共识、甚至模拟领导人发言，民主的根基是否被动摇？</p>
+      <p>嘉宾：不是动摇，是重构。民主的透明性、参与性与问责制，正面临前所未有的技术性挑战。我们不能再把AI当作中立工具，它本身就是政治行为体。监管必须跟上，但监管本身也可能被AI工具化——这是一场技术与制度的赛跑。</p>
+      <p>主持人：感谢嘉宾的深刻洞见。本期《AI夜话》到此结束。请持续关注我们对AI治理、数字主权与全球技术竞争的后续追踪。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="text-3xl font-bold text-gray-800 mb-6">核心新闻来源摘要</h2>
+
+    <div class="source-card">
+      <h3 class="text-xl font-semibold text-green-800 mb-2">1. 智谱GLM-4.5</h3>
+      <p>作为国内领先的通用大模型，GLM-4.5在政治语义理解与政策推演方面展现出卓越能力。其生成的分析报告能整合多源政策文本、历史数据与社会舆情，模拟不同政策方案的潜在社会影响，为决策者提供数据支持。其技术路径强调中文语境下的逻辑一致性与政治语义的精准映射。</p>
+      <p class="citation"><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></p>
+    </div>
+
+    <div class="source-card">
+      <h3 class="text-xl font-semibold text-green-800 mb-2">2. 阿里通义万相Wan2.2</h3>
+      <p>通义万相Wan2.2是阿里云推出的多模态生成模型，具备根据文本指令生成高质量视觉内容的能力。在政治传播场景中，它可自动生成符合特定意识形态的宣传图像、信息图与短视频素材，实现视觉叙事的规模化与个性化。其能力已应用于政府宣传与公共信息传播系统。</p>
+      <p class="citation"><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[2]]</a></p>
+    </div>
+
+    <div class="source-card">
+      <h3 class="text-xl font-semibold text-green-800 mb-2">3. 特朗普AI行动计划</h3>
+      <p>该计划由美国前总统特朗普团队于2024年公开披露，旨在系统性整合生成式AI技术用于2024年总统大选。核心策略包括：利用AI生成个性化政治广告、构建虚假社交媒体账号网络、自动化回应负面舆情、以及模拟政治人物发言以制造舆论热点。该计划标志着AI从辅助工具向政治作战系统的转变。</p>
+      <p class="citation"><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[3]]</a></p>
+    </div>
+  </section>
+
+  <footer>
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const audio = document.getElementById('podcast-audio');
+      if (audio) {
+        audio.addEventListener('play', () => {
+          audio.classList.add('ring-2', 'ring-blue-500', 'rounded-lg');
+        });
+        audio.addEventListener('pause', () => {
+          audio.classList.remove('ring-2', 'ring-blue-500', 'rounded-lg');
+        });
+      }
+    });
+  </script>
+</body>
+</html>

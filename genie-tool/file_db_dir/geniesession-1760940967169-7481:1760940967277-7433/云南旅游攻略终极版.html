@@ -1,0 +1,490 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>终极版云南旅游攻略：天气、景点、行程、美食、交通与防高反全指南</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.7;
+            color: #333;
+        }
+        h1, h2, h3, h4 {
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            font-size: 2rem;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            font-size: 1.5rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: #2c3e50;
+        }
+        .section {
+            margin-bottom: 3rem;
+        }
+        .highlight {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498db;
+            padding: 1.2rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.8rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #ddd;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.3rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #3498db;
+            border: 2px solid #fff;
+            box-shadow: 0 0 0 2px #3498db;
+        }
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .item-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1.2rem;
+            background-color: #fff;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .item-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+        .item-card h4 {
+            margin-bottom: 0.8rem;
+            color: #2c3e50;
+        }
+        .table-responsive {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+        th, td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.6rem;
+            font-size: 0.85rem;
+            border-radius: 12px;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .badge-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        .badge-success {
+            background-color: #2ecc71;
+            color: white;
+        }
+        .badge-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+        .badge-danger {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .citation {
+            color: #007bff;
+            text-decoration: none;
+            border-bottom: 1px dotted #007bff;
+            transition: border-bottom 0.3s ease;
+        }
+        .citation:hover {
+            text-decoration: underline;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 2rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            color: #666;
+        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.7rem;
+            }
+            h3 {
+                font-size: 1.3rem;
+            }
+            .item-grid {
+                grid-template-columns: 1fr;
+            }
+            .timeline::before {
+                left: 1rem;
+            }
+            .timeline-item::before {
+                left: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <header class="text-center mb-12">
+            <h1>终极版云南旅游攻略：天气、景点、行程、美食、交通与防高反全指南</h1>
+            <p class="text-lg text-gray-700">2025年10月20日更新 · 一站式掌握云南旅行核心信息</p>
+        </header>
+
+        <!-- 天气 -->
+        <section class="section">
+            <h2><i class="fas fa-cloud-sun fa-fw"></i> 天气状况</h2>
+            <p>云南地处中国西南，地形复杂，气候多样，素有“一山有四季，十里不同天”之说。整体而言，云南属亚热带高原季风气候，全年温差较小，日照充足，雨量充沛，但不同区域气候差异显著。</p>
+            <p>昆明作为“春城”，四季如春，年平均气温约15℃，是理想的避寒避暑之地。而丽江、香格里拉等高海拔地区，昼夜温差大，冬季寒冷，夏季凉爽。西双版纳地处热带，全年温暖湿润，冬季平均气温在20℃以上，是避寒胜地。</p>
+            <p>雨季集中在5月至10月，尤以7、8月为降水高峰，此时多阵雨或雷阵雨，道路易湿滑，部分山区路段可能因降雨引发塌方或泥石流，出行需密切关注天气预报。干季为11月至次年4月，天气晴朗，空气干燥，能见度高，是游览高原风光的最佳时节。</p>
+            <div class="highlight">
+                <strong>温馨提示：</strong>云南紫外线强烈，即使在阴天或冬季，防晒措施也必不可少。建议携带高倍数防晒霜、墨镜、遮阳帽，避免晒伤。
+            </div>
+            <p>建议根据旅行时间选择衣物：春秋季备长袖外套与薄毛衣；夏季以短袖、防晒衣为主，备一件防雨外套；冬季前往高海拔地区需准备羽绒服、保暖内衣、帽子、手套等防寒装备。</p>
+            <p>特别提醒：高原地区天气变化快，即使在夏季，早晚也可能骤冷，务必携带防风保暖衣物，以应对突发的低温天气。</p>
+            <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+        </section>
+
+        <!-- 景点 -->
+        <section class="section">
+            <h2><i class="fas fa-map-marked-alt fa-fw"></i> 核心景点推荐</h2>
+            <p>云南拥有丰富的自然与人文景观，从雪山湖泊到古城古镇，从民族风情到地质奇观，每一处都值得细细品味。</p>
+            <div class="item-grid">
+                <div class="item-card">
+                    <h4><i class="fas fa-mountain fa-fw"></i> 玉龙雪山</h4>
+                    <p>位于丽江市，是北半球最南的大雪山，主峰扇子陡海拔5596米。可乘坐大索道直达冰川公园，欣赏终年不化的冰川与壮丽雪峰。蓝月谷的湖水因矿物质呈现梦幻蓝绿色，是摄影天堂。</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-city fa-fw"></i> 丽江古城</h4>
+                    <p>世界文化遗产，始建于宋末元初，以四方街为中心，依山就势布局。青石板路、小桥流水、纳西族东巴文化与木结构民居构成独特风貌。夜晚灯火阑珊，酒吧街热闹非凡。</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-landmark fa-fw"></i> 大理古城与洱海</h4>
+                    <p>大理古城是南诏国与大理国的都城，保留了完整的唐宋格局。骑行环洱海是经典体验，沿途可打卡双廊、喜洲、才村等白族村落，感受“风花雪月”的诗意。</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-tree fa-fw"></i> 香格里拉</h4>
+                    <p>藏语意为“心中的日月”，是藏文化核心区。普达措国家公园拥有高原湖泊、草甸、原始森林，属都湖与碧塔海如蓝宝石镶嵌于大地。松赞林寺是云南规模最大的藏传佛教寺庙，有“小布达拉宫”之称。</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-water fa-fw"></i> 虎跳峡</h4>
+                    <p>世界最深峡谷之一，金沙江在此被玉龙、哈巴两座雪山夹峙，江水奔腾咆哮，落差达3900米。徒步中虎跳峡段可近距离感受大自然的磅礴力量。</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-leaf fa-fw"></i> 西双版纳热带雨林</h4>
+                    <p>中国唯一的热带雨林自然保护区，拥有丰富的动植物资源。野象谷可观察亚洲象，中科院植物园汇集上千种热带植物，傣族村寨的泼水节与竹筒饭极具民族特色。</p>
+                </div>
+            </div>
+            <p>此外，元阳梯田（世界文化遗产）、石林（喀斯特地貌奇观）、腾冲火山热海、东川红土地等也各具特色，可根据时间与兴趣选择性游览。</p>
+            <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+        </section>
+
+        <!-- 行程 -->
+        <section class="section">
+            <h2><i class="fas fa-calendar-alt fa-fw"></i> 经典行程规划</h2>
+            <p>根据旅行时长，推荐以下三种经典路线，兼顾自然风光、人文体验与舒适度。</p>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h3>5天精华游（适合时间紧张者）</h3>
+                    <p><strong>Day 1：</strong>抵达昆明，适应气候，游览翠湖公园、云南大学，品尝过桥米线。</p>
+                    <p><strong>Day 2：</strong>昆明→丽江（高铁约2小时），下午游览丽江古城，夜宿古城。</p>
+                    <p><strong>Day 3：</strong>全天玉龙雪山+蓝月谷，可选索道登顶，下午返回丽江古城休息。</p>
+                    <p><strong>Day 4：</strong>丽江→大理（汽车约3小时），游览大理古城、洋人街，傍晚骑行洱海生态廊道。</p>
+                    <p><strong>Day 5：</strong>大理→昆明（高铁约2小时），返程。</p>
+                    <div class="highlight">
+                        <strong>优势：</strong>行程紧凑，覆盖云南最具代表性的三大城市与核心景点，适合首次到访者。
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <h3>7-8天深度游（推荐首选）</h3>
+                    <p><strong>Day 1-2：</strong>昆明，游览石林风景区，体验滇池与西山龙门。</p>
+                    <p><strong>Day 3：</strong>昆明→丽江，下午丽江古城自由活动。</p>
+                    <p><strong>Day 4：</strong>玉龙雪山+蓝月谷，下午前往束河古镇，感受更宁静的古城氛围。</p>
+                    <p><strong>Day 5：</strong>丽江→香格里拉（车程约4小时），游览松赞林寺，适应高海拔。</p>
+                    <p><strong>Day 6：</strong>普达措国家公园一日游，徒步原始森林与高原湖泊。</p>
+                    <p><strong>Day 7：</strong>香格里拉→大理（车程约6小时），下午游览洱海，夜宿双廊。</p>
+                    <p><strong>Day 8：</strong>大理→昆明，返程。</p>
+                    <div class="highlight">
+                        <strong>优势：</strong>涵盖高原、古城、湖泊、森林，体验多元文化，节奏张弛有度，适合家庭与摄影爱好者。
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <h3>10天+全景游（适合深度探索者）</h3>
+                    <p>在7-8天行程基础上，增加：</p>
+                    <ul class="list-disc pl-6 mb-4">
+                        <li>前往虎跳峡徒步（可选上虎跳或中虎跳）</li>
+                        <li>前往西双版纳，体验热带雨林与傣族文化（需额外2-3天）</li>
+                        <li>腾冲火山热海与和顺古镇（需额外2天）</li>
+                        <li>元阳梯田日出摄影（需额外1天）</li>
+                    </ul>
+                    <p>此路线适合有充足时间、追求极致体验的旅行者，建议分段进行，避免疲劳。</p>
+                    <div class="highlight">
+                        <strong>提示：</strong>高原地区海拔高，行程安排应留有充足适应时间，避免连续高强度活动。
+                    </div>
+                </div>
+            </div>
+            <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+        </section>
+
+        <!-- 美食 -->
+        <section class="section">
+            <h2><i class="fas fa-utensils fa-fw"></i> 必尝云南美食</h2>
+            <p>云南是“美食的王国”，25个少数民族的饮食文化交融，形成了独特而丰富的风味体系。食材新鲜，口味多样，酸辣鲜香，极具地方特色。</p>
+            <div class="item-grid">
+                <div class="item-card">
+                    <h4><i class="fas fa-pizza-slice fa-fw"></i> 过桥米线</h4>
+                    <p>云南最具代表性的美食，源于蒙自。用滚烫的鸡汤为底，依次放入生肉片、蔬菜、米线，热汤瞬间烫熟食材，汤鲜味浓，米线爽滑。配料丰富，可选鸡、鱼、菌菇等多种汤底。</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-burger fa-fw"></i> 汽锅鸡</h4>
+                    <p>使用特制汽锅蒸制，蒸汽凝结成汤，不加一滴水，鸡肉原汁原味，肉质酥烂，汤清味醇，是滋补佳品。</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-leaf fa-fw"></i> 野生菌火锅</i></h4>
+                    <p>雨季（6-9月）是品尝野生菌的最佳时节。鸡枞、松茸、牛肝菌、干巴菌等数十种菌类，搭配土鸡或火腿熬汤，鲜美至极，被誉为“山珍之王”。</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-bread-slice fa-fw"></i> 乳扇</h4>
+                    <p>大理白族特色奶制品，形如扇子，可煎、炸、烤、生吃。口感酥脆或软糯，奶香浓郁，常配玫瑰糖或蜂蜜食用。</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-pepper-hot fa-fw"></i> 酸辣鱼</h4>
+                    <p>大理特色菜，以洱海鲫鱼为主料，配以酸木瓜、泡椒、豆芽等，酸辣开胃，鱼肉细嫩，汤汁浓郁。</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-cocktail fa-fw"></i> 普洱茶</h4>
+                    <p>云南特产，有生茶与熟茶之分。生茶性寒，回甘强烈；熟茶温润，助消化。建议在茶庄品鉴，体验茶艺。</p>
+                </div>
+            </div>
+            <p>此外，饵块、豆花米线、凉鸡米线、宣威火腿、傣味烤鱼、包烧香茅草鱼、鲜花饼等也极具地方风味，建议在街头巷尾的小店尝试，往往比景区餐厅更地道。</p>
+            <div class="highlight">
+                <strong>饮食贴士：</strong>云南菜偏辣，可要求“微辣”或“不辣”。野生菌需彻底煮熟，切勿生食或食用不明品种，以防中毒。
+            </div>
+            <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+        </section>
+
+        <!-- 交通 -->
+        <section class="section">
+            <h2><i class="fas fa-train fa-fw"></i> 交通指南</h2>
+            <p>云南地域辽阔，景点分散，交通方式多样，合理规划可大幅提升旅行效率。</p>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>交通方式</th>
+                            <th>适用路线</th>
+                            <th>优缺点</th>
+                            <th>建议</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>飞机</td>
+                            <td>昆明长水机场为枢纽，连接丽江、大理、香格里拉、西双版纳等主要城市</td>
+                            <td>速度快，节省时间；但受天气影响大，机场距市区较远</td>
+                            <td>跨区域长途移动首选，建议提前购票，关注航班动态</td>
+                        </tr>
+                        <tr>
+                            <td>高铁</td>
+                            <td>昆明↔丽江、昆明↔大理</td>
+                            <td>舒适、准点、速度快（约2小时）；站点位于郊区</td>
+                            <td>昆明至丽江、大理的首选，建议使用12306购票</td>
+                        </tr>
+                        <tr>
+                            <td>长途汽车</td>
+                            <td>丽江↔香格里拉、大理↔香格里拉、昆明↔腾冲等</td>
+                            <td>覆盖广，票价低；耗时长，山路多，易晕车</td>
+                            <td>前往香格里拉、腾冲等无高铁地区必备，建议选择正规客运站</td>
+                        </tr>
+                        <tr>
+                            <td>包车/拼车</td>
+                            <td>虎跳峡、普达措、元阳梯田等偏远景点</td>
+                            <td>灵活自由，可深度游览；费用较高，需提前议价</td>
+                            <td>建议通过正规平台或酒店预订，确认司机资质与车辆状况</td>
+                        </tr>
+                        <tr>
+                            <td>自行车/电动车</td>
+                            <td>大理环洱海、丽江古城周边</td>
+                            <td>自由惬意，环保；受天气与体力限制</td>
+                            <td>环洱海推荐骑行生态廊道，全程约120公里，可分段骑行</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>在丽江、大理、香格里拉等古城内，建议步行或租用三轮车，机动车限行。市内交通可使用滴滴出行、高德打车等APP，方便快捷。</p>
+            <p>特别提醒：云南山路多，弯道急，自驾需谨慎，建议选择SUV或越野车，避免夜间行车。雨季注意落石与塌方，提前查询路况信息。</p>
+            <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+        </section>
+
+        <!-- 防高反 -->
+        <section class="section">
+            <h2><i class="fas fa-heartbeat fa-fw"></i> 高原反应预防与应对</h2>
+            <p>云南多个热门旅游地（如丽江、香格里拉、玉龙雪山）海拔均在2000米以上，其中香格里拉海拔约3300米，玉龙雪山大索道终点达4506米，高原反应是常见问题，需高度重视。</p>
+            <p><strong>高原反应症状：</strong>头痛、头晕、恶心、呕吐、乏力、呼吸急促、失眠、食欲减退。轻度症状多在抵达后6-12小时出现，2-3天内可自行缓解。</p>
+            <div class="highlight">
+                <strong>预防措施：</strong>
+                <ul class="list-disc pl-6 mt-2">
+                    <li>抵达后前24-48小时避免剧烈运动，多休息，保证充足睡眠。</li>
+                    <li>抵达当日避免洗热水澡、饮酒、吸烟，以防血管扩张加重缺氧。</li>
+                    <li>提前3-5天服用红景天（需持续服用，效果因人而异）。</li>
+                    <li>抵达后多喝温水，保持身体水分，促进代谢。</li>
+                    <li>饮食清淡，避免油腻与过饱，可适量摄入碳水化合物。</li>
+                    <li>可携带便携式氧气瓶（药店或景区有售），以备不时之需。</li>
+                </ul>
+            </div>
+            <p><strong>应对策略：</strong></p>
+            <ul class="list-disc pl-6 mb-4">
+                <li>轻度反应：立即休息，吸氧，服用葡萄糖口服液或复方丹参片，一般24-48小时可缓解。</li>
+                <li>中度反应：出现严重头痛、呕吐、呼吸困难，应立即下撤至低海拔地区（如从香格里拉返回丽江），并就医。</li>
+                <li>重度反应（肺水肿、脑水肿）：属紧急医疗状况，必须立即送医，切勿拖延。</li>
+            </ul>
+            <p>特别提醒：儿童、孕妇、心肺功能不全者、高血压患者应谨慎前往高海拔地区，建议咨询医生意见。切勿抱有“我身体好，不会高反”的侥幸心理。</p>
+            <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+        </section>
+
+        <!-- 物品清单 -->
+        <section class="section">
+            <h2><i class="fas fa-suitcase-rolling fa-fw"></i> 行李物品清单</h2>
+            <p>根据云南气候多变、地形复杂、紫外线强等特点，建议携带以下物品，确保旅途舒适安全。</p>
+            <div class="item-grid">
+                <div class="item-card">
+                    <h4><i class="fas fa-sun fa-fw"></i> 防晒与防护</h4>
+                    <p>高倍数防晒霜（SPF50+）、墨镜、遮阳帽、防晒面巾、润唇膏（防干裂）</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-tshirt fa-fw"></i> 衣物</h4>
+                    <p>速干内衣、长袖防晒衣、薄羽绒服/抓绒衣（高海拔用）、防风外套、舒适运动鞋、拖鞋、帽子、手套（冬季）</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-medkit fa-fw"></i> 药品</h4>
+                    <p>感冒药、退烧药、肠胃药（如蒙脱石散）、晕车药、高原反应药（如红景天、高原安）、创可贴、碘伏棉片、个人常用药</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-battery-full fa-fw"></i> 电子设备</h4>
+                    <p>手机、充电器、移动电源（高原地区充电不便）、相机、备用电池、防水袋</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-water fa-fw"></i> 日用品</h4>
+                    <p>保温杯（喝热水防高反）、洗漱用品、毛巾、湿巾、纸巾、雨伞/雨衣、小背包（日常出行用）</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-money-bill-wave fa-fw"></i> 其他</h4>
+                    <p>身份证、现金（部分偏远地区无网络）、银行卡、少量零钱、保温水壶、便携氧气瓶（可选）</p>
+                </div>
+            </div>
+            <p>建议将重要证件、药品、电子设备随身携带，避免托运。行李不宜过重，以轻便为主，方便在古城与山区移动。</p>
+            <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+        </section>
+
+        <!-- 文化禁忌 -->
+        <section class="section">
+            <h2><i class="fas fa-hand-holding-heart fa-fw"></i> 民族文化禁忌</h2>
+            <p>云南是多民族聚居地，拥有25个世居少数民族，尊重当地风俗习惯是文明旅行的基本准则。</p>
+            <div class="item-grid">
+                <div class="item-card">
+                    <h4><i class="fas fa-hand-point-right fa-fw"></i> 纳西族</h4>
+                    <p>禁止踩踏或跨越火塘（家中灶台），火塘是神圣的象征；进入民居请脱鞋；不可随意触摸东巴经书与法器。</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-hand-point-right fa-fw"></i> 白族</h4>
+                    <p>家中供奉“本主”神位，不可随意指指点点；不可用脚踩门槛；接受茶水时，双手捧接以示尊重。</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-hand-point-right fa-fw"></i> 藏族</h4>
+                    <p>进入寺庙需脱帽、安静行走；不可用手触摸佛像、经幡、转经筒；转经筒必须顺时针方向转动；不可用手指指向佛像或僧人。</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-hand-point-right fa-fw"></i> 傣族</h4>
+                    <p>佛寺是神圣场所，不可穿短裤、短裙进入；不可随意摸小孩的头，认为会带走好运；不可用脚指向佛像或他人。</p>
+                </div>
+                <div class="item-card">
+                    <h4><i class="fas fa-hand-point-right fa-fw"></i> 通用禁忌</h4>
+                    <p>不可随意拍摄少数民族居民，尤其老人与儿童，应先征得同意；不可对宗教信仰、习俗进行嘲笑或评论；尊重当地饮食禁忌，如部分民族禁食猪肉或牛肉。</p>
+                </div>
+            </div>
+            <p>在景区或村寨中，若遇当地居民进行宗教仪式或节庆活动，请保持距离，安静观看，切勿喧哗或强行介入。一句简单的“谢谢”或“扎西德勒”（藏语吉祥如意）能拉近彼此距离。</p>
+            <div class="highlight">
+                <strong>核心原则：</strong>入乡随俗，心怀敬畏。你的尊重，是获得真诚欢迎的钥匙。
+            </div>
+            <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+        </section>
+
+        <footer class="footer">
+            Created by Autobots<br>
+            页面内容均由 AI 生成，仅供参考
+        </footer>
+    </div>
+</body>
+</html>

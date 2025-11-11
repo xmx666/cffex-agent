@@ -1,0 +1,359 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lingma_coding_info 表字段注释规范与数据逻辑详解</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    :root {
+      --primary-color: #007bff;
+      --secondary-color: #6c757d;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+    }
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      line-height: 1.7;
+      color: #333;
+    }
+    h1, h2, h3, h4 {
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+    h1 {
+      border-bottom: 2px solid #e9ecef;
+      padding-bottom: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    h2 {
+      border-left: 4px solid var(--primary-color);
+      padding-left: 1rem;
+      margin: 2.5rem 0 1.5rem;
+    }
+    h3 {
+      margin-top: 2rem;
+      color: var(--primary-color);
+    }
+    code {
+      background-color: #f8f9fa;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.3rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.95rem;
+      color: #d63384;
+    }
+    .field-card {
+      background-color: #f9fafb;
+      border-left: 3px solid #007bff;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+    }
+    .field-card h4 {
+      margin-bottom: 0.75rem;
+      color: #1a1a1a;
+    }
+    .field-card ul {
+      padding-left: 1.5rem;
+      margin: 0.75rem 0;
+    }
+    .field-card li {
+      margin-bottom: 0.5rem;
+    }
+    .note-box {
+      background-color: #e9ecef;
+      border-left: 4px solid #6c757d;
+      padding: 1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 0.5rem 0.5rem 0;
+      font-size: 0.95rem;
+    }
+    .data-rule {
+      background-color: #f0f7ff;
+      border: 1px solid #b8daff;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+    .data-rule strong {
+      color: var(--primary-color);
+    }
+    .section-header {
+      background-color: #007bff;
+      color: white;
+      padding: 1rem 1.5rem;
+      border-radius: 0.5rem;
+      margin: 2.5rem 0 2rem;
+      font-size: 1.3rem;
+      font-weight: 600;
+    }
+    .reference-link {
+      color: #007bff;
+      text-decoration: none;
+      border-bottom: 1px dotted #007bff;
+      transition: border-bottom 0.3s ease;
+    }
+    .reference-link:hover {
+      text-decoration: underline;
+    }
+    footer {
+      margin-top: 4rem;
+      padding: 2rem 0;
+      text-align: center;
+      color: #6c757d;
+      border-top: 1px solid #e9ecef;
+      font-size: 0.9rem;
+    }
+    .table-of-contents {
+      background-color: #f8f9fa;
+      padding: 1.5rem;
+      border-radius: 0.5rem;
+      margin-bottom: 2rem;
+    }
+    .table-of-contents h3 {
+      margin-bottom: 1rem;
+      color: #1a1a1a;
+    }
+    .table-of-contents ul {
+      padding-left: 1.5rem;
+    }
+    .table-of-contents li {
+      margin-bottom: 0.5rem;
+    }
+    .table-of-contents a {
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+    .table-of-contents a:hover {
+      text-decoration: underline;
+    }
+    .highlight {
+      background-color: #fff3cd;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.2rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body class="max-w-5xl mx-auto px-6 py-8">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold">lingma_coding_info 表字段注释规范与数据逻辑详解</h1>
+    <p class="text-lg text-gray-600">企业级代码行为数据采集系统字段定义与数据质量规范</p>
+  </header>
+
+  <div class="table-of-contents">
+    <h3>目录</h3>
+    <ul>
+      <li><a href="#uuid">uuid（唯一标识）</a></li>
+      <li><a href="#user_id">user_id（用户ID）</a></li>
+      <li><a href="#display_name">display_name（用户显示名）</a></li>
+      <li><a href="#language">language（编程语言）</a></li>
+      <li><a href="#lines_accepted">lines_accepted（接受代码行数）</a></li>
+      <li><a href="#lines_changed">lines_changed（修改代码行数）</a></li>
+      <li><a href="#ai_lines_rate">ai_lines_rate（AI生成代码占比）</a></li>
+      <li><a href="#update_time">update_time（更新时间）</a></li>
+      <li><a href="#data-relationships">字段间逻辑关系</a></li>
+      <li><a href="#data-quality">数据质量规则</a></li>
+      <li><a href="#use-cases">应用场景</a></li>
+    </ul>
+  </div>
+
+  <div class="field-card" id="uuid">
+    <h4>uuid（唯一标识）</h4>
+    <p><code>uuid</code> 字段用于唯一标识表中每一条记录，其值为全局唯一标识符（Universally Unique Identifier），遵循 RFC 4122 标准生成，确保在分布式系统中不会发生冲突。该字段为非空字段，不可重复，不可更新，作为主键用于关联其他数据表或系统模块。在数据采集、传输与存储过程中，<code>uuid</code> 作为核心索引字段，支撑数据的精准追踪、去重、审计与回溯。任何对记录的修改、删除或合并操作均需以 <code>uuid</code> 为唯一依据。该字段不包含任何业务语义信息，仅作为技术层面的实体标识符使用。</p>
+    <div class="data-rule">
+      <strong>数据质量规则：</strong> 必须为 RFC 4122 标准格式的 UUID（如：a1b2c3d4-e5f6-7890-g1h2-i3j4k5l6m7n8），不允许为空、重复或手动修改。
+    </div>
+    <div class="note-box">
+      <strong>说明：</strong> 该字段是系统内所有数据关联的锚点，任何下游分析、审计或同步流程均依赖其唯一性与稳定性。
+    </div>
+    <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+  </div>
+
+  <div class="field-card" id="user_id">
+    <h4>user_id（用户ID）</h4>
+    <p><code>user_id</code> 字段用于标识代码提交或编辑行为的所属用户，其值来源于用户认证系统中的唯一用户编号，通常为整数型或字符串型的系统内部用户标识。该字段与用户身份管理系统（如 LDAP、OAuth2、IAM）中的用户主键保持一致，用于关联用户权限、角色、团队归属及行为历史。<code>user_id</code> 不直接暴露用户真实姓名或邮箱，仅作为系统内部引用键。当用户账户被删除或禁用时，<code>user_id</code> 仍保留原值以维持数据完整性，避免历史行为记录丢失。该字段为非空字段，且在数据采集过程中由前端或服务端自动注入，不允许手动修改或为空。</p>
+    <div class="data-rule">
+      <strong>数据质量规则：</strong> 必须为系统认证系统中的有效用户标识，非空，不可手动修改，禁止使用临时值或占位符。
+    </div>
+    <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+  </div>
+
+  <div class="field-card" id="display_name">
+    <h4>display_name（用户显示名）</h4>
+    <p><code>display_name</code> 字段用于在用户界面或报告中展示用户的友好名称，通常为用户自定义或由系统根据姓名、工号、部门等信息生成的可读性名称。该字段不作为身份验证或权限控制的依据，仅用于可视化展示，例如在代码审查面板、协作平台或统计仪表盘中显示“张三（研发部）”或“user_8876”。<code>display_name</code> 允许为空，允许重复，允许更新，其变更不影响数据关联性。该字段可能来源于用户个人资料、企业通讯录或第三方身份提供商（如 GitHub、GitLab）的公开昵称。在数据清洗过程中，需注意处理特殊字符、空格、多语言字符（如中文、日文、emoji）的编码与显示兼容性问题。</p>
+    <div class="data-rule">
+      <strong>数据质量规则：</strong> 可为空，可重复，可更新；需进行字符编码标准化（UTF-8），避免显示异常；不应用于权限判断。
+    </div>
+    <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+  </div>
+
+  <div class="field-card" id="language">
+    <h4>language（编程语言）</h4>
+    <p><code>language</code> 字段用于记录用户提交或修改的代码所使用的编程语言名称，其值为标准化的编程语言标识符，通常采用官方或社区广泛认可的命名规范，如 <code>Python</code>、<code>Java</code>、<code>JavaScript</code>、<code>C++</code>、<code>Go</code>、<code>TypeScript</code>、<code>Rust</code> 等。该字段的值来源于代码文件的扩展名自动识别或编辑器插件上报，也可能由用户在提交时手动选择。系统支持的语言列表为预定义枚举集，非枚举值将被归类为 <code>Unknown</code> 或丢弃。该字段为非空字段，用于支持按语言维度的代码质量分析、AI辅助效率评估、团队技能分布统计等场景。在数据采集过程中，语言名称需进行标准化处理，例如将 <code>js</code> 统一为 <code>JavaScript</code>，将 <code>py</code> 统一为 <code>Python</code>，避免因大小写或缩写导致的数据碎片化。</p>
+    <div class="data-rule">
+      <strong>数据质量规则：</strong> 必须为预定义枚举值，非空；非标准值需自动归一化为标准名称；禁止使用自定义缩写或混合格式。
+    </div>
+    <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+  </div>
+
+  <div class="field-card" id="lines_accepted">
+    <h4>lines_accepted（接受代码行数）</h4>
+    <p><code>lines_accepted</code> 字段记录在代码审查或自动化审核流程中被正式采纳并合并到目标分支的代码行数。该数值为正整数，仅统计被批准通过的新增或修改行，不包含被拒绝、撤回或未提交的代码。该字段的统计粒度为“行”（line），按标准换行符（<code>\n</code>）进行分割计算，不包含空行、注释行或仅含空白字符的行，除非系统配置明确包含。该字段用于衡量用户贡献的代码量、团队产出效率、AI辅助采纳率等关键绩效指标。在数据聚合分析中，<code>lines_accepted</code> 常与 <code>lines_changed</code>、<code>ai_lines_rate</code> 联合使用，以评估人工与AI协作的效率比。该字段为只读字段，由系统在代码合并事件触发后自动计算并写入，不允许人工干预或手动修改。</p>
+    <div class="data-rule">
+      <strong>数据质量规则：</strong> 必须为非负整数，仅由系统在合并事件后自动计算，禁止人工写入；统计逻辑需与 Git diff 保持一致。
+    </div>
+    <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+  </div>
+
+  <div class="field-card" id="lines_changed">
+    <h4>lines_changed（修改代码行数）</h4>
+    <p><code>lines_changed</code> 字段记录用户在单次提交或编辑会话中所修改的总代码行数，包括新增（added）、删除（deleted）和修改（modified）的行。该数值为正整数，计算方式遵循标准的 diff 工具（如 Git diff）的行变更统计逻辑，即：<code>lines_changed = added_lines + deleted_lines + modified_lines</code>。该字段不区分代码是否被最终接受，仅反映用户在编辑过程中的操作总量。该字段用于衡量用户活跃度、代码修改强度、重构频率及潜在的代码熵变化。在分析中，<code>lines_changed</code> 与 <code>lines_accepted</code> 的比值可用于评估代码质量稳定性（如：高修改量但低采纳率可能暗示代码质量不佳或频繁返工）。该字段为系统自动计算字段，基于版本控制系统（如 Git）的变更集生成，数据来源为提交时的 diff 输出，不包含未提交的本地更改。</p>
+    <div class="data-rule">
+      <strong>数据质量规则：</strong> 必须为非负整数，由 Git diff 自动计算，禁止人工干预；必须包含所有变更类型（新增、删除、修改）。
+    </div>
+    <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+  </div>
+
+  <div class="field-card" id="ai_lines_rate">
+    <h4>ai_lines_rate（AI生成代码占比）</h4>
+    <p><code>ai_lines_rate</code> 字段表示在本次提交或编辑会话中，由人工智能辅助工具（如 GitHub Copilot、Amazon CodeWhisperer、通义灵码等）自动生成的代码行数占总修改行数（<code>lines_changed</code>）的百分比，以小数形式存储，范围为 [0.0, 1.0]。该字段的计算公式为：<code>ai_lines_rate = ai_generated_lines / lines_changed</code>，其中 <code>ai_generated_lines</code> 为系统通过AI代码补全引擎识别并标记为AI生成的代码行数。AI生成行的识别依据包括：代码片段与AI模型训练数据的语义相似度、编辑器插件上报的AI生成标记、代码结构特征（如重复模式、函数模板）等。该字段为非空字段，若 <code>lines_changed</code> 为 0，则 <code>ai_lines_rate</code> 值为 0。该字段用于量化AI辅助开发的渗透率、评估AI工具对开发效率的影响、识别高AI依赖行为模式，并作为代码合规性审计（如开源许可证、代码原创性）的重要指标。不同AI工具的识别准确率存在差异，系统需定期校准识别算法以降低误报与漏报。</p>
+    <div class="data-rule">
+      <strong>数据质量规则：</strong> 值域必须为 [0.0, 1.0]，若 <code>lines_changed</code> 为 0，则强制为 0；必须基于系统校准的AI识别算法生成，禁止手动赋值。
+    </div>
+    <div class="note-box">
+      <strong>说明：</strong> 该字段是衡量 AI 辅助开发成熟度的核心指标，其准确性直接影响合规审计与效率评估结论。
+    </div>
+    <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+  </div>
+
+  <div class="field-card" id="update_time">
+    <h4>update_time（更新时间）</h4>
+    <p><code>update_time</code> 字段记录该条记录最后一次被系统更新的时间戳，采用 UTC 时区的 ISO 8601 格式（如 <code>2025-11-04T23:59:59Z</code>），精确到秒。该字段由系统在每次数据写入或修改时自动更新，包括但不限于：新记录插入、代码提交被处理、AI识别结果更新、用户行为重新计算等。该字段不反映用户操作时间，而是系统处理完成的时间，用于数据同步、增量抽取、数据一致性校验与审计追踪。该字段为非空字段，不允许手动修改，其值由数据库触发器或应用层服务自动设置。在数据仓库ETL流程中，<code>update_time</code> 常作为增量同步的基准时间戳，用于识别自上次抽取以来发生变化的记录。系统需确保所有节点时钟同步（NTP），避免因时区或时钟漂移导致的数据排序错误。</p>
+    <div class="data-rule">
+      <strong>数据质量规则：</strong> 必须为 ISO 8601 UTC 格式，精确到秒；必须由系统自动设置，禁止人工修改；所有服务节点必须通过 NTP 同步时钟。
+    </div>
+    <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+  </div>
+
+  <div class="section-header" id="data-relationships">
+    字段间逻辑关系
+  </div>
+  <p>上述字段共同构成一个完整的代码行为数据闭环，其逻辑关系如下：</p>
+  <ul class="mb-6">
+    <li><code>uuid</code> 作为主键，唯一关联所有其他字段，是数据追溯的起点。</li>
+    <li><code>user_id</code> 与 <code>display_name</code> 构成“身份标识”与“展示名称”的分离设计，保障隐私与灵活性。</li>
+    <li><code>language</code> 为分析维度提供分类依据，与 <code>lines_changed</code>、<code>lines_accepted</code>、<code>ai_lines_rate</code> 联合用于语言维度的效能分析。</li>
+    <li><code>lines_changed</code> 是 <code>ai_lines_rate</code> 的分母，二者共同构成 AI 生成代码的量化基础。</li>
+    <li><code>lines_accepted</code> 与 <code>lines_changed</code> 的比值（采纳率）是衡量代码质量与团队协作效率的关键指标。</li>
+    <li><code>update_time</code> 为所有字段提供时间上下文，是数据增量同步与审计追踪的基准。</li>
+  </ul>
+  <div class="note-box">
+    <strong>系统设计原则：</strong> 所有核心指标（如采纳率、AI占比）均基于系统自动计算，避免人为干预，确保数据客观性与可审计性。
+  </div>
+  <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+
+  <div class="section-header" id="data-quality">
+    数据质量规则总览
+  </div>
+  <table class="w-full border-collapse border border-gray-300 mb-8">
+    <thead>
+      <tr class="bg-gray-100">
+        <th class="border border-gray-300 px-4 py-2 text-left">字段名</th>
+        <th class="border border-gray-300 px-4 py-2 text-left">是否必填</th>
+        <th class="border border-gray-300 px-4 py-2 text-left">是否可更新</th>
+        <th class="border border-gray-300 px-4 py-2 text-left">数据来源</th>
+        <th class="border border-gray-300 px-4 py-2 text-left">关键约束</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="border border-gray-300 px-4 py-2"><code>uuid</code></td>
+        <td class="border border-gray-300 px-4 py-2">是</td>
+        <td class="border border-gray-300 px-4 py-2">否</td>
+        <td class="border border-gray-300 px-4 py-2">系统自动生成</td>
+        <td class="border border-gray-300 px-4 py-2">RFC 4122 标准，全局唯一</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 px-4 py-2"><code>user_id</code></td>
+        <td class="border border-gray-300 px-4 py-2">是</td>
+        <td class="border border-gray-300 px-4 py-2">否</td>
+        <td class="border border-gray-300 px-4 py-2">认证系统注入</td>
+        <td class="border border-gray-300 px-4 py-2">系统内部唯一标识，不可为空</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 px-4 py-2"><code>display_name</code></td>
+        <td class="border border-gray-300 px-4 py-2">否</td>
+        <td class="border border-gray-300 px-4 py-2">是</td>
+        <td class="border border-gray-300 px-4 py-2">用户资料 / 第三方平台</td>
+        <td class="border border-gray-300 px-4 py-2">允许空值、重复、更新；仅用于展示</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 px-4 py-2"><code>language</code></td>
+        <td class="border border-gray-300 px-4 py-2">是</td>
+        <td class="border border-gray-300 px-4 py-2">否</td>
+        <td class="border border-gray-300 px-4 py-2">文件扩展名 / 编辑器上报</td>
+        <td class="border border-gray-300 px-4 py-2">必须标准化，非枚举值归为 Unknown</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 px-4 py-2"><code>lines_accepted</code></td>
+        <td class="border border-gray-300 px-4 py-2">是</td>
+        <td class="border border-gray-300 px-4 py-2">否</td>
+        <td class="border border-gray-300 px-4 py-2">代码合并事件</td>
+        <td class="border border-gray-300 px-4 py-2">仅统计被采纳行，自动计算，非负整数</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 px-4 py-2"><code>lines_changed</code></td>
+        <td class="border border-gray-300 px-4 py-2">是</td>
+        <td class="border border-gray-300 px-4 py-2">否</td>
+        <td class="border border-gray-300 px-4 py-2">Git diff 输出</td>
+        <td class="border border-gray-300 px-4 py-2">包含新增、删除、修改，自动计算，非负整数</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 px-4 py-2"><code>ai_lines_rate</code></td>
+        <td class="border border-gray-300 px-4 py-2">是</td>
+        <td class="border border-gray-300 px-4 py-2">否</td>
+        <td class="border border-gray-300 px-4 py-2">AI识别引擎</td>
+        <td class="border border-gray-300 px-4 py-2">[0.0, 1.0]，若 lines_changed=0 则为 0</td>
+      </tr>
+      <tr>
+        <td class="border border-gray-300 px-4 py-2"><code>update_time</code></td>
+        <td class="border border-gray-300 px-4 py-2">是</td>
+        <td class="border border-gray-300 px-4 py-2">否</td>
+        <td class="border border-gray-300 px-4 py-2">系统自动时间戳</td>
+        <td class="border border-gray-300 px-4 py-2">UTC ISO 8601 格式，精确到秒</td>
+      </tr>
+    </tbody>
+  </table>
+  <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+
+  <div class="section-header" id="use-cases">
+    应用场景
+  </div>
+  <p>本字段规范支撑以下核心业务场景：</p>
+  <ul class="mb-6">
+    <li><strong>开发效能分析：</strong> 通过 <code>lines_accepted</code> 与 <code>lines_changed</code> 计算采纳率，评估团队代码质量与审查效率。</li>
+    <li><strong>AI辅助工具评估：</strong> 利用 <code>ai_lines_rate</code> 统计各语言、各团队、各时间段的AI使用渗透率，优化工具部署策略。</li>
+    <li><strong>技能分布画像：</strong> 基于 <code>language</code> 维度，分析团队技术栈分布，指导培训与招聘。</li>
+    <li><strong>合规与审计：</strong> 通过 <code>ai_lines_rate</code> 与 <code>uuid</code> 追踪AI生成代码的来源，满足开源许可证合规性审查要求。</li>
+    <li><strong>数据同步与ETL：</strong> 使用 <code>update_time</code> 实现增量数据抽取，保障数据仓库与BI系统的实时性与一致性。</li>
+    <li><strong>行为异常检测：</strong> 高 <code>lines_changed</code> 但低 <code>lines_accepted</code> 的模式可能提示代码质量风险或频繁返工，触发预警机制。</li>
+  </ul>
+  <div class="note-box">
+    <strong>重要提示：</strong> 所有分析结论必须基于系统自动采集的原始数据，禁止对 <code>lines_accepted</code>、<code>ai_lines_rate</code> 等核心指标进行人工修正或插值。
+  </div>
+  <cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+
+  <footer>
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

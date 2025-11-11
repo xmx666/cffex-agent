@@ -1,0 +1,1 @@
+在docker-compose.yml中，privileged: true必须置于services下的具体service层级，与image、ports等同级。该配置赋予容器宿主机级权限，风险极高，建议优先使用cap_add或devices替代。仅在必要时启用，并配合审计与隔离措施。

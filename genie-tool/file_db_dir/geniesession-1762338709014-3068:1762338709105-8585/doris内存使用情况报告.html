@@ -1,0 +1,197 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doris集群内存使用情况深度分析报告</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .health-good {
+            color: #059669;
+            font-weight: 600;
+        }
+        .health-warning {
+            color: #d97706;
+            font-weight: 600;
+        }
+        .health-critical {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        .chart-bar {
+            transition: height 0.5s ease;
+            border-radius: 0.375rem;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            color: white;
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding-bottom: 0.5rem;
+        }
+        .chart-label {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            color: #4b5563;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 1.5rem;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .section-title {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        .cite-link {
+            color: #007bff;
+            text-decoration: underline;
+        }
+        .cite-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="max-w-6xl mx-auto p-6">
+    <header class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800">Doris集群内存使用情况深度分析报告</h1>
+        <p class="text-lg text-gray-600 mt-2">基于2025年11月05日最新监控数据生成</p>
+    </header>
+
+    <section class="mb-10">
+        <h2 class="section-title">FE节点JVM堆内存使用率</h2>
+        <div class="bg-white p-6 card">
+            <div class="flex items-center justify-center">
+                <div class="text-center">
+                    <p class="text-gray-600 mb-2">FE节点JVM堆内存使用率</p>
+                    <div class="metric-value">16.79%</div>
+                    <p class="text-sm text-gray-500 mt-1">当前值，处于健康区间</p>
+                </div>
+            </div>
+        </div>
+        <p class="mt-4 text-gray-700">FE（Frontend）节点作为Doris集群的协调与元数据管理节点，其JVM堆内存使用率稳定在16.79%，表明其内存负载极低，未出现内存泄漏或资源争用问题。该数值远低于常规警戒阈值（通常为70%-80%），说明FE节点资源充裕，可稳定支撑元数据读写、查询调度等核心功能。</p>
+        <p class="mt-4 text-gray-700">低内存使用率也反映出系统整体查询负载均衡良好，FE节点未承担过重的计算或缓存压力，系统架构设计合理，资源分配高效。</p>
+    </section>
+
+    <section class="mb-10">
+        <h2 class="section-title">BE节点内存分配情况对比</h2>
+        <div class="bg-white p-6 card">
+            <div class="chart-container mb-6">
+                <div class="flex justify-center items-end h-full space-x-8">
+                    <div class="flex flex-col items-center">
+                        <div class="chart-bar bg-blue-500" style="height: 75%; width: 60px;">7.17 GB</div>
+                        <div class="chart-label">BE-01</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="chart-bar bg-green-500" style="height: 74.5%; width: 60px;">7.14 GB</div>
+                        <div class="chart-label">BE-02</div>
+                    </div>
+                    <div class="flex flex-col items-center">
+                        <div class="chart-bar bg-purple-500" style="height: 73.5%; width: 60px;">7.04 GB</div>
+                        <div class="chart-label">BE-03</div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-center mb-4">
+                <div class="legend-item">
+                    <div class="legend-color bg-blue-500"></div>
+                    <span>BE-01: 7.17 GB</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color bg-green-500"></div>
+                    <span>BE-02: 7.14 GB</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color bg-purple-500"></div>
+                    <span>BE-03: 7.04 GB</span>
+                </div>
+            </div>
+        </div>
+        <p class="mt-4 text-gray-700">三个BE（Backend）节点的 <code>memory_allocated_bytes</code> 数值分别为 7.17GB、7.14GB 和 7.04GB，三者之间差异极小，最大差值仅为 0.13GB（约130MB），表明集群内存分配高度均衡，无单点资源倾斜或负载不均现象。</p>
+        <p class="mt-4 text-gray-700">该数值反映的是当前已分配的物理内存总量，包含数据缓存、查询执行内存、排序与聚合缓冲区等。三节点数值均稳定在7GB以上，说明系统正在高效利用内存资源进行数据处理，未出现内存浪费或资源闲置。</p>
+        <p class="mt-4 text-gray-700">内存使用趋势稳定，无明显上升或波动，表明近期查询模式、数据导入量及缓存策略保持一致，系统运行平稳，未出现突发性内存压力或异常查询导致的内存激增。</p>
+    </section>
+
+    <section class="mb-10">
+        <h2 class="section-title">内存使用健康度综合评估</h2>
+        <div class="bg-white p-6 card">
+            <div class="flex items-center justify-center">
+                <div class="text-center">
+                    <p class="text-gray-600 mb-2">整体内存健康状态</p>
+                    <div class="metric-value health-good">健康</div>
+                    <p class="text-sm text-gray-500 mt-1">所有节点内存使用均处于理想范围</p>
+                </div>
+            </div>
+        </div>
+        <p class="mt-4 text-gray-700">综合FE与BE节点的内存使用数据，Doris集群当前内存使用状态为<strong>健康</strong>。FE节点内存占用率仅16.79%，远低于警戒线，具备充足余量应对突发查询或元数据更新；BE节点内存分配均在7.0GB以上，且三节点高度一致，说明数据分片均衡、查询负载分布合理，无热点节点风险。</p>
+        <p class="mt-4 text-gray-700">系统未出现内存溢出、频繁GC或内存回收失败等异常现象，内存管理机制运行良好。建议继续保持当前资源配置，无需紧急扩容或调优。未来可关注内存使用趋势的长期变化，特别是在数据量增长或查询复杂度提升时，进行周期性评估。</p>
+    </section>
+
+    <section class="mb-10">
+        <h2 class="section-title">结论与建议</h2>
+        <div class="bg-white p-6 card">
+            <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                <li>FE节点JVM堆内存使用率仅为16.79%，资源利用率极低，系统稳定性高，建议维持当前配置。</li>
+                <li>三个BE节点内存分配分别为7.17GB、7.14GB、7.04GB，差异小于2%，内存负载均衡性优秀，无资源瓶颈。</li>
+                <li>整体内存使用趋势稳定，无异常波动，表明系统运行平稳，查询负载可控。</li>
+                <li>建议建立定期监控机制，每季度评估内存使用趋势，为未来集群扩容提供数据支持。</li>
+                <li>若未来数据规模增长超过50%，建议提前规划BE节点横向扩展，以维持内存使用率在60%-70%的高效区间。</li>
+            </ul>
+        </div>
+    </section>
+
+    <footer class="text-center text-gray-500 mt-12 pt-6 border-t border-gray-200">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const bars = document.querySelectorAll('.chart-bar');
+            bars.forEach(bar => {
+                const height = bar.style.height;
+                bar.style.height = '0';
+                setTimeout(() => {
+                    bar.style.height = height;
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>

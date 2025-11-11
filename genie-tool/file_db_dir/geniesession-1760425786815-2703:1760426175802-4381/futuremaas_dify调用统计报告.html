@@ -1,0 +1,88 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dify应用今日调用futuremaas服务统计</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .card {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-value {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #007bff;
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 1.1rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+    .source-section {
+      background-color: #f0f7ff;
+      border-left: 4px solid #007bff;
+      padding: 1rem;
+      border-radius: 0 0.25rem 0.25rem 0;
+      margin-top: 1.5rem;
+    }
+    .source-label {
+      font-weight: 600;
+      color: #007bff;
+      margin-bottom: 0.5rem;
+    }
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 1.5rem 0;
+      color: #666;
+      font-size: 0.9rem;
+      border-top: 1px solid #eee;
+    }
+    .highlight {
+      background-color: #e9f5ff;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">dify应用今日调用futuremaas服务统计</h1>
+    
+    <div class="card">
+      <div class="text-center">
+        <div class="stat-value">415</div>
+        <div class="stat-label">次调用</div>
+        <p class="mt-4 text-lg text-gray-700">截至今日，dify应用共调用futuremaas服务415次</p>
+      </div>
+    </div>
+
+    <div class="source-section">
+      <div class="source-label">数据来源说明</div>
+      <p>数据来源于 <span class="highlight">dwd_telemetry.application_futuremaas_api_use_detail_metrics</span> 表，统计条件为 <span class="highlight">app_name='dify'</span> 且 <span class="highlight">update_time</span> 为今日（2025年10月14日）。</p>
+    </div>
+  </div>
+
+  <footer>
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

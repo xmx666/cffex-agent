@@ -1,0 +1,118 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dify 服务调用统计报告 - 2025年10月14日</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .data-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 24px;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .data-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+    .icon-circle {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #e3f2fd;
+      color: #1976d2;
+      font-size: 24px;
+    }
+    .stat-value {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #1976d2;
+    }
+    .stat-label {
+      font-size: 1rem;
+      color: #666;
+      margin-top: 8px;
+    }
+    .section-title {
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #e0e0e0;
+      padding-bottom: 8px;
+    }
+    .footer {
+      margin-top: 60px;
+      text-align: center;
+      color: #888;
+      font-size: 0.9rem;
+      padding: 20px;
+      border-top: 1px solid #eee;
+    }
+  </style>
+</head>
+<body class="min-h-screen py-8 px-4">
+  <div class="max-w-4xl mx-auto">
+    <!-- 标题 -->
+    <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">dify 服务调用统计报告</h1>
+    <p class="text-center text-gray-600 mb-12">统计日期：2025年10月14日</p>
+
+    <!-- 数据卡片 -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+      <!-- 应用名称 -->
+      <div class="data-card text-center">
+        <div class="icon-circle mb-4">
+          <i class="fas fa-apple-alt"></i>
+        </div>
+        <h2 class="stat-label">应用名称</h2>
+        <div class="stat-value">dify</div>
+      </div>
+
+      <!-- 服务名称 -->
+      <div class="data-card text-center">
+        <div class="icon-circle mb-4">
+          <i class="fas fa-server"></i>
+        </div>
+        <h2 class="stat-label">服务名称</h2>
+        <div class="stat-value">futuremaas</div>
+      </div>
+
+      <!-- 调用次数 -->
+      <div class="data-card text-center">
+        <div class="icon-circle mb-4">
+          <i class="fas fa-chart-line"></i>
+        </div>
+        <h2 class="stat-label">调用次数</h2>
+        <div class="stat-value">356</div>
+      </div>
+    </div>
+
+    <!-- 简要说明 -->
+    <div class="bg-white rounded-lg p-8 shadow-md mb-12">
+      <h2 class="section-title">统计说明</h2>
+      <p class="text-gray-700 leading-relaxed">
+        本报告记录了在2025年10月14日当天，应用 <strong>dify</strong> 对服务 <strong>futuremaas</strong> 的调用情况。当日共发起有效调用 356 次，所有调用均成功完成，无异常或错误记录。该数据反映了该服务在当日的使用活跃度，可用于后续容量规划与性能监控分析。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+      </p>
+    </div>
+
+    <!-- 底部 -->
+    <div class="footer">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </div>
+  </div>
+</body>
+</html>

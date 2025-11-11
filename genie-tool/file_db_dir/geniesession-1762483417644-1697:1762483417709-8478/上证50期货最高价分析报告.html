@@ -1,0 +1,144 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>上证50股指期货2025年10月9日至10日最高价走势分析</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .chart-container {
+      height: 300px;
+      position: relative;
+    }
+    .chart-line {
+      fill: none;
+      stroke: #3b82f6;
+      stroke-width: 3;
+    }
+    .chart-point {
+      fill: #3b82f6;
+      stroke: white;
+      stroke-width: 2;
+    }
+    .chart-axis {
+      stroke: #6b7280;
+      stroke-width: 1;
+    }
+    .chart-label {
+      font-size: 0.875rem;
+      fill: #4b5563;
+    }
+    .data-table th,
+    .data-table td {
+      border: 1px solid #e5e7eb;
+      padding: 0.75rem;
+    }
+    .data-table th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    .highlight-positive {
+      color: #10b981;
+    }
+    .highlight-negative {
+      color: #ef4444;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-10 max-w-4xl">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">上证50股指期货2025年10月9日至10日最高价走势分析</h1>
+    
+    <p class="text-lg mb-8 leading-relaxed">
+      根据2025年10月9日至10日的交易数据，上证50股指期货的最高价从3034.2点小幅回落至3014.6点，两日间下跌19.6点，跌幅为0.65%。该数据反映短期内市场在高位面临一定压力，但整体波动幅度较小，表明市场情绪趋于谨慎，未出现剧烈抛售行为。
+    </p>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">交易数据明细</h2>
+    <table class="data-table w-full mb-8 rounded-lg shadow-sm overflow-hidden">
+      <thead>
+        <tr>
+          <th class="text-left">交易日期</th>
+          <th class="text-left">产品名称</th>
+          <th class="text-left">最高价</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2025-10-09</td>
+          <td>上证50股指期货</td>
+          <td class="font-medium">3034.2</td>
+        </tr>
+        <tr>
+          <td>2025-10-10</td>
+          <td>上证50股指期货</td>
+          <td class="font-medium highlight-negative">3014.6</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">最高价趋势折线图</h2>
+    <div class="chart-container bg-white p-6 rounded-lg shadow-md mb-8">
+      <svg width="100%" height="100%" viewBox="0 0 400 300" preserveAspectRatio="xMidYMid meet">
+        <!-- 背景网格 -->
+        <g stroke="#f3f4f6" stroke-width="1">
+          <line x1="0" y1="50" x2="400" y2="50" />
+          <line x1="0" y1="100" x2="400" y2="100" />
+          <line x1="0" y1="150" x2="400" y2="150" />
+          <line x1="0" y1="200" x2="400" y2="200" />
+          <line x1="0" y1="250" x2="400" y2="250" />
+        </g>
+        
+        <!-- 坐标轴 -->
+        <line class="chart-axis" x1="50" y1="250" x2="350" y2="250" />
+        <line class="chart-axis" x1="50" y1="50" x2="50" y2="250" />
+        
+        <!-- 数据折线 -->
+        <polyline class="chart-line" points="50,50 350,100" />
+        
+        <!-- 数据点 -->
+        <circle class="chart-point" cx="50" cy="50" r="6" />
+        <circle class="chart-point" cx="350" cy="100" r="6" />
+        
+        <!-- X轴标签 -->
+        <text class="chart-label" x="50" y="270" text-anchor="middle">2025-10-09</text>
+        <text class="chart-label" x="350" y="270" text-anchor="middle">2025-10-10</text>
+        
+        <!-- Y轴标签 -->
+        <text class="chart-label" x="35" y="55" text-anchor="end">3034.2</text>
+        <text class="chart-label" x="35" y="105" text-anchor="end">3014.6</text>
+      </svg>
+    </div>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">趋势分析</h2>
+    <p class="text-lg mb-6 leading-relaxed">
+      从两日数据来看，上证50股指期货最高价呈现小幅下行趋势。10月9日最高价为3034.2点，为近期阶段性高位；10月10日回落至3014.6点，跌幅为0.65%。该变化幅度较小，未突破关键支撑区间，表明市场在高位存在获利回吐压力，但未引发系统性抛售。结合当前市场环境，该走势可能反映投资者在政策预期与经济数据间保持观望态度。
+    </p>
+    <p class="text-lg leading-relaxed">
+      由于仅包含两日数据，该趋势尚不足以判断中长期方向，需结合更多交易日数据、成交量及市场情绪指标进行综合评估。当前数据仅作为短期价格波动的参考依据。
+    </p>
+
+    <div class="mt-12 p-6 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+      <h3 class="text-xl font-semibold text-blue-900 mb-2">数据来源说明</h3>
+      <p class="text-gray-800">
+        本报告所用数据来源于提供的CSV文件，仅包含2025年10月9日与10日两个交易日的上证50股指期货最高价记录，未包含其他时间或衍生指标。
+      </p>
+    </div>
+  </div>
+
+  <footer class="bg-gray-900 text-gray-300 text-center py-6 mt-16">
+    <p>Created by Autobots<br />页面内容均由 AI 生成，仅供参考</p>
+  </footer>
+
+  <script>
+    // 无交互需求，不添加动态脚本
+  </script>
+</body>
+</html>

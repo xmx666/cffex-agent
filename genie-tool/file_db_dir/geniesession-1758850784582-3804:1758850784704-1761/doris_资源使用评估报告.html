@@ -1,0 +1,236 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doris数仓资源使用评估报告：磁盘与内存容量趋势分析</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        .section-title {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: #007bff;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .metric-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0 0.25rem 0.25rem 0;
+        }
+        .risk-badge {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .recommendation-badge {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .progress-bar {
+            height: 12px;
+            background-color: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 0.3s ease;
+        }
+        .progress-blue {
+            background-color: #007bff;
+        }
+        .progress-yellow {
+            background-color: #ffc107;
+        }
+        .progress-red {
+            background-color: #dc3545;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Doris数仓资源使用评估报告：磁盘与内存容量趋势分析</h1>
+        
+        <div class="card">
+            <h2 class="section-title">当前资源使用状态</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="metric-box">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">BE节点磁盘使用率</h3>
+                    <p class="text-gray-600">当前范围：9.38% - 12.08%</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-blue" style="width: 10.73%;"></div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">平均使用率：10.73%</p>
+                </div>
+                <div class="metric-box">
+                    <h3 class="text-lg font-semibold text-gray-700 mb-2">BE节点内存占用</h3>
+                    <p class="text-gray-600">当前占用：约 5.4 GB</p>
+                    <div class="progress-bar">
+                        <div class="progress-fill progress-blue" style="width: 54%;"></div>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-1">（假设单节点内存为10GB）</p>
+                </div>
+            </div>
+            <div class="metric-box">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">核心数据表：ods_market_cffex_internal</h3>
+                <p class="text-gray-600">当前数据量：196 GB</p>
+                <p class="text-gray-600">日均新增行数：800万行</p>
+                <p class="text-gray-600">数据表状态：活跃、持续写入中</p>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2 class="section-title">增长趋势分析</h2>
+            <p class="mb-4 text-gray-700">基于当前日均增长800万行的数据写入速率，结合当前表大小196GB，可推算出单位行数据平均占用约2.45KB（196GB ÷ 800万行 ≈ 2.45KB/行）。</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>时间周期</th>
+                            <th>新增数据量</th>
+                            <th>累计数据量（预估）</th>
+                            <th>磁盘使用率增幅</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>日增长</td>
+                            <td>1.96 GB</td>
+                            <td>197.96 GB</td>
+                            <td>+0.10%</td>
+                        </tr>
+                        <tr>
+                            <td>周增长</td>
+                            <td>13.72 GB</td>
+                            <td>209.72 GB</td>
+                            <td>+0.70%</td>
+                        </tr>
+                        <tr>
+                            <td>月增长</td>
+                            <td>58.8 GB</td>
+                            <td>254.8 GB</td>
+                            <td>+3.00%</td>
+                        </tr>
+                        <tr>
+                            <td>季度增长</td>
+                            <td>176.4 GB</td>
+                            <td>372.4 GB</td>
+                            <td>+9.00%</td>
+                        </tr>
+                        <tr>
+                            <td>半年增长</td>
+                            <td>352.8 GB</td>
+                            <td>547.6 GB</td>
+                            <td>+18.00%</td>
+                        </tr>
+                        <tr>
+                            <td>年增长</td>
+                            <td>705.6 GB</td>
+                            <td>901.6 GB</td>
+                            <td>+36.00%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-gray-700">若当前增长趋势持续，预计在10个月内，该表数据量将突破800GB，磁盘使用率将逼近40%（基于当前平均使用率10.73%线性外推）。</p>
+        </div>
+
+        <div class="card">
+            <h2 class="section-title">风险预警</h2>
+            <ul class="list-disc pl-5 mb-4 text-gray-700">
+                <li class="mb-2">磁盘容量风险：若未进行数据生命周期管理，12个月内表数据量将接近1TB，可能触发BE节点磁盘满载告警，影响写入与查询稳定性。</li>
+                <li class="mb-2">内存压力风险：当前内存占用5.4GB已占比较高，若查询并发增加或数据缓存膨胀，可能引发JVM GC频繁或OOM风险，影响服务可用性。</li>
+                <li class="mb-2">查询性能下降：随着数据量指数级增长，未优化的聚合查询或全表扫描将显著延长响应时间，影响下游业务报表时效性。</li>
+                <li class="mb-2">备份与恢复风险：196GB以上数据表的全量备份耗时长、存储成本高，若发生故障，恢复窗口可能超出SLA要求。</li>
+            </ul>
+            <p class="mt-2"><span class="risk-badge">高风险</span>：若无主动干预，6-12个月内将面临生产环境容量瓶颈。</p>
+        </div>
+
+        <div class="card">
+            <h2 class="section-title">容量规划建议</h2>
+            <ul class="list-disc pl-5 mb-4 text-gray-700">
+                <li class="mb-2"><span class="recommendation-badge">立即执行</span>：对 <code>ods_market_cffex_internal</code> 表实施分区策略（按日期），并启用TTL（Time-To-Live）自动清理机制，保留最近18个月数据，释放历史冷数据占用空间。</li>
+                <li class="mb-2"><span class="recommendation-badge">建议执行</span>：评估BE节点磁盘扩容计划，建议在6个月内将单节点磁盘容量提升至当前的2倍以上，以应对未来12个月增长需求。</li>
+                <li class="mb-2"><span class="recommendation-badge">建议执行</span>：优化表结构，对高频查询字段建立物化视图或前缀索引，降低内存与IO压力。</li>
+                <li class="mb-2"><span class="recommendation-badge">建议执行</span>：建立资源使用监控看板，每日追踪该表数据增长速率、磁盘使用率与内存占用趋势，设置阈值告警（如磁盘使用率>70%）。</li>
+                <li class="mb-2"><span class="recommendation-badge">长期规划</span>：制定数据分级存储策略，将超过18个月的冷数据迁移至对象存储（如S3），降低Doris集群存储成本。</li>
+            </ul>
+            <p class="mt-4 text-gray-700">以上措施可有效控制资源增长风险，保障Doris集群在高负载场景下的稳定性与可扩展性。</p>
+        </div>
+
+        <div class="card">
+            <h2 class="section-title">结论</h2>
+            <p class="text-gray-700">当前Doris数仓中 <code>ods_market_cffex_internal</code> 表数据量已达196GB，日均增长800万行，磁盘使用率处于安全区间（9.38%-12.08%），内存占用约5.4GB，系统运行稳定。但若不采取主动容量管理措施，该表将在10-12个月内突破800GB，磁盘使用率将显著上升，可能引发服务稳定性风险。建议立即启动数据生命周期管理与扩容规划，确保系统可持续运行。</p>
+        </div>
+
+        <div class="card">
+            <h2 class="section-title">参考文献</h2>
+            <ol class="list-decimal pl-5 space-y-2">
+                <li><cite><a href="https://doris.apache.org/" target="_blank" rel="noopener noreferrer">Apache Doris 官方文档</a></cite></li>
+                <li><cite><a href="https://doris.apache.org/docs/dev/advanced/partition/" target="_blank" rel="noopener noreferrer">Doris 分区与TTL机制说明</a></cite></li>
+                <li><cite><a href="https://doris.apache.org/docs/dev/admin-manual/monitor/" target="_blank" rel="noopener noreferrer">Doris 监控指标与告警配置</a></cite></li>
+            </ol>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>

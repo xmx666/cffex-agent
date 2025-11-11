@@ -1,0 +1,107 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系统支持的数据模型列表</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .section-title {
+      font-weight: 600;
+      color: #1e40af;
+      border-bottom: 2px solid #dbeafe;
+      padding-bottom: 0.5rem;
+      margin-top: 2rem;
+    }
+    .model-card {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      border-left: 4px solid #3b82f6;
+    }
+    .model-name {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      margin-bottom: 0.5rem;
+    }
+    .model-detail {
+      margin-bottom: 0.75rem;
+    }
+    .model-detail span {
+      font-weight: 500;
+      color: #4b5563;
+    }
+    .footer {
+      margin-top: 4rem;
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.875rem;
+      padding: 1.5rem 0;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body class="max-w-5xl mx-auto px-4 py-8">
+  <header class="text-center mb-10">
+    <h1 class="text-3xl font-bold text-gray-800">系统支持的数据模型列表</h1>
+    <p class="text-gray-600 mt-2">基于当前数据库视图信息整理，涵盖时间粒度、格式与说明</p>
+  </header>
+
+  <div class="model-card">
+    <div class="model-name">cffex_ohlcv_1day</div>
+    <div class="model-detail"><span>时间粒度：</span>day</div>
+    <div class="model-detail"><span>描述信息：</span>中国金融期货交易所日线级别OHLCV数据，包含开盘价、最高价、最低价、收盘价与成交量</div>
+    <div class="model-detail"><span>时间格式：</span>YYYY-MM-DD HH:MM:SS</div>
+    <div class="model-detail"><span>备注说明：</span>数据更新频率为每日收盘后，适用于中长期趋势分析与策略回测</div>
+  </div>
+
+  <div class="model-card">
+    <div class="model-name">cffex_ohlcv_1hour</div>
+    <div class="model-detail"><span>时间粒度：</span>hour</div>
+    <div class="model-detail"><span>描述信息：</span>中国金融期货交易所小时级别OHLCV数据，包含开盘价、最高价、最低价、收盘价与成交量</div>
+    <div class="model-detail"><span>时间格式：</span>YYYY-MM-DD HH:MM:SS</div>
+    <div class="model-detail"><span>备注说明：</span>数据更新频率为每小时，适用于日内交易策略开发与市场情绪监控</div>
+  </div>
+
+  <div class="model-card">
+    <div class="model-name">cffex_ohlcv_1minute</div>
+    <div class="model-detail"><span>时间粒度：</span>minute</div>
+    <div class="model-detail"><span>描述信息：</span>中国金融期货交易所分钟级别OHLCV数据，包含开盘价、最高价、最低价、收盘价与成交量</div>
+    <div class="model-detail"><span>时间格式：</span>YYYY-MM-DD HH:MM:SS</div>
+    <div class="model-detail"><span>备注说明：</span>数据更新频率为每分钟，适用于高频交易策略、订单流分析与微结构研究</div>
+  </div>
+
+  <div class="model-card">
+    <div class="model-name">cffex_orderbook_1minute</div>
+    <div class="model-detail"><span>时间粒度：</span>minute</div>
+    <div class="model-detail"><span>描述信息：</span>中国金融期货交易所分钟级逐笔订单簿数据，包含买卖盘五档价格与数量</div>
+    <div class="model-detail"><span>时间格式：</span>YYYY-MM-DD HH:MM:SS</div>
+    <div class="model-detail"><span>备注说明：</span>数据包含完整买卖盘深度，适用于订单簿动态分析与市场流动性建模</div>
+  </div>
+
+  <div class="model-card">
+    <div class="model-name">cffex_trade_1minute</div>
+    <div class="model-detail"><span>时间粒度：</span>minute</div>
+    <div class="model-detail"><span>描述信息：</span>中国金融期货交易所分钟级逐笔成交数据，包含成交价格、数量、买卖方向与时间戳</div>
+    <div class="model-detail"><span>时间格式：</span>YYYY-MM-DD HH:MM:SS</div>
+    <div class="model-detail"><span>备注说明：</span>数据记录每一笔成交明细，适用于成交分布、冲击成本与交易行为分析</div>
+  </div>
+
+  <footer class="footer">
+    Created by Autobots<br>
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

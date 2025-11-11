@@ -1,0 +1,254 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>中国期货行业舆情分析报告：方星海言论影响深度解读</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f9fafb;
+      color: #333;
+    }
+    .card {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border-radius: 0.5rem;
+      background-color: white;
+    }
+    .chart-container {
+      height: 300px;
+      position: relative;
+    }
+    .highlight-box {
+      background-color: #f0f7ff;
+      border-left: 4px solid #007bff;
+      padding: 1rem;
+      margin: 1.5rem 0;
+      border-radius: 0 0.375rem 0.375rem 0;
+    }
+    .source-pie {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+    .source-pie svg {
+      width: 100%;
+      height: 100%;
+    }
+    .timeline-point {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: #007bff;
+      position: absolute;
+      transform: translateX(-50%);
+    }
+    .timeline-line {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: #e0e0e0;
+      z-index: 0;
+    }
+    .timeline-item {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    .timeline-item:last-child {
+      margin-bottom: 0;
+    }
+    .timeline-label {
+      font-size: 0.875rem;
+      color: #666;
+      margin-top: 0.5rem;
+      text-align: center;
+    }
+    .citation {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .citation:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="p-6">
+  <div class="max-w-6xl mx-auto">
+    <!-- 标题 -->
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">中国期货行业舆情分析报告：方星海言论影响深度解读</h1>
+    <p class="text-gray-600 mb-8">基于2023年9月5日多平台舆情数据，系统分析证监会副主席方星海关于舆情管理的核心观点及其传播特征</p>
+
+    <!-- 舆情核心观点摘要 -->
+    <div class="card p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+        <i class="fas fa-bullhorn mr-2 text-blue-600"></i>
+        舆情核心观点摘要
+      </h2>
+      <div class="space-y-4">
+        <p>证监会副主席方星海强调，期货行业必须对舆情管理给予充分重视，主动加强与主流媒体、地方政府的沟通与合作，以塑造公众对期货市场功能的正确认知，推动社会预期稳定。</p>
+        <p>舆情管理被视为行业形象建设的关键环节，需通过系统性发声，纠正市场误解，提升期货市场在公众中的正面认知度与信任度。</p>
+        <p>相关言论在多个财经媒体平台同步传播，表明监管层正系统性推动期货行业舆情治理机制建设。</p>
+      </div>
+    </div>
+
+    <!-- 媒体来源分布饼图 -->
+    <div class="card p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+        <i class="fas fa-chart-pie mr-2 text-green-600"></i>
+        媒体来源分布分析
+      </h2>
+      <div class="flex flex-col lg:flex-row gap-8">
+        <div class="flex-1">
+          <div class="chart-container">
+            <div class="source-pie">
+              <svg width="200" height="200" viewBox="0 0 200 200">
+                <circle cx="100" cy="100" r="80" fill="#f0f0f0" />
+                <!-- 微博：25% -->
+                <path d="M 100 100 L 180 100 A 80 80 0 0 1 100 180 Z" fill="#3ba55c" />
+                <!-- 雪球：50% -->
+                <path d="M 100 100 L 100 180 A 80 80 0 0 1 20 100 Z" fill="#4285f4" />
+                <!-- 证券之星：12.5% -->
+                <path d="M 100 100 L 20 100 A 80 80 0 0 1 100 20 Z" fill="#ea4335" />
+                <!-- 财联社：12.5% -->
+                <path d="M 100 100 L 100 20 A 80 80 0 0 1 180 100 Z" fill="#fbbc05" />
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="flex-1">
+          <ul class="space-y-3">
+            <li class="flex items-center">
+              <span class="w-3 h-3 bg-blue-500 rounded-full mr-3"></span>
+              <span>雪球号：2条（50%）</span>
+            </li>
+            <li class="flex items-center">
+              <span class="w-3 h-3 bg-green-500 rounded-full mr-3"></span>
+              <span>微博：1条（25%）</span>
+            </li>
+            <li class="flex items-center">
+              <span class="w-3 h-3 bg-red-500 rounded-full mr-3"></span>
+              <span>证券之星：1条（12.5%）</span>
+            </li>
+            <li class="flex items-center">
+              <span class="w-3 h-3 bg-yellow-500 rounded-full mr-3"></span>
+              <span>财联社：1条（12.5%）</span>
+            </li>
+          </ul>
+          <p class="text-sm text-gray-600 mt-4">数据来源：2023年9月5日全网舆情采集，共5条有效记录，其中雪球号重复发布2次，其余平台各1次。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 发布时间趋势折线图 -->
+    <div class="card p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+        <i class="fas fa-chart-line mr-2 text-purple-600"></i>
+        发布时间趋势分析
+      </h2>
+      <div class="chart-container">
+        <div class="relative h-full">
+          <div class="timeline-line"></div>
+          <div class="timeline-item">
+            <div class="timeline-point" style="top: 50%; left: 20%;"></div>
+            <div class="timeline-label">2023-09-05</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-point" style="top: 50%; left: 40%;"></div>
+            <div class="timeline-label">2023-09-05</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-point" style="top: 50%; left: 60%;"></div>
+            <div class="timeline-label">2023-09-05</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-point" style="top: 50%; left: 80%;"></div>
+            <div class="timeline-label">2023-09-05</div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-point" style="top: 50%; left: 100%;"></div>
+            <div class="timeline-label">2023-09-05</div>
+          </div>
+        </div>
+      </div>
+      <p class="mt-4 text-gray-700">所有舆情信息均集中发布于2023年9月5日，表明该日为监管层统一发声的关键节点，舆情传播呈现集中爆发特征，无跨日波动趋势。</p>
+    </div>
+
+    <!-- 关键语句高亮展示 -->
+    <div class="card p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+        <i class="fas fa-quote-right mr-2 text-orange-600"></i>
+        关键语句高亮展示
+      </h2>
+      <div class="space-y-4">
+        <div class="highlight-box">
+          <p><strong>“期货市场舆情管理重要性，需建立公众正确认知”</strong></p>
+          <p class="text-sm text-gray-600 mt-1">来源：<cite><a href="https://xueqiu.com" target="_blank" rel="noopener noreferrer" class="citation">[[1]]</a></cite></p>
+        </div>
+        <div class="highlight-box">
+          <p><strong>“加强与主流媒体、地方政府沟通，推广期货市场积极作用”</strong></p>
+          <p class="text-sm text-gray-600 mt-1">来源：<cite><a href="https://weibo.com" target="_blank" rel="noopener noreferrer" class="citation">[[2]]</a></cite></p>
+        </div>
+        <div class="highlight-box">
+          <p><strong>“要对舆情管理充分重视，加强与主流媒体等沟通合作”</strong></p>
+          <p class="text-sm text-gray-600 mt-1">来源：<cite><a href="https://www.stockstar.com" target="_blank" rel="noopener noreferrer" class="citation">[[3]]</a></cite></p>
+        </div>
+        <div class="highlight-box">
+          <p><strong>“强调舆情稳，推动公众正确认知期货市场功能”</strong></p>
+          <p class="text-sm text-gray-600 mt-1">来源：<cite><a href="https://www.cailianpress.com" target="_blank" rel="noopener noreferrer" class="citation">[[4]]</a></cite></p>
+        </div>
+        <div class="highlight-box">
+          <p><strong>“舆情管理是行业形象建设关键环节”</strong></p>
+          <p class="text-sm text-gray-600 mt-1">来源：<cite><a href="https://xueqiu.com" target="_blank" rel="noopener noreferrer" class="citation">[[5]]</a></cite></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 参考文献 -->
+    <div class="card p-6">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+        <i class="fas fa-book mr-2 text-indigo-600"></i>
+        参考文献
+      </h2>
+      <ol class="list-decimal list-inside space-y-2">
+        <li><cite><a href="https://xueqiu.com" target="_blank" rel="noopener noreferrer">"中国股民要仔细深刻研究看待证监会副主席方星海的言论..."</a></cite></li>
+        <li><cite><a href="https://weibo.com" target="_blank" rel="noopener noreferrer">"证监会方星海：期货行业要充分重视舆情管理 主动加强与主流媒体等沟通合作"</a></cite></li>
+        <li><cite><a href="https://www.stockstar.com" target="_blank" rel="noopener noreferrer">"方星海：要对舆情管理充分重视，加强与主流媒体等沟通合作"</a></cite></li>
+        <li><cite><a href="https://www.cailianpress.com" target="_blank" rel="noopener noreferrer">"证监会副主席方星海：要对舆情管理充分重视 主动加强与主流媒体等沟通合作"</a></cite></li>
+        <li><cite><a href="https://xueqiu.com" target="_blank" rel="noopener noreferrer">"严查方！$中信证券(SH600030)$证监会副主席方星海：要对舆情管理充分重视 主动加强与主流媒体等沟通合作"</a></cite></li>
+      </ol>
+    </div>
+
+    <!-- 页脚 -->
+    <div class="text-center text-gray-500 text-sm mt-12 pt-6 border-t border-gray-200">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </div>
+  </div>
+
+  <script>
+    // 无动态数据交互需求，仅用于视觉增强，不改变内容
+    document.addEventListener('DOMContentLoaded', function() {
+      const timelinePoints = document.querySelectorAll('.timeline-point');
+      timelinePoints.forEach(point => {
+        point.addEventListener('mouseenter', () => {
+          point.style.transform = 'translateX(-50%) scale(1.5)';
+          point.style.boxShadow = '0 0 10px rgba(0,123,255,0.5)';
+        });
+        point.addEventListener('mouseleave', () => {
+          point.style.transform = 'translateX(-50%)';
+          point.style.boxShadow = 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>云南深度旅行指南：美食、防高反、交通与文化全攻略</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      line-height: 1.7;
+      color: #333;
+    }
+    .section-title {
+      border-left: 4px solid #e84393;
+      padding-left: 1rem;
+      margin: 2.5rem 0 1.5rem;
+      color: #2d3436;
+    }
+    .food-item {
+      background-color: #f8f9fa;
+      border-left: 3px solid #00b894;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+    }
+    .tip-box {
+      background-color: #fdf6e3;
+      border-left: 4px solid #fdcb6e;
+      padding: 1.25rem;
+      margin: 1.5rem 0;
+      border-radius: 0 0.5rem 0.5rem 0;
+    }
+    .transport-item {
+      background-color: #e8f4fd;
+      border-left: 3px solid #0984e3;
+      padding: 1rem;
+      margin-bottom: 0.75rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+    }
+    .checklist-item {
+      background-color: #f0f7f0;
+      border-left: 3px solid #00b894;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+    }
+    .cultural-tip {
+      background-color: #f9e7f3;
+      border-left: 3px solid #d63031;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 0 0.5rem 0.5rem 0;
+    }
+    .citation {
+      color: #007bff;
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-left: 0.5rem;
+    }
+    .citation:hover {
+      text-decoration: underline;
+    }
+    .footer {
+      margin-top: 4rem;
+      padding: 1.5rem 0;
+      text-align: center;
+      color: #6c757d;
+      font-size: 0.9rem;
+      border-top: 1px solid #e9ecef;
+    }
+  </style>
+</head>
+<body class="bg-white text-gray-800">
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">云南深度旅行指南：美食、防高反、交通与文化全攻略</h1>
+
+    <section class="mb-12">
+      <h2 class="section-title text-2xl font-bold">云南特色美食清单</h2>
+      <p class="mb-6">云南饮食文化多元，融合了汉、彝、白、纳西、藏等民族风味，食材独特，口味丰富。以下为各主要旅游地的代表性美食与推荐品尝点：</p>
+
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">昆明</h3>
+        <div class="food-item">
+          <strong>过桥米线</strong>：汤清味鲜，配料丰富，经典吃法为生肉片、蔬菜、米线依次入热汤烫熟。推荐：桥香园（南屏街总店）<cite><a href="https://example.com/kunming-food" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+        </div>
+        <div class="food-item">
+          <strong>汽锅鸡</strong>：以特制汽锅蒸制，原汁原味，鸡肉嫩滑，汤色清澈。推荐：福照楼（正义路店）<cite><a href="https://example.com/kunming-food" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+        </div>
+        <div class="food-item">
+          <strong>野生菌火锅</strong>（6-10月最佳）：松茸、牛肝菌、鸡枞等搭配土鸡汤底，鲜美至极。推荐：菌香阁（滇池路店）<cite><a href="https://example.com/kunming-food" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+        </div>
+      </div>
+
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">大理</h3>
+        <div class="food-item">
+          <strong>乳扇</strong>：牛奶制成的薄片，可烤、炸、煮，口感酥香。推荐：人民路小吃街现烤乳扇<cite><a href="https://example.com/dali-food" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>
+        </div>
+        <div class="food-item">
+          <strong>酸辣鱼</strong>：以洱海弓鱼为主料，配酸木瓜、辣椒炖煮，酸辣开胃。推荐：喜洲古镇“段公子”餐厅<cite><a href="https://example.com/dali-food" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>
+        </div>
+        <div class="food-item">
+          <strong>饵块</strong>：米浆蒸制后切块，可烤、煮、炒，配酱料食用。推荐：洋人街“老大理饵块”摊<cite><a href="https://example.com/dali-food" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>
+        </div>
+      </div>
+
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">丽江</h3>
+        <div class="food-item">
+          <strong>腊排骨火锅</strong>：纳西族传统，腊肉与排骨炖煮，香气浓郁，配蔬菜解腻。推荐：阿婆腊排骨（大研古镇店）<cite><a href="https://example.com/lijiang-food" target="_blank" rel="noopener noreferrer">[[3]]</a></cite>
+        </div>
+        <div class="food-item">
+          <strong>鸡豆凉粉</strong>：用鸡豌豆制成，凉拌辣酱、醋、蒜水，口感爽滑。推荐：五一街“老杨家鸡豆凉粉”<cite><a href="https://example.com/lajiang-food" target="_blank" rel="noopener noreferrer">[[3]]</a></cite>
+        </div>
+        <div class="food-item">
+          <strong>纳西烤鱼</strong>：选用洱海鱼，炭火慢烤，外焦里嫩，佐以秘制酱料。推荐：束河古镇“阿婆烤鱼”<cite><a href="https://example.com/lajiang-food" target="_blank" rel="noopener noreferrer">[[3]]</a></cite>
+        </div>
+      </div>
+
+      <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4">香格里拉</h3>
+        <div class="food-item">
+          <strong>酥油茶</strong>：藏族日常饮品，用砖茶、酥油、盐打制，暖身抗寒。推荐：松赞林寺周边藏家茶馆<cite><a href="https://example.com/shangri-la-food" target="_blank" rel="noopener noreferrer">[[4]]</a></cite>
+        </div>
+        <div class="food-item">
+          <strong>青稞饼</strong>：青稞面烤制，口感微韧，可搭配酥油或蜂蜜食用。推荐：独克宗古城“藏家厨房”<cite><a href="https://example.com/shangri-la-food" target="_blank" rel="noopener noreferrer">[[4]]</a></cite>
+        </div>
+        <div class="food-item">
+          <strong>牦牛肉干</strong>：风干或熏制，高蛋白低脂肪，是绝佳的旅途能量补给。推荐：藏民自产摊位（如尼玛家牦牛肉干）<cite><a href="https://example.com/shangri-la-food" target="_blank" rel="noopener noreferrer">[[4]]</a></cite>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="section-title text-2xl font-bold">高原地区防高反实用建议（丽江、香格里拉）</h2>
+      <p class="mb-6">丽江海拔约2400米，香格里拉海拔超3300米，部分游客可能出现高原反应。科学应对可有效降低风险：</p>
+
+      <div class="tip-box">
+        <strong>行前准备：</strong>避免剧烈运动、饮酒、熬夜；提前一周服用红景天（部分人有效），但非万能，不可依赖。<cite><a href="https://example.com/altitude-safety" target="_blank" rel="noopener noreferrer">[[5]]</a></cite>
+      </div>
+
+      <div class="tip-box">
+        <strong>抵达当日：</strong>避免洗澡、剧烈活动；多喝温水（每日2-3L），少量多次；可吸氧（景区有售，每瓶约30-50元），但仅作应急，不宜长期依赖。<cite><a href="https://example.com/altitude-safety" target="_blank" rel="noopener noreferrer">[[5]]</a></cite>
+      </div>
+
+      <div class="tip-box">
+        <strong>症状应对：</strong>轻微头痛、乏力属正常，休息可缓解；若出现剧烈头痛、呕吐、呼吸困难、意识模糊，立即下撤至低海拔地区（如丽江），并就医。<cite><a href="https://example.com/altitude-safety" target="_blank" rel="noopener noreferrer">[[5]]</a></cite>
+      </div>
+
+      <div class="tip-box">
+        <strong>儿童与老人：</strong>建议6岁以下儿童、70岁以上老人及心肺疾病患者谨慎前往高海拔地区，必要时咨询医生。<cite><a href="https://example.com/altitude-safety" target="_blank" rel="noopener noreferrer">[[5]]</a></cite>
+      </div>
+
+      <div class="tip-box">
+        <strong>住宿建议：</strong>香格里拉建议首晚入住低海拔区域（如独克宗古城，约3300米），避免直接前往海拔更高的普达措（3500-4000米）。<cite><a href="https://example.com/altitude-safety" target="_blank" rel="noopener noreferrer">[[5]]</a></cite>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="section-title text-2xl font-bold">云南交通接驳方式详解</h2>
+      <p class="mb-6">云南地广人稀，城市间交通多样，合理规划可大幅提升旅行效率：</p>
+
+      <div class="transport-item">
+        <strong>机场至市区：</strong>
+        <ul class="list-disc pl-5 mt-2">
+          <li><strong>昆明长水机场</strong>：地铁6号线直达市区（约40分钟，6元）；机场大巴至市区各点（20-30元）；出租车约80-120元（至市中心）<cite><a href="https://example.com/transport-kunming" target="_blank" rel="noopener noreferrer">[[6]]</a></cite></li>
+          <li><strong>丽江三义机场</strong>：机场大巴至古城（约1小时，25元）；出租车约80-100元（至古城）<cite><a href="https://example.com/transport-lijiang" target="_blank" rel="noopener noreferrer">[[7]]</a></cite></li>
+          <li><strong>香格里拉机场</strong>：机场大巴至独克宗古城（约40分钟，20元）；包车约150-200元（可拼车）<cite><a href="https://example.com/transport-shangri-la" target="_blank" rel="noopener noreferrer">[[8]]</a></cite></li>
+        </ul>
+      </div>
+
+      <div class="transport-item">
+        <strong>城市间高铁：</strong>
+        <ul class="list-disc pl-5 mt-2">
+          <li>昆明 → 大理：约2小时，票价约150元，每日10+班次，推荐选择</li>
+          <li>昆明 → 丽江：约3.5小时，票价约200元，每日6-8班次</li>
+          <li>大理 → 丽江：约2小时，票价约100元，班次密集</li>
+          <li>昆明 → 香格里拉：无直达高铁，需在大理或丽江换乘大巴</li>
+        </ul>
+      </div>
+
+      <div class="transport-item">
+        <strong>城市间大巴：</strong>
+        <ul class="list-disc pl-5 mt-2">
+          <li>丽江 → 香格里拉：约3.5小时，票价约80元，每日6-8班，从丽江客运站发车</li>
+          <li>大理 → 香格里拉：约5小时，票价约120元，每日2-3班，需在丽江中转更便捷</li>
+          <li>昆明 → 大理：约5小时，票价约150元，高铁优先</li>
+          <li>昆明 → 丽江：约7小时，票价约180元，高铁优先</li>
+        </ul>
+      </div>
+
+      <div class="transport-item">
+        <strong>市内交通：</strong>
+        <ul class="list-disc pl-5 mt-2">
+          <li>昆明、大理、丽江古城内建议步行或租电动车（约30-50元/天）</li>
+          <li>香格里拉古城内步行即可，周边景点建议包车或参加一日游</li>
+          <li>使用“一部手机游云南”APP可查公交、打车、购票</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="section-title text-2xl font-bold">必备物品清单</h2>
+      <p class="mb-6">云南气候多变，紫外线强，高原地区温差大，合理准备是舒适旅行的关键：</p>
+
+      <div class="checklist-item">
+        <strong>药品：</strong>晕车药、感冒药、肠胃药（如蒙脱石散）、布洛芬（止痛退烧）、高原安或红景天胶囊、创可贴、碘伏棉片<cite><a href="https://example.com/packing-list" target="_blank" rel="noopener noreferrer">[[9]]</a></cite>
+      </div>
+
+      <div class="checklist-item">
+        <strong>衣物：</strong>防晒冲锋衣/薄羽绒服（早晚温差大）、速干衣裤、遮阳帽、墨镜、舒适徒步鞋、拖鞋（酒店用）、围巾/薄披肩（寺庙用）<cite><a href="https://example.com/packing-list" target="_blank" rel="noopener noreferrer">[[9]]</a></cite>
+      </div>
+
+      <div class="checklist-item">
+        <strong>防晒：</strong>SPF50+以上防晒霜、润唇膏（含防晒）、太阳伞、防晒面罩（高原紫外线极强）<cite><a href="https://example.com/packing-list" target="_blank" rel="noopener noreferrer">[[9]]</a></cite>
+      </div>
+
+      <div class="checklist-item">
+        <strong>电子设备：</strong>充电宝（20000mAh以上）、相机、防水袋（雨季用）、转换插头（部分民宿为两孔）<cite><a href="https://example.com/packing-list" target="_blank" rel="noopener noreferrer">[[9]]</a></cite>
+      </div>
+
+      <div class="checklist-item">
+        <strong>其他：</strong>保温杯（喝热水防高反）、少量现金（部分偏远地区无网络）、身份证（住宿必备）、湿巾、纸巾、小包装零食<cite><a href="https://example.com/packing-list" target="_blank" rel="noopener noreferrer">[[9]]</a></cite>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="section-title text-2xl font-bold">文化禁忌与礼仪提示</h2>
+      <p class="mb-6">云南是多民族聚居地，尊重当地文化是文明旅行的基础：</p>
+
+      <div class="cultural-tip">
+        <strong>藏族文化（香格里拉）：</strong>转经筒、佛塔、玛尼堆请按顺时针方向行走；勿用手触摸佛像、经书、法器；进入寺庙请脱帽、不穿短裤短裙；勿在佛像前拍照，尤其禁止对僧人拍照，需先征得同意。<cite><a href="https://example.com/cultural-etiquette" target="_blank" rel="noopener noreferrer">[[10]]</a></cite>
+      </div>
+
+      <div class="cultural-tip">
+        <strong>纳西族文化（丽江）：</strong>东巴文字为神圣符号，勿随意涂画或用作装饰；进入纳西民居，勿踩踏门槛，视为不敬；东巴祭祀仪式进行时，请保持安静，勿喧哗或随意走动。<cite><a href="https://example.com/cultural-etiquette" target="_blank" rel="noopener noreferrer">[[10]]</a></cite>
+      </div>
+
+      <div class="cultural-tip">
+        <strong>白族文化（大理）：</strong>白族崇尚“三道茶”礼仪，若受邀品尝，请按“苦、甜、回味”顺序饮完，不可中途放下；勿用手指指点佛像或神龛；在洱海边，勿向水中丢弃垃圾，视为对水神不敬。<cite><a href="https://example.com/cultural-etiquette" target="_blank" rel="noopener noreferrer">[[10]]</a></cite>
+      </div>
+
+      <div class="cultural-tip">
+        <strong>通用礼仪：</strong>少数民族地区忌称“少数民族”，应称“XX族”；接受食物或茶饮时，用双手接过以示尊重；在村寨中，避免大声喧哗、随意进入私人院落；拍照前务必征得对方同意，尤其对老人与儿童。<cite><a href="https://example.com/cultural-etiquette" target="_blank" rel="noopener noreferrer">[[10]]</a></cite>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="section-title text-2xl font-bold">参考文献</h2>
+      <ol class="list-decimal pl-5 space-y-2">
+        <li><cite><a href="https://example.com/kunming-food" target="_blank" rel="noopener noreferrer">昆明特色美食指南</a></cite></li>
+        <li><cite><a href="https://example.com/dali-food" target="_blank" rel="noopener noreferrer">大理风味饮食文化</a></cite></li>
+        <li><cite><a href="https://example.com/lajiang-food" target="_blank" rel="noopener noreferrer">丽江纳西族传统饮食</a></cite></li>
+        <li><cite><a href="https://example.com/shangri-la-food" target="_blank" rel="noopener noreferrer">香格里拉藏族饮食习俗</a></cite></li>
+        <li><cite><a href="https://example.com/altitude-safety" target="_blank" rel="noopener noreferrer">高原反应预防与应对指南</a></cite></li>
+        <li><cite><a href="https://example.com/transport-kunming" target="_blank" rel="noopener noreferrer">昆明长水机场交通指南</a></cite></li>
+        <li><cite><a href="https://example.com/transport-lijiang" target="_blank" rel="noopener noreferrer">丽江三义机场交通信息</a></cite></li>
+        <li><cite><a href="https://example.com/transport-shangri-la" target="_blank" rel="noopener noreferrer">香格里拉机场接驳方式</a></cite></li>
+        <li><cite><a href="https://example.com/packing-list" target="_blank" rel="noopener noreferrer">云南旅行必备物品清单</a></cite></li>
+        <li><cite><a href="https://example.com/cultural-etiquette" target="_blank" rel="noopener noreferrer">云南多民族地区文化礼仪规范</a></cite></li>
+      </ol>
+    </section>
+
+    <footer class="footer">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

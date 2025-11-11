@@ -1,0 +1,191 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>新疆三大旅游城市2025年11月天气旅游攻略</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .city-card {
+      border-left: 4px solid #007bff;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .city-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0, 123, 255, 0.2);
+    }
+    .weather-icon {
+      font-size: 3rem;
+      color: #007bff;
+    }
+    .highlight {
+      background-color: #e3f2fd;
+      padding: 8px 12px;
+      border-radius: 6px;
+      border-left: 3px solid #007bff;
+    }
+    .footer {
+      margin-top: 60px;
+      padding: 20px 0;
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+      border-top: 1px solid #eee;
+    }
+    .cite-link {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .cite-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="py-8">
+  <div class="container mx-auto px-4">
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-800 mb-4">新疆三大旅游城市2025年11月天气旅游攻略</h1>
+      <p class="text-lg text-gray-600 max-w-3xl mx-auto">基于2025年11月11日实时天气数据，为前往乌鲁木齐、喀纳斯、吐鲁番的游客提供专业出行建议</p>
+    </header>
+
+    <section class="mb-12">
+      <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">当前天气概览</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- 乌鲁木齐 -->
+        <div class="city-card bg-white p-6 rounded-lg">
+          <h3 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-city mr-2 text-blue-600"></i>乌鲁木齐
+          </h3>
+          <div class="mb-4">
+            <p class="text-gray-700"><span class="font-medium">天气状况：</span>晴</p>
+            <p class="text-gray-700"><span class="font-medium">气温：</span>-2°C ~ 8°C</p>
+            <p class="text-gray-700"><span class="font-medium">风力：</span>西北风 3-4级</p>
+            <p class="text-gray-700"><span class="font-medium">空气质量：</span>良</p>
+          </div>
+          <div class="mb-6">
+            <h4 class="font-semibold text-gray-800 mb-2">穿衣建议：</h4>
+            <p class="text-gray-700">建议穿着羽绒服、加厚毛衣、保暖裤、防风外套，佩戴帽子、围巾和手套。室内有暖气，可适当减少衣物。</p>
+          </div>
+          <div class="mb-6">
+            <h4 class="font-semibold text-gray-800 mb-2">出行提示：</h4>
+            <p class="text-gray-700">早晚温差大，注意防寒保暖；空气干燥，建议携带润唇膏和保湿护肤品；道路可能有轻微结冰，驾车注意安全。</p>
+          </div>
+          <div class="mb-6">
+            <h4 class="font-semibold text-gray-800 mb-2">推荐景点：</h4>
+            <ul class="list-disc pl-5 text-gray-700 space-y-1">
+              <li>天山天池</li>
+              <li>红山公园</li>
+              <li>新疆博物馆</li>
+              <li>国际大巴扎</li>
+            </ul>
+          </div>
+          <div class="highlight">
+            <p class="text-sm font-medium">注意：11月天山天池部分区域可能因积雪关闭，出行前请确认开放信息。</p>
+          </div>
+        </div>
+
+        <!-- 喀纳斯 -->
+        <div class="city-card bg-white p-6 rounded-lg">
+          <h3 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-mountain mr-2 text-blue-600"></i>喀纳斯
+          </h3>
+          <div class="mb-4">
+            <p class="text-gray-700"><span class="font-medium">天气状况：</span>多云转晴</p>
+            <p class="text-gray-700"><span class="font-medium">气温：</span>-10°C ~ 2°C</p>
+            <p class="text-gray-700"><span class="font-medium">风力：</span>西北风 4-5级</p>
+            <p class="text-gray-700"><span class="font-medium">空气质量：</span>优</p>
+          </div>
+          <div class="mb-6">
+            <h4 class="font-semibold text-gray-800 mb-2">穿衣建议：</h4>
+            <p class="text-gray-700">必须穿着专业级防寒装备：羽绒服、防风雪冲锋衣、加厚保暖内衣、羊毛袜、防滑雪地靴、保暖面罩。建议携带暖宝宝。</p>
+          </div>
+          <div class="mb-6">
+            <h4 class="font-semibold text-gray-800 mb-2">出行提示：</h4>
+            <p class="text-gray-700">喀纳斯景区海拔较高，气温极低，风力强劲；部分道路可能因积雪封闭，建议提前联系景区确认通行情况；建议使用四驱车辆或包车前往。</p>
+          </div>
+          <div class="mb-6">
+            <h4 class="font-semibold text-gray-800 mb-2">推荐景点：</h4>
+            <ul class="list-disc pl-5 text-gray-700 space-y-1">
+              <li>喀纳斯湖</li>
+              <li>月亮湾</li>
+              <li>神仙湾</li>
+              <li>观鱼台</li>
+            </ul>
+          </div>
+          <div class="highlight">
+            <p class="text-sm font-medium">注意：11月为喀纳斯旅游淡季，部分住宿与餐饮服务可能暂停，建议提前预订并携带充足干粮与饮用水。</p>
+          </div>
+        </div>
+
+        <!-- 吐鲁番 -->
+        <div class="city-card bg-white p-6 rounded-lg">
+          <h3 class="text-2xl font-semibold text-gray-800 mb-4 flex items-center">
+            <i class="fas fa-desert mr-2 text-blue-600"></i>吐鲁番
+          </h3>
+          <div class="mb-4">
+            <p class="text-gray-700"><span class="font-medium">天气状况：</span>晴</p>
+            <p class="text-gray-700"><span class="font-medium">气温：</span>-1°C ~ 12°C</p>
+            <p class="text-gray-700"><span class="font-medium">风力：</span>东北风 2-3级</p>
+            <p class="text-gray-700"><span class="font-medium">空气质量：</span>良</p>
+          </div>
+          <div class="mb-6">
+            <h4 class="font-semibold text-gray-800 mb-2">穿衣建议：</h4>
+            <p class="text-gray-700">建议穿着长款大衣、毛呢外套、保暖内搭、围巾，白天可适当减少衣物，夜间需加厚。建议携带太阳镜和防晒霜。</p>
+          </div>
+          <div class="mb-6">
+            <h4 class="font-semibold text-gray-800 mb-2">出行提示：</h4>
+            <p class="text-gray-700">昼夜温差明显，注意适时增减衣物；日照强烈，户外活动需注意防晒；景区多为戈壁与沙漠地形，建议穿防沙鞋。</p>
+          </div>
+          <div class="mb-6">
+            <h4 class="font-semibold text-gray-800 mb-2">推荐景点：</h4>
+            <ul class="list-disc pl-5 text-gray-700 space-y-1">
+              <li>火焰山</li>
+              <li>交河故城</li>
+              <li>高昌故城</li>
+              <li>坎儿井民俗园</li>
+            </ul>
+          </div>
+          <div class="highlight">
+            <p class="text-sm font-medium">注意：吐鲁番地区风沙较大，建议携带口罩；部分户外遗址无遮蔽，避免长时间暴晒。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">综合出行建议</h2>
+      <div class="bg-white p-8 rounded-lg shadow-md">
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6">通用注意事项</h3>
+        <ul class="list-decimal pl-6 text-gray-700 space-y-4">
+          <li>新疆地区昼夜温差大，无论前往哪个城市，均需准备多层可调节衣物，遵循“洋葱式穿衣法”。</li>
+          <li>11月为新疆旅游淡季，部分景区开放时间缩短，建议提前通过官方渠道查询开放信息与交通安排。</li>
+          <li>新疆地区干燥，建议携带保湿护肤品、润唇膏、加湿器（如住宿条件允许）。</li>
+          <li>部分偏远地区网络信号弱，建议提前下载离线地图与必要信息。</li>
+          <li>尊重当地民族风俗，进入清真寺或少数民族家庭时注意着装与行为规范。</li>
+          <li>建议购买旅游意外险，特别是前往喀纳斯等高海拔地区。</li>
+        </ul>
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6 mt-10">交通提示</h3>
+        <p class="text-gray-700 mb-4">乌鲁木齐地窝堡国际机场正常运营，可作为主要进出枢纽。前往喀纳斯需经阿勒泰或布尔津中转，冬季道路易积雪，建议选择正规旅游包车服务。吐鲁番与乌鲁木齐间有高铁连接，出行便捷。</p>
+        <h3 class="text-2xl font-semibold text-gray-800 mb-6 mt-10">饮食建议</h3>
+        <p class="text-gray-700">新疆特色美食如烤羊肉串、大盘鸡、抓饭、馕等均可品尝，但11月气温低，建议选择热食。避免饮用生水，建议饮用瓶装水。</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,427 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IM期货价格走势与市场动态分析报告（2025年10月21日-10月31日）</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f9fafb;
+      color: #333;
+    }
+    .chart-container {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .chart-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+    }
+    .data-point {
+      font-weight: 600;
+      color: #007bff;
+    }
+    .highlight {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 12px 16px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 20px;
+      font-size: 0.9rem;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 64px;
+      padding: 24px;
+      color: #6b7280;
+      font-size: 0.9rem;
+      border-top: 1px solid #e5e7eb;
+    }
+    .table-responsive {
+      overflow-x: auto;
+      margin: 24px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: right;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    tr:hover {
+      background-color: #f9fafb;
+    }
+    .trend-indicator {
+      display: inline-flex;
+      align-items: center;
+      font-weight: 500;
+    }
+    .trend-up {
+      color: #10b981;
+    }
+    .trend-down {
+      color: #ef4444;
+    }
+    .date-label {
+      font-size: 0.85rem;
+      color: #6b7280;
+    }
+  </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">IM期货价格走势与市场动态分析报告（2025年10月21日-10月31日）</h1>
+
+  <div class="chart-container">
+    <h2 class="chart-title">收盘价时间序列走势</h2>
+    <div class="h-80 flex items-end justify-between px-4" style="position: relative;">
+      <div class="relative w-full h-full flex items-end">
+        <div class="w-full flex justify-between" style="padding-left: 10px; padding-right: 10px;">
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-blue-500 rounded-t-md" style="height: 68%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/21</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-blue-500 rounded-t-md" style="height: 67%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/22</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-blue-500 rounded-t-md" style="height: 68%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/23</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-blue-500 rounded-t-md" style="height: 71%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/24</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-blue-500 rounded-t-md" style="height: 72%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/27</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-blue-500 rounded-t-md" style="height: 72%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/28</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-blue-500 rounded-t-md" style="height: 74%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/29</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-blue-500 rounded-t-md" style="height: 70%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/30</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-blue-500 rounded-t-md" style="height: 70%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/31</div>
+          </div>
+        </div>
+      </div>
+      <div class="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500 pr-2">
+        <span>7480</span>
+        <span>7400</span>
+        <span>7320</span>
+        <span>7240</span>
+        <span>7160</span>
+        <span>7080</span>
+      </div>
+    </div>
+    <div class="mt-4 flex justify-center">
+      <div class="legend-item">
+        <div class="legend-color bg-blue-500"></div>
+        <span>收盘价 (CNY)</span>
+      </div>
+    </div>
+    <p class="mt-4 text-gray-700 text-sm">
+      收盘价从10月21日的7182.8元稳步上升至10月31日的7368.2元，整体呈现温和上涨趋势，期间最高触及7446.4元（10月29日），最低为7083.0元（10月21日），波动区间为363.4元。
+    </p>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">成交量与持仓量双轴趋势分析</h2>
+    <div class="h-80 flex items-end justify-between px-4" style="position: relative;">
+      <div class="relative w-full h-full flex items-end">
+        <div class="w-full flex justify-between" style="padding-left: 10px; padding-right: 10px;">
+          <!-- 成交量柱状图 -->
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-green-400 rounded-t-md" style="height: 58%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/21</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-green-400 rounded-t-md" style="height: 47%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/22</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-green-400 rounded-t-md" style="height: 67%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/23</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-green-400 rounded-t-md" style="height: 57%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/24</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-green-400 rounded-t-md" style="height: 53%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/27</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-green-400 rounded-t-md" style="height: 55%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/28</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-green-400 rounded-t-md" style="height: 48%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/29</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-green-400 rounded-t-md" style="height: 63%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/30</div>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-full bg-green-400 rounded-t-md" style="height: 64%;"></div>
+            <div class="text-xs mt-2 text-gray-600">10/31</div>
+          </div>
+          <!-- 持仓量折线标记 -->
+          <div class="absolute top-0 w-full h-full pointer-events-none flex justify-between px-4">
+            <div class="w-1 h-16 bg-red-500 rounded-full absolute bottom-0"></div>
+            <div class="w-1 h-15 bg-red-500 rounded-full absolute bottom-0"></div>
+            <div class="w-1 h-18 bg-red-500 rounded-full absolute bottom-0"></div>
+            <div class="w-1 h-17 bg-red-500 rounded-full absolute bottom-0"></div>
+            <div class="w-1 h-17 bg-red-500 rounded-full absolute bottom-0"></div>
+            <div class="w-1 h-17 bg-red-500 rounded-full absolute bottom-0"></div>
+            <div class="w-1 h-16 bg-red-500 rounded-full absolute bottom-0"></div>
+            <div class="w-1 h-18 bg-red-500 rounded-full absolute bottom-0"></div>
+            <div class="w-1 h-17 bg-red-500 rounded-full absolute bottom-0"></div>
+          </div>
+        </div>
+      </div>
+      <div class="absolute left-0 top-0 h-full flex flex-col justify-between text-xs text-gray-500 pr-2">
+        <span>180K</span>
+        <span>170K</span>
+        <span>160K</span>
+        <span>150K</span>
+        <span>140K</span>
+        <span>130K</span>
+      </div>
+    </div>
+    <div class="mt-4 flex justify-center">
+      <div class="legend-item">
+        <div class="legend-color bg-green-400"></div>
+        <span>成交量 (手)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color bg-red-500"></div>
+        <span>持仓量 (手)</span>
+      </div>
+    </div>
+    <p class="mt-4 text-gray-700 text-sm">
+      成交量在10月23日达到峰值172,781手，对应当日价格波动加剧；持仓量整体维持在18万至20万手区间，未出现显著增减，表明市场多空力量相对均衡，未出现大规模单边建仓或平仓行为。
+    </p>
+  </div>
+
+  <div class="highlight">
+    <h3 class="text-lg font-semibold mb-2">价格波动区间与关键极值</h3>
+    <ul class="list-disc pl-6 text-gray-700 space-y-1">
+      <li><span class="data-point">最高收盘价</span>：7446.4元，出现在2025年10月29日，当日高点达7450.0元，为全周期最高水平 <cite><a href="https://example.com" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+      <li><span class="data-point">最低收盘价</span>：7083.0元，出现在2025年10月21日，为周期起点 <cite><a href="https://example.com" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+      <li><span class="data-point">最大单日涨幅</span>：10月29日，从7356.0元上涨至7446.4元，涨幅1.23% <cite><a href="https://example.com" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+      <li><span class="data-point">最大单日跌幅</span>：10月24日，从7298.0元回落至7194.4元，跌幅1.41% <cite><a href="https://example.com" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+      <li><span class="data-point">价格波动区间</span>：7083.0元至7450.0元，总跨度367.0元，波动率约5.1% <cite><a href="https://example.com" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+    </ul>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">关键交易日价格与交易量明细</h2>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>交易日期</th>
+            <th>收盘价 (元)</th>
+            <th>开盘价 (元)</th>
+            <th>最高价 (元)</th>
+            <th>最低价 (元)</th>
+            <th>成交量 (手)</th>
+            <th>成交额 (元)</th>
+            <th>持仓量 (手)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2025-10-21</td>
+            <td>7182.8</td>
+            <td>7099.0</td>
+            <td>7228.6</td>
+            <td>7083.0</td>
+            <td>151,318</td>
+            <td>217,057,963,960</td>
+            <td>190,486</td>
+          </tr>
+          <tr>
+            <td>2025-10-22</td>
+            <td>7163.2</td>
+            <td>7165.2</td>
+            <td>7201.2</td>
+            <td>7117.2</td>
+            <td>120,919</td>
+            <td>173,221,570,480</td>
+            <td>180,451</td>
+          </tr>
+          <tr>
+            <td>2025-10-23</td>
+            <td>7179.0</td>
+            <td>7149.0</td>
+            <td>7186.4</td>
+            <td>7014.4</td>
+            <td>172,781</td>
+            <td>244,656,421,720</td>
+            <td>201,566</td>
+          </tr>
+          <tr>
+            <td>2025-10-24</td>
+            <td>7298.0</td>
+            <td>7210.0</td>
+            <td>7298.0</td>
+            <td>7194.4</td>
+            <td>147,894</td>
+            <td>214,255,112,520</td>
+            <td>183,485</td>
+          </tr>
+          <tr>
+            <td>2025-10-27</td>
+            <td>7322.6</td>
+            <td>7378.0</td>
+            <td>7395.6</td>
+            <td>7300.2</td>
+            <td>137,585</td>
+            <td>202,089,585,520</td>
+            <td>187,588</td>
+          </tr>
+          <tr>
+            <td>2025-10-28</td>
+            <td>7335.6</td>
+            <td>7315.0</td>
+            <td>7416.8</td>
+            <td>7301.2</td>
+            <td>141,946</td>
+            <td>208,873,403,640</td>
+            <td>186,154</td>
+          </tr>
+          <tr>
+            <td>2025-10-29</td>
+            <td>7446.4</td>
+            <td>7356.0</td>
+            <td>7450.0</td>
+            <td>7330.8</td>
+            <td>124,145</td>
+            <td>183,466,571,200</td>
+            <td>180,653</td>
+          </tr>
+          <tr>
+            <td>2025-10-30</td>
+            <td>7364.4</td>
+            <td>7429.8</td>
+            <td>7444.0</td>
+            <td>7328.0</td>
+            <td>162,104</td>
+            <td>239,500,120,520</td>
+            <td>190,757</td>
+          </tr>
+          <tr>
+            <td>2025-10-31</td>
+            <td>7368.2</td>
+            <td>7380.0</td>
+            <td>7479.0</td>
+            <td>7363.0</td>
+            <td>164,443</td>
+            <td>243,638,602,760</td>
+            <td>186,908</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-4 text-gray-700 text-sm">
+      数据显示，10月23日与10月31日为成交额最高两日，分别达2446.56亿元与2436.39亿元，表明市场在价格震荡中交易活跃度提升。10月29日虽为价格高点，但成交量相对较低，可能反映多头获利了结或市场观望情绪增强。
+    </p>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">趋势总结与市场解读</h2>
+    <p class="text-gray-700 mb-4">
+      在2025年10月21日至10月31日的交易周期内，IM期货价格整体呈现温和上行趋势，收盘价由7182.8元稳步攀升至7368.2元，累计涨幅2.58%。价格波动主要集中在7100至7450元区间，未出现极端单边行情，市场表现出较强的韧性与稳定性。
+    </p>
+    <p class="text-gray-700 mb-4">
+      成交量在10月23日达到峰值，与价格下探至7014.4元后反弹形成共振，显示市场在低位获得支撑；而10月30日与10月31日成交量回升，配合价格在高位震荡，表明多空分歧加剧，但未形成趋势性突破。持仓量整体维持在18万至20万手高位，未随价格上行显著增加，说明当前上涨主要由存量资金推动，而非新增资金入场，市场情绪趋于谨慎。
+    </p>
+    <p class="text-gray-700 mb-4">
+      10月29日价格触及7450元高点，但成交量明显萎缩，且次日即出现回落，提示该位置存在较强阻力。10月31日收盘价收于7368.2元，略高于前一日，但未能突破7479元高点，市场进入盘整阶段。综合来看，当前市场处于震荡上行通道，短期或延续区间震荡，建议关注7450元阻力位与7300元支撑位的突破情况。
+    </p>
+    <div class="mt-6 flex items-center">
+      <span class="trend-indicator trend-up">
+        <i class="fas fa-arrow-up mr-1"></i>
+        整体趋势：温和上涨
+      </span>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">参考文献</h2>
+    <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+      <li><cite><a href="https://example.com" target="_blank" rel="noopener noreferrer">IM_价格走势数据.csv</a></cite></li>
+    </ol>
+  </div>
+
+  <footer class="footer">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const bars = document.querySelectorAll('.bg-blue-500, .bg-green-400');
+      bars.forEach(bar => {
+        bar.addEventListener('mouseenter', function() {
+          const height = this.style.height;
+          const date = this.parentElement.querySelector('.text-xs').textContent;
+          const price = this.parentElement.querySelector('.bg-blue-500') ? 
+            (date === '10/21' ? '7182.8' : date === '10/22' ? '7163.2' : date === '10/23' ? '7179.0' : 
+             date === '10/24' ? '7298.0' : date === '10/27' ? '7322.6' : date === '10/28' ? '7335.6' : 
+             date === '10/29' ? '7446.4' : date === '10/30' ? '7364.4' : '7368.2') : '';
+          const vol = this.parentElement.querySelector('.bg-green-400') ? 
+            (date === '10/21' ? '151,318' : date === '10/22' ? '120,919' : date === '10/23' ? '172,781' : 
+             date === '10/24' ? '147,894' : date === '10/27' ? '137,585' : date === '10/28' ? '141,946' : 
+             date === '10/29' ? '124,145' : date === '10/30' ? '162,104' : '164,443') : '';
+          alert(`日期: ${date}\n收盘价: ${price}元\n成交量: ${vol}手`);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

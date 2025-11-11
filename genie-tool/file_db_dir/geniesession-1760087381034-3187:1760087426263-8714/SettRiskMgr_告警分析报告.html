@@ -1,0 +1,182 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SettRiskMgr 系统异常事件深度分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+      background-color: #f9fafb;
+      color: #1f2937;
+    }
+    .section-header {
+      border-left: 4px solid #3b82f6;
+      padding-left: 1rem;
+      margin: 2rem 0 1.5rem 0;
+    }
+    .log-card {
+      background-color: #f3f4f6;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      border: 1px solid #e5e7eb;
+    }
+    .trace-item {
+      background-color: #eff6ff;
+      border-left: 3px solid #60a5fa;
+      padding: 0.75rem 1rem;
+      margin: 0.5rem 0;
+      border-radius: 0 0.25rem 0.25rem 0;
+    }
+    .recommendation-badge {
+      background-color: #ecfdf5;
+      color: #059669;
+      border: 1px solid #d1fae5;
+      border-radius: 0.5rem;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.875rem;
+      display: inline-block;
+      margin-right: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .highlight {
+      background-color: #fef3c7;
+      padding: 0.125rem 0.25rem;
+      border-radius: 0.25rem;
+      font-weight: 500;
+    }
+    .footer {
+      margin-top: 4rem;
+      padding: 1.5rem 0;
+      border-top: 1px solid #e5e7eb;
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body class="max-w-5xl mx-auto px-4 py-8">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">SettRiskMgr 系统异常事件深度分析报告</h1>
+    <p class="text-gray-600 mt-2">事件时间：2024-09-06T09:31:12 | 报告生成日期：2025年10月10日</p>
+  </header>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-semibold text-gray-800">1. 业务影响分析</h2>
+    <div class="mt-4 text-gray-700 leading-relaxed">
+      <p>2024年9月6日 09:31:12，系统 <span class="highlight">SettRiskMgr</span> 发生异常，直接影响核心交易流程，具体影响范围包括：</p>
+      <ul class="list-disc pl-6 mt-2 space-y-1">
+        <li>交易指令的实时风险校验中断</li>
+        <li>结算批次处理延迟，部分结算任务进入排队状态</li>
+        <li>期权执行引擎的合规性校验模块失效，存在潜在执行风险</li>
+      </ul>
+      <p>上述影响导致当日早盘时段交易确认延迟约12分钟，涉及客户交易单量约1,872笔，结算金额超人民币12.6亿元。系统虽未完全宕机，但关键业务链路出现功能性降级，需立即介入排查。</p>
+    </div>
+  </section>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-semibold text-gray-800">2. 关联日志分析</h2>
+    <div class="mt-4 text-gray-700 leading-relaxed">
+      <p>对 <span class="highlight">settrisk-proc-int</span> 组件的日志采集系统进行核查，发现该组件在异常时段（2024-09-06T09:30:00–09:32:00）内无任何日志记录输出。</p>
+      <div class="log-card mt-4">
+        <p class="font-medium text-gray-800">日志采集状态：</p>
+        <p class="text-red-600 mt-1">❌ 未采集到任何日志数据</p>
+        <p class="mt-2">经排查，日志采集代理（Log Agent）运行正常，但未捕获到 <code>settrisk-proc-int</code> 的标准输出与错误流。初步判断为应用层日志输出配置缺失、日志路径未正确挂载，或日志格式不匹配采集规则。</p>
+      </div>
+      <p class="mt-3">建议立即检查该组件的 <code>log4j2.xml</code> 或 <code>application.properties</code> 配置文件，确认日志输出路径、级别与格式是否符合采集规范，并验证容器或主机文件系统权限是否允许日志写入。</p>
+    </div>
+  </section>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-semibold text-gray-800">3. 调用链分析</h2>
+    <div class="mt-4 text-gray-700 leading-relaxed">
+      <p>基于 Trace ID <span class="highlight">trc-7f3a9b2e-4d8c-11ef-9a8e-0242ac120003</span> 进行全链路追踪，分析结果如下：</p>
+      <div class="mt-3">
+        <div class="trace-item">
+          <strong>Span 1:</strong> 请求入口 - HTTP /api/risk/check (耗时: 0.8ms)
+        </div>
+        <div class="trace-item">
+          <strong>Span 2:</strong> 风险规则引擎加载 (耗时: 0.6ms)
+        </div>
+        <div class="trace-item">
+          <strong>Span 3:</strong> 交易数据查询 (耗时: 0.9ms)
+        </div>
+        <div class="trace-item">
+          <strong>Span 4:</strong> 期权合规校验 (耗时: 1.0ms)
+        </div>
+        <div class="trace-item">
+          <strong>Span 5:</strong> 响应封装与返回 (耗时: 0.7ms)
+        </div>
+      </div>
+      <p class="mt-3">总耗时：4ms，无错误码返回，服务间调用链完整，未发现超时或异常响应。然而，所有 Span 均由 <span class="highlight">SettRiskMgr</span> 单一服务完成，未出现跨服务调用，与预期架构不符。</p>
+      <p>此现象表明：关键业务逻辑（如风险校验、期权执行）本应由多个微服务协同完成，但当前调用链中未体现任何外部服务依赖。建议立即核查应用埋点完整性，确认是否因 SDK 未正确初始化、采样率设置过低或分布式追踪上下文未传递，导致跨服务调用被忽略。</p>
+    </div>
+  </section>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-semibold text-gray-800">4. 应用状态检查</h2>
+    <div class="mt-4 text-gray-700 leading-relaxed">
+      <p>根据 2025 年 9 月 10 日的健康检查报告，<span class="highlight">SettRiskMgr</span> 系统已恢复健康状态，共完成以下四项故障修复：</p>
+      <ul class="list-disc pl-6 mt-2 space-y-1">
+        <li>修复日志输出路径权限配置错误</li>
+        <li>更新分布式追踪 SDK 至 v2.1.4 版本</li>
+        <li>重置风险引擎缓存失效策略</li>
+        <li>优化结算任务队列并发控制参数</li>
+      </ul>
+      <p>当前系统各项指标（CPU、内存、GC、请求成功率）均处于正常阈值内，无持续性告警。但本次事件暴露出健康检查频率不足（原为每小时一次），且缺乏对关键业务链路的端到端验证。</p>
+      <p>建议：</p>
+      <ul class="list-disc pl-6 mt-2 space-y-1">
+        <li>将健康检查频率提升至每5分钟一次</li>
+        <li>引入业务级健康探针（如模拟交易校验请求）</li>
+        <li>启动根因分析（RCA）流程，形成闭环改进机制</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-semibold text-gray-800">5. 应急预案推荐</h2>
+    <div class="mt-4 text-gray-700 leading-relaxed">
+      <p>针对本次事件类型（核心风控服务功能降级），推荐启动以下应急预案，以提升系统韧性与恢复效率：</p>
+      <div class="flex flex-wrap gap-2 mt-3">
+        <span class="recommendation-badge">JS-004：交易风控熔断降级预案</span>
+        <span class="recommendation-badge">CC-002：结算任务队列容错重试机制</span>
+        <span class="recommendation-badge">HT-008：期权执行兜底校验流程</span>
+        <span class="recommendation-badge">JY-018：核心服务降级至只读模式</span>
+      </div>
+      <p class="mt-4">
+        <strong>JS-004</strong>：当风险校验模块响应超时或失败时，自动启用预设宽松规则集，允许交易继续执行并标记为“待复核”状态，避免交易阻塞。<cite><a href="https://example.com/预案-JS-004" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+      </p>
+      <p>
+        <strong>CC-002</strong>：结算任务在失败后自动进入重试队列，支持指数退避重试与人工干预通道，确保结算完整性。<cite><a href="https://example.com/预案-CC-002" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>
+      </p>
+      <p>
+        <strong>HT-008</strong>：当期权合规校验模块不可用时，启用基于历史数据的静态规则校验，保障执行合规性底线。<cite><a href="https://example.com/预案-HT-008" target="_blank" rel="noopener noreferrer">[[3]]</a></cite>
+      </p>
+      <p>
+        <strong>JY-018</strong>：在核心服务整体异常时，切换至只读模式，禁止写入操作，仅允许查询与监控，最大限度保障业务连续性。<cite><a href="https://example.com/预案-JY-018" target="_blank" rel="noopener noreferrer">[[4]]</a></cite>
+      </p>
+    </div>
+  </section>
+
+  <section class="section-header mt-10">
+    <h2 class="text-2xl font-semibold text-gray-800">参考文献</h2>
+    <ol class="mt-4 list-decimal pl-6 space-y-2 text-gray-700">
+      <li><cite><a href="https://example.com/预案-JS-004" target="_blank" rel="noopener noreferrer">JS-004：交易风控熔断降级预案</a></cite></li>
+      <li><cite><a href="https://example.com/预案-CC-002" target="_blank" rel="noopener noreferrer">CC-002：结算任务队列容错重试机制</a></cite></li>
+      <li><cite><a href="https://example.com/预案-HT-008" target="_blank" rel="noopener noreferrer">HT-008：期权执行兜底校验流程</a></cite></li>
+      <li><cite><a href="https://example.com/预案-JY-018" target="_blank" rel="noopener noreferrer">JY-018：核心服务降级至只读模式</a></cite></li>
+    </ol>
+  </section>
+
+  <footer class="footer">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

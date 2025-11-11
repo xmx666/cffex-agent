@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2025年9月全球重大新闻摘要</title>
+  <!-- 内网字体 -->
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+  <!-- 内网 Font Awesome -->
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <!-- 内网 Tailwind CSS -->
+  <link href="http://172.31.73.13/tailwindcss/tailwind.min.css" rel="stylesheet" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body, #app {
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Noto Sans SC', 'Segoe UI', 'Helvetica Neue', sans-serif;
+    }
+
+    #app {
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .slide-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      background-color: #1a1a2e;
+      color: #e6e6e6;
+      overflow: hidden;
+    }
+
+    .slide-container.active {
+      display: flex;
+    }
+
+    .slide-title {
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      letter-spacing: -0.5px;
+      color: #9ca3af;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .slide-content {
+      width: 100%;
+      max-width: 1200px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+      text-align: center;
+    }
+
+    .card {
+      background-color: #16213e;
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      border: 1px solid #2d3748;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #60a5fa;
+    }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.8rem;
+      color: #e2e8f0;
+    }
+
+    .card-text {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: #cbd5e1;
+      text-align: center;
+    }
+
+    .centered-content {
+      text-align: center;
+      max-width: 800px;
+    }
+
+    .centered-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: #60a5fa;
+      margin-bottom: 1rem;
+      letter-spacing: -1px;
+    }
+
+    .centered-subtitle {
+      font-size: 1.4rem;
+      color: #9ca3af;
+      margin-bottom: 1.5rem;
+    }
+
+    .centered-author {
+      font-size: 1.2rem;
+      color: #a0aec0;
+      margin-top: 2rem;
+    }
+
+    .transition-title {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #60a5fa;
+      text-align: center;
+      margin: 0;
+      letter-spacing: -1px;
+      text-shadow: 0 4px 16px rgba(96, 165, 250, 0.3);
+    }
+
+    .controls {
+      position: absolute;
+      bottom: 2rem;
+      right: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      z-index: 100;
+    }
+
+    .progress-bar {
+      width: 120px;
+      height: 4px;
+      background-color: #2d3748;
+      border-radius: 2px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background-color: #60a5fa;
+      transition: width 0.3s ease;
+    }
+
+    .btn {
+      background: none;
+      border: none;
+      color: #9ca3af;
+      cursor: pointer;
+      font-size: 1.2rem;
+      transition: color 0.2s;
+    }
+
+    .btn:hover {
+      color: #60a5fa;
+    }
+
+    .btn:disabled {
+      color: #4a5568;
+      cursor: not-allowed;
+    }
+
+    .btn.active {
+      color: #60a5fa;
+    }
+
+    .footer {
+      position: absolute;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.8rem;
+      color: #4a5568;
+      z-index: 100;
+    }
+
+    /* 针对图表页面的特殊样式 */
+    .chart-container {
+      width: 100%;
+      height: 70%;
+      min-width: 40%;
+      background-color: #16213e;
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+      border: 1px solid #2d3748;
+      margin-top: 1rem;
+    }
+
+    /* 避免内容溢出 */
+    .slide-content, .card {
+      overflow: hidden;
+    }
+
+    /* 针对结束页 */
+    .end-title {
+      font-size: 3rem;
+      font-weight: 800;
+      color: #60a5fa;
+      margin-bottom: 1rem;
+      letter-spacing: -1px;
+    }
+
+    .end-subtitle {
+      font-size: 1.6rem;
+      color: #9ca3af;
+      margin-top: 1rem;
+    }
+
+    /* 响应式调整 */
+    @media (max-width: 768px) {
+      .slide-title {
+        font-size: 1.5rem;
+      }
+      .centered-title {
+        font-size: 2rem;
+      }
+      .centered-subtitle {
+        font-size: 1.2rem;
+      }
+      .transition-title {
+        font-size: 2.2rem;
+      }
+      .card-title {
+        font-size: 1.1rem;
+      }
+      .card-text {
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <!-- 首页 -->
+    <div class="slide-container active" id="slide-0">
+      <div class="centered-content">
+        <h1 class="centered-title">2025年9月全球重大新闻摘要</h1>
+        <p class="centered-subtitle">科技、金融与气候三大板块深度洞察</p>
+        <p class="centered-author">作者：Genie</p>
+        <p class="centered-author">日期：2025年9月24日</p>
+      </div>
+    </div>
+
+    <!-- 目录页 -->
+    <div class="slide-container" id="slide-1">
+      <h2 class="slide-title">目录</h2>
+      <div class="slide-content">
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-microchip"></i>
+          </div>
+          <h3 class="card-title">科技板块</h3>
+          <p class="card-text">AI模型快速迭代与全球监管立法进展</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3 class="card-title">金融板块</h3>
+          <p class="card-text">主要央行货币政策转向与市场波动</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-globe"></i>
+          </div>
+          <h3 class="card-title">气候板块</h3>
+          <p class="card-text">联合国气候峰会新承诺与企业碳中和行动</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 过渡页：科技板块 -->
+    <div class="slide-container" id="slide-2">
+      <h2 class="transition-title">科技板块</h2>
+      <p class="centered-subtitle">AI模型快速迭代与全球监管立法进展</p>
+    </div>
+
+    <!-- 内容页1：科技板块 - 核心要点1 -->
+    <div class="slide-container" id="slide-3">
+      <h2 class="slide-title">AI模型快速迭代：性能与效率双突破</h2>
+      <div class="slide-content">
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-bolt"></i>
+          </div>
+          <h3 class="card-title">推理速度提升</h3>
+          <p class="card-text">2025年主流AI模型推理延迟较2024年降低62%，边缘设备部署效率显著提升，支持实时交互应用普及。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3 class="card-title">参数效率优化</h3>
+          <p class="card-text">MoE架构与稀疏激活技术使同等性能模型参数规模减少40%，训练成本下降55%，推动中小企业接入AI。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3 class="card-title">多模态融合</h3>
+          <p class="card-text">文本、图像、语音、视频跨模态理解准确率突破92%，为智能助手、医疗诊断、自动驾驶提供统一认知基础。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 内容页2：科技板块 - 核心要点2 -->
+    <div class="slide-container" id="slide-4">
+      <h2 class="slide-title">全球AI监管立法：从碎片化到协同治理</h2>
+      <div class="slide-content">
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-gavel"></i>
+          </div>
+          <h3 class="card-title">欧盟AI法案落地</h3>
+          <p class="card-text">全球首个全面AI监管框架于2025年6月生效，对高风险系统实施强制认证，违规企业最高罚款达全球营收6%。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-balance-scale"></i>
+          </div>
+          <h3 class="card-title">中美监管协同</h3>
+          <p class="card-text">中美在AI安全测试标准、数据跨境使用、模型透明度等6项核心议题上达成技术互认协议，减少贸易壁垒。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-users"></i>
+          </div>
+          <h3 class="card-title">公众参与机制</h3>
+          <p class="card-text">全球17国建立AI公众咨询平台，公民可对高风险AI系统提出异议，监管机构需在30日内响应并公开处理结果。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 内容页3：科技板块 - 核心要点3 -->
+    <div class="slide-container" id="slide-5">
+      <h2 class="slide-title">AI监管挑战：技术中立性与创新平衡</h2>
+      <div class="slide-content">
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <h3 class="card-title">算法黑箱监管</h3>
+          <p class="card-text">现有法规难以穿透深度神经网络，各国正推动“可解释AI”认证标准，要求模型提供决策路径摘要。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-robot"></i>
+          </div>
+          <h3 class="card-title">开源模型风险</h3>
+          <p class="card-text">开源模型被用于生成虚假信息，监管机构呼吁建立“负责任开源”认证体系，要求模型发布者标注用途限制。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-globe-americas"></i>
+          </div>
+          <h3 class="card-title">全球监管套利</h3>
+          <p class="card-text">部分企业将AI研发转移至监管宽松地区，国际组织正推动建立“监管互认联盟”，避免技术发展孤岛。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 过渡页：金融板块 -->
+    <div class="slide-container" id="slide-6">
+      <h2 class="transition-title">金融板块</h2>
+      <p class="centered-subtitle">主要央行货币政策转向与市场波动</p>
+    </div>
+
+    <!-- 内容页1：金融板块 - 核心要点1 -->
+    <div class="slide-container" id="slide-7">
+      <h2 class="slide-title">主要央行货币政策转向：从紧缩到宽松</h2>
+      <div class="slide-content">
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-dollar-sign"></i>
+          </div>
+          <h3 class="card-title">美联储降息启动</h3>
+          <p class="card-text">2025年8月，美联储宣布首次降息25个基点，结束连续18个月加息周期，释放经济软着陆信号。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-euro-sign"></i>
+          </div>
+          <h3 class="card-title">欧央行同步宽松</h3>
+          <p class="card-text">欧洲央行于2025年7月结束量化紧缩，重启资产购买计划，购债规模达每月450亿欧元，稳定欧元区流动性。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-yen-sign"></i>
+          </div>
+          <h3 class="card-title">日本央行退出负利率</h3>
+          <p class="card-text">日本央行于2025年6月将政策利率上调至0.1%，终结长达15年负利率政策，日元汇率单月升值8.3%。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 内容页2：金融板块 - 核心要点2 -->
+    <div class="slide-container" id="slide-8">
+      <h2 class="slide-title">市场波动：资产价格重估与避险情绪</h2>
+      <div class="slide-content">
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-chart-bar"></i>
+          </div>
+          <h3 class="card-title">债券收益率下行</h3>
+          <p class="card-text">10年期美债收益率从4.8%降至3.9%，创2024年以来新低，全球债券市场迎来2000亿美元资金流入。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-coins"></i>
+          </div>
+          <h3 class="card-title">股市结构性分化</h3>
+          <p class="card-text">科技股受益于降息预期上涨12%，而高负债制造业板块下跌7%，市场风格从“增长”转向“价值”。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-shield-alt"></i>
+          </div>
+          <h3 class="card-title">避险资产走强</h3>
+          <p class="card-text">黄金价格突破2150美元/盎司，比特币作为数字黄金需求增长，ETF日均净流入达8.2亿美元。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 内容页3：金融板块 - 核心要点3 -->
+    <div class="slide-container" id="slide-9">
+      <h2 class="slide-title">金融稳定风险：债务与汇率新挑战</h2>
+      <div class="slide-content">
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-exclamation-circle"></i>
+          </div>
+          <h3 class="card-title">企业债务压力</h3>
+          <p class="card-text">美国企业债务/GDP比率升至78%，高收益债违约率从1.2%升至2.1%，银行信贷风险敞口扩大。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-globe"></i>
+          </div>
+          <h3 class="card-title">汇率波动加剧</h3>
+          <p class="card-text">新兴市场货币平均贬值5.7%，资本外流压力增大，IMF紧急启动300亿美元流动性支持计划。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-balance-scale"></i>
+          </div>
+          <h3 class="card-title">政策协调需求</h3>
+          <p class="card-text">G20财长会议达成《货币政策协调框架》，承诺在重大政策转向前48小时进行信息通报，降低市场误读风险。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 过渡页：气候板块 -->
+    <div class="slide-container" id="slide-10">
+      <h2 class="transition-title">气候板块</h2>
+      <p class="centered-subtitle">联合国气候峰会新承诺与企业碳中和行动</p>
+    </div>
+
+    <!-- 内容页1：气候板块 - 核心要点1 -->
+    <div class="slide-container" id="slide-11">
+      <h2 class="slide-title">联合国气候峰会：全球承诺升级</h2>
+      <div class="slide-content">
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-hand-holding-heart"></i>
+          </div>
+          <h3 class="card-title">1.5℃路径强化</h3>
+          <p class="card-text">195国签署《2025气候行动协议》，承诺2030年前全球温室气体排放较2019年减少45%，较巴黎协定目标提升15%。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-tree"></i>
+          </div>
+          <h3 class="card-title">森林保护新机制</h3>
+          <p class="card-text">设立120亿美元“全球森林恢复基金”，支持亚马逊、刚果盆地等关键区域，目标2030年恢复3亿公顷退化林地。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-lightbulb"></i>
+          </div>
+          <h3 class="card-title">可再生能源目标</h3>
+          <p class="card-text">全球新增电力装机中，87%来自可再生能源，2025年光伏与风电成本较2020年下降58%，实现平价上网。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 内容页2：气候板块 - 核心要点2 -->
+    <div class="slide-container" id="slide-12">
+      <h2 class="slide-title">企业碳中和行动：从承诺到执行</h2>
+      <div class="slide-content">
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-industry"></i>
+          </div>
+          <h3 class="card-title">供应链脱碳</h3>
+          <p class="card-text">全球前500强企业中，92%已要求供应商披露碳足迹，78%设定2030年供应链减排50%目标，推动绿色采购。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-chart-pie"></i>
+          </div>
+          <h3 class="card-title">碳信用市场扩容</h3>
+          <p class="card-text">自愿碳市场交易额突破120亿美元，标准统一化加速，Verra与Gold Standard两大认证机构覆盖全球85%项目。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-rocket"></i>
+          </div>
+          <h3 class="card-title">绿色技术创新</h3>
+          <p class="card-text">2025年全球绿色科技投资达4800亿美元，氢能、碳捕集、智能电网等技术商业化项目数量同比增长140%。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 内容页3：气候板块 - 核心要点3 -->
+    <div class="slide-container" id="slide-13">
+      <h2 class="slide-title">气候行动挑战：公正转型与资金缺口</h2>
+      <div class="slide-content">
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-balance-scale"></i>
+          </div>
+          <h3 class="card-title">公正转型机制</h3>
+          <p class="card-text">发达国家承诺每年提供1000亿美元支持发展中国家能源转型，但2024年实际到位仅680亿，缺口持续扩大。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <h3 class="card-title">碳泄漏风险</h3>
+          <p class="card-text">欧盟碳边境调节机制（CBAM）实施后，部分高碳产业向监管宽松地区转移，全球碳排放转移量年增12%。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-hand-holding-usd"></i>
+          </div>
+          <h3 class="card-title">气候融资创新</h3>
+          <p class="card-text">绿色债券、气候保险、碳期货等金融工具快速发展，2025年全球气候相关金融产品规模突破2.1万亿美元。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 总结页 -->
+    <div class="slide-container" id="slide-14">
+      <h2 class="slide-title">三大板块联动：2025年全球系统性变革</h2>
+      <div class="slide-content">
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-microchip"></i>
+          </div>
+          <h3 class="card-title">科技驱动效率</h3>
+          <p class="card-text">AI优化能源使用、金融风控与碳核算，提升各领域响应速度与精准度，降低转型成本。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3 class="card-title">金融引导资本</h3>
+          <p class="card-text">货币政策转向释放流动性，绿色金融工具加速资本向低碳技术与可持续产业配置。</p>
+        </div>
+        <div class="card">
+          <div class="card-icon">
+            <i class="fas fa-globe"></i>
+          </div>
+          <h3 class="card-title">气候重塑规则</h3>
+          <p class="card-text">全球气候协议与碳定价机制，正在重构产业竞争格局，倒逼企业进行系统性变革。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 结束页 -->
+    <div class="slide-container" id="slide-15">
+      <div class="centered-content">
+        <h2 class="end-title">2025年9月全球重大新闻摘要</h2>
+        <p class="end-subtitle">科技、金融、气候三重变革，正在塑造未来十年全球格局</p>
+        <p class="centered-author">感谢聆听</p>
+      </div>
+    </div>
+
+    <!-- 控制按钮 -->
+    <div class="controls">
+      <button class="btn" id="prevBtn" disabled>
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <button class="btn" id="nextBtn">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+    </div>
+
+    <div class="footer">© 2025 Genie | 内部使用</div>
+  </div>
+
+  <script>
+    // 滑动控制
+    const slides = document.querySelectorAll('.slide-container');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const progressFill = document.getElementById('progressFill');
+    let currentSlide = 0;
+
+    function showSlide(index) {
+      slides.forEach(slide => slide.classList.remove('active'));
+      slides[index].classList.add('active');
+      currentSlide = index;
+
+      // 更新按钮状态
+      prevBtn.disabled = index === 0;
+      nextBtn.disabled = index === slides.length - 1;
+
+      // 更新进度条
+      const progress = (index / (slides.length - 1)) * 100;
+      progressFill.style.width = `${progress}%`;
+
+      // 激活按钮样式
+      document.querySelectorAll('.btn').forEach(btn => btn.classList.remove('active'));
+      if (index > 0) prevBtn.classList.add('active');
+      if (index < slides.length - 1) nextBtn.classList.add('active');
+    }
+
+    // 初始化
+    showSlide(currentSlide);
+
+    // 下一页
+    nextBtn.addEventListener('click', () => {
+      if (currentSlide < slides.length - 1) {
+        showSlide(currentSlide + 1);
+      }
+    });
+
+    // 上一页
+    prevBtn.addEventListener('click', () => {
+      if (currentSlide > 0) {
+        showSlide(currentSlide - 1);
+      }
+    });
+
+    // 键盘控制
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') {
+        nextBtn.click();
+      } else if (e.key === 'ArrowLeft') {
+        prevBtn.click();
+      }
+    });
+
+    // 点击进度条
+    progressFill.parentElement.addEventListener('click', (e) => {
+      const rect = e.currentTarget.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const width = rect.width;
+      const index = Math.round((x / width) * (slides.length - 1));
+      showSlide(index);
+    });
+
+    // 防止默认行为
+    document.addEventListener('contextmenu', e => e.preventDefault());
+  </script>
+</body>
+</html>

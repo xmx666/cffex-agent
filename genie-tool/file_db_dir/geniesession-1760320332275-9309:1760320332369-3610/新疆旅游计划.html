@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新疆四地秋日深度旅游计划报告 · 2025年10月</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .weather-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid;
+        }
+        .weather-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .weather-sunny { border-left-color: #f59e0b; }
+        .weather-cloudy { border-left-color: #6b7280; }
+        .weather-rain { border-left-color: #3b82f6; }
+        .weather-polluted { border-left-color: #dc2626; }
+        .highlight-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .icon-large { font-size: 1.8rem; }
+        .section-title {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        .travel-tip {
+            background-color: #fef3c7;
+            border-left: 4px solid #d97706;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .itinerary-item {
+            counter-increment: step-counter;
+        }
+        .itinerary-item::before {
+            content: counter(step-counter);
+            background-color: #3b82f6;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+        footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.9rem;
+        }
+        .air-quality-good { color: #059669; }
+        .air-quality-moderate { color: #d97706; }
+        .air-quality-poor { color: #dc2626; }
+    </style>
+</head>
+<body class="max-w-6xl mx-auto px-4 py-8">
+    <header class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">新疆四地秋日深度旅游计划报告</h1>
+        <p class="text-lg text-gray-600">2025年10月13日 · 乌鲁木齐、喀纳斯、吐鲁番、伊犁天气与行程指南</p>
+    </header>
+
+    <section class="mb-12">
+        <h2 class="section-title">当前四地天气状况概览</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- 乌鲁木齐 -->
+            <div class="weather-card weather-sunny p-6 rounded-lg bg-white shadow-md">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-sun icon-large text-yellow-500 mr-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800">乌鲁木齐</h3>
+                </div>
+                <div class="space-y-3">
+                    <p><span class="font-medium">温度：</span>12°C ~ 22°C</p>
+                    <p><span class="font-medium">降水：</span>无降水</p>
+                    <p><span class="font-medium">空气质量：</span><span class="air-quality-good">优</span></p>
+                </div>
+            </div>
+
+            <!-- 喀纳斯 -->
+            <div class="weather-card weather-cloudy p-6 rounded-lg bg-white shadow-md">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-cloud icon-large text-gray-400 mr-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800">喀纳斯</h3>
+                </div>
+                <div class="space-y-3">
+                    <p><span class="font-medium">温度：</span>2°C ~ 14°C</p>
+                    <p><span class="font-medium">降水：</span>小雨</p>
+                    <p><span class="font-medium">空气质量：</span><span class="air-quality-good">优</span></p>
+                </div>
+            </div>
+
+            <!-- 吐鲁番 -->
+            <div class="weather-card weather-sunny p-6 rounded-lg bg-white shadow-md">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-sun icon-large text-yellow-500 mr-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800">吐鲁番</h3>
+                </div>
+                <div class="space-y-3">
+                    <p><span class="font-medium">温度：</span>18°C ~ 31°C</p>
+                    <p><span class="font-medium">降水：</span>无降水</p>
+                    <p><span class="font-medium">空气质量：</span><span class="air-quality-moderate">良</span></p>
+                </div>
+            </div>
+
+            <!-- 伊犁 -->
+            <div class="weather-card weather-rain p-6 rounded-lg bg-white shadow-md">
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-cloud-rain icon-large text-blue-500 mr-3"></i>
+                    <h3 class="text-xl font-bold text-gray-800">伊犁</h3>
+                </div>
+                <div class="space-y-3">
+                    <p><span class="font-medium">温度：</span>8°C ~ 19°C</p>
+                    <p><span class="font-medium">降水：</span>中雨</p>
+                    <p><span class="font-medium">空气质量：</span><span class="air-quality-good">优</span></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">各目的地核心旅游亮点</h2>
+        <div class="space-y-8">
+            <!-- 乌鲁木齐 -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-city mr-3 text-blue-600"></i>乌鲁木齐
+                </h3>
+                <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                    <li>红山公园：俯瞰城市全景，感受天山脚下的城市脉搏</li>
+                    <li>新疆博物馆：珍藏“楼兰美女”干尸与丝绸之路文物</li>
+                    <li>国际大巴扎：体验维吾尔族市集文化，品尝烤包子与抓饭</li>
+                </ul>
+            </div>
+
+            <!-- 喀纳斯 -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-mountain mr-3 text-green-600"></i>喀纳斯
+                </h3>
+                <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                    <li>喀纳斯湖：秋季层林尽染，湖水呈梦幻蓝绿色，被誉为“神的后花园”</li>
+                    <li>观鱼台：登高俯瞰整个喀纳斯湖全景，最佳摄影点</li>
+                    <li>禾木村：原始图瓦人木屋村落，晨雾缭绕如童话世界</li>
+                </ul>
+            </div>
+
+            <!-- 吐鲁番 -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-fire mr-3 text-red-600"></i>吐鲁番
+                </h3>
+                <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                    <li>火焰山：赤红色山体与《西游记》传说交织，感受“火洲”奇观</li>
+                    <li>坎儿井：古代地下水利工程奇迹，体现古代智慧</li>
+                    <li>葡萄沟：满园葡萄架下品尝无核白葡萄，体验维吾尔族歌舞</li>
+                </ul>
+            </div>
+
+            <!-- 伊犁 -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-grass mr-3 text-emerald-600"></i>伊犁
+                </h3>
+                <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                    <li>那拉提草原：秋日金黄草浪起伏，牧民转场景象壮丽</li>
+                    <li>赛里木湖：高山湖泊如蓝宝石镶嵌天山，湖光山色绝美</li>
+                    <li>昭苏油菜花田（秋季残景）：虽非盛花期，仍可见辽阔田野与雪山相映</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">基于天气的个性化出行建议</h2>
+        
+        <div class="travel-tip">
+            <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                <i class="fas fa-exclamation-triangle mr-2 text-orange-600"></i>喀纳斯 & 伊犁：注意防雨保暖
+            </h4>
+            <p class="text-gray-700">喀纳斯与伊犁地区有降雨，气温较低，建议携带防水冲锋衣、防滑登山鞋、保暖中层衣物（抓绒或羽绒内胆），避免在雨中长时间徒步。喀纳斯观鱼台台阶湿滑，需格外小心。</p>
+        </div>
+
+        <div class="travel-tip">
+            <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                <i class="fas fa-sun mr-2 text-yellow-600"></i>乌鲁木齐 & 吐鲁番：重点防晒补水
+            </h4>
+            <p class="text-gray-700">两地晴朗干燥，紫外线强烈，尤其吐鲁番气温高达31°C，需佩戴宽檐帽、墨镜，涂抹高倍数防晒霜，随身携带补水喷雾与电解质饮料，避免中暑。</p>
+        </div>
+
+        <div class="travel-tip">
+            <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                <i class="fas fa-clipboard-list mr-2 text-blue-600"></i>空气质量提示
+            </h4>
+            <p class="text-gray-700">乌鲁木齐与伊犁空气质量为“优”，适合户外活动；吐鲁番为“良”，对敏感人群无明显影响，但仍建议避免剧烈运动时长时间暴露于户外。</p>
+        </div>
+
+        <div class="highlight-box">
+            <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                <i class="fas fa-info-circle mr-2 text-blue-500"></i>重要提醒
+            </h4>
+            <p class="text-gray-700">新疆地域辽阔，昼夜温差大，即使在秋季，夜间温度可能降至5°C以下，建议采用“洋葱式穿衣法”，便于随时增减衣物。所有景区均需提前预约，尤其喀纳斯与那拉提草原，旺季需提前3-5天购票。</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">5-7天最优行程建议</h2>
+        <div class="space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">推荐路线：乌鲁木齐 → 吐鲁番 → 喀纳斯 → 伊犁 → 乌鲁木齐</h3>
+                <ol class="space-y-4">
+                    <li class="itinerary-item">
+                        <strong>第1-2天：乌鲁木齐</strong>（适应海拔，文化体验）<br>
+                        抵达乌鲁木齐，入住后游览新疆博物馆、国际大巴扎，品尝手抓饭与烤羊肉串，为后续行程储备体力。
+                    </li>
+                    <li class="itinerary-item">
+                        <strong>第3天：乌鲁木齐 → 吐鲁番（车程约2小时）</strong><br>
+                        上午参观火焰山与坎儿井，下午前往葡萄沟，体验维吾尔族家庭歌舞，傍晚返回乌鲁木齐住宿（或选择在吐鲁番过夜）。
+                    </li>
+                    <li class="itinerary-item">
+                        <strong>第4-5天：乌鲁木齐 → 喀纳斯（车程约8-9小时）</strong><br>
+                        早起出发，经克拉玛依、阿勒泰抵达喀纳斯。入住禾木村或贾登峪，次日清晨登观鱼台，拍摄晨雾中的喀纳斯湖全景，下午漫步白桦林。
+                    </li>
+                    <li class="itinerary-item">
+                        <strong>第6天：喀纳斯 → 伊犁（车程约7小时）</strong><br>
+                        早起离开喀纳斯，经布尔津、富蕴、奎屯抵达那拉提草原或赛里木湖，入住草原民宿，欣赏落日余晖下的金色草浪。
+                    </li>
+                    <li class="itinerary-item">
+                        <strong>第7天：伊犁 → 乌鲁木齐（车程约6小时）</strong><br>
+                        上午在赛里木湖环湖漫步，下午启程返回乌鲁木齐，结束旅程。建议选择傍晚航班离疆，避免夜间行车。
+                    </li>
+                </ol>
+            </div>
+
+            <div class="highlight-box">
+                <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                    <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>行程优化建议
+                </h4>
+                <p class="text-gray-700">若时间紧张，可压缩为5天：乌鲁木齐 → 吐鲁番（1天）→ 喀纳斯（2天）→ 伊犁（1天）→ 乌鲁木齐（1天）。若时间充裕，可在伊犁增加一天游览昭苏夏塔古道或特克斯八卦城。</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>

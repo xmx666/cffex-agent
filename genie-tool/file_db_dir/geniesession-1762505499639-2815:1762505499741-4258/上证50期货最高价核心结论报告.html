@@ -1,0 +1,131 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>上证50期货关键交易日价量协同分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .highlight-card {
+      border-left: 4px solid #e74c3c;
+      background-color: #fdf6f5;
+    }
+    .value-label {
+      font-weight: 700;
+      color: #e74c3c;
+    }
+    .volume-label {
+      font-weight: 700;
+      color: #3498db;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-10 max-w-4xl">
+    <!-- 标题 -->
+    <h1 class="text-3xl font-bold text-center mb-8 text-gray-900">上证50期货关键交易日价量协同分析报告</h1>
+
+    <!-- 核心数据卡片 -->
+    <div class="highlight-card rounded-r-lg p-8 mb-8 shadow-md">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">2025年11月6日核心交易数据</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="text-center p-6 bg-white rounded-lg shadow">
+          <p class="text-sm text-gray-600 mb-1">最高价</p>
+          <p class="text-4xl value-label">3048.6点</p>
+          <p class="text-xs text-gray-500 mt-2">当日价格峰值</p>
+        </div>
+        <div class="text-center p-6 bg-white rounded-lg shadow">
+          <p class="text-sm text-gray-600 mb-1">成交量</p>
+          <p class="text-4xl volume-label">150,290手</p>
+          <p class="text-xs text-gray-500 mt-2">当日交易活跃度峰值</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- 趋势说明 -->
+    <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">价量协同趋势分析</h2>
+      <p class="text-lg leading-relaxed mb-4">
+        2025年11月6日，上证50期货价格延续上涨趋势，最高价突破前日高点，达到3048.6点，为近四日峰值。与此同时，成交量同步放大至150,290手，较前一日增长6.0%，创出同期新高。价格与成交量的同步攀升，表明市场多头力量持续增强，买方意愿强烈，形成典型的价量协同上行信号，强化了短期趋势的可持续性。
+      </p>
+      <p class="text-lg leading-relaxed">
+        从2025年11月3日至6日的连续四日数据可见，价格从3020.5点稳步攀升至3048.6点，成交量亦从125,430手递增至150,290手，呈现清晰的正向联动关系，排除了量价背离的虚假突破可能。
+      </p>
+    </div>
+
+    <!-- 原始数据表格 -->
+    <div class="bg-white rounded-lg shadow-md p-8 mb-8">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">原始交易数据（2025-11-03 至 2025-11-06）</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full table-auto border-collapse text-sm">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 px-4 py-2 text-left">交易日期</th>
+              <th class="border border-gray-300 px-4 py-2 text-left">开盘价</th>
+              <th class="border border-gray-300 px-4 py-2 text-left">最高价</th>
+              <th class="border border-gray-300 px-4 py-2 text-left">最低价</th>
+              <th class="border border-gray-300 px-4 py-2 text-left">收盘价</th>
+              <th class="border border-gray-300 px-4 py-2 text-left">成交量（手）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2">2025-11-03</td>
+              <td class="border border-gray-300 px-4 py-2">3002.4</td>
+              <td class="border border-gray-300 px-4 py-2">3025.8</td>
+              <td class="border border-gray-300 px-4 py-2">2998.1</td>
+              <td class="border border-gray-300 px-4 py-2">3020.5</td>
+              <td class="border border-gray-300 px-4 py-2">125430</td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2">2025-11-04</td>
+              <td class="border border-gray-300 px-4 py-2">3021.2</td>
+              <td class="border border-gray-300 px-4 py-2">3038.7</td>
+              <td class="border border-gray-300 px-4 py-2">3015.3</td>
+              <td class="border border-gray-300 px-4 py-2">3035.9</td>
+              <td class="border border-gray-300 px-4 py-2">132870</td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2">2025-11-05</td>
+              <td class="border border-gray-300 px-4 py-2">3036.5</td>
+              <td class="border border-gray-300 px-4 py-2">3045.2</td>
+              <td class="border border-gray-300 px-4 py-2">3028.6</td>
+              <td class="border border-gray-300 px-4 py-2">3042.1</td>
+              <td class="border border-gray-300 px-4 py-2">141050</td>
+            </tr>
+            <tr class="bg-blue-50">
+              <td class="border border-gray-300 px-4 py-2 font-semibold">2025-11-06</td>
+              <td class="border border-gray-300 px-4 py-2">3043.8</td>
+              <td class="border border-gray-300 px-4 py-2 font-semibold text-red-600">3048.6</td>
+              <td class="border border-gray-300 px-4 py-2">3035.4</td>
+              <td class="border border-gray-300 px-4 py-2">3047.3</td>
+              <td class="border border-gray-300 px-4 py-2 font-semibold text-blue-600">150290</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- 结论 -->
+    <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg mb-8">
+      <h2 class="text-xl font-semibold text-green-800 mb-2">权威结论</h2>
+      <p class="text-gray-800 leading-relaxed">
+        2025年11月6日，上证50期货最高价3048.6点与成交量150,290手同步达到阶段高点，形成明确的价量协同突破形态，表明市场多头动能充沛，趋势强度显著。该数据为当前交易周期内最具参考价值的信号节点。
+      </p>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-gray-300 text-center py-6 mt-12">
+    <p class="text-sm">Created by Autobots<br />页面内容均由 AI 生成，仅供参考</p>
+  </footer>
+</body>
+</html>

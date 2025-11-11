@@ -1,10 +1,17 @@
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback, memo, useEffect } from "react";
 import GeneralInput from "@/components/GeneralInput";
 import Slogn from "@/components/Slogn";
 import ChatView from "@/components/ChatView";
+import UserIdentity from "@/components/UserIdentity";
+import SettingsModal from "@/components/SettingsModal";
+import HistorySidebar from "@/components/HistorySidebar";
+import HistoryDetail from "@/components/HistoryDetail";
 import { productList, defaultProduct } from "@/utils/constants";
-import { Image } from "antd";
+import { Image, Button } from "antd";
 import { demoList } from "@/utils/constants";
+import { BrowserFingerprint } from "@/utils/browserFingerprint";
+import { SimpleHistoryManager, ChatSession } from "@/utils/historyManager";
+import "@/styles/history.css";
 
 type HomeProps = Record<string, never>;
 
@@ -15,9 +22,133 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
   });
   const [product, setProduct] = useState(defaultProduct);
   const [videoModalOpen, setVideoModalOpen] = useState();
+  const [settingsVisible, setSettingsVisible] = useState(false);
+  const [historySidebarVisible, setHistorySidebarVisible] = useState(false);
+  const [historyDetailVisible, setHistoryDetailVisible] = useState(false);
+  const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null);
+  const [restoreSession, setRestoreSession] = useState<ChatSession | null>(null);
+  const [isRestoring, setIsRestoring] = useState(false);
+
+  // 初始化用户标识
+  useEffect(() => {
+    const fingerprint = BrowserFingerprint.getInstance();
+    fingerprint.generateFingerprint();
+  }, []);
 
   const changeInputInfo = useCallback((info: CHAT.TInputInfo) => {
     setInputInfo(info);
+  }, []);
+
+  // 监听外部触发查询（localStorage + URL参数）
+  useEffect(() => {
+    // 处理URL参数触发
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('query');
+
+    if (query) {
+      changeInputInfo({
+        message: decodeURIComponent(query),
+        deepThink: false
+      });
+      // 清除URL参数，避免刷新时重复触发
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+
+    // 监听 localStorage 变化（跨标签页通信）
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'genie_trigger_query' && e.newValue) {
+        try {
+          const queryData = JSON.parse(e.newValue);
+          if (queryData.message) {
+            // 设置问题并触发执行
+            changeInputInfo({
+              message: queryData.message,
+              deepThink: queryData.deepThink || false,
+              outputStyle: queryData.outputStyle,
+              files: queryData.files || []
+            });
+            // 清除标记，避免重复触发
+            localStorage.removeItem('genie_trigger_query');
+          }
+        } catch (error) {
+          console.error('解析查询数据失败:', error);
+        }
+      }
+    };
+
+    // 监听同源页面的 localStorage 变化
+    window.addEventListener('storage', handleStorageChange);
+
+    // 监听当前页面的 localStorage 变化（用于同页面触发）
+    const checkLocalStorage = () => {
+      const triggerData = localStorage.getItem('genie_trigger_query');
+      if (triggerData) {
+        try {
+          const queryData = JSON.parse(triggerData);
+          if (queryData.message && (!inputInfo.message || inputInfo.message !== queryData.message)) {
+            changeInputInfo({
+              message: queryData.message,
+              deepThink: queryData.deepThink || false,
+              outputStyle: queryData.outputStyle,
+              files: queryData.files || []
+            });
+            localStorage.removeItem('genie_trigger_query');
+          }
+        } catch (error) {
+          console.error('解析查询数据失败:', error);
+        }
+      }
+    };
+
+    // 定期检查（用于同页面触发，因为storage事件只在其他标签页触发）
+    const interval = setInterval(checkLocalStorage, 500);
+
+    // 监听 postMessage（跨域通信）
+    const handleMessage = (event: MessageEvent) => {
+      // 安全检查：可以验证 origin
+      // if (event.origin !== 'http://允许的域名') return;
+
+      if (event.data && event.data.type === 'GENIE_TRIGGER_QUERY') {
+        const { message, deepThink, outputStyle, files } = event.data;
+        if (message) {
+          changeInputInfo({
+            message,
+            deepThink: deepThink || false,
+            outputStyle,
+            files: files || []
+          });
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('message', handleMessage);
+      clearInterval(interval);
+    };
+  }, [changeInputInfo, inputInfo.message]);
+
+  // 处理历史记录选择
+  const handleSelectSession = useCallback((session: ChatSession) => {
+    setSelectedSession(session);
+    setHistoryDetailVisible(true);
+  }, []);
+
+  // 处理继续对话
+  const handleContinueChat = useCallback((session: ChatSession) => {
+    setIsRestoring(true);
+    setRestoreSession(session);
+    // 设置产品类型
+    const selectedProduct = productList.find(p => p.type === session.productType) || defaultProduct;
+    setProduct(selectedProduct);
+  }, []);
+
+  // 处理会话恢复完成
+  const handleSessionRestored = useCallback(() => {
+    setIsRestoring(false);
+    setRestoreSession(null);
   }, []);
 
   const CaseCard = ({ title, description, tag, image, url, videoUrl }: any) => {
@@ -97,7 +228,8 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
               </div>
             ))}
           </div>
-          <div className="mt-80 mb-120">
+          {/* 优秀案例 - 暂时隐藏，后续开发中再选择展示 */}
+          {/* <div className="mt-80 mb-120">
             <div className="text-center">
               <h2 className="text-2xl font-bold mb-2">优秀案例</h2>
               <p className="text-gray-500">和 Genie 一起提升工作效率</p>
@@ -107,16 +239,72 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
                 <CaseCard key={i} {...demo} />
               ))}
             </div>
-          </div>
+          </div> */}
         </div>
       );
     }
-    return <ChatView inputInfo={inputInfo} product={product} />;
+    return (
+      <ChatView
+        inputInfo={inputInfo}
+        product={product}
+        restoreSession={restoreSession}
+        onSessionRestored={handleSessionRestored}
+      />
+    );
   };
 
   return (
-    <div className="h-full flex flex-col items-center ">
-      {renderContent()}
+    <div className="h-full flex flex-col">
+      {/* 顶部工具栏 */}
+      <div className="w-full flex justify-between items-center p-16 bg-white border-b border-gray-200">
+        <div className="flex items-center">
+          <div className="text-[16px] font-[500] text-[#27272A]">
+            JoyAgent JDGenie
+          </div>
+        </div>
+
+        <div className="flex items-center space-x-16">
+          <UserIdentity />
+          <Button
+            icon={<i className="font_family icon-lishi"></i>}
+            onClick={() => setHistorySidebarVisible(true)}
+          >
+            历史记录
+          </Button>
+          <Button
+            icon={<i className="font_family icon-shezhi"></i>}
+            onClick={() => setSettingsVisible(true)}
+          >
+            设置
+          </Button>
+        </div>
+      </div>
+
+      {/* 主内容区域 */}
+      <div className="flex-1 flex flex-col items-center">
+        {renderContent()}
+      </div>
+
+      {/* 设置模态框 */}
+      <SettingsModal
+        visible={settingsVisible}
+        onClose={() => setSettingsVisible(false)}
+      />
+
+      {/* 历史记录侧边栏 */}
+      <HistorySidebar
+        visible={historySidebarVisible}
+        onClose={() => setHistorySidebarVisible(false)}
+        onSelectSession={handleSelectSession}
+      />
+
+      {/* 历史记录详情页面 */}
+      <HistoryDetail
+        session={selectedSession}
+        visible={historyDetailVisible}
+        onClose={() => setHistoryDetailVisible(false)}
+        onContinueChat={handleContinueChat}
+      />
     </div>
   );
 });

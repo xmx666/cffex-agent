@@ -1,0 +1,428 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>云南五地深度旅游攻略：气候、景点、行程与美食全指南</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .section-header {
+      border-left: 4px solid #2563eb;
+      padding-left: 1rem;
+      margin: 2rem 0 1.5rem;
+    }
+    .icon-badge {
+      background-color: #dbeafe;
+      color: #1e40af;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      margin-right: 0.5rem;
+    }
+    .card {
+      background-color: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .highlight-box {
+      background-color: #f0f9ff;
+      border-left: 3px solid #0ea5e9;
+      padding: 1rem;
+      border-radius: 0 0.5rem 0.5rem 0;
+      margin: 1rem 0;
+    }
+    .timeline-item {
+      position: relative;
+      padding-left: 2rem;
+      margin-bottom: 1.5rem;
+    }
+    .timeline-item:before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.5rem;
+      width: 0.75rem;
+      height: 0.75rem;
+      background-color: #2563eb;
+      border-radius: 50%;
+    }
+    .timeline-item:after {
+      content: '';
+      position: absolute;
+      left: 2.375rem;
+      top: 1.25rem;
+      bottom: -0.75rem;
+      width: 1px;
+      background-color: #e5e7eb;
+    }
+    .timeline-item:last-child:after {
+      display: none;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 500;
+    }
+    .badge-success {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    .badge-warning {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    .badge-info {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .table th,
+    .table td {
+      padding: 0.75rem;
+      border: 1px solid #e5e7eb;
+    }
+    .table th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    .table tr:nth-child(even) {
+      background-color: #fafafa;
+    }
+    footer {
+      margin-top: 4rem;
+      padding: 2rem 0;
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.9rem;
+      border-top: 1px solid #e5e7eb;
+    }
+    .accordion-button {
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+    .accordion-button:focus {
+      box-shadow: none;
+    }
+    .accordion-content {
+      background-color: white;
+      border: 1px solid #e5e7eb;
+      border-top: none;
+      border-radius: 0 0 0.5rem 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+<body class="max-w-4xl mx-auto px-4 py-6">
+  <header class="text-center mb-8">
+    <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">云南五地深度旅游攻略</h1>
+    <p class="text-lg text-gray-600">气候、景点、行程与美食全指南 · 2025年10月更新</p>
+  </header>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-bold text-gray-800">1. 各地天气概况与最佳旅行季节</h2>
+  </section>
+
+  <div class="card">
+    <p>云南地处中国西南，地形复杂，气候多样，素有“一山有四季，十里不同天”之说。五地气候差异显著，合理规划季节可极大提升旅行体验。</p>
+    
+    <div class="mt-4">
+      <div class="flex flex-col md:flex-row gap-6 mb-6">
+        <div class="flex-1">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2 flex items-center">
+            <i class="fas fa-sun icon-badge mr-2"></i> 昆明
+          </h3>
+          <p>“春城”昆明四季如春，年均温约15℃，冬无严寒，夏无酷暑。降水集中在5–10月，11月至次年4月为干季，晴朗少雨，是全年最适宜游览的时段。</p>
+          <p class="mt-2"><span class="badge badge-success">最佳季节</span>：10月–次年4月</p>
+        </div>
+        <div class="flex-1">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2 flex items-center">
+            <i class="fas fa-snowflake icon-badge mr-2"></i> 大理
+          </h3>
+          <p>大理气候温和，年均温15℃左右，受苍山洱海调节，昼夜温差较大。雨季为6–9月，10月–次年5月为旱季，阳光充足，风力适中，是骑行洱海与拍摄苍山的最佳时期。</p>
+          <p class="mt-2"><span class="badge badge-success">最佳季节</span>：10月–次年4月</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-6 mb-6">
+        <div class="flex-1">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2 flex items-center">
+            <i class="fas fa-leaf icon-badge mr-2"></i> 丽江
+          </h3>
+          <p>丽江古城海拔2400米，气候属高原温带季风气候，夏季凉爽，冬季寒冷。11月–次年3月为干季，晴天多，日照强，适合古城漫步与玉龙雪山游览；6–8月为雨季，云雾多，山路湿滑。</p>
+          <p class="mt-2"><span class="badge badge-success">最佳季节</span>：10月–次年4月</p>
+        </div>
+        <div class="flex-1">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2 flex items-center">
+            <i class="fas fa-tree icon-badge mr-2"></i> 香格里拉
+          </h3>
+          <p>香格里拉属高原寒温带气候，年均温约5℃，冬季漫长寒冷，夏季短暂凉爽。5–10月为旅游旺季，草原繁茂，杜鹃盛开，天气稳定；11月–次年4月积雪覆盖，部分道路封闭，交通受限。</p>
+          <p class="mt-2"><span class="badge badge-warning">注意</span>：海拔3300米以上，需预防高原反应</p>
+        </div>
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-6">
+        <div class="flex-1">
+          <h3 class="text-xl font-semibold text-gray-800 mb-2 flex items-center">
+            <i class="fas fa-water icon-badge mr-2"></i> 西双版纳
+          </h3>
+          <p>西双版纳属热带季风气候，全年温暖湿润，年均温21℃。11月–次年4月为旱季，阳光充足，气温20–30℃，是避寒与观景黄金期；5–10月为雨季，降雨频繁，湿度高，偶有台风影响。</p>
+          <p class="mt-2"><span class="badge badge-success">最佳季节</span>：11月–次年4月</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-bold text-gray-800">2. 推荐景点清单（每地不少于5个）</h2>
+  </section>
+
+  <div class="card">
+    <div class="mb-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-3">昆明</h3>
+      <ul class="list-disc pl-5 space-y-2">
+        <li>滇池海埂大坝：冬季观红嘴鸥的绝佳地点，湖光山色相映成趣</li>
+        <li>西山龙门石窟：依山而凿的道教石刻群，俯瞰滇池全景</li>
+        <li>翠湖公园：城市绿肺，四季花开，清晨有市民晨练与写生</li>
+        <li>云南大学（东陆校区）：百年学府，法式建筑群与银杏大道极具人文气息</li>
+        <li>官渡古镇：保存完好的明清古建筑群，可体验云南非遗文化</li>
+      </ul>
+    </div>
+
+    <div class="mb-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-3">大理</h3>
+      <ul class="list-disc pl-5 space-y-2">
+        <li>洱海生态廊道：全长129公里的环湖自行车道，沿途风光绝美</li>
+        <li>崇圣寺三塔：南诏国佛教圣地，三塔倒影为经典摄影题材</li>
+        <li>大理古城：南诏国都城遗址，青瓦白墙，夜市烟火气浓郁</li>
+        <li>苍山十九峰：可乘索道登顶，俯瞰云海与洱海，徒步路线丰富</li>
+        <li>喜洲古镇：白族民居代表，扎染工艺发源地，田园风光静谧</li>
+      </ul>
+    </div>
+
+    <div class="mb-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-3">丽江</h3>
+      <ul class="list-disc pl-5 space-y-2">
+        <li>丽江古城（大研古镇）：世界文化遗产，小桥流水，纳西东巴文化核心</li>
+        <li>玉龙雪山：海拔5596米，冰川公园、蓝月谷、云杉坪皆为必游点</li>
+        <li>束河古镇：比大研更安静，保留原生态纳西风貌，适合慢生活</li>
+        <li>白沙古镇：纳西族发源地，壁画艺术与古建筑保存完好</li>
+        <li>拉市海：高原湿地，可体验骑马与划船，观鸟胜地</li>
+      </ul>
+    </div>
+
+    <div class="mb-6">
+      <h3 class="text-xl font-semibold text-gray-800 mb-3">香格里拉</h3>
+      <ul class="list-disc pl-5 space-y-2">
+        <li>普达措国家公园：中国首个国家公园，属都湖与碧塔海生态奇观</li>
+        <li>松赞林寺：云南规模最大的藏传佛教寺庙，有“小布达拉宫”之称</li>
+        <li>独克宗古城：世界上海拔最高的古城，转经筒长廊极具宗教氛围</li>
+        <li>虎跳峡：世界最深峡谷之一，金沙江奔腾咆哮，徒步路线震撼</li>
+        <li>纳帕海：季节性高原湖泊，冬季为湿地草原，夏季为湖泊，藏族牧民生活场景丰富</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-semibold text-gray-800 mb-3">西双版纳</h3>
+      <ul class="list-disc pl-5 space-y-2">
+        <li>中科院西双版纳热带植物园：中国最大热带植物科研基地，物种超13000种</li>
+        <li>野象谷：亚洲象自然保护区，可观察象群与热带雨林生态</li>
+        <li>曼听公园：傣王御花园，融合傣族建筑与佛教文化</li>
+        <li>告庄西双景：夜市繁华，星光夜市为游客聚集地，民族风情浓郁</li>
+        <li>基诺山寨：中国最后一个被识别的民族，可体验原始刀耕火种文化</li>
+      </ul>
+    </div>
+  </div>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-bold text-gray-800">3. 行程建议（5天4晚经典路线）</h2>
+  </section>
+
+  <div class="card">
+    <div class="timeline-item">
+      <h3 class="text-lg font-semibold text-gray-800 mb-2">Day 1：抵达昆明 → 滇池 & 翠湖</h3>
+      <p>上午抵达昆明长水国际机场，入住市区酒店。下午前往滇池海埂大坝，观赏红嘴鸥（10–3月为高峰期），傍晚漫步翠湖公园，感受“春城”慢生活。</p>
+    </div>
+
+    <div class="timeline-item">
+      <h3 class="text-lg font-semibold text-gray-800 mb-2">Day 2：昆明 → 大理（高铁2小时）→ 洱海生态廊道骑行</h3>
+      <p>乘高铁前往大理，入住古城或才村民宿。下午租电动车或自行车，沿洱海生态廊道骑行，途经才村、龙龛码头、才村湿地，傍晚在双廊古镇看日落。</p>
+    </div>
+
+    <div class="timeline-item">
+      <h3 class="text-lg font-semibold text-gray-800 mb-2">Day 3：大理 → 丽江（汽车2.5小时）→ 丽江古城</h3>
+      <p>上午游览崇圣寺三塔，下午乘车前往丽江，入住古城内特色客栈。傍晚漫步四方街，品尝纳西烤鱼与腊排骨火锅，夜游古城灯火。</p>
+    </div>
+
+    <div class="timeline-item">
+      <h3 class="text-lg font-semibold text-gray-800 mb-2">Day 4：玉龙雪山一日游</h3>
+      <p>早起前往玉龙雪山景区，乘坐大索道登顶冰川公园（海拔4506米），游览蓝月谷（湖水呈蓝绿色，因矿物质反射），下午返回丽江古城休息，避免高反。</p>
+    </div>
+
+    <div class="timeline-item">
+      <h3 class="text-lg font-semibold text-gray-800 mb-2">Day 5：丽江 → 西双版纳（飞机1.5小时）→ 热带植物园 → 返程</h3>
+      <p>上午乘飞机前往西双版纳，下午参观中科院热带植物园，体验雨林步道与奇花异草，傍晚返回机场，结束行程。</p>
+    </div>
+
+    <div class="highlight-box mt-6">
+      <p><strong>温馨提示：</strong>本路线为紧凑型经典路线，适合首次到访云南的游客。若时间充裕，建议将香格里拉替换西双版纳，体验高原藏文化；若偏好热带风情，可延长西双版纳停留时间。</p>
+    </div>
+  </div>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-bold text-gray-800">4. 交通与住宿实用贴士</h2>
+  </section>
+
+  <div class="card">
+    <h3 class="text-xl font-semibold text-gray-800 mb-3">交通方式</h3>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>路线</th>
+            <th>交通方式</th>
+            <th>耗时</th>
+            <th>建议</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>昆明 ↔ 大理</td>
+            <td>高铁</td>
+            <td>2小时</td>
+            <td>推荐，准点率高，风景优美</td>
+          </tr>
+          <tr>
+            <td>大理 ↔ 丽江</td>
+            <td>大巴/包车</td>
+            <td>2.5–3小时</td>
+            <td>山路多弯，建议选正规客运</td>
+          </tr>
+          <tr>
+            <td>丽江 ↔ 西双版纳</td>
+            <td>飞机</td>
+            <td>1.5小时</td>
+            <td>最高效选择，航班每日多班</td>
+          </tr>
+          <tr>
+            <td>丽江 ↔ 香格里拉</td>
+            <td>大巴</td>
+            <td>4–5小时</td>
+            <td>海拔骤升，注意防高反</td>
+          </tr>
+          <tr>
+            <td>市内出行</td>
+            <td>网约车/公交</td>
+            <td>–</td>
+            <td>昆明、大理、丽江市区公交发达，古城内步行最佳</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3 class="text-xl font-semibold text-gray-800 mt-6 mb-3">住宿建议</h3>
+    <ul class="list-disc pl-5 space-y-2">
+      <li><strong>昆明：</strong>建议住翠湖或南屏街附近，交通便利，餐饮丰富</li>
+      <li><strong>大理：</strong>才村、双廊、喜洲民宿性价比高，可选洱海景观房</li>
+      <li><strong>丽江：</strong>古城内客栈有文化氛围，但噪音较大；束河古镇更安静，适合休憩</li>
+      <li><strong>香格里拉：</strong>选择低海拔区域（如独克宗古城），避免高反</li>
+      <li><strong>西双版纳：</strong>告庄西双景周边酒店配套完善，夜市步行可达</li>
+    </ul>
+
+    <div class="highlight-box mt-4">
+      <p><strong>重要提示：</strong>云南多地海拔较高（丽江2400米，香格里拉3300米），建议抵达后避免剧烈运动，多喝水，可提前服用红景天。高原地区紫外线强，需备防晒霜、墨镜、帽子。</p>
+    </div>
+  </div>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-bold text-gray-800">5. 饮食推荐与注意事项</h2>
+  </section>
+
+  <div class="card">
+    <h3 class="text-xl font-semibold text-gray-800 mb-3">必尝特色美食</h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div>
+        <h4 class="font-semibold text-gray-800 mb-2">昆明</h4>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>过桥米线：汤热肉鲜，配料丰富，建议选老字号“建新园”</li>
+          <li>汽锅鸡：蒸汽蒸制，原汁原味，滋补佳品</li>
+          <li>野生菌火锅：6–10月为旺季，松茸、牛肝菌、鸡枞菌皆为珍品</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-gray-800 mb-2">大理</h4>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>乳扇：牛奶制成的奶制品，可油炸、烤制、生吃，风味独特</li>
+          <li>酸辣鱼：洱海鱼配酸木瓜汤，开胃解腻</li>
+          <li>喜洲粑粑：白族传统烤饼，甜咸两种口味</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-gray-800 mb-2">丽江</h4>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>腊排骨火锅：用风干猪排骨炖煮，配土豆、萝卜，香气浓郁</li>
+          <li>纳西烤鱼：炭火慢烤，外焦里嫩，佐以本地香料</li>
+          <li>鸡豆凉粉：纳西族传统小吃，酸辣爽口</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-gray-800 mb-2">香格里拉</h4>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>酥油茶：藏族日常饮品，咸香提神，可搭配糌粑</li>
+          <li>青稞酒：本地自酿，度数低，口感微甜</li>
+          <li>牦牛肉干：高蛋白，耐储存，是绝佳旅行零食</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-gray-800 mb-2">西双版纳</h4>
+        <ul class="list-disc pl-5 space-y-1">
+          <li>傣味烤鸡：香茅草腌制，炭火慢烤，外皮焦脆</li>
+          <li>菠萝饭：用菠萝壳盛装糯米，甜香可口</li>
+          <li>舂鸡脚：酸辣开胃，傣族传统做法，口感丰富</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 class="text-xl font-semibold text-gray-800 mb-3">饮食注意事项</h3>
+    <ul class="list-disc pl-5 space-y-2">
+      <li>野生菌类需在正规餐馆食用，切勿自行采摘，以防中毒</li>
+      <li>高原地区肠胃敏感，避免生冷、油腻食物，多喝温水</li>
+      <li>西双版纳饮食偏酸辣，肠胃弱者可要求减辣</li>
+      <li>部分少数民族地区禁食猪肉或牛肉，尊重当地宗教习俗</li>
+      <li>建议随身携带肠胃药、晕车药、高原安等常用药品</li>
+    </ul>
+
+    <div class="highlight-box mt-4">
+      <p><strong>文化提醒：</strong>在香格里拉、西双版纳等少数民族地区，拍照前请征得当地人同意，尤其在寺庙、经幡、佛塔等宗教场所，禁止指指点点或踩踏。</p>
+    </div>
+  </div>
+
+  <footer>
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

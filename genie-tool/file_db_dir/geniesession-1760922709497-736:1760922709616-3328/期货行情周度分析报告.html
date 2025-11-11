@@ -1,0 +1,300 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2025年10月上旬期货行情周度分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background-color: #f9fafb;
+      color: #333;
+    }
+    .chart-container {
+      height: 400px;
+      margin-bottom: 2rem;
+      position: relative;
+    }
+    .chart-line {
+      stroke: #3b82f6;
+      stroke-width: 2.5;
+      fill: none;
+    }
+    .chart-point {
+      fill: #3b82f6;
+      stroke: white;
+      stroke-width: 2;
+    }
+    .chart-line-ic {
+      stroke: #10b981;
+    }
+    .chart-point-ic {
+      fill: #10b981;
+    }
+    .chart-line-t {
+      stroke: #f59e0b;
+    }
+    .chart-point-t {
+      fill: #f59e0b;
+    }
+    .bar-chart-bar {
+      transition: fill 0.3s ease;
+    }
+    .bar-chart-bar:hover {
+      opacity: 0.8;
+    }
+    .table-data {
+      font-size: 0.9rem;
+    }
+    .table-data th,
+    .table-data td {
+      padding: 0.75rem;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .table-data th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+      text-align: left;
+    }
+    .table-data tr:hover {
+      background-color: #f9fafb;
+    }
+    .market-comment {
+      line-height: 1.8;
+      font-size: 1.05rem;
+    }
+    .cite-link {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .cite-link:hover {
+      text-decoration: underline;
+    }
+    footer {
+      margin-top: 4rem;
+      padding: 1.5rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #6b7280;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body class="max-w-6xl mx-auto px-6 py-8">
+  <header class="mb-10">
+    <h1 class="text-3xl font-bold text-gray-800">2025年10月上旬期货行情周度分析报告</h1>
+    <p class="text-gray-600 mt-2">基于2025年10月9日至10月10日主力合约数据的市场动态分析</p>
+  </header>
+
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">一、主力合约价格趋势图</h2>
+    <div class="chart-container bg-white p-6 rounded-lg shadow-md">
+      <svg width="100%" height="100%" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
+        <!-- 背景网格 -->
+        <g stroke="#e5e7eb" stroke-width="1">
+          <!-- 水平线 -->
+          <line x1="0" y1="50" x2="800" y2="50" />
+          <line x1="0" y1="125" x2="800" y2="125" />
+          <line x1="0" y1="200" x2="800" y2="200" />
+          <line x1="0" y1="275" x2="800" y2="275" />
+          <line x1="0" y1="350" x2="800" y2="350" />
+          <!-- 垂直线 -->
+          <line x1="100" y1="0" x2="100" y2="400" />
+          <line x1="200" y1="0" x2="200" y2="400" />
+          <line x1="300" y1="0" x2="300" y2="400" />
+          <line x1="400" y1="0" x2="400" y2="400" />
+          <line x1="500" y1="0" x2="500" y2="400" />
+          <line x1="600" y1="0" x2="600" y2="400" />
+          <line x1="700" y1="0" x2="700" y2="400" />
+        </g>
+
+        <!-- IF 沪深300股指期货价格线 -->
+        <polyline class="chart-line" points="100,220 700,280" />
+        <circle class="chart-point" cx="100" cy="220" r="5" />
+        <circle class="chart-point" cx="700" cy="280" r="5" />
+
+        <!-- IC 中证500股指期货价格线 -->
+        <polyline class="chart-line-ic" points="100,140 700,200" />
+        <circle class="chart-point-ic" cx="100" cy="140" r="5" />
+        <circle class="chart-point-ic" cx="700" cy="200" r="5" />
+
+        <!-- T 10年期国债期货价格线 -->
+        <polyline class="chart-line-t" points="100,260 700,265" />
+        <circle class="chart-point-t" cx="100" cy="260" r="5" />
+        <circle class="chart-point-t" cx="700" cy="265" r="5" />
+
+        <!-- X轴标签 -->
+        <text x="100" y="390" text-anchor="middle" font-size="12" fill="#333">10/09</text>
+        <text x="700" y="390" text-anchor="middle" font-size="12" fill="#333">10/10</text>
+
+        <!-- Y轴标签 -->
+        <text x="10" y="220" text-anchor="middle" font-size="12" fill="#333" transform="rotate(-90,10,220)">4500</text>
+        <text x="10" y="140" text-anchor="middle" font-size="12" fill="#333" transform="rotate(-90,10,140)">7200</text>
+        <text x="10" y="260" text-anchor="middle" font-size="12" fill="#333" transform="rotate(-90,10,260)">107.8</text>
+
+        <!-- 图例 -->
+        <g font-size="12" fill="#333">
+          <line x1="600" y1="40" x2="620" y2="40" stroke="#3b82f6" stroke-width="2.5" />
+          <text x="625" y="44">IF 沪深300股指期货</text>
+          <line x1="600" y1="60" x2="620" y2="60" stroke="#10b981" stroke-width="2.5" />
+          <text x="625" y="64">IC 中证500股指期货</text>
+          <line x1="600" y1="80" x2="620" y2="80" stroke="#f59e0b" stroke-width="2.5" />
+          <text x="625" y="84">T 10年期国债期货</text>
+        </g>
+      </svg>
+    </div>
+    <p class="text-gray-700 mb-4">如图所示，2025年10月9日至10月10日期间，沪深300股指期货（IF）价格由4689.2点上涨至4592.2点，下跌2.07%；中证500股指期货（IC）由7415.8点下跌至7266.0点，跌幅1.99%；10年期国债期货（T）价格基本持平，从108.045微降至107.98，波动幅度极小，显示债市情绪稳定。</p>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">二、成交量对比柱状图</h2>
+    <div class="chart-container bg-white p-6 rounded-lg shadow-md">
+      <svg width="100%" height="100%" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
+        <!-- 背景网格 -->
+        <g stroke="#e5e7eb" stroke-width="1">
+          <line x1="0" y1="50" x2="800" y2="50" />
+          <line x1="0" y1="125" x2="800" y2="125" />
+          <line x1="0" y1="200" x2="800" y2="200" />
+          <line x1="0" y1="275" x2="800" y2="275" />
+          <line x1="0" y1="350" x2="800" y2="350" />
+        </g>
+
+        <!-- IF 成交量柱状图 -->
+        <rect class="bar-chart-bar" x="100" y="150" width="80" height="200" fill="#3b82f6" />
+        <text x="140" y="380" text-anchor="middle" font-size="12" fill="#333">IF</text>
+        <text x="140" y="140" text-anchor="middle" font-size="11" fill="#333">78,704</text>
+
+        <!-- IC 成交量柱状图 -->
+        <rect class="bar-chart-bar" x="220" y="120" width="80" height="230" fill="#10b981" />
+        <text x="260" y="380" text-anchor="middle" font-size="12" fill="#333">IC</text>
+        <text x="260" y="110" text-anchor="middle" font-size="11" fill="#333">88,806</text>
+
+        <!-- T 成交量柱状图 -->
+        <rect class="bar-chart-bar" x="340" y="180" width="80" height="170" fill="#f59e0b" />
+        <text x="380" y="380" text-anchor="middle" font-size="12" fill="#333">T</text>
+        <text x="380" y="170" text-anchor="middle" font-size="11" fill="#333">73,515</text>
+
+        <!-- 10月10日数据 -->
+        <rect class="bar-chart-bar" x="500" y="120" width="80" height="230" fill="#3b82f6" opacity="0.7" />
+        <text x="540" y="380" text-anchor="middle" font-size="12" fill="#333">IF</text>
+        <text x="540" y="110" text-anchor="middle" font-size="11" fill="#333">96,227</text>
+
+        <rect class="bar-chart-bar" x="620" y="90" width="80" height="260" fill="#10b981" opacity="0.7" />
+        <text x="660" y="380" text-anchor="middle" font-size="12" fill="#333">IC</text>
+        <text x="660" y="80" text-anchor="middle" font-size="11" fill="#333">99,771</text>
+
+        <rect class="bar-chart-bar" x="740" y="190" width="80" height="160" fill="#f59e0b" opacity="0.7" />
+        <text x="780" y="380" text-anchor="middle" font-size="12" fill="#333">T</text>
+        <text x="780" y="180" text-anchor="middle" font-size="11" fill="#333">68,299</text>
+
+        <!-- 图例 -->
+        <g font-size="12" fill="#333">
+          <rect x="500" y="40" width="15" height="15" fill="#3b82f6" />
+          <text x="520" y="52">10/09</text>
+          <rect x="580" y="40" width="15" height="15" fill="#3b82f6" opacity="0.7" />
+          <text x="600" y="52">10/10</text>
+        </g>
+
+        <!-- Y轴标签 -->
+        <text x="10" y="200" text-anchor="middle" font-size="12" fill="#333" transform="rotate(-90,10,200)">成交量（手）</text>
+      </svg>
+    </div>
+    <p class="text-gray-700 mb-4">10月10日，三大主力合约成交量均较前一日显著上升：IF从78,704手增至96,227手，增幅22.27%；IC从88,806手增至99,771手，增幅12.35%；T从73,515手降至68,299手，降幅7.11%。股指期货市场交投活跃度明显提升，而国债期货交易量略有回落，反映市场风险偏好短期向权益类资产倾斜。</p>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">三、周涨跌幅汇总表</h2>
+    <table class="table-auto w-full bg-white rounded-lg shadow-md overflow-hidden">
+      <thead>
+        <tr>
+          <th class="table-data">合约代码</th>
+          <th class="table-data">产品名称</th>
+          <th class="table-data">开盘价</th>
+          <th class="table-data">收盘价</th>
+          <th class="table-data">最高价</th>
+          <th class="table-data">最低价</th>
+          <th class="table-data">涨跌幅（%）</th>
+          <th class="table-data">成交量变化</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="table-data">IF</td>
+          <td class="table-data">沪深300股指期货</td>
+          <td class="table-data">4639.0</td>
+          <td class="table-data">4592.2</td>
+          <td class="table-data">4715.0</td>
+          <td class="table-data">4627.2</td>
+          <td class="table-data text-red-600">-2.07</td>
+          <td class="table-data text-green-600">+22.27%</td>
+        </tr>
+        <tr>
+          <td class="table-data">IC</td>
+          <td class="table-data">中证500股指期货</td>
+          <td class="table-data">7330.0</td>
+          <td class="table-data">7266.0</td>
+          <td class="table-data">7469.6</td>
+          <td class="table-data">7323.8</td>
+          <td class="table-data text-red-600">-1.99</td>
+          <td class="table-data text-green-600">+12.35%</td>
+        </tr>
+        <tr>
+          <td class="table-data">T</td>
+          <td class="table-data">10年期国债期货</td>
+          <td class="table-data">107.855</td>
+          <td class="table-data">107.98</td>
+          <td class="table-data">108.095</td>
+          <td class="table-data">107.81</td>
+          <td class="table-data text-red-600">-0.06</td>
+          <td class="table-data text-red-600">-7.11%</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="text-gray-700 mt-4">从价格波动看，IF与IC均呈现震荡下行趋势，但日内振幅较大，显示多空博弈激烈；T合约价格波动极小，市场预期稳定。成交量方面，股指期货交易量显著放大，而国债期货交易量下降，表明资金在短期内从避险资产向风险资产转移。</p>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">四、市场简评</h2>
+    <div class="market-comment bg-gray-50 p-6 rounded-lg border-l-4 border-blue-500">
+      <p>2025年10月上旬，股指期货市场呈现“量增价跌”特征，IF与IC合约在成交量显著放大的同时价格小幅回落，反映市场在短期技术性回调中仍保持较高活跃度，投资者情绪趋于谨慎但未出现恐慌性抛售。国债期货T合约价格基本持平，交易量小幅萎缩，表明市场对利率走势预期稳定，避险需求未明显升温。整体来看，资金在权益与固收之间呈现阶段性轮动，股指期货的高换手率可能预示市场对后续政策或经济数据存在预期分歧，需关注后续宏观数据发布对市场方向的指引。</p>
+    </div>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">五、数据来源说明</h2>
+    <p class="text-gray-700 mb-4">本报告所用数据均来源于提供的期货行情周度数据文件，包含2025年10月9日至10月10日IF、IC、T三大主力合约的开盘价、收盘价、最高价、最低价、成交量、成交额及持仓量等核心指标，数据真实、完整，未作任何外推或估算。</p>
+    <p class="text-gray-700"><cite><a href="http://172.31.73.223:1601/v1/file_tool/preview/geniesession-1760922709497-736:1760922709616-3328/读取文件'期货行情周度数据.csv'，计_代码输出.md" target="_blank" rel="noopener noreferrer" class="cite-link">[[1]]</a></cite></p>
+    <p class="text-gray-700"><cite><a href="http://172.31.73.223:1601/v1/file_tool/preview/geniesession-1760922709497-736:1760922709616-3328/读取文件'期货行情周度数据.csv'，计_代码输出.md" target="_blank" rel="noopener noreferrer" class="cite-link">[[2]]</a></cite></p>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">参考文献</h2>
+    <ol class="list-decimal list-inside space-y-2">
+      <li><cite><a href="http://172.31.73.223:1601/v1/file_tool/preview/geniesession-1760922709497-736:1760922709616-3328/读取文件'期货行情周度数据.csv'，计_代码输出.md" target="_blank" rel="noopener noreferrer" class="cite-link">读取文件'期货行情周度数据.csv'，计_代码输出.md</a></cite></li>
+      <li><cite><a href="http://172.31.73.223:1601/v1/file_tool/preview/geniesession-1760922709497-736:1760922709616-3328/读取文件'期货行情周度数据.csv'，计_代码输出.md" target="_blank" rel="noopener noreferrer" class="cite-link">期货行情周度数据.csv</a></cite></li>
+    </ol>
+  </section>
+
+  <footer>
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    // 为柱状图添加悬停交互效果
+    document.querySelectorAll('.bar-chart-bar').forEach(bar => {
+      bar.addEventListener('mouseenter', function() {
+        this.setAttribute('opacity', '0.9');
+      });
+      bar.addEventListener('mouseleave', function() {
+        this.setAttribute('opacity', '1');
+      });
+    });
+  </script>
+</body>
+</html>

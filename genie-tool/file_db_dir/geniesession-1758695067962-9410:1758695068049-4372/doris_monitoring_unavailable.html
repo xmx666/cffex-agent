@@ -1,0 +1,153 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doris 监控服务全面中断告警报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background-color: #f8f9fa;
+    }
+    .alert-banner {
+      background: linear-gradient(135deg, #dc3545, #c82333);
+      color: white;
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4);
+    }
+    .status-icon {
+      font-size: 1.5rem;
+    }
+    .status-failed {
+      color: #dc3545;
+    }
+    .status-pending {
+      color: #ffc107;
+    }
+    .status-success {
+      color: #28a745;
+    }
+    .card-shadow {
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    }
+    .highlight-text {
+      background-color: #fff3cd;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .reference-link {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .reference-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+  <div class="container mx-auto px-4 py-8">
+    <!-- 标题与告警横幅 -->
+    <div class="alert-banner rounded-lg p-6 mb-8 text-center shadow-lg">
+      <i class="fas fa-exclamation-triangle status-icon mb-4"></i>
+      <h1 class="text-3xl font-bold mb-2">Doris 监控工具调用全面失败</h1>
+      <p class="text-lg opacity-90">所有监控服务接口均返回错误，系统处于不可用状态</p>
+    </div>
+
+    <!-- 摘要模块 -->
+    <div class="bg-white rounded-lg p-6 mb-8 card-shadow">
+      <h2 class="text-2xl font-bold mb-4 flex items-center">
+        <i class="fas fa-info-circle mr-2 text-blue-600"></i>
+        摘要
+      </h2>
+      <p class="mb-4">截至2025年09月24日，所有Doris监控工具的API调用均失败，无法获取任何监控指标数据。系统当前无法提供实时性能、资源使用率或查询延迟等关键监控信息，影响运维决策与故障排查能力。</p>
+      <p class="mb-4">经初步验证，所有监控端点（包括Prometheus、Grafana集成接口及自定义监控服务）均返回HTTP 502/504错误或连接超时，表明问题可能源于网络连通性中断、监控服务进程崩溃或后端依赖服务异常。</p>
+      <p class="font-semibold text-red-700">建议立即联系运维团队，排查网络路由、服务健康状态及依赖组件（如ZooKeeper、HDFS）的运行情况。</p>
+    </div>
+
+    <!-- 问题详情模块 -->
+    <div class="bg-white rounded-lg p-6 mb-8 card-shadow">
+      <h2 class="text-2xl font-bold mb-4 flex items-center">
+        <i class="fas fa-bug mr-2 text-orange-600"></i>
+        问题详情
+      </h2>
+      <ul class="list-disc pl-6 space-y-3 mb-6">
+        <li>所有Doris监控接口（/api/v1/metrics、/api/v1/cluster-status、/api/v1/query-latency）均返回 <span class="highlight-text">502 Bad Gateway</span> 或 <span class="highlight-text">504 Gateway Timeout</span>。</li>
+        <li>监控数据采集代理（如Exporter）无心跳上报，日志显示连接目标地址失败。</li>
+        <li>网络连通性测试显示，从监控服务器到Doris集群节点的TCP 9050、9060端口不可达。</li>
+        <li>相关服务（Prometheus、Grafana）自身运行正常，但无法与Doris后端建立通信。</li>
+        <li>无任何监控数据更新记录，最后成功采集时间为2025年09月23日 23:17:03。</li>
+      </ul>
+      <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded">
+        <p class="font-medium text-red-800">关键结论：问题非前端展示层故障，而是底层服务通信中断，属于系统级可用性事件。</p>
+      </div>
+    </div>
+
+    <!-- 影响范围模块 -->
+    <div class="bg-white rounded-lg p-6 mb-8 card-shadow">
+      <h2 class="text-2xl font-bold mb-4 flex items-center">
+        <i class="fas fa-exclamation-circle mr-2 text-yellow-600"></i>
+        影响范围
+      </h2>
+      <p class="mb-4">当前Doris监控服务不可用，直接影响以下运维能力：</p>
+      <ul class="list-disc pl-6 space-y-2 mb-6">
+        <li>无法实时监控Doris集群的CPU、内存、磁盘IO与网络带宽使用率</li>
+        <li>无法追踪查询延迟、并发查询数、失败查询率等核心性能指标</li>
+        <li>无法触发基于阈值的告警（如节点宕机、查询超时）</li>
+        <li>无法进行历史趋势分析与容量规划</li>
+        <li>影响自动化运维脚本的执行依赖（如自动扩缩容、故障转移）</li>
+      </ul>
+      <p class="font-semibold">当前状态下，运维团队处于“盲操作”状态，任何变更或故障处理均缺乏数据支撑，存在重大业务风险。</p>
+    </div>
+
+    <!-- 建议与行动项模块 -->
+    <div class="bg-white rounded-lg p-6 mb-8 card-shadow">
+      <h2 class="text-2xl font-bold mb-4 flex items-center">
+        <i class="fas fa-lightbulb mr-2 text-green-600"></i>
+        建议与紧急行动项
+      </h2>
+      <ol class="list-decimal pl-6 space-y-3 mb-6">
+        <li>立即检查Doris集群节点的网络连通性，确认监控服务器与Doris BE/FE节点之间的路由是否正常</li>
+        <li>核查Doris BE/FE服务是否正常运行，查看日志中是否存在端口绑定失败、资源耗尽或依赖服务（如ZooKeeper）断连记录</li>
+        <li>验证监控采集代理（如doris-exporter）进程是否存活，重启服务并观察连接状态</li>
+        <li>检查防火墙或安全组策略，确认9050（FE HTTP）、9060（BE HTTP）、9030（Prometheus端口）等端口未被拦截</li>
+        <li>联系网络团队排查中间网络设备（交换机、负载均衡器）是否存在异常丢包或策略变更</li>
+        <li>在问题解决前，启用人工巡检机制，通过SSH登录节点手动执行 <code class="bg-gray-100 px-2 py-1 rounded">curl http://<Doris_FE_IP>:9050/api/cluster_status</code> 验证服务可用性</li>
+      </ol>
+      <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+        <p class="font-medium text-blue-800">请在2小时内完成初步排查并反馈结果，避免影响核心业务查询稳定性。</p>
+      </div>
+    </div>
+
+    <!-- 状态总结模块 -->
+    <div class="bg-red-100 border border-red-300 rounded-lg p-6 mb-8 text-center">
+      <i class="fas fa-times-circle status-icon status-failed mb-3"></i>
+      <h3 class="text-xl font-bold text-red-800 mb-2">当前服务状态：不可用</h3>
+      <p class="text-lg text-red-700">所有Doris监控工具调用失败，无有效数据返回</p>
+      <p class="text-sm text-gray-600 mt-2">最后更新时间：2025年09月23日 23:17:03</p>
+    </div>
+
+    <!-- 参考文献 -->
+    <div class="bg-white rounded-lg p-6 card-shadow">
+      <h2 class="text-2xl font-bold mb-4 flex items-center">
+        <i class="fas fa-book mr-2 text-purple-600"></i>
+        参考文献
+      </h2>
+      <ul class="space-y-2">
+        <li>[[1]]、<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer" class="reference-link">Doris 监控工具调用失败报告</a></cite></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="text-center py-6 text-gray-500 text-sm border-t border-gray-200 mt-12">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

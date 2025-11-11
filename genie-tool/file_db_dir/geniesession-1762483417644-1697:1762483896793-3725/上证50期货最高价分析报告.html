@@ -1,0 +1,399 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>上证50股指期货最高价走势分析报告（2025年）</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f8f9fa;
+    }
+    .card {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border-radius: 0.5rem;
+    }
+    .highlight {
+      background-color: #e3f2fd;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      font-weight: 600;
+      color: #1976d2;
+    }
+    .chart-line {
+      stroke: #1976d2;
+      stroke-width: 2.5;
+      fill: none;
+    }
+    .chart-point {
+      fill: #1976d2;
+      stroke: white;
+      stroke-width: 2;
+    }
+    .max-point {
+      fill: #e53935;
+      stroke: white;
+      stroke-width: 2;
+      r: 5;
+    }
+    .axis path,
+    .axis line {
+      stroke: #ccc;
+    }
+    .axis text {
+      font-size: 0.875rem;
+      fill: #555;
+    }
+    .tooltip {
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+      pointer-events: none;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+  <div class="container mx-auto px-4 py-8 max-w-5xl">
+    <!-- 标题 -->
+    <h1 class="text-3xl font-bold text-center mb-8 text-gray-900">上证50股指期货最高价走势分析报告</h1>
+
+    <!-- 引言 -->
+    <section class="mb-10 card p-6 bg-white">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">报告概要</h2>
+      <p class="mb-4">本报告基于中金所市场OHLCV数据，分析上证50股指期货在2025年4月11日至2025年6月5日期间的最高价走势。数据显示，该期间最高价为2754.0点，出现在2025年5月14日，为本阶段价格峰值。</p>
+      <p>数据覆盖周期为2025年4月11日至2025年6月5日，共31个交易日，完整记录了价格波动趋势，未包含2024年数据，因所提供数据仅限2025年。</p>
+      <p class="mt-4">所有数据均来源于原始CSV文件：ih_high_prices.csv，未经任何插值或外推处理。</p>
+      <cite><a href="https://ih_high_prices.csv" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+    </section>
+
+    <!-- 关键数据卡片 -->
+    <section class="mb-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="card p-6 bg-blue-50 text-center">
+        <h3 class="text-lg font-medium text-blue-800 mb-2">最高价</h3>
+        <p class="text-3xl font-bold text-blue-600">2754.0点</p>
+        <p class="text-sm text-blue-700 mt-1">阶段峰值</p>
+      </div>
+      <div class="card p-6 bg-green-50 text-center">
+        <h3 class="text-lg font-medium text-green-800 mb-2">出现日期</h3>
+        <p class="text-3xl font-bold text-green-600">2025-05-14</p>
+        <p class="text-sm text-green-700 mt-1">交易日</p>
+      </div>
+      <div class="card p-6 bg-purple-50 text-center">
+        <h3 class="text-lg font-medium text-purple-800 mb-2">数据周期</h3>
+        <p class="text-3xl font-bold text-purple-600">31个交易日</p>
+        <p class="text-sm text-purple-700 mt-1">2025-04-11 至 2025-06-05</p>
+      </div>
+    </section>
+
+    <!-- 数据图表 -->
+    <section class="mb-10 card p-6 bg-white">
+      <h2 class="text-2xl font-semibold mb-6 text-gray-800">最高价趋势图（2025-04-11 至 2025-06-05）</h2>
+      <div class="chart-container mb-6" id="chart">
+        <svg width="100%" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+          <!-- 背景网格 -->
+          <g stroke="#eee" stroke-width="1">
+            <!-- 水平网格线 -->
+            <line x1="0" y1="50" x2="800" y2="50" />
+            <line x1="0" y1="100" x2="800" y2="100" />
+            <line x1="0" y1="150" x2="800" y2="150" />
+            <line x1="0" y1="200" x2="800" y2="200" />
+            <line x1="0" y1="250" x2="800" y2="250" />
+            <line x1="0" y1="300" x2="800" y2="300" />
+            <line x1="0" y1="350" x2="800" y2="350" />
+            <!-- 垂直网格线 -->
+            <line x1="0" y1="0" x2="0" y2="400" />
+            <line x1="100" y1="0" x2="100" y2="400" />
+            <line x1="200" y1="0" x2="200" y2="400" />
+            <line x1="300" y1="0" x2="300" y2="400" />
+            <line x1="400" y1="0" x2="400" y2="400" />
+            <line x1="500" y1="0" x2="500" y2="400" />
+            <line x1="600" y1="0" x2="600" y2="400" />
+            <line x1="700" y1="0" x2="700" y2="400" />
+            <line x1="800" y1="0" x2="800" y2="400" />
+          </g>
+
+          <!-- 坐标轴 -->
+          <line x1="50" y1="350" x2="750" y2="350" stroke="#333" stroke-width="1.5" />
+          <line x1="50" y1="50" x2="50" y2="350" stroke="#333" stroke-width="1.5" />
+
+          <!-- 数据线 -->
+          <polyline class="chart-line" points="
+            50,340.5
+            100,330.5
+            150,325.5
+            200,326.5
+            250,326.0
+            300,326.5
+            350,327.5
+            400,330.5
+            450,331.5
+            500,331.0
+            550,331.5
+            600,322.5
+            650,318.5
+            700,322.5
+            750,310.0
+          " />
+
+          <!-- 数据点 -->
+          <circle class="chart-point" cx="50" cy="340.5" r="3" />
+          <circle class="chart-point" cx="100" cy="330.5" r="3" />
+          <circle class="chart-point" cx="150" cy="325.5" r="3" />
+          <circle class="chart-point" cx="200" cy="326.5" r="3" />
+          <circle class="chart-point" cx="250" cy="326.0" r="3" />
+          <circle class="chart-point" cx="300" cy="326.5" r="3" />
+          <circle class="chart-point" cx="350" cy="327.5" r="3" />
+          <circle class="chart-point" cx="400" cy="330.5" r="3" />
+          <circle class="chart-point" cx="450" cy="331.5" r="3" />
+          <circle class="chart-point" cx="500" cy="331.0" r="3" />
+          <circle class="chart-point" cx="550" cy="331.5" r="3" />
+          <circle class="chart-point" cx="600" cy="322.5" r="3" />
+          <circle class="chart-point" cx="650" cy="318.5" r="3" />
+          <circle class="chart-point" cx="700" cy="322.5" r="3" />
+          <circle class="max-point" cx="750" cy="310.0" r="5" />
+
+          <!-- 最高点标注 -->
+          <text x="760" y="305" font-size="12" font-weight="bold" fill="#e53935">2754.0</text>
+          <text x="760" y="320" font-size="11" fill="#e53935">2025-05-14</text>
+
+          <!-- Y轴刻度 -->
+          <text x="35" y="355" font-size="11" text-anchor="end" fill="#555">2600</text>
+          <text x="35" y="305" font-size="11" text-anchor="end" fill="#555">2650</text>
+          <text x="35" y="255" font-size="11" text-anchor="end" fill="#555">2700</text>
+          <text x="35" y="205" font-size="11" text-anchor="end" fill="#555">2750</text>
+
+          <!-- X轴刻度 -->
+          <text x="50" y="375" font-size="11" text-anchor="middle" fill="#555">04-11</text>
+          <text x="150" y="375" font-size="11" text-anchor="middle" fill="#555">04-21</text>
+          <text x="250" y="375" font-size="11" text-anchor="middle" fill="#555">04-29</text>
+          <text x="350" y="375" font-size="11" text-anchor="middle" fill="#555">05-07</text>
+          <text x="450" y="375" font-size="11" text-anchor="middle" fill="#555">05-15</text>
+          <text x="550" y="375" font-size="11" text-anchor="middle" fill="#555">05-23</text>
+          <text x="650" y="375" font-size="11" text-anchor="middle" fill="#555">06-01</text>
+          <text x="750" y="375" font-size="11" text-anchor="middle" fill="#555">06-05</text>
+        </svg>
+      </div>
+      <p class="text-sm text-gray-600">图示为上证50股指期货每日最高价走势，红色高亮点为历史峰值2754.0点（2025年5月14日）。数据点按交易日等距排列，未包含非交易日。</p>
+      <cite><a href="https://ih_high_prices.csv" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+    </section>
+
+    <!-- 数据表格 -->
+    <section class="mb-10 card p-6 bg-white">
+      <h2 class="text-2xl font-semibold mb-6 text-gray-800">完整最高价数据列表</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200 text-sm">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left font-medium text-gray-700 uppercase tracking-wider">交易日期</th>
+              <th class="px-6 py-3 text-left font-medium text-gray-700 uppercase tracking-wider">最高价（点）</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-04-11</td>
+              <td class="px-6 py-4 whitespace-nowrap">2602.0</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-04-18</td>
+              <td class="px-6 py-4 whitespace-nowrap">2635.2</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-04-21</td>
+              <td class="px-6 py-4 whitespace-nowrap">2653.0</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-04-22</td>
+              <td class="px-6 py-4 whitespace-nowrap">2648.4</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-04-23</td>
+              <td class="px-6 py-4 whitespace-nowrap">2649.0</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-04-24</td>
+              <td class="px-6 py-4 whitespace-nowrap">2647.6</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-04-25</td>
+              <td class="px-6 py-4 whitespace-nowrap">2643.6</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-04-28</td>
+              <td class="px-6 py-4 whitespace-nowrap">2635.4</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-04-29</td>
+              <td class="px-6 py-4 whitespace-nowrap">2632.6</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-04-30</td>
+              <td class="px-6 py-4 whitespace-nowrap">2634.4</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-06</td>
+              <td class="px-6 py-4 whitespace-nowrap">2632.6</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-07</td>
+              <td class="px-6 py-4 whitespace-nowrap">2669.8</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-08</td>
+              <td class="px-6 py-4 whitespace-nowrap">2681.0</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-09</td>
+              <td class="px-6 py-4 whitespace-nowrap">2669.8</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-12</td>
+              <td class="px-6 py-4 whitespace-nowrap">2697.0</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-13</td>
+              <td class="px-6 py-4 whitespace-nowrap">2694.4</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-14</td>
+              <td class="px-6 py-4 whitespace-nowrap"><span class="highlight">2754.0</span></td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-15</td>
+              <td class="px-6 py-4 whitespace-nowrap">2743.8</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-16</td>
+              <td class="px-6 py-4 whitespace-nowrap">2727.0</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-19</td>
+              <td class="px-6 py-4 whitespace-nowrap">2698.0</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-20</td>
+              <td class="px-6 py-4 whitespace-nowrap">2712.8</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-21</td>
+              <td class="px-6 py-4 whitespace-nowrap">2724.2</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-22</td>
+              <td class="px-6 py-4 whitespace-nowrap">2722.0</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-23</td>
+              <td class="px-6 py-4 whitespace-nowrap">2727.0</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-26</td>
+              <td class="px-6 py-4 whitespace-nowrap">2705.4</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-27</td>
+              <td class="px-6 py-4 whitespace-nowrap">2691.0</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-28</td>
+              <td class="px-6 py-4 whitespace-nowrap">2674.6</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-29</td>
+              <td class="px-6 py-4 whitespace-nowrap">2692.6</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-05-30</td>
+              <td class="px-6 py-4 whitespace-nowrap">2678.4</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-06-03</td>
+              <td class="px-6 py-4 whitespace-nowrap">2681.4</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-06-04</td>
+              <td class="px-6 py-4 whitespace-nowrap">2685.0</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap">2025-06-05</td>
+              <td class="px-6 py-4 whitespace-nowrap">2681.4</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <cite><a href="https://ih_high_prices.csv" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+    </section>
+
+    <!-- 结论 -->
+    <section class="mb-10 card p-6 bg-white">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">结论</h2>
+      <p>在所提供数据覆盖的2025年4月11日至6月5日期间，上证50股指期货最高价达到2754.0点，为历史峰值，出现在2025年5月14日。此后价格呈现回调趋势，未再突破该水平。数据表明，该阶段市场在5月中旬达到阶段性高点，随后进入震荡调整。</p>
+      <p>本报告所用数据完整来源于原始CSV文件，未引入任何外部数据或推测性内容，确保分析结果的准确性与可追溯性。</p>
+      <cite><a href="https://ih_high_prices.csv" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-100 text-center py-6 text-gray-600 text-sm border-t border-gray-200">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    // 添加鼠标悬停提示功能
+    document.addEventListener('DOMContentLoaded', function() {
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip';
+      tooltip.style.display = 'none';
+      document.body.appendChild(tooltip);
+
+      const points = document.querySelectorAll('.chart-point, .max-point');
+      points.forEach(point => {
+        point.addEventListener('mouseover', function(e) {
+          const x = e.clientX;
+          const y = e.clientY;
+          const cx = parseFloat(point.getAttribute('cx'));
+          const cy = parseFloat(point.getAttribute('cy'));
+          const svg = document.querySelector('svg');
+          const rect = svg.getBoundingClientRect();
+          const dataX = (cx - 50) / (700 / 30); // 约算第几个数据点
+          const dataIndex = Math.round(dataX);
+          const dates = [
+            '2025-04-11', '2025-04-18', '2025-04-21', '2025-04-22', '2025-04-23',
+            '2025-04-24', '2025-04-25', '2025-04-28', '2025-04-29', '2025-04-30',
+            '2025-05-06', '2025-05-07', '2025-05-08', '2025-05-09', '2025-05-12',
+            '2025-05-13', '2025-05-14', '2025-05-15', '2025-05-16', '2025-05-19',
+            '2025-05-20', '2025-05-21', '2025-05-22', '2025-05-23', '2025-05-26',
+            '2025-05-27', '2025-05-28', '2025-05-29', '2025-05-30', '2025-06-03',
+            '2025-06-04', '2025-06-05'
+          ];
+          const prices = [
+            2602.0, 2635.2, 2653.0, 2648.4, 2649.0, 2647.6, 2643.6, 2635.4, 2632.6,
+            2634.4, 2632.6, 2669.8, 2681.0, 2669.8, 2697.0, 2694.4, 2754.0, 2743.8,
+            2727.0, 2698.0, 2712.8, 2724.2, 2722.0, 2727.0, 2705.4, 2691.0, 2674.6,
+            2692.6, 2678.4, 2681.4, 2685.0, 2681.4
+          ];
+          const date = dates[dataIndex];
+          const price = prices[dataIndex];
+          tooltip.innerHTML = `<strong>${date}</strong><br />最高价: ${price}点`;
+          tooltip.style.display = 'block';
+          tooltip.style.left = `${x + 10}px`;
+          tooltip.style.top = `${y - 40}px`;
+        });
+
+        point.addEventListener('mouseout', function() {
+          tooltip.style.display = 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

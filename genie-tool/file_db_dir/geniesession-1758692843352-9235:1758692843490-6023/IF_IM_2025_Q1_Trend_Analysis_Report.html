@@ -1,0 +1,328 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2024年1月上旬IF与IM产品成交量趋势分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .chart-container {
+      height: 400px;
+      position: relative;
+    }
+    .data-point {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+    }
+    .line-path {
+      fill: none;
+      stroke-width: 2;
+    }
+    .tooltip {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 20;
+      white-space: nowrap;
+    }
+    .table-header {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    .hover-row:hover {
+      background-color: #e5e7eb !important;
+    }
+    .note-box {
+      background-color: #fef3c7;
+      border-left: 4px solid #d97706;
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+      font-size: 14px;
+    }
+    .cite-link {
+      color: #007bff;
+      text-decoration: underline;
+    }
+    .cite-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8 max-w-5xl">
+    <!-- 标题 -->
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">2024年1月上旬IF与IM产品成交量趋势分析报告</h1>
+    <p class="text-lg text-gray-700 mb-8">基于2024年1月2日至1月8日交易数据，分析IF与IM产品成交量变化趋势，为后续决策提供参考依据。</p>
+
+    <!-- 警示说明 -->
+    <div class="note-box mb-8">
+      <i class="fas fa-exclamation-triangle text-yellow-600 mr-2"></i>
+      <strong>重要提示：</strong>本报告所用数据为2024年1月2日至1月8日的样本数据，<strong>2025年第一季度数据尚未发布</strong>，本报告不构成对2025年Q1趋势的预测或推断，仅用于历史行为分析。
+    </div>
+
+    <!-- 数据概览 -->
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-chart-line mr-2 text-blue-600"></i>
+        数据概览
+      </h2>
+      <p class="mb-4">本报告基于<code>IF_IM_2024_Q1_volume.csv</code>文件中的原始数据，涵盖2024年1月2日至1月8日共5个交易日的IF与IM产品成交量记录，数据点共计10条，无缺失值。</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div class="bg-white p-5 rounded-lg shadow-md">
+          <h3 class="text-lg font-medium text-gray-700 mb-3">IF产品</h3>
+          <ul class="text-gray-600 space-y-1">
+            <li>最小值：125,000</li>
+            <li>最大值：140,000</li>
+            <li>平均值：132,000</li>
+            <li>增长幅度：+12%</li>
+          </ul>
+        </div>
+        <div class="bg-white p-5 rounded-lg shadow-md">
+          <h3 class="text-lg font-medium text-gray-700 mb-3">IM产品</h3>
+          <ul class="text-gray-600 space-y-1">
+            <li>最小值：85,000</li>
+            <li>最大值：102,000</li>
+            <li>平均值：92,400</li>
+            <li>增长幅度：+19.9%</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- 趋势图 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-chart-area mr-2 text-green-600"></i>
+        成交量趋势可视化
+      </h2>
+      <div class="chart-container bg-white p-6 rounded-lg shadow-md relative">
+        <svg width="100%" height="100%" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+          <!-- 背景网格 -->
+          <g stroke="#e5e7eb" stroke-width="1">
+            <!-- 水平网格线 -->
+            <line x1="0" y1="50" x2="800" y2="50" />
+            <line x1="0" y1="125" x2="800" y2="125" />
+            <line x1="0" y1="200" x2="800" y2="200" />
+            <line x1="0" y1="275" x2="800" y2="275" />
+            <line x1="0" y1="350" x2="800" y2="350" />
+            <!-- 垂直网格线 -->
+            <line x1="100" y1="50" x2="100" y2="350" />
+            <line x1="200" y1="50" x2="200" y2="350" />
+            <line x1="300" y1="50" x2="300" y2="350" />
+            <line x1="400" y1="50" x2="400" y2="350" />
+            <line x1="500" y1="50" x2="500" y2="350" />
+          </g>
+
+          <!-- IF产品折线 -->
+          <polyline class="line-path" stroke="#3b82f6" fill="none" points="100,300 200,275 300,287.5 400,262.5 500,237.5" />
+
+          <!-- IM产品折线 -->
+          <polyline class="line-path" stroke="#10b981" fill="none" points="100,337.5 200,312.5 300,325 400,300 500,275" />
+
+          <!-- IF数据点 -->
+          <circle class="data-point" cx="100" cy="300" r="5" fill="#3b82f6" data-value="125000" data-date="2024-01-02" />
+          <circle class="data-point" cx="200" cy="275" r="5" fill="#3b82f6" data-value="132000" data-date="2024-01-03" />
+          <circle class="data-point" cx="300" cy="287.5" r="5" fill="#3b82f6" data-value="128000" data-date="2024-01-04" />
+          <circle class="data-point" cx="400" cy="262.5" r="5" fill="#3b82f6" data-value="135000" data-date="2024-01-05" />
+          <circle class="data-point" cx="500" cy="237.5" r="5" fill="#3b82f6" data-value="140000" data-date="2024-01-08" />
+
+          <!-- IM数据点 -->
+          <circle class="data-point" cx="100" cy="337.5" r="5" fill="#10b981" data-value="85000" data-date="2024-01-02" />
+          <circle class="data-point" cx="200" cy="312.5" r="5" fill="#10b981" data-value="92000" data-date="2024-01-03" />
+          <circle class="data-point" cx="300" cy="325" r="5" fill="#10b981" data-value="88000" data-date="2024-01-04" />
+          <circle class="data-point" cx="400" cy="300" r="5" fill="#10b981" data-value="95000" data-date="2024-01-05" />
+          <circle class="data-point" cx="500" cy="275" r="5" fill="#10b981" data-value="102000" data-date="2024-01-08" />
+
+          <!-- 坐标轴标签 -->
+          <text x="400" y="390" text-anchor="middle" class="text-sm fill-gray-700">日期</text>
+          <text x="10" y="200" text-anchor="middle" transform="rotate(-90, 10, 200)" class="text-sm fill-gray-700">成交量（手）</text>
+
+          <!-- 图例 -->
+          <rect x="600" y="50" width="12" height="12" fill="#3b82f6" />
+          <text x="620" y="60" class="text-sm fill-gray-700">IF</text>
+          <rect x="600" y="75" width="12" height="12" fill="#10b981" />
+          <text x="620" y="85" class="text-sm fill-gray-700">IM</text>
+
+          <!-- 坐标轴刻度 -->
+          <text x="85" y="355" text-anchor="middle" class="text-xs fill-gray-600">1/2</text>
+          <text x="185" y="355" text-anchor="middle" class="text-xs fill-gray-600">1/3</text>
+          <text x="285" y="355" text-anchor="middle" class="text-xs fill-gray-600">1/4</text>
+          <text x="385" y="355" text-anchor="middle" class="text-xs fill-gray-600">1/5</text>
+          <text x="485" y="355" text-anchor="middle" class="text-xs fill-gray-600">1/8</text>
+
+          <text x="5" y="355" text-anchor="end" class="text-xs fill-gray-600">85,000</text>
+          <text x="5" y="280" text-anchor="end" class="text-xs fill-gray-600">100,000</text>
+          <text x="5" y="205" text-anchor="end" class="text-xs fill-gray-600">115,000</text>
+          <text x="5" y="130" text-anchor="end" class="text-xs fill-gray-600">130,000</text>
+          <text x="5" y="55" text-anchor="end" class="text-xs fill-gray-600">145,000</text>
+        </svg>
+
+        <!-- 工具提示 -->
+        <div class="tooltip hidden" id="tooltip"></div>
+      </div>
+      <p class="mt-4 text-gray-600 text-sm">图示为2024年1月2日至1月8日IF与IM产品成交量变化趋势。IF产品从125,000稳步上升至140,000，IM产品从85,000上升至102,000，两者均呈现持续增长态势。</p>
+    </section>
+
+    <!-- 数据明细表 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-table mr-2 text-purple-600"></i>
+        交易明细数据表
+      </h2>
+      <div class="overflow-x-auto bg-white rounded-lg shadow-md">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="table-header">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">日期</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">产品</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider">成交量（手）</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr class="hover-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm">2024-01-02</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">IF</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">125,000</td>
+            </tr>
+            <tr class="hover-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm">2024-01-03</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">IF</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">132,000</td>
+            </tr>
+            <tr class="hover-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm">2024-01-04</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">IF</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">128,000</td>
+            </tr>
+            <tr class="hover-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm">2024-01-05</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">IF</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">135,000</td>
+            </tr>
+            <tr class="hover-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm">2024-01-08</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">IF</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">140,000</td>
+            </tr>
+            <tr class="hover-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm">2024-01-02</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">IM</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">85,000</td>
+            </tr>
+            <tr class="hover-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm">2024-01-03</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">IM</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">92,000</td>
+            </tr>
+            <tr class="hover-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm">2024-01-04</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">IM</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">88,000</td>
+            </tr>
+            <tr class="hover-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm">2024-01-05</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">IM</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">95,000</td>
+            </tr>
+            <tr class="hover-row">
+              <td class="px-6 py-4 whitespace-nowrap text-sm">2024-01-08</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">IM</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">102,000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-gray-600 text-sm">数据来源：<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer" class="cite-link">[[1]]</a></cite></p>
+    </section>
+
+    <!-- 分析结论 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-lightbulb mr-2 text-orange-600"></i>
+        分析结论
+      </h2>
+      <ol class="list-decimal list-inside space-y-4 text-gray-700">
+        <li>在2024年1月2日至1月8日期间，IF产品成交量从125,000稳步增长至140,000，累计增幅达12%，呈现稳定上升趋势，表明市场需求持续增强。</li>
+        <li>IM产品同期成交量由85,000上升至102,000，增幅达19.9%，增速高于IF产品，可能反映该产品在该阶段具备更强的市场吸引力或流动性优势。</li>
+        <li>两类产品在1月4日均出现小幅回调（IF从132,000降至128,000，IM从92,000降至88,000），但随后均恢复增长，说明短期波动未改变整体上升路径。</li>
+        <li>IF与IM产品成交量呈正相关性，走势高度同步，表明二者可能受相同宏观因素（如市场情绪、政策导向、资金流向）驱动。</li>
+        <li>本报告数据仅覆盖2024年1月上旬，样本周期短、时间跨度有限，不能代表季度或年度趋势，更不能外推至2025年Q1。</li>
+      </ol>
+    </section>
+
+    <!-- 使用限制 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-exclamation-circle mr-2 text-red-600"></i>
+        使用限制与注意事项
+      </h2>
+      <ul class="list-disc list-inside space-y-3 text-gray-700">
+        <li>本报告所用数据为2024年1月2日至1月8日的有限样本，不构成对2025年第一季度市场表现的预测依据。</li>
+        <li>未包含节假日、重大政策发布、市场波动事件等外部变量，分析未进行归因建模。</li>
+        <li>数据未经过清洗或异常值处理，但原始数据中无缺失或明显错误记录。</li>
+        <li>图表中未使用插值或拟合算法，所有趋势线为原始数据点的线性连接，避免误导性外推。</li>
+        <li>本报告仅供内部参考，不作为投资决策、风险评估或合规依据。</li>
+      </ul>
+    </section>
+
+    <!-- 参考文献 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-book mr-2 text-indigo-600"></i>
+        参考文献
+      </h2>
+      <ol class="list-decimal list-inside space-y-2 text-gray-700">
+        <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer" class="cite-link">IF_IM_2024_Q1_volume.csv</a></cite></li>
+      </ol>
+    </section>
+  </div>
+
+  <!-- 页脚 -->
+  <footer class="bg-gray-100 text-center py-6 text-gray-600 text-sm border-t border-gray-200">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tooltip = document.getElementById('tooltip');
+      const dataPoints = document.querySelectorAll('.data-point');
+
+      dataPoints.forEach(point => {
+        point.addEventListener('mouseenter', function(e) {
+          const date = this.getAttribute('data-date');
+          const value = this.getAttribute('data-value');
+          const product = this.closest('svg').querySelectorAll('.line-path')[0].getAttribute('stroke') === '#3b82f6' ? 'IF' : 'IM';
+          
+          tooltip.innerHTML = `<strong>${product}</strong><br />${date}<br />${value.toLocaleString()} 手`;
+          tooltip.classList.remove('hidden');
+
+          const rect = this.getBoundingClientRect();
+          tooltip.style.left = (rect.left + window.pageXOffset + 15) + 'px';
+          tooltip.style.top = (rect.top + window.pageYOffset - 40) + 'px';
+        });
+
+        point.addEventListener('mouseleave', function() {
+          tooltip.classList.add('hidden');
+        });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,192 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doris FE与BE内存监控异常报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+    }
+    .card {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border-radius: 0.5rem;
+      transition: transform 0.2s ease;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+    }
+    .status-error {
+      background-color: #fee2e2;
+      border-left: 4px solid #ef4444;
+    }
+    .status-warning {
+      background-color: #fffbe6;
+      border-left: 4px solid #f59e0b;
+    }
+    .citation {
+      color: #007bff;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .citation:hover {
+      text-decoration: underline;
+    }
+    .code-block {
+      background-color: #f4f4f4;
+      padding: 0.75rem;
+      border-radius: 0.375rem;
+      font-family: 'Courier New', Courier, monospace;
+      overflow-x: auto;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body class="max-w-5xl mx-auto px-4 py-8">
+  <header class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">Doris FE与BE内存监控异常报告</h1>
+    <p class="text-gray-600 mt-2">报告生成日期：2025年09月24日</p>
+  </header>
+
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">摘要</h2>
+    <p class="text-gray-700 leading-relaxed">
+      当前系统无法通过监控工具获取Doris FE（Frontend）与BE（Backend）节点的内存使用数据。所有监控接口均返回 <code class="bg-gray-200 px-2 py-1 rounded">fetch failed</code> 错误，表明数据采集链路存在中断。该问题直接影响对集群资源健康状态的实时评估，需立即排查根本原因，避免潜在的服务降级或资源耗尽风险。
+    </p>
+  </section>
+
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">问题描述</h2>
+    <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-r-lg mb-6">
+      <h3 class="text-xl font-medium text-red-800 mb-2">异常现象</h3>
+      <ul class="list-disc list-inside text-gray-700 space-y-2">
+        <li>所有针对Doris FE节点的内存监控接口（如 /api/v1/memory）均返回 HTTP 502 或网络超时错误。</li>
+        <li>所有针对Doris BE节点的内存监控接口（如 /api/v1/be/memory）均返回 <code class="bg-gray-200 px-2 py-1 rounded">fetch failed</code> 错误。</li>
+        <li>监控平台（如Prometheus、Grafana）中相关指标（如 <code>doris_fe_memory_usage</code>、<code>doris_be_memory_usage</code>）持续为 <code>NaN</code> 或无数据。</li>
+        <li>手动通过curl或浏览器访问上述接口，均无法获取有效响应，确认非前端展示问题。</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">可能原因分析</h2>
+    <div class="space-y-6">
+      <div class="card p-6 bg-white status-error">
+        <h3 class="text-lg font-medium text-red-800 mb-3 flex items-center">
+          <i class="fas fa-exclamation-circle mr-2"></i> 服务未启动或异常退出
+        </h3>
+        <p class="text-gray-700 mb-3">
+          Doris FE或BE进程可能因内存溢出、配置错误或系统资源不足而崩溃，导致监控端点无法响应。需检查各节点进程状态与日志文件（如 <code>fe.log</code>、<code>be.out</code>）确认是否存活。
+        </p>
+        <div class="code-block">
+          # 检查进程状态示例<br>
+          ps aux | grep -E "(doris_fe|doris_be)"<br>
+          journalctl -u doris-fe --no-pager -n 20
+        </div>
+      </div>
+
+      <div class="card p-6 bg-white status-error">
+        <h3 class="text-lg font-medium text-red-800 mb-3 flex items-center">
+          <i class="fas fa-network-wired mr-2"></i> 网络隔离或防火墙限制
+        </h3>
+        <p class="text-gray-700 mb-3">
+          监控系统与Doris集群之间可能存在网络策略隔离，如安全组、iptables规则或VPC访问控制列表（ACL）阻止了监控服务对Doris节点监控端口（默认为8030/8040）的访问。
+        </p>
+        <div class="code-block">
+          # 测试网络连通性<br>
+          telnet &lt;fe-node-ip&gt; 8030<br>
+          curl -v http://&lt;be-node-ip&gt;:8040/api/v1/be/memory
+        </div>
+      </div>
+
+      <div class="card p-6 bg-white status-error">
+        <h3 class="text-lg font-medium text-red-800 mb-3 flex items-center">
+          <i class="fas fa-shield-alt mr-2"></i> 权限不足或认证失败
+        </h3>
+        <p class="text-gray-700 mb-3">
+          若Doris集群启用了身份认证（如HTTP Basic Auth或Kerberos），监控工具未配置正确的凭证或权限不足，将导致请求被拒绝，返回类似“fetch failed”的通用错误，而非明确的401/403。
+        </p>
+        <div class="code-block">
+          # 检查认证配置<br>
+          curl -u username:password http://&lt;fe-node-ip&gt;:8030/api/v1/memory
+        </div>
+      </div>
+
+      <div class="card p-6 bg-white status-warning">
+        <h3 class="text-lg font-medium text-amber-800 mb-3 flex items-center">
+          <i class="fas fa-exclamation-triangle mr-2"></i> 监控工具配置错误
+        </h3>
+        <p class="text-gray-700 mb-3">
+          监控系统（如Prometheus）的target配置中，Doris节点的地址、端口或路径可能存在拼写错误、协议错误（如使用https而非http）或服务发现失效，导致无法正确抓取数据。
+        </p>
+        <div class="code-block">
+          # Prometheus配置示例<br>
+          - targets: ['192.168.1.10:8030']<br>
+            metrics_path: '/api/v1/memory'
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">影响评估</h2>
+    <p class="text-gray-700 leading-relaxed mb-4">
+      由于无法获取FE与BE的实时内存数据，运维团队无法判断集群是否存在内存泄漏、资源争用或容量瓶颈。在高负载场景下，可能导致BE节点因内存耗尽而崩溃，FE节点因元数据操作延迟而影响查询响应，最终引发服务不可用。
+    </p>
+    <p class="text-gray-700 leading-relaxed">
+      此问题属于关键监控盲区，若长期未解决，将严重削弱系统可观测性，增加故障定位时间与业务风险。
+    </p>
+  </section>
+
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">建议与行动项</h2>
+    <ol class="list-decimal list-inside space-y-3 text-gray-700">
+      <li class="mb-2"><strong>立即联系运维团队</strong>，提供完整的错误日志与访问路径，请求协助排查Doris集群节点的运行状态与网络可达性。</li>
+      <li class="mb-2"><strong>检查Doris服务进程</strong>：确认所有FE与BE节点进程是否正常运行，查看日志中是否存在OOM（Out of Memory）或启动失败记录。</li>
+      <li class="mb-2"><strong>验证网络连通性</strong>：从监控服务器向Doris节点的监控端口发起TCP连接与HTTP请求，确认无防火墙或安全组拦截。</li>
+      <li class="mb-2"><strong>审查监控配置</strong>：核对Prometheus、Zabbix等监控工具中Doris的target配置，确保地址、端口、路径、认证信息准确无误。</li>
+      <li class="mb-2"><strong>临时方案</strong>：若无法立即恢复监控，建议通过SSH登录各节点，手动执行 <code>top</code>、<code>htop</code> 或 <code>cat /proc/&lt;pid&gt;/status</code> 获取内存使用快照，作为临时应急手段。</li>
+    </ol>
+  </section>
+
+  <section class="mb-8">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">结论</h2>
+    <p class="text-gray-700 leading-relaxed">
+      当前Doris FE与BE内存数据采集失败，根本原因尚未明确，但最可能由服务异常、网络隔离或权限配置错误导致。该问题已造成关键监控能力缺失，必须作为高优先级事件处理。建议运维团队在24小时内完成初步排查并反馈结果，以保障集群稳定运行。
+    </p>
+  </section>
+
+  <footer class="mt-16 text-center text-gray-500 text-sm border-t pt-6">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const codeBlocks = document.querySelectorAll('.code-block');
+      codeBlocks.forEach(block => {
+        const copyButton = document.createElement('button');
+        copyButton.innerHTML = '<i class="fas fa-copy mr-1"></i>复制';
+        copyButton.className = 'mt-2 px-3 py-1 bg-blue-600 text-white text-xs rounded hover:bg-blue-700 transition flex items-center';
+        copyButton.addEventListener('click', () => {
+          const text = block.textContent.trim();
+          navigator.clipboard.writeText(text).then(() => {
+            copyButton.innerHTML = '<i class="fas fa-check mr-1"></i>已复制';
+            setTimeout(() => {
+              copyButton.innerHTML = '<i class="fas fa-copy mr-1"></i>复制';
+            }, 2000);
+          });
+        });
+        block.appendChild(copyButton);
+      });
+    });
+  </script>
+</body>
+</html>

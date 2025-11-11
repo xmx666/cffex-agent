@@ -1,0 +1,215 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新疆深度旅游攻略：乌鲁木齐、喀纳斯、吐鲁番实时天气与出行指南</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: #333;
+        }
+        .section-title {
+            border-bottom: 3px solid #e07a5f;
+            padding-bottom: 8px;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+        }
+        .weather-card {
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        .weather-card:hover {
+            transform: translateY(-5px);
+        }
+        .highlight-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #e07a5f;
+            padding: 1.2rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .badge-rain {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .badge-cloud {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .badge-temp-high {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .badge-temp-low {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        footer {
+            margin-top: 4rem;
+            padding: 2rem 0;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-6 py-8 max-w-5xl">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">新疆深度旅游攻略：乌鲁木齐、喀纳斯、吐鲁番实时天气与出行指南</h1>
+            <p class="text-lg text-gray-600">基于2025年11月11日实时天气数据的实用旅行建议</p>
+        </header>
+
+        <section>
+            <h2 class="section-title">当前天气概览</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-md weather-card">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-city mr-2 text-blue-500"></i>乌鲁木齐
+                    </h3>
+                    <p class="text-gray-700 mb-1"><strong>天气：</strong><span class="badge badge-rain">大雨</span></p>
+                    <p class="text-gray-700"><strong>温度：</strong><span class="badge badge-temp-high">30°C</span></p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md weather-card">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-mountain mr-2 text-green-500"></i>喀纳斯
+                    </h3>
+                    <p class="text-gray-700 mb-1"><strong>天气：</strong><span class="badge badge-rain">中雨</span></p>
+                    <p class="text-gray-700"><strong>温度：</strong><span class="badge badge-temp-low">28°C</span></p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md weather-card">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2 flex items-center">
+                        <i class="fas fa-fire mr-2 text-red-500"></i>吐鲁番
+                    </h3>
+                    <p class="text-gray-700 mb-1"><strong>天气：</strong><span class="badge badge-cloud">多云</span></p>
+                    <p class="text-gray-700"><strong>温度：</strong><span class="badge badge-temp-low">18°C</span></p>
+                </div>
+            </div>
+            <div class="highlight-box">
+                <p><strong>重要提示：</strong>尽管当前气温偏高，但乌鲁木齐与喀纳斯地区正经历降雨，体感温度可能低于实际温度，且山区天气变化迅速，请勿仅依据气温判断着装。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">必游景点推荐</h2>
+            <ul class="list-disc pl-6 mb-8 space-y-3">
+                <li><strong>喀纳斯湖：</strong>位于阿勒泰地区，以“神湖”闻名，秋季层林尽染，雨后云雾缭绕如仙境，是摄影与徒步的绝佳之地。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+                <li><strong>火焰山：</strong>位于吐鲁番盆地，因红色砂岩在阳光下如烈火燃烧而得名，是《西游记》中“火焰山”原型地，可参观葡萄沟与坎儿井遗址。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+                <li><strong>天山天池：</strong>位于乌鲁木齐附近，高山湖泊清澈如镜，背靠博格达峰，四季景色各异，是新疆最具代表性的自然景观之一。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="section-title">穿衣与装备建议</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">防雨与保暖</h3>
+                    <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                        <li>乌鲁木齐与喀纳斯降雨频繁，务必携带轻便防水外套或冲锋衣。</li>
+                        <li>山区早晚温差大，即使气温达28°C，也需准备薄羽绒服或抓绒衣。</li>
+                        <li>建议穿防滑防水徒步鞋，雨后地面湿滑，尤其喀纳斯步道易积水。</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3">防晒与防风</h3>
+                    <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                        <li>吐鲁番虽多云，但紫外线强度极高，需佩戴太阳镜、帽子，涂抹SPF50+防晒霜。</li>
+                        <li>新疆风力普遍较强，建议携带防风围巾或面罩。</li>
+                        <li>无论晴雨，均需携带保湿护肤品，气候干燥易致皮肤脱水。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">最佳旅行时间</h2>
+            <p class="mb-6 text-gray-700">当前日期为2025年11月11日，已进入秋季末期。新疆地区昼夜温差显著，降水增多，部分高海拔景区（如喀纳斯）可能面临降温与道路结冰风险。建议游客：若追求自然风光，最佳时段为5月至9月；若偏好人少清静，10月上旬仍可出行，但需密切关注天气预警与景区开放通知。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+        </section>
+
+        <section>
+            <h2 class="section-title">交通出行提示</h2>
+            <ul class="list-disc pl-6 mb-6 space-y-2 text-gray-700">
+                <li>乌鲁木齐至喀纳斯距离约600公里，建议乘坐正规旅游大巴或包车，避免夜间行车，雨天山路易发生落石。</li>
+                <li>吐鲁番与乌鲁木齐间有高铁连接，车程约1.5小时，是便捷的城际选择。</li>
+                <li>景区内多为非铺装路面，建议携带轻便背包，避免拖行大件行李。</li>
+                <li>部分偏远地区手机信号弱，建议提前下载离线地图并告知行程。</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2 class="section-title">地道美食推荐</h2>
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr class="border-b">
+                            <th class="pb-2 font-semibold text-gray-800">美食名称</th>
+                            <th class="pb-2 font-semibold text-gray-800">推荐地点</th>
+                            <th class="pb-2 font-semibold text-gray-800">特色说明</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b">
+                            <td class="py-3 font-medium">烤羊肉串</td>
+                            <td class="py-3">乌鲁木齐夜市、吐鲁番大巴扎</td>
+                            <td class="py-3">选用本地羔羊肉，炭火现烤，外焦里嫩，香气扑鼻。</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-3 font-medium">大盘鸡</td>
+                            <td class="py-3">全疆各地特色餐馆</td>
+                            <td class="py-3">鸡肉与土豆同炖，配宽面，汤汁浓郁，是新疆代表性主食。</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 font-medium">馕坑肉</td>
+                            <td class="py-3">喀纳斯周边牧区餐厅</td>
+                            <td class="py-3">用土坑烤制，肉质酥烂，带有独特烟熏风味。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">安全与注意事项</h2>
+            <div class="space-y-4 text-gray-700">
+                <p><strong>1. 天气突变：</strong>新疆山区天气多变，尤其喀纳斯地区，降雨后可能突发山洪或泥石流，请勿靠近河道或低洼地带。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+                <p><strong>2. 高原反应：</strong>喀纳斯海拔约2000米，部分游客可能出现轻微头痛或气短，建议避免剧烈运动，保持充足休息。</p>
+                <p><strong>3. 饮食卫生：</strong>选择有营业执照的餐馆，避免食用生冷或未煮熟的肉类，饮用水建议使用瓶装水。</p>
+                <p><strong>4. 尊重习俗：</strong>新疆为多民族聚居区，进入清真寺或穆斯林家庭请尊重宗教礼仪，不随意拍摄当地人。</p>
+                <p><strong>5. 紧急联络：</strong>新疆旅游服务热线：0991-12345，遇紧急情况请立即拨打110或120。</p>
+            </div>
+        </section>
+
+        <section class="mt-12">
+            <h2 class="section-title">参考文献</h2>
+            <ol class="list-decimal pl-6 space-y-2">
+                <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">新疆旅游攻略：喀纳斯湖、火焰山与天山天池深度指南</a></cite></li>
+            </ol>
+        </section>
+    </div>
+
+    <footer>
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>

@@ -25,6 +25,8 @@ interface SSEConfig {
 export default (config: SSEConfig, url: string = DEFAULT_SSE_URL): void => {
   const { body = null, handleMessage, handleError, handleClose } = config;
 
+  console.log('🔗 正在连接到SSE服务器:', url);
+
   fetchEventSource(url, {
     method: 'POST',
     credentials: 'include',
@@ -43,12 +45,18 @@ export default (config: SSEConfig, url: string = DEFAULT_SSE_URL): void => {
       }
     },
     onerror(error: Error) {
-      console.error('SSE error:', error);
+      console.error('SSE连接错误:', error);
+      console.error('连接URL:', url);
+      console.error('请求体:', body);
       handleError(error);
     },
     onclose() {
-      console.log('SSE connection closed');
+      console.log('SSE连接已关闭');
       handleClose();
     }
+  }).catch((error: Error) => {
+    console.error('fetchEventSource失败:', error);
+    console.error('连接URL:', url);
+    handleError(error);
   });
 };

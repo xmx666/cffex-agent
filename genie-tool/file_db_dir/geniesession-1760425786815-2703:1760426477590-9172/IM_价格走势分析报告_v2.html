@@ -1,0 +1,377 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IM期货价格与量能联动分析报告（2025-09-01 至 2025-09-05）</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background-color: #f9fafb;
+    }
+    .chart-container {
+      height: 300px;
+      position: relative;
+    }
+    .chart-line {
+      fill: none;
+      stroke-width: 2.5;
+    }
+    .chart-area {
+      fill-opacity: 0.1;
+      stroke-width: 0;
+    }
+    .chart-bar {
+      transition: fill 0.3s ease;
+    }
+    .chart-bar:hover {
+      fill: #3b82f6;
+    }
+    .axis-label {
+      font-size: 14px;
+      font-weight: 500;
+      fill: #374151;
+    }
+    .tick-label {
+      font-size: 12px;
+      fill: #6b7280;
+    }
+    .tooltip {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      pointer-events: none;
+      z-index: 100;
+      white-space: nowrap;
+    }
+    .section-title {
+      font-weight: 600;
+      color: #1f2937;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+      margin-top: 2rem;
+    }
+    .data-table {
+      font-size: 14px;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    .data-table th,
+    .data-table td {
+      padding: 10px;
+      text-align: right;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .data-table th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .data-table tr:hover {
+      background-color: #f9fafb;
+    }
+    .highlight {
+      background-color: #dbeafe;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+  <div class="container mx-auto px-6 py-8 max-w-6xl">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">IM期货价格与量能联动分析报告（2025-09-01 至 2025-09-05）</h1>
+    <p class="text-lg text-gray-700 mb-8">本报告基于2025年9月1日至9月5日的IM期货交易数据，通过价格走势、成交量与持仓量三维度联动分析，揭示市场情绪与资金动向的内在关联。</p>
+
+    <!-- 数据表格 -->
+    <div class="mb-10">
+      <h2 class="section-title">原始交易数据</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>交易日期</th>
+            <th>开盘价</th>
+            <th>最高价</th>
+            <th>最低价</th>
+            <th>收盘价</th>
+            <th>成交量</th>
+            <th>持仓量</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2025-09-01</td>
+            <td>7400.0</td>
+            <td>7445.8</td>
+            <td>7329.4</td>
+            <td>7380.6</td>
+            <td>163,079</td>
+            <td>180,779</td>
+          </tr>
+          <tr>
+            <td>2025-09-02</td>
+            <td>7383.2</td>
+            <td>7393.8</td>
+            <td>7182.4</td>
+            <td>7251.4</td>
+            <td>218,061</td>
+            <td>193,312</td>
+          </tr>
+          <tr>
+            <td>2025-09-03</td>
+            <td>7283.2</td>
+            <td>7295.6</td>
+            <td>7110.4</td>
+            <td>7142.6</td>
+            <td>213,250</td>
+            <td>190,793</td>
+          </tr>
+          <tr>
+            <td>2025-09-04</td>
+            <td>7168.0</td>
+            <td>7205.0</td>
+            <td>6910.0</td>
+            <td>7003.0</td>
+            <td>239,398</td>
+            <td>189,144</td>
+          </tr>
+          <tr>
+            <td>2025-09-05</td>
+            <td>7021.4</td>
+            <td>7234.8</td>
+            <td>6997.6</td>
+            <td>7226.0</td>
+            <td>183,966</td>
+            <td>171,258</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 图表区域 -->
+    <div class="mb-10">
+      <h2 class="section-title">价格、成交量与持仓量三图联动分析</h2>
+      <div class="grid grid-cols-1 gap-8">
+        <!-- 价格走势图 -->
+        <div class="chart-container bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-4 text-gray-800">价格走势（收盘价）</h3>
+          <svg id="price-chart" width="100%" height="300" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="priceGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#3b82f6" />
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.1" />
+              </linearGradient>
+            </defs>
+            <!-- 坐标轴 -->
+            <line x1="50" y1="250" x2="550" y2="250" stroke="#d1d5db" stroke-width="1" />
+            <line x1="50" y1="250" x2="50" y2="50" stroke="#d1d5db" stroke-width="1" />
+            <!-- 数据线 -->
+            <path class="chart-line" stroke="#3b82f6" d="M50,100 L150,140 L250,160 L350,190 L450,120" />
+            <!-- 面积填充 -->
+            <path class="chart-area" fill="url(#priceGradient)" d="M50,100 L150,140 L250,160 L350,190 L450,120 L450,250 L50,250 Z" />
+            <!-- 数据点 -->
+            <circle cx="50" cy="100" r="4" fill="#3b82f6" />
+            <circle cx="150" cy="140" r="4" fill="#3b82f6" />
+            <circle cx="250" cy="160" r="4" fill="#3b82f6" />
+            <circle cx="350" cy="190" r="4" fill="#3b82f6" />
+            <circle cx="450" cy="120" r="4" fill="#3b82f6" />
+            <!-- X轴标签 -->
+            <text class="axis-label" x="50" y="275" text-anchor="middle">09-01</text>
+            <text class="axis-label" x="150" y="275" text-anchor="middle">09-02</text>
+            <text class="axis-label" x="250" y="275" text-anchor="middle">09-03</text>
+            <text class="axis-label" x="350" y="275" text-anchor="middle">09-04</text>
+            <text class="axis-label" x="450" y="275" text-anchor="middle">09-05</text>
+            <!-- Y轴标签 -->
+            <text class="axis-label" x="35" y="100" text-anchor="end" transform="rotate(-90, 35, 100)">7380.6</text>
+            <text class="axis-label" x="35" y="120" text-anchor="end" transform="rotate(-90, 35, 120)">7226.0</text>
+            <text class="axis-label" x="35" y="140" text-anchor="end" transform="rotate(-90, 35, 140)">7251.4</text>
+            <text class="axis-label" x="35" y="160" text-anchor="end" transform="rotate(-90, 35, 160)">7142.6</text>
+            <text class="axis-label" x="35" y="190" text-anchor="end" transform="rotate(-90, 35, 190)">7003.0</text>
+          </svg>
+        </div>
+
+        <!-- 成交量柱状图 -->
+        <div class="chart-container bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-4 text-gray-800">成交量（手）</h3>
+          <svg id="volume-chart" width="100%" height="300" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+            <!-- 坐标轴 -->
+            <line x1="50" y1="250" x2="550" y2="250" stroke="#d1d5db" stroke-width="1" />
+            <line x1="50" y1="250" x2="50" y2="50" stroke="#d1d5db" stroke-width="1" />
+            <!-- 柱状图 -->
+            <rect class="chart-bar" x="70" y="180" width="40" height="70" fill="#10b981" />
+            <rect class="chart-bar" x="170" y="100" width="40" height="150" fill="#10b981" />
+            <rect class="chart-bar" x="270" y="110" width="40" height="140" fill="#10b981" />
+            <rect class="chart-bar" x="370" y="60" width="40" height="190" fill="#10b981" />
+            <rect class="chart-bar" x="470" y="170" width="40" height="80" fill="#10b981" />
+            <!-- X轴标签 -->
+            <text class="axis-label" x="90" y="275" text-anchor="middle">09-01</text>
+            <text class="axis-label" x="190" y="275" text-anchor="middle">09-02</text>
+            <text class="axis-label" x="290" y="275" text-anchor="middle">09-03</text>
+            <text class="axis-label" x="390" y="275" text-anchor="middle">09-04</text>
+            <text class="axis-label" x="490" y="275" text-anchor="middle">09-05</text>
+            <!-- Y轴标签 -->
+            <text class="axis-label" x="35" y="100" text-anchor="end" transform="rotate(-90, 35, 100)">218,061</text>
+            <text class="axis-label" x="35" y="150" text-anchor="end" transform="rotate(-90, 35, 150)">183,966</text>
+            <text class="axis-label" x="35" y="200" text-anchor="end" transform="rotate(-90, 35, 200)">163,079</text>
+          </svg>
+        </div>
+
+        <!-- 持仓量曲线图 -->
+        <div class="chart-container bg-white p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-4 text-gray-800">持仓量（手）</h3>
+          <svg id="open-interest-chart" width="100%" height="300" viewBox="0 0 600 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="oiGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#f59e0b" />
+                <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.1" />
+              </linearGradient>
+            </defs>
+            <!-- 坐标轴 -->
+            <line x1="50" y1="250" x2="550" y2="250" stroke="#d1d5db" stroke-width="1" />
+            <line x1="50" y1="250" x2="50" y2="50" stroke="#d1d5db" stroke-width="1" />
+            <!-- 数据线 -->
+            <path class="chart-line" stroke="#f59e0b" d="M50,130 L150,110 L250,115 L350,118 L450,140" />
+            <!-- 面积填充 -->
+            <path class="chart-area" fill="url(#oiGradient)" d="M50,130 L150,110 L250,115 L350,118 L450,140 L450,250 L50,250 Z" />
+            <!-- 数据点 -->
+            <circle cx="50" cy="130" r="4" fill="#f59e0b" />
+            <circle cx="150" cy="110" r="4" fill="#f59e0b" />
+            <circle cx="250" cy="115" r="4" fill="#f59e0b" />
+            <circle cx="350" cy="118" r="4" fill="#f59e0b" />
+            <circle cx="450" cy="140" r="4" fill="#f59e0b" />
+            <!-- X轴标签 -->
+            <text class="axis-label" x="50" y="275" text-anchor="middle">09-01</text>
+            <text class="axis-label" x="150" y="275" text-anchor="middle">09-02</text>
+            <text class="axis-label" x="250" y="275" text-anchor="middle">09-03</text>
+            <text class="axis-label" x="350" y="275" text-anchor="middle">09-04</text>
+            <text class="axis-label" x="450" y="275" text-anchor="middle">09-05</text>
+            <!-- Y轴标签 -->
+            <text class="axis-label" x="35" y="110" text-anchor="end" transform="rotate(-90, 35, 110)">193,312</text>
+            <text class="axis-label" x="35" y="130" text-anchor="end" transform="rotate(-90, 35, 130)">180,779</text>
+            <text class="axis-label" x="35" y="140" text-anchor="end" transform="rotate(-90, 35, 140)">171,258</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- 趋势解读 -->
+    <div class="mb-10">
+      <h2 class="section-title">趋势解读与市场洞察</h2>
+      <p class="text-gray-700 mb-4">
+        从2025年9月1日至9月5日的交易数据可见，IM期货价格呈现显著下行趋势，收盘价从7380.6逐步回落至7226.0，累计跌幅达2.1%。价格下跌过程中，<span class="highlight">成交量在9月4日达到峰值239,398手</span>，表明市场在价格下行阶段出现剧烈抛压与多头离场行为，空头力量占据主导。
+      </p>
+      <p class="text-gray-700 mb-4">
+        持仓量在9月2日升至193,312手的阶段性高点后持续回落，至9月5日降至171,258手，说明市场在价格下跌过程中伴随持仓减少，<span class="highlight">空头获利了结明显</span>，市场情绪趋于谨慎，未出现持续加仓的单边趋势。
+      </p>
+      <p class="text-gray-700 mb-4">
+        9月5日价格出现小幅反弹（7003.0 → 7226.0），但成交量较前一日明显萎缩（239,398 → 183,966），<span class="highlight">反弹缺乏量能支撑</span>，属于技术性修复而非趋势反转，市场仍处于空头主导的震荡格局。
+      </p>
+      <p class="text-gray-700">
+        综合来看，价格、成交量与持仓量三者联动清晰：价格下跌伴随放量，反映空头主导；持仓量下降，表明空头逐步平仓，市场动能减弱。未来若价格企稳且持仓量回升，或预示新一轮多头布局启动；若继续放量下跌，则空头趋势可能延续。
+      </p>
+    </div>
+
+    <!-- 参考文献 -->
+    <div class="border-t pt-8 mt-10">
+      <h2 class="section-title">参考文献</h2>
+      <ol class="list-decimal list-inside space-y-2">
+        <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">IM_价格走势数据.csv</a></cite></li>
+      </ol>
+    </div>
+  </div>
+
+  <footer class="bg-gray-100 text-center py-6 mt-16 text-gray-600 text-sm">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tooltips = [];
+      const charts = document.querySelectorAll('.chart-container svg');
+      
+      charts.forEach(chart => {
+        const rect = chart.getBoundingClientRect();
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        tooltip.style.display = 'none';
+        document.body.appendChild(tooltip);
+        tooltips.push(tooltip);
+      });
+
+      // 为价格图添加交互
+      const priceCircles = document.querySelectorAll('#price-chart circle');
+      const priceData = [
+        { date: '2025-09-01', price: '7380.6', volume: '163,079', oi: '180,779' },
+        { date: '2025-09-02', price: '7251.4', volume: '218,061', oi: '193,312' },
+        { date: '2025-09-03', price: '7142.6', volume: '213,250', oi: '190,793' },
+        { date: '2025-09-04', price: '7003.0', volume: '239,398', oi: '189,144' },
+        { date: '2025-09-05', price: '7226.0', volume: '183,966', oi: '171,258' }
+      ];
+
+      priceCircles.forEach((circle, index) => {
+        circle.addEventListener('mouseenter', (e) => {
+          const tooltip = tooltips[0];
+          tooltip.innerHTML = `
+            <strong>${priceData[index].date}</strong><br />
+            收盘价: ${priceData[index].price}<br />
+            成交量: ${priceData[index].volume}<br />
+            持仓量: ${priceData[index].oi}
+          `;
+          tooltip.style.display = 'block';
+          tooltip.style.left = (e.pageX - rect.left + 10) + 'px';
+          tooltip.style.top = (e.pageY - rect.top - 80) + 'px';
+        });
+        circle.addEventListener('mouseleave', () => {
+          tooltips[0].style.display = 'none';
+        });
+      });
+
+      // 为成交量图添加交互
+      const volumeBars = document.querySelectorAll('#volume-chart rect');
+      volumeBars.forEach((bar, index) => {
+        bar.addEventListener('mouseenter', (e) => {
+          const tooltip = tooltips[1];
+          tooltip.innerHTML = `
+            <strong>${priceData[index].date}</strong><br />
+            成交量: ${priceData[index].volume}
+          `;
+          tooltip.style.display = 'block';
+          tooltip.style.left = (e.pageX - rect.left + 10) + 'px';
+          tooltip.style.top = (e.pageY - rect.top - 80) + 'px';
+        });
+        bar.addEventListener('mouseleave', () => {
+          tooltips[1].style.display = 'none';
+        });
+      });
+
+      // 为持仓量图添加交互
+      const oiCircles = document.querySelectorAll('#open-interest-chart circle');
+      oiCircles.forEach((circle, index) => {
+        circle.addEventListener('mouseenter', (e) => {
+          const tooltip = tooltips[2];
+          tooltip.innerHTML = `
+            <strong>${priceData[index].date}</strong><br />
+            持仓量: ${priceData[index].oi}
+          `;
+          tooltip.style.display = 'block';
+          tooltip.style.left = (e.pageX - rect.left + 10) + 'px';
+          tooltip.style.top = (e.pageY - rect.top - 80) + 'px';
+        });
+        circle.addEventListener('mouseleave', () => {
+          tooltips[2].style.display = 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

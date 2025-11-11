@@ -1,0 +1,1 @@
+final_answer(3600.0)

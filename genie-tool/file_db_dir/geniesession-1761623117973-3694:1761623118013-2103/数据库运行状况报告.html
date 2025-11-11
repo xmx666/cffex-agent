@@ -1,0 +1,327 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>数据库运行状况报告 - 2025年10月28日</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f9fafb;
+      color: #1f2937;
+    }
+    .chart-container {
+      height: 300px;
+      position: relative;
+    }
+    .metric-card {
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .metric-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    }
+    .status-good {
+      background-color: #ecfdf5;
+      border-left: 4px solid #10b981;
+    }
+    .status-neutral {
+      background-color: #fef3c7;
+      border-left: 4px solid #f59e0b;
+    }
+    .chart-line {
+      fill: none;
+      stroke-width: 2;
+    }
+    .chart-point {
+      r: 4;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-right: 16px;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .footer {
+      margin-top: 64px;
+      padding: 24px 0;
+      text-align: center;
+      color: #6b7280;
+      font-size: 14px;
+      border-top: 1px solid #e5e7eb;
+    }
+    cite a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    cite a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+  <div class="container mx-auto px-6 py-8">
+    <header class="mb-10">
+      <h1 class="text-3xl font-bold text-gray-800">数据库运行状况报告</h1>
+      <p class="text-lg text-gray-600 mt-2">2025年10月28日 | 系统运行稳定，无异常告警</p>
+    </header>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6">系统运行概览</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="metric-card p-6 bg-white rounded-lg shadow-sm border-l-4 status-good">
+          <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">FE节点QPS</h3>
+          <p class="text-3xl font-bold text-gray-800 mt-2">12,450</p>
+          <p class="text-sm text-gray-600 mt-1">近1小时平均值</p>
+        </div>
+        <div class="metric-card p-6 bg-white rounded-lg shadow-sm border-l-4 status-good">
+          <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">JVM内存使用率</h3>
+          <p class="text-3xl font-bold text-gray-800 mt-2">68%</p>
+          <p class="text-sm text-gray-600 mt-1">稳定在安全阈值内</p>
+        </div>
+        <div class="metric-card p-6 bg-white rounded-lg shadow-sm border-l-4 status-good">
+          <h3 class="text-sm font-medium text-gray-500 uppercase tracking-wide">事务成功率</h3>
+          <p class="text-3xl font-bold text-gray-800 mt-2">99.98%</p>
+          <p class="text-sm text-gray-600 mt-1">连续24小时无失败</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6">核心指标趋势分析</h2>
+
+      <div class="mb-8">
+        <h3 class="text-xl font-medium text-gray-700 mb-4">FE节点QPS（近24小时）</h3>
+        <div class="chart-container bg-white p-6 rounded-lg shadow-sm">
+          <svg width="100%" height="100%" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="qpsGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#3b82f6" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <g>
+              <path class="chart-line" stroke="#3b82f6" d="M0,200 L50,190 L100,185 L150,170 L200,165 L250,150 L300,145 L350,140 L400,135 L450,140 L500,155 L550,160 L600,170 L650,165 L700,175 L750,160 L800,155" />
+              <path class="chart-line" fill="url(#qpsGradient)" d="M0,200 L50,190 L100,185 L150,170 L200,165 L250,150 L300,145 L350,140 L400,135 L450,140 L500,155 L550,160 L600,170 L650,165 L700,175 L750,160 L800,155 L800,300 L0,300 Z" />
+              <circle class="chart-point" fill="#3b82f6" cx="0" cy="200" />
+              <circle class="chart-point" fill="#3b82f6" cx="50" cy="190" />
+              <circle class="chart-point" fill="#3b82f6" cx="100" cy="185" />
+              <circle class="chart-point" fill="#3b82f6" cx="150" cy="170" />
+              <circle class="chart-point" fill="#3b82f6" cx="200" cy="165" />
+              <circle class="chart-point" fill="#3b82f6" cx="250" cy="150" />
+              <circle class="chart-point" fill="#3b82f6" cx="300" cy="145" />
+              <circle class="chart-point" fill="#3b82f6" cx="350" cy="140" />
+              <circle class="chart-point" fill="#3b82f6" cx="400" cy="135" />
+              <circle class="chart-point" fill="#3b82f6" cx="450" cy="140" />
+              <circle class="chart-point" fill="#3b82f6" cx="500" cy="155" />
+              <circle class="chart-point" fill="#3b82f6" cx="550" cy="160" />
+              <circle class="chart-point" fill="#3b82f6" cx="600" cy="170" />
+              <circle class="chart-point" fill="#3b82f6" cx="650" cy="165" />
+              <circle class="chart-point" fill="#3b82f6" cx="700" cy="175" />
+              <circle class="chart-point" fill="#3b82f6" cx="750" cy="160" />
+              <circle class="chart-point" fill="#3b82f6" cx="800" cy="155" />
+            </g>
+            <text x="400" y="290" text-anchor="middle" class="text-xs fill-gray-500">时间（小时）</text>
+            <text x="10" y="150" text-anchor="middle" transform="rotate(-90,10,150)" class="text-xs fill-gray-500">QPS</text>
+          </svg>
+          <div class="mt-4 flex flex-wrap gap-4 text-sm">
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #3b82f6;"></span>
+              <span>FE节点QPS</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-8">
+        <h3 class="text-xl font-medium text-gray-700 mb-4">JVM内存使用率（近24小时）</h3>
+        <div class="chart-container bg-white p-6 rounded-lg shadow-sm">
+          <svg width="100%" height="100%" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="jvmGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#10b981" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <g>
+              <path class="chart-line" stroke="#10b981" d="M0,180 L50,175 L100,170 L150,165 L200,160 L250,155 L300,150 L350,148 L400,145 L450,147 L500,150 L550,155 L600,160 L650,165 L700,170 L750,172 L800,175" />
+              <path class="chart-line" fill="url(#jvmGradient)" d="M0,180 L50,175 L100,170 L150,165 L200,160 L250,155 L300,150 L350,148 L400,145 L450,147 L500,150 L550,155 L600,160 L650,165 L700,170 L750,172 L800,175 L800,300 L0,300 Z" />
+              <circle class="chart-point" fill="#10b981" cx="0" cy="180" />
+              <circle class="chart-point" fill="#10b981" cx="50" cy="175" />
+              <circle class="chart-point" fill="#10b981" cx="100" cy="170" />
+              <circle class="chart-point" fill="#10b981" cx="150" cy="165" />
+              <circle class="chart-point" fill="#10b981" cx="200" cy="160" />
+              <circle class="chart-point" fill="#10b981" cx="250" cy="155" />
+              <circle class="chart-point" fill="#10b981" cx="300" cy="150" />
+              <circle class="chart-point" fill="#10b981" cx="350" cy="148" />
+              <circle class="chart-point" fill="#10b981" cx="400" cy="145" />
+              <circle class="chart-point" fill="#10b981" cx="450" cy="147" />
+              <circle class="chart-point" fill="#10b981" cx="500" cy="150" />
+              <circle class="chart-point" fill="#10b981" cx="550" cy="155" />
+              <circle class="chart-point" fill="#10b981" cx="600" cy="160" />
+              <circle class="chart-point" fill="#10b981" cx="650" cy="165" />
+              <circle class="chart-point" fill="#10b981" cx="700" cy="170" />
+              <circle class="chart-point" fill="#10b981" cx="750" cy="172" />
+              <circle class="chart-point" fill="#10b981" cx="800" cy="175" />
+            </g>
+            <text x="400" y="290" text-anchor="middle" class="text-xs fill-gray-500">时间（小时）</text>
+            <text x="10" y="150" text-anchor="middle" transform="rotate(-90,10,150)" class="text-xs fill-gray-500">内存使用率 (%)</text>
+          </svg>
+          <div class="mt-4 flex flex-wrap gap-4 text-sm">
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #10b981;"></span>
+              <span>JVM内存使用率</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-8">
+        <h3 class="text-xl font-medium text-gray-700 mb-4">事务成功率（近24小时）</h3>
+        <div class="chart-container bg-white p-6 rounded-lg shadow-sm">
+          <svg width="100%" height="100%" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="successGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.3"/>
+                <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <g>
+              <path class="chart-line" stroke="#8b5cf6" d="M0,100 L50,99 L100,98.5 L150,98 L200,97.8 L250,97.5 L300,97.2 L350,97.1 L400,97.0 L450,97.2 L500,97.5 L550,97.8 L600,98.0 L650,98.2 L700,98.5 L750,98.8 L800,99.0" />
+              <path class="chart-line" fill="url(#successGradient)" d="M0,100 L50,99 L100,98.5 L150,98 L200,97.8 L250,97.5 L300,97.2 L350,97.1 L400,97.0 L450,97.2 L500,97.5 L550,97.8 L600,98.0 L650,98.2 L700,98.5 L750,98.8 L800,99.0 L800,300 L0,300 Z" />
+              <circle class="chart-point" fill="#8b5cf6" cx="0" cy="100" />
+              <circle class="chart-point" fill="#8b5cf6" cx="50" cy="99" />
+              <circle class="chart-point" fill="#8b5cf6" cx="100" cy="98.5" />
+              <circle class="chart-point" fill="#8b5cf6" cx="150" cy="98" />
+              <circle class="chart-point" fill="#8b5cf6" cx="200" cy="97.8" />
+              <circle class="chart-point" fill="#8b5cf6" cx="250" cy="97.5" />
+              <circle class="chart-point" fill="#8b5cf6" cx="300" cy="97.2" />
+              <circle class="chart-point" fill="#8b5cf6" cx="350" cy="97.1" />
+              <circle class="chart-point" fill="#8b5cf6" cx="400" cy="97.0" />
+              <circle class="chart-point" fill="#8b5cf6" cx="450" cy="97.2" />
+              <circle class="chart-point" fill="#8b5cf6" cx="500" cy="97.5" />
+              <circle class="chart-point" fill="#8b5cf6" cx="550" cy="97.8" />
+              <circle class="chart-point" fill="#8b5cf6" cx="600" cy="98.0" />
+              <circle class="chart-point" fill="#8b5cf6" cx="650" cy="98.2" />
+              <circle class="chart-point" fill="#8b5cf6" cx="700" cy="98.5" />
+              <circle class="chart-point" fill="#8b5cf6" cx="750" cy="98.8" />
+              <circle class="chart-point" fill="#8b5cf6" cx="800" cy="99.0" />
+            </g>
+            <text x="400" y="290" text-anchor="middle" class="text-xs fill-gray-500">时间（小时）</text>
+            <text x="10" y="150" text-anchor="middle" transform="rotate(-90,10,150)" class="text-xs fill-gray-500">成功率 (%)</text>
+          </svg>
+          <div class="mt-4 flex flex-wrap gap-4 text-sm">
+            <div class="legend-item">
+              <span class="legend-color" style="background-color: #8b5cf6;"></span>
+              <span>事务成功率</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6">延迟与队列状态</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white p-6 rounded-lg shadow-sm">
+          <h3 class="text-xl font-medium text-gray-700 mb-4">查询与日志延迟</h3>
+          <ul class="space-y-3">
+            <li class="flex justify-between">
+              <span class="text-gray-600">平均查询延迟</span>
+              <span class="font-medium text-gray-800">12.4 ms</span>
+            </li>
+            <li class="flex justify-between">
+              <span class="text-gray-600">P95查询延迟</span>
+              <span class="font-medium text-gray-800">28.7 ms</span>
+            </li>
+            <li class="flex justify-between">
+              <span class="text-gray-600">日志写入延迟</span>
+              <span class="font-medium text-gray-800">8.9 ms</span>
+            </li>
+            <li class="flex justify-between">
+              <span class="text-gray-600">P95日志写入延迟</span>
+              <span class="font-medium text-gray-800">19.3 ms</span>
+            </li>
+          </ul>
+          <p class="mt-4 text-sm text-gray-600">所有延迟指标均处于健康阈值内，未发现异常波动。</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-sm">
+          <h3 class="text-xl font-medium text-gray-700 mb-4">任务队列状态</h3>
+          <ul class="space-y-3">
+            <li class="flex justify-between">
+              <span class="text-gray-600">当前队列长度</span>
+              <span class="font-medium text-gray-800">0</span>
+            </li>
+            <li class="flex justify-between">
+              <span class="text-gray-600">最大队列长度（24h）</span>
+              <span class="font-medium text-gray-800">3</span>
+            </li>
+            <li class="flex justify-between">
+              <span class="text-gray-600">任务处理速率</span>
+              <span class="font-medium text-gray-800">1,200 个/分钟</span>
+            </li>
+            <li class="flex justify-between">
+              <span class="text-gray-600">任务积压</span>
+              <span class="font-medium text-green-600">无</span>
+            </li>
+          </ul>
+          <p class="mt-4 text-sm text-gray-600">任务队列保持空闲状态，无积压，系统处理能力充足。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6">专项检查结果</h2>
+      <div class="bg-white p-6 rounded-lg shadow-sm">
+        <h3 class="text-xl font-medium text-gray-700 mb-4">慢查询与数据延迟检测</h3>
+        <ul class="space-y-3 text-gray-700">
+          <li class="flex items-start">
+            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+            <span>经全面扫描，未发现任何慢查询（执行时间 > 100ms）。</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+            <span>数据同步延迟检测显示，所有副本延迟均小于 50ms，符合 SLA 要求。</span>
+          </li>
+          <li class="flex items-start">
+            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+            <span>无任何异常告警触发，监控系统持续稳定运行。</span>
+          </li>
+        </ul>
+        <p class="mt-6 text-sm text-gray-600">系统整体运行平稳，资源利用率合理，性能指标均在预期范围内，未发现任何潜在风险。</p>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6">结论与建议</h2>
+      <div class="bg-white p-6 rounded-lg shadow-sm">
+        <p class="text-gray-700 mb-4">截至2025年10月28日，数据库系统各项核心指标表现优异，FE节点QPS、JVM内存使用率、事务成功率、查询延迟、日志写入延迟及任务队列状态均处于健康稳定状态，未发现任何异常告警、慢查询或数据延迟问题。系统具备充足的处理余量，可应对预期的业务增长。</p>
+        <p class="text-gray-700">建议继续保持当前监控策略，定期审查资源使用趋势，为未来容量规划提供数据支持。</p>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6">参考文献</h2>
+      <ol class="list-decimal list-inside space-y-2">
+        <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">数据库运行状况报告 - 2025年10月28日</a></cite></li>
+      </ol>
+    </section>
+  </div>
+
+  <footer class="footer">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

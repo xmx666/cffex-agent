@@ -1,0 +1,107 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>“数智纪检”与“dfiy”应用调用行为分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .data-table th,
+    .data-table td {
+      border: 1px solid #e5e7eb;
+      padding: 12px;
+    }
+    .data-table th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    .summary-card {
+      border-left: 4px solid #3b82f6;
+      background-color: #f0f9ff;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+    .badge-low {
+      background-color: #fef2f2;
+      color: #dc2626;
+      padding: 4px 8px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .badge-zero {
+      background-color: #f0f0f0;
+      color: #6b7280;
+      padding: 4px 8px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .highlight {
+      font-weight: 600;
+      color: #1f2937;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">“数智纪检”与“dfiy”应用调用行为分析报告</h1>
+    <p class="text-gray-600 mb-8">基于2025年10月14日数据，分析“数智纪检”与“dfiy”应用在过去7天内对futuremaas服务的调用情况，评估使用频率并提出监控建议。</p>
+
+    <div class="summary-card rounded-r-lg">
+      <h2 class="text-xl font-semibold text-gray-800 mb-3">📌 结论摘要</h2>
+      <p>根据调用日志分析，“数智纪检”应用在过去7天内仅调用futuremaas服务<strong class="highlight">2次</strong>，且今日调用次数为<strong class="highlight">0</strong>；“dfiy”应用则<strong class="highlight">无任何调用记录</strong>。综合判断，这两个应用对futuremaas服务的使用频率属于<strong class="highlight">极低频</strong>级别，可能为偶发性调用或系统配置遗留问题，建议持续监控其调用行为，以排除异常配置或无效服务依赖。</p>
+    </div>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">📊 调用数据明细表</h2>
+    <table class="w-full text-left data-table rounded-lg overflow-hidden shadow-sm mb-8">
+      <thead>
+        <tr>
+          <th class="px-4 py-3">应用名称</th>
+          <th class="px-4 py-3">过去7天调用次数</th>
+          <th class="px-4 py-3">今日调用次数</th>
+          <th class="px-4 py-3">使用频率评估</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="font-medium">数智纪检</td>
+          <td>2</td>
+          <td>0</td>
+          <td><span class="badge-low">极低频</span></td>
+        </tr>
+        <tr>
+          <td class="font-medium">dfiy</td>
+          <td>0</td>
+          <td>0</td>
+          <td><span class="badge-zero">无调用</span></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">🔍 分析说明</h2>
+    <p>“数智纪检”应用在7天内仅有2次调用记录，且最近一天无任何调用，表明其对futuremaas服务的依赖极弱，可能为测试行为、历史遗留任务或配置未清理的残留调用。而“dfiy”应用完全无调用记录，说明其当前未激活或未集成该服务接口。两者均不符合常规业务高频调用模式，存在资源浪费或配置异常风险。</p>
+    <p>建议运维团队对这两个应用的调用链路进行溯源，核查其调用触发条件、配置文件及服务依赖关系，确认是否为无效服务调用。若确认无业务必要，应移除相关配置，降低系统冗余与安全风险。</p>
+
+    <h2 class="text-2xl font-semibold text-gray-800 mb-6">📌 后续建议</h2>
+    <ul class="list-disc pl-6 mb-8 space-y-2">
+      <li>对“数智纪检”应用进行为期一周的持续监控，观察是否出现调用复现。</li>
+      <li>对“dfiy”应用进行配置审计，确认其是否应接入futuremaas服务。</li>
+      <li>若无业务依据，建议在测试环境验证后，移除相关调用代码或API配置。</li>
+      <li>建立低频调用应用的定期审查机制，避免系统中积累无效服务依赖。</li>
+    </ul>
+  </div>
+
+  <footer class="bg-gray-100 text-center py-6 mt-12 border-t border-gray-200">
+    <p class="text-gray-600 text-sm">Created by Autobots<br />页面内容均由 AI 生成，仅供参考</p>
+  </footer>
+</body>
+</html>

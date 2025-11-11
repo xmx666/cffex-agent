@@ -89,3 +89,44 @@ ol {
 .lottie{
   height: 80px !important;
 }
+
+/* 主题样式 */
+.dark {
+  background-color: #1a1a1a;
+  color: #ffffff;
+}
+
+.dark .bg-white {
+  background-color: #2d2d2d !important;
+}
+
+.dark .border-gray-200 {
+  border-color: #404040 !important;
+}
+
+.dark .text-gray-500 {
+  color: #a0a0a0 !important;
+}
+
+.dark .text-gray-700 {
+  color: #d0d0d0 !important;
+}
+
+/* 侧边栏折叠样式 */
+.sidebar-collapsed .sidebar {
+  width: 0;
+  overflow: hidden;
+}
+
+/* 字号样式 */
+html {
+  font-size: 16px; /* 默认字号 */
+}
+
+html[style*="font-size: 14px"] {
+  font-size: 14px !important;
+}
+
+html[style*="font-size: 18px"] {
+  font-size: 18px !important;
+}

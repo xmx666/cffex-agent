@@ -26,10 +26,12 @@ public class McpToolSyncService {
 
     @Autowired
     private GenieConfig genieConfig;
+    @Autowired
+    private McpServerManagementService mcpServerManagementService;
 
     // 全局工具集合缓存，存储所有活跃的ToolCollection实例
     private final Map<String, ToolCollection> activeToolCollections = new ConcurrentHashMap<>();
-    
+
     // 已知工具缓存，用于检测新工具
     private final Map<String, Set<String>> knownToolsCache = new ConcurrentHashMap<>();
 
@@ -39,7 +41,7 @@ public class McpToolSyncService {
     public void registerToolCollection(String sessionId, ToolCollection toolCollection) {
         activeToolCollections.put(sessionId, toolCollection);
         log.info("注册工具集合到同步服务: {}", sessionId);
-        
+
         // 初始化已知工具缓存
         initializeKnownToolsCache(sessionId, toolCollection);
     }
@@ -78,7 +80,13 @@ public class McpToolSyncService {
         log.info("开始定时同步MCP工具，当前活跃会话数: {}", activeToolCollections.size());
 
         try {
-            String[] mcpServerUrls = genieConfig.getMcpServerUrlArr();
+            // 使用动态MCP服务器配置
+            String[] mcpServerUrls = mcpServerManagementService.getActiveMcpServerUrls();
+            if (mcpServerUrls.length == 0) {
+                // 如果没有动态配置，回退到默认配置
+                mcpServerUrls = genieConfig.getMcpServerUrlArr();
+            }
+
             if (mcpServerUrls == null || mcpServerUrls.length == 0) {
                 log.debug("没有配置MCP服务器，跳过同步");
                 return;

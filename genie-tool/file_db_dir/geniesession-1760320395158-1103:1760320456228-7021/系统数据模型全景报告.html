@@ -1,0 +1,181 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>系统支持的数据模型全景报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.7;
+      color: #333;
+    }
+    .section-title {
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 0.5rem;
+      margin-top: 2rem;
+      margin-bottom: 1.5rem;
+      color: #007bff;
+    }
+    .model-card {
+      border-left: 4px solid #007bff;
+      padding-left: 1rem;
+      margin-bottom: 1.5rem;
+      background-color: #f8f9fa;
+      border-radius: 0 4px 4px 0;
+    }
+    .table-structure {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9rem;
+      background-color: #f1f3f4;
+      padding: 1rem;
+      border-radius: 6px;
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .category-header {
+      background-color: #e9ecef;
+      padding: 0.75rem;
+      border-radius: 4px;
+      margin-top: 2rem;
+      font-weight: 600;
+    }
+    .cite-link {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .cite-link:hover {
+      text-decoration: underline;
+    }
+    footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #dee2e6;
+      text-align: center;
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body class="max-w-5xl mx-auto p-6">
+  <header class="text-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">系统支持的数据模型全景报告</h1>
+    <p class="text-gray-600 mt-2">基于 cffex_ohlcv_1day/hour/minute 与 cffex_tick 数据模型的完整解析</p>
+  </header>
+
+  <section>
+    <h2 class="section-title">1. 视图模型概览</h2>
+    <p class="mb-4">系统提供多时间粒度的行情聚合视图，用于支持不同分析需求。各视图模型均基于原始逐笔数据构建，具备标准化的时间戳与价格/成交量结构。</p>
+
+    <div class="model-card">
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">cffex_ohlcv_1day</h3>
+      <p><strong>时间粒度：</strong>日线</p>
+      <p><strong>描述：</strong>每日开盘价、最高价、最低价、收盘价及成交量的聚合数据，适用于中长期趋势分析与策略回测。</p>
+      <p><strong>格式：</strong>包含字段：timestamp（日期）、open、high、low、close、volume、open_interest</p>
+      <p><strong>备注：</strong>数据按交易日收盘时间（15:00）进行聚合，节假日无数据。</p>
+    </div>
+
+    <div class="model-card">
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">cffex_ohlcv_1hour</h3>
+      <p><strong>时间粒度：</strong>小时线</p>
+      <p><strong>描述：</strong>每小时开盘价、最高价、最低价、收盘价及成交量的聚合数据，适用于日内趋势识别与交易信号生成。</p>
+      <p><strong>格式：</strong>包含字段：timestamp（日期时间）、open、high、low、close、volume、open_interest</p>
+      <p><strong>备注：</strong>交易时段为9:30-11:30与13:00-15:00，非交易时段无数据点。</p>
+    </div>
+
+    <div class="model-card">
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">cffex_ohlcv_1minute</h3>
+      <p><strong>时间粒度：</strong>分钟线</p>
+      <p><strong>描述：</strong>每分钟开盘价、最高价、最低价、收盘价及成交量的聚合数据，适用于高频交易策略与微观市场结构研究。</p>
+      <p><strong>格式：</strong>包含字段：timestamp（日期时间）、open、high、low、close、volume、open_interest</p>
+      <p><strong>备注：</strong>数据按每分钟整点聚合，非交易分钟无记录，数据延迟低于1秒。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">2. 新增数据表模型：cffex_tick</h2>
+    <p class="mb-4">作为系统底层原始数据源，cffex_tick 表存储所有逐笔成交与报价信息，是构建上述聚合视图的唯一数据基础。</p>
+
+    <div class="model-card">
+      <h3 class="text-xl font-semibold text-gray-800 mb-2">cffex_tick 结构说明</h3>
+      <div class="table-structure">
+        timestamp DATETIME<br>
+        symbol VARCHAR(20)<br>
+        price DECIMAL(10,2)<br>
+        volume INT<br>
+        turnover DECIMAL(15,2)<br>
+        bid_price DECIMAL(10,2)<br>
+        bid_volume INT<br>
+        ask_price DECIMAL(10,2)<br>
+        ask_volume INT<br>
+        trade_type ENUM('buy','sell','neutral')<br>
+        sequence_id BIGINT
+      </div>
+      <p class="mt-3"><strong>字段说明：</strong></p>
+      <ul class="list-disc pl-6 mb-4">
+        <li><strong>timestamp：</strong>成交或报价发生的确切时间，精确到毫秒。</li>
+        <li><strong>symbol：</strong>合约代码，如 IF2510、IH2510 等。</li>
+        <li><strong>price：</strong>成交价格，单位为人民币元。</li>
+        <li><strong>volume：</strong>单笔成交数量，单位为手。</li>
+        <li><strong>turnover：</strong>单笔成交金额，等于 price × volume × 合约乘数。</li>
+        <li><strong>bid_price / bid_volume：</strong>买一价与买一量，反映市场买方压力。</li>
+        <li><strong>ask_price / ask_volume：</strong>卖一价与卖一量，反映市场卖方压力。</li>
+        <li><strong>trade_type：</strong>成交方向分类，buy（主动买入）、sell（主动卖出）、neutral（中性盘口）。</li>
+        <li><strong>sequence_id：</strong>全局唯一序列号，用于确保数据顺序与完整性。</li>
+      </ul>
+      <p><strong>备注：</strong>该表为追加写入型表，不支持更新或删除操作，数据量级为每秒数百至数千条，需定期归档。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title category-header">3. 数据模型按用途分类</h2>
+
+    <div class="mb-8">
+      <h3 class="text-2xl font-bold text-gray-700 mb-4">行情数据（Aggregated Market Data）</h3>
+      <p class="mb-3">由 cffex_ohlcv_1day、cffex_ohlcv_1hour、cffex_ohlcv_1minute 三个视图构成，用于宏观与中观层面的市场分析。</p>
+      <ul class="list-disc pl-6 mb-4">
+        <li>数据经过聚合，降低噪声，提升可读性与计算效率。</li>
+        <li>适用于技术指标计算（如MACD、RSI）、趋势判断、组合风险评估。</li>
+        <li>数据更新频率与时间粒度一致（日/小时/分钟），非实时。</li>
+      </ul>
+      <p class="mb-2"><strong>数据来源：</strong>由 cffex_tick 表按时间窗口聚合生成。</p>
+    </div>
+
+    <div>
+      <h3 class="text-2xl font-bold text-gray-700 mb-4">逐笔数据（Tick-by-Tick Data）</h3>
+      <p class="mb-3">由 cffex_tick 表提供，包含每一笔成交与最优盘口的原始记录，是微观市场分析与算法交易的核心。</p>
+      <ul class="list-disc pl-6 mb-4">
+        <li>数据粒度最细，保留完整市场微观结构信息。</li>
+        <li>用于订单流分析、流动性研究、滑点建模、高频策略开发。</li>
+        <li>数据为实时流式写入，延迟极低，需高性能存储与处理系统支撑。</li>
+      </ul>
+      <p class="mb-2"><strong>数据用途：</strong>作为所有聚合视图的唯一原始输入源。</p>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="section-title">4. 总结与数据流关系</h2>
+    <p>系统数据模型采用分层架构：底层为 cffex_tick 逐笔数据表，提供最原始、最完整的市场行为记录；上层为三个聚合视图（1day、1hour、1minute），按需对原始数据进行时间窗口聚合，以满足不同分析场景的效率与精度需求。</p>
+    <p>数据流方向为单向：cffex_tick → cffex_ohlcv_1minute → cffex_ohlcv_1hour → cffex_ohlcv_1day。每一层均依赖下一层的完整性与准确性，因此 cffex_tick 的数据质量直接决定整个系统的分析可靠性。</p>
+    <p>该模型设计兼顾了实时性、存储效率与分析灵活性，是支持量化研究与交易系统运行的核心数据基础设施。</p>
+  </section>
+
+  <section class="mt-12">
+    <h2 class="section-title">参考文献</h2>
+    <ol class="list-decimal pl-6 space-y-2">
+      <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">cffex_ohlcv_1day/hour/minute</a></cite></li>
+      <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">cffex_tick</a></cite></li>
+    </ol>
+  </section>
+
+  <footer>
+    Created by Autobots<br>
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

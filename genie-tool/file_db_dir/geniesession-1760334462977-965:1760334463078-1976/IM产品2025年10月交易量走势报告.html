@@ -1,0 +1,259 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IM产品交易量走势分析报告（2023年1月）</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <style>
+        @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f9fafb;
+        }
+        .chart-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        .chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 8px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 24px;
+        }
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .data-table th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+        .data-table tr:hover {
+            background-color: #f9fafb;
+        }
+        .highlight-box {
+            background-color: #eff6ff;
+            border-left: 4px solid #2563eb;
+            padding: 16px;
+            border-radius: 8px;
+            margin: 24px 0;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 64px;
+            padding: 24px;
+            color: #6b7280;
+            font-size: 14px;
+            border-top: 1px solid #e5e7eb;
+        }
+        .axis-label {
+            font-size: 14px;
+            fill: #374151;
+            font-weight: 500;
+        }
+        .tick-label {
+            font-size: 12px;
+            fill: #6b7280;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <div class="container mx-auto px-6 py-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-8">IM产品交易量走势分析报告（2023年1月）</h1>
+
+        <div class="chart-container">
+            <h2 class="chart-title">IM产品每日总成交量走势</h2>
+            <div class="mb-6">
+                <p class="text-gray-700 leading-relaxed">
+                    根据提供的交易数据，IM产品在2023年1月2日至1月5日期间每日总成交量呈现明显波动。成交量从1月2日的1200手开始上升，1月3日达到峰值1500手，随后在1月4日显著回落至700手，1月5日小幅回升至800手。整体来看，该时段内交易活跃度变化剧烈，可能存在市场情绪波动、消息面影响或策略调整等驱动因素。
+                </p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>交易日期</th>
+                            <th>成交量（手）</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>2023-01-02</td>
+                            <td>1200</td>
+                        </tr>
+                        <tr>
+                            <td>2023-01-03</td>
+                            <td>1500</td>
+                        </tr>
+                        <tr>
+                            <td>2023-01-04</td>
+                            <td>700</td>
+                        </tr>
+                        <tr>
+                            <td>2023-01-05</td>
+                            <td>800</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2 class="chart-title">成交量趋势折线图</h2>
+            <div class="relative" style="height: 400px; width: 100%;">
+                <svg width="100%" height="100%" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet">
+                    <!-- 背景网格 -->
+                    <g stroke="#e5e7eb" stroke-width="1">
+                        <!-- 水平网格线 -->
+                        <line x1="0" y1="40" x2="600" y2="40" />
+                        <line x1="0" y1="120" x2="600" y2="120" />
+                        <line x1="0" y1="200" x2="600" y2="200" />
+                        <line x1="0" y1="280" x2="600" y2="280" />
+                        <line x1="0" y1="360" x2="600" y2="360" />
+                        <!-- 垂直网格线 -->
+                        <line x1="100" y1="40" x2="100" y2="360" />
+                        <line x1="200" y1="40" x2="200" y2="360" />
+                        <line x1="300" y1="40" x2="300" y2="360" />
+                        <line x1="400" y1="40" x2="400" y2="360" />
+                        <line x1="500" y1="40" x2="500" y2="360" />
+                    </g>
+
+                    <!-- 坐标轴 -->
+                    <line x1="50" y1="40" x2="50" y2="360" stroke="#374151" stroke-width="2" />
+                    <line x1="50" y1="360" x2="550" y2="360" stroke="#374151" stroke-width="2" />
+
+                    <!-- Y轴标签 -->
+                    <text x="15" y="200" transform="rotate(-90, 15, 200)" class="axis-label" text-anchor="middle">成交量（手）</text>
+
+                    <!-- X轴标签 -->
+                    <text x="300" y="395" class="axis-label" text-anchor="middle">交易日期</text>
+
+                    <!-- Y轴刻度 -->
+                    <text x="35" y="45" class="tick-label" text-anchor="end">1500</text>
+                    <text x="35" y="125" class="tick-label" text-anchor="end">1200</text>
+                    <text x="35" y="205" class="tick-label" text-anchor="end">900</text>
+                    <text x="35" y="285" class="tick-label" text-anchor="end">600</text>
+                    <text x="35" y="365" class="tick-label" text-anchor="end">300</text>
+
+                    <!-- X轴刻度 -->
+                    <text x="100" y="380" class="tick-label" text-anchor="middle">2023-01-02</text>
+                    <text x="200" y="380" class="tick-label" text-anchor="middle">2023-01-03</text>
+                    <text x="300" y="380" class="tick-label" text-anchor="middle">2023-01-04</text>
+                    <text x="400" y="380" class="tick-label" text-anchor="middle">2023-01-05</text>
+
+                    <!-- 折线图 -->
+                    <polyline 
+                        fill="none" 
+                        stroke="#2563eb" 
+                        stroke-width="3" 
+                        points="
+                            100,120
+                            200,40
+                            300,280
+                            400,260
+                        " 
+                    />
+
+                    <!-- 数据点 -->
+                    <circle cx="100" cy="120" r="5" fill="#2563eb" />
+                    <circle cx="200" cy="40" r="5" fill="#2563eb" />
+                    <circle cx="300" cy="280" r="5" fill="#2563eb" />
+                    <circle cx="400" cy="260" r="5" fill="#2563eb" />
+
+                    <!-- 数据点标签 -->
+                    <text x="100" y="110" text-anchor="middle" class="tick-label" fill="#2563eb">1200</text>
+                    <text x="200" y="30" text-anchor="middle" class="tick-label" fill="#2563eb">1500</text>
+                    <text x="300" y="270" text-anchor="middle" class="tick-label" fill="#2563eb">700</text>
+                    <text x="400" y="250" text-anchor="middle" class="tick-label" fill="#2563eb">800</text>
+                </svg>
+            </div>
+            <div class="mt-4 flex flex-wrap">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #2563eb;"></div>
+                    <span class="text-sm text-gray-700">IM产品日成交量</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">数据来源说明</h3>
+            <p class="text-gray-700">
+                本报告所使用数据来源于两份一致的文件：一份为“将两次获取的IM产品交易数据（主力合约与_代码输出.md”，另一份为“IM产品每日总成交量.csv”。两份文件均包含相同四日交易数据，确认数据一致性。报告中所有分析均基于此四日数据，未引入任何外部或推测性信息。
+            </p>
+        </div>
+
+        <div class="chart-container">
+            <h2 class="chart-title">关键数据摘要</h2>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4">
+                <div class="bg-blue-50 p-6 rounded-lg text-center border border-blue-100">
+                    <div class="text-2xl font-bold text-blue-700">1500</div>
+                    <div class="text-sm text-gray-600">最高成交量</div>
+                    <div class="text-xs text-gray-500 mt-1">2023-01-03</div>
+                </div>
+                <div class="bg-red-50 p-6 rounded-lg text-center border border-red-100">
+                    <div class="text-2xl font-bold text-red-700">700</div>
+                    <div class="text-sm text-gray-600">最低成交量</div>
+                    <div class="text-xs text-gray-500 mt-1">2023-01-04</div>
+                </div>
+                <div class="bg-green-50 p-6 rounded-lg text-center border border-green-100">
+                    <div class="text-2xl font-bold text-green-700">1050</div>
+                    <div class="text-sm text-gray-600">平均成交量</div>
+                    <div class="text-xs text-gray-500 mt-1">四日均值</div>
+                </div>
+                <div class="bg-purple-50 p-6 rounded-lg text-center border border-purple-100">
+                    <div class="text-2xl font-bold text-purple-700">-53.3%</div>
+                    <div class="text-sm text-gray-600">最大跌幅</div>
+                    <div class="text-xs text-gray-500 mt-1">1月3日至4日</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <h2 class="chart-title">交易量波动分析</h2>
+            <p class="text-gray-700 leading-relaxed mb-4">
+                从数据趋势可见，IM产品在2023年1月3日出现单日交易高峰，成交量达1500手，较前一日增长25%。然而次日（1月4日）成交量骤降53.3%至700手，为期间最低点，表明市场在短期内出现显著的多空力量转换或流动性收缩。1月5日成交量回升至800手，显示部分交易者重新入场，但未恢复至前两日水平。整体波动幅度超过114%，反映出该产品在该时段内具有高波动性特征，可能受特定市场事件、合约到期或策略集中交易影响。
+            </p>
+            <p class="text-gray-700 leading-relaxed">
+                由于数据仅覆盖四天，无法判断趋势是否延续，但已呈现明显的“冲高回落”形态。建议后续持续跟踪该产品交易数据，结合市场新闻与持仓变化，深入分析波动成因。
+            </p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 无额外交互需求，仅用于渲染，无需动态脚本
+    </script>
+</body>
+</html>

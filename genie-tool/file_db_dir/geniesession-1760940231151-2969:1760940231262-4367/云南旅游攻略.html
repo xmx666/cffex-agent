@@ -1,0 +1,387 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云南五城秋日深度旅游攻略：天气、景点与美食全指南</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .section-header {
+            border-bottom: 3px solid #e91e63;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #e91e63;
+        }
+        .weather-card {
+            border-left: 4px solid #4caf50;
+            background-color: #f0f7f0;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .attraction-card {
+            border-left: 4px solid #2196f3;
+            background-color: #f0f7ff;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .food-card {
+            border-left: 4px solid #ff9800;
+            background-color: #fff8f0;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .tip-card {
+            border-left: 4px solid #9c27b0;
+            background-color: #f9f0ff;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+        }
+        .city-title {
+            font-weight: 700;
+            color: #1a1a1a;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .badge-weather {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .badge-attraction {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        .badge-food {
+            background-color: #fff3e0;
+            color: #e65100;
+        }
+        .badge-tip {
+            background-color: #f3e5f5;
+            color: #7b1fa2;
+        }
+        .accordion-button {
+            background-color: #f5f5f5;
+            border: none;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            transition: background-color 0.3s ease;
+        }
+        .accordion-button:hover {
+            background-color: #e0e0e0;
+        }
+        .accordion-content {
+            background-color: #fafafa;
+            padding: 1rem;
+            border-radius: 0 0 8px 8px;
+            margin-bottom: 1rem;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+        }
+        .footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+            margin-top: 3rem;
+        }
+        .icon-large {
+            font-size: 1.8rem;
+            margin-right: 0.75rem;
+            color: #555;
+        }
+        .highlight {
+            background-color: #fffde7;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body class="max-w-4xl mx-auto px-4 py-6">
+    <header class="text-center mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">云南五城秋日深度旅游攻略：天气、景点与美食全指南</h1>
+        <p class="text-lg text-gray-600">2025年10月20日更新 · 专为秋季出行设计的实用旅行指南</p>
+    </header>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-bold">天气实况与出行建议</h2>
+    </section>
+
+    <div class="weather-card">
+        <div class="flex items-start">
+            <i class="fas fa-sun icon-large"></i>
+            <div>
+                <h3 class="city-title">昆明</h3>
+                <p class="mb-2">秋日昆明气候温和，阳光充足，日间气温约18-24°C，早晚微凉，空气清新，无雾霾，是“春城”最宜人的时节。</p>
+                <p><strong>出行建议：</strong>建议穿着长袖衬衫、薄外套，无需厚重衣物。紫外线较强，需佩戴太阳镜与涂抹防晒霜。</p>
+                <span class="badge badge-weather">晴朗宜人</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="weather-card">
+        <div class="flex items-start">
+            <i class="fas fa-smog icon-large"></i>
+            <div>
+                <h3 class="city-title">大理</h3>
+                <p class="mb-2">秋季大理早晚温差较大，日间气温约16-22°C，午后偶有轻度雾霾，尤其在洱海周边，能见度略有下降，但不影响游览。</p>
+                <p><strong>出行建议：</strong>建议携带防霾口罩，尤其在洱海骑行或古城漫步时使用。外套需备一件防风薄款，应对早晚凉意。</p>
+                <span class="badge badge-weather">偶有雾霾</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="weather-card">
+        <div class="flex items-start">
+            <i class="fas fa-temperature-high icon-large"></i>
+            <div>
+                <h3 class="city-title">丽江</h3>
+                <p class="mb-2">丽江古城海拔约2400米，秋季日间气温约14-20°C，夜间可降至8°C以下，天气干燥，风力较强，晴朗时紫外线强烈。</p>
+                <p><strong>出行建议：</strong>必须携带保暖外套、围巾、帽子，建议使用润唇膏与保湿护肤品。避免长时间暴露在强光下。</p>
+                <span class="badge badge-weather">温差显著</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="weather-card">
+        <div class="flex items-start">
+            <i class="fas fa-snowflake icon-large"></i>
+            <div>
+                <h3 class="city-title">香格里拉</h3>
+                <p class="mb-2">香格里拉海拔超过3300米，秋季日间气温约8-15°C，夜间可低至0°C以下，空气稀薄，早晚寒冷，偶有霜冻。</p>
+                <p><strong>出行建议：</strong>必须携带羽绒服、抓绒衣、保暖内衣、防风手套。建议提前一周避免剧烈运动，预防高原反应。</p>
+                <span class="badge badge-weather">严寒高反风险</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="weather-card">
+        <div class="flex items-start">
+            <i class="fas fa-umbrella-beach icon-large"></i>
+            <div>
+                <h3 class="city-title">西双版纳</h3>
+                <p class="mb-2">西双版纳属热带气候，秋季仍保持高温高湿，日间气温约24-32°C，偶有阵雨，湿度大，植被繁茂。</p>
+                <p><strong>出行建议：</strong>穿着轻薄透气的棉麻衣物，携带雨具与驱蚊液。防晒指数极高，需使用高倍数防晒霜。</p>
+                <span class="badge badge-weather">湿热多雨</span>
+            </div>
+        </div>
+    </div>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-bold">必游景点推荐</h2>
+    </section>
+
+    <div class="attraction-card">
+        <div class="flex items-start">
+            <i class="fas fa-water icon-large"></i>
+            <div>
+                <h3 class="city-title">昆明 · 滇池</h3>
+                <p class="mb-2">秋季滇池水波不兴，海鸥成群，西山龙门与睡美人山倒映湖面，景色如画。可乘船游湖，或沿海埂大堤骑行，感受高原湖泊的宁静。</p>
+                <span class="badge badge-attraction">观鸥胜地</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="attraction-card">
+        <div class="flex items-start">
+            <i class="fas fa-mountain icon-large"></i>
+            <div>
+                <h3 class="city-title">大理 · 洱海</h3>
+                <p class="mb-2">洱海环湖公路风景绝美，秋季天高云淡，湖水湛蓝。推荐骑行至双廊、喜洲古镇，探访白族民居，感受“风花雪月”的诗意。</p>
+                <span class="badge badge-attraction">环湖骑行</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="attraction-card">
+        <div class="flex items-start">
+            <i class="fas fa-city icon-large"></i>
+            <div>
+                <h3 class="city-title">丽江 · 古城</h3>
+                <p class="mb-2">丽江古城世界文化遗产，青石板路、小桥流水、纳西族木结构建筑保存完好。夜晚灯火阑珊，酒吧街与东巴文化交织，别具风情。</p>
+                <span class="badge badge-attraction">古城夜韵</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="attraction-card">
+        <div class="flex items-start">
+            <i class="fas fa-church icon-large"></i>
+            <div>
+                <h3 class="city-title">香格里拉 · 松赞林寺</h3>
+                <p class="mb-2">被誉为“小布达拉宫”的松赞林寺，是云南最大的藏传佛教寺庙。秋季金顶在阳光下熠熠生辉，经幡飘扬，诵经声回荡山谷，极具宗教震撼力。</p>
+                <span class="badge badge-attraction">藏传圣地</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="attraction-card">
+        <div class="flex items-start">
+            <i class="fas fa-seedling icon-large"></i>
+            <div>
+                <h3 class="city-title">西双版纳 · 热带植物园</h3>
+                <p class="mb-2">中国最大的热带植物研究基地，拥有上万种植物。秋季仍绿意盎然，可观赏望天树、绞杀榕、王莲等奇观，是自然爱好者的天堂。</p>
+                <span class="badge badge-attraction">植物王国</span>
+            </div>
+        </div>
+    </div>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-bold">地道美食推荐</h2>
+    </section>
+
+    <div class="food-card">
+        <div class="flex items-start">
+            <i class="fas fa-pasta icon-large"></i>
+            <div>
+                <h3 class="city-title">昆明 · 过桥米线</h3>
+                <p class="mb-2">汤底用鸡、鸭、猪骨熬制数小时，滚烫上桌，生肉片、蔬菜、米线依次放入，瞬间烫熟。汤清味醇，配料丰富，是云南最具代表性的早餐。</p>
+                <span class="badge badge-food">经典汤品</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="food-card">
+        <div class="flex items-start">
+            <i class="fas fa-utensils icon-large"></i>
+            <div>
+                <h3 class="city-title">昆明 · 汽锅鸡</h3>
+                <p class="mb-2">使用特制汽锅蒸制，蒸汽凝结成汤，鸡肉原汁原味，不加一滴水，汤色清澈，肉质鲜嫩，滋补养生，是滇菜中的珍品。</p>
+                <span class="badge badge-food">养生佳品</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="food-card">
+        <div class="flex items-start">
+            <i class="fas fa-bacon icon-large"></i>
+            <div>
+                <h3 class="city-title">大理 · 腊排骨</h3>
+                <p class="mb-2">选用风干腌制的猪排骨，配以土豆、豆腐、青菜炖煮，咸香浓郁，肉质紧实，是白族人家冬季必备的家常菜，秋季食用暖身开胃。</p>
+                <span class="badge badge-food">咸香入味</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="food-card">
+        <div class="flex items-start">
+            <i class="fas fa-mug-hot icon-large"></i>
+            <div>
+                <h3 class="city-title">香格里拉 · 酥油茶</h3>
+                <p class="mb-2">用砖茶、酥油、盐巴在木桶中反复搅打而成，口感醇厚，咸香微腻，是藏民日常御寒提神的饮品，高海拔地区饮用可缓解疲劳。</p>
+                <span class="badge badge-food">高原能量</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="food-card">
+        <div class="flex items-start">
+            <i class="fas fa-fire icon-large"></i>
+            <div>
+                <h3 class="city-title">西双版纳 · 傣味烧烤</h3>
+                <p class="mb-2">以香茅草、柠檬叶、辣椒、鱼露腌制的鸡肉、鱼肉、五花肉，炭火慢烤，香气扑鼻，搭配酸辣蘸水，风味独特，是热带夜市的灵魂。</p>
+                <span class="badge badge-food">热带风味</span>
+            </div>
+        </div>
+    </div>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-bold">旅行实用贴士</h2>
+    </section>
+
+    <div class="tip-card">
+        <div class="flex items-start">
+            <i class="fas fa-heartbeat icon-large"></i>
+            <div>
+                <h3 class="city-title">高原反应预防</h3>
+                <p class="mb-2">香格里拉、丽江海拔较高，建议抵达后避免剧烈运动，保证充足睡眠，可提前服用红景天或携带氧气瓶。若出现头痛、恶心、呼吸困难，应立即休息并吸氧，必要时下撤至低海拔地区。</p>
+                <span class="badge badge-tip">高反预警</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tip-card">
+        <div class="flex items-start">
+            <i class="fas fa-sun icon-large"></i>
+            <div>
+                <h3 class="city-title">防晒与保湿</h3>
+                <p class="mb-2">云南紫外线强度全国前列，尤其在晴朗天气下，即使阴天也需涂抹SPF50+防晒霜，佩戴帽子与墨镜。香格里拉与丽江空气干燥，建议携带保湿喷雾、润唇膏与身体乳。</p>
+                <span class="badge badge-tip">强光防护</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tip-card">
+        <div class="flex items-start">
+            <i class="fas fa-car icon-large"></i>
+            <div>
+                <h3 class="city-title">交通衔接建议</h3>
+                <p class="mb-2">昆明为交通枢纽，建议从昆明出发，依次前往大理、丽江、香格里拉，最后抵达西双版纳。昆明至大理、丽江有高铁，丽江至香格里拉有大巴，西双版纳需乘飞机或长途汽车。各城间距离较远，建议预留充足时间。</p>
+                <span class="badge badge-tip">路线规划</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tip-card">
+        <div class="flex items-start">
+            <i class="fas fa-calendar-alt icon-large"></i>
+            <div>
+                <h3 class="city-title">最佳旅行时长</h3>
+                <p class="mb-2">建议安排7-10天行程：昆明1天（抵达休整）、大理2天、丽江2天、香格里拉2天、西双版纳2天。若时间紧张，可舍弃香格里拉或西双版纳，优先保证昆明、大理、丽江核心体验。</p>
+                <span class="badge badge-tip">行程优化</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="tip-card">
+        <div class="flex items-start">
+            <i class="fas fa-hand-holding-heart icon-large"></i>
+            <div>
+                <h3 class="city-title">尊重文化习俗</h3>
+                <p class="mb-2">在香格里拉藏区，请勿随意触摸佛像、经幡，进入寺庙需脱帽、不穿短裤短裙；在白族地区，避免踩踏门槛；在傣族村寨，不随意拍摄僧侣与村民，拍照前请征得同意。</p>
+                <span class="badge badge-tip">文化尊重</span>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>

@@ -28,6 +28,7 @@ import com.jd.genie.service.AgentHandlerService;
 import com.jd.genie.service.IGptProcessService;
 import com.jd.genie.service.McpToolSyncService;
 import com.jd.genie.service.impl.AgentHandlerFactory;
+import com.jd.genie.service.McpServerManagementService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,8 @@ public class GenieController {
     private IGptProcessService gptProcessService;
     @Autowired
     private McpToolSyncService mcpToolSyncService;
+    @Autowired
+    private McpServerManagementService mcpServerManagementService;
 
     /**
      * 开启SSE心跳
@@ -221,11 +224,12 @@ public class GenieController {
                 htmlTool.setAgentContext(agentContext);
                 toolCollection.addTool(htmlTool);
             }
-            if (agentToolList.contains("search")) {
-                DeepSearchTool deepSearchTool = new DeepSearchTool();
-                deepSearchTool.setAgentContext(agentContext);
-                toolCollection.addTool(deepSearchTool);
-            }
+            // 内网环境禁用deep_search工具，避免网络连接错误
+            // if (agentToolList.contains("search")) {
+            //     DeepSearchTool deepSearchTool = new DeepSearchTool();
+            //     deepSearchTool.setAgentContext(agentContext);
+            //     toolCollection.addTool(deepSearchTool);
+            // }
         }
 
         // 自定义Agent工具
@@ -276,7 +280,15 @@ public class GenieController {
         try {
             McpTool mcpTool = new McpTool();
             mcpTool.setAgentContext(agentContext);
-            for (String mcpServer : genieConfig.getMcpServerUrlArr()) {
+
+            // 使用动态MCP服务器配置
+            String[] activeMcpServerUrls = mcpServerManagementService.getActiveMcpServerUrls();
+            if (activeMcpServerUrls.length == 0) {
+                // 如果没有动态配置，回退到默认配置
+                activeMcpServerUrls = genieConfig.getMcpServerUrlArr();
+            }
+
+            for (String mcpServer : activeMcpServerUrls) {
                 String listToolResult = mcpTool.listTool(mcpServer);
                 if (listToolResult.isEmpty()) {
                     log.error("{} mcp server {} invalid", agentContext.getRequestId(), mcpServer);

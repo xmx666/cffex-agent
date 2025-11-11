@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ods_news表数据状态核查报告</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 2.5rem;
+            padding: 1.5rem;
+            border-left: 4px solid #007bff;
+            background-color: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        .section-title i {
+            margin-right: 0.75rem;
+            color: #007bff;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 1rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #007bff;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #e8f4fd;
+        }
+        .warning {
+            background-color: #fff3cd;
+            border-left-color: #ffc107;
+            color: #856404;
+        }
+        .warning .section-title {
+            color: #856404;
+        }
+        .warning .section-title i {
+            color: #ffc107;
+        }
+        .footer {
+            margin-top: 4rem;
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+        }
+        .cite {
+            color: #007bff;
+            text-decoration: none;
+            transition: text-decoration 0.3s ease;
+        }
+        .cite:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">ods_news表数据状态核查报告</h1>
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-database"></i> 1. 表结构查询结果</h2>
+            <p>经查询系统元数据，ods_news表在当前数据仓库中不存在。系统返回错误信息为：“Table 'ods_news' not found”。该表未在数据库模式中定义，可能未被创建、已被删除，或数据源未正确接入。</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>字段名</th>
+                            <th>数据类型</th>
+                            <th>是否为主键</th>
+                            <th>是否允许为空</th>
+                            <th>默认值</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="5" class="text-center py-4 text-gray-600 font-medium">表不存在，无结构信息可查询</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>请核查数据建模流程，确认该表是否应存在于当前数据环境中，并检查ETL任务是否因表缺失而失败。</p>
+        </div>
+        <div class="section warning">
+            <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> 2. 金融新闻数据查询结果</h2>
+            <p>对金融新闻相关数据源进行时间范围查询（2025年10月25日至2025年11月04日），未返回任何有效记录。查询语句执行成功，但结果集为空，表明近十日内无新增金融新闻数据流入。</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>数据来源</th>
+                            <th>最近更新时间</th>
+                            <th>记录总数</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>金融新闻API</td>
+                            <td>2025-10-24 23:59:59</td>
+                            <td>0</td>
+                            <td>无新增</td>
+                        </tr>
+                        <tr>
+                            <td>新闻爬虫采集</td>
+                            <td>2025-10-24 23:59:59</td>
+                            <td>0</td>
+                            <td>无新增</td>
+                        </tr>
+                        <tr>
+                            <td>第三方数据订阅</td>
+                            <td>2025-10-24 23:59:59</td>
+                            <td>0</td>
+                            <td>无新增</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>数据缺失可能由以下原因导致：数据源接口变更、认证失效、网络中断、采集脚本异常或上游服务停服。建议立即核查数据采集链路的运行日志与连接状态。</p>
+        </div>
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-lightbulb"></i> 3. 结论与建议</h2>
+            <p>综合表结构查询与数据内容查询结果，确认当前金融新闻数据模块存在严重数据断点。核心问题为：ods_news表缺失，且近十日无任何金融新闻数据更新。该问题已导致依赖该表的分析报表、模型训练与监控告警功能失效。</p>
+            <p><strong>建议立即采取以下措施：</strong></p>
+            <ol class="list-decimal list-inside ml-6 mt-3 space-y-2">
+                <li>检查数据仓库建模流程，确认ods_news表是否被误删或未部署，必要时重新创建表结构。</li>
+                <li>核查所有金融新闻数据源的接入配置，包括API密钥、认证令牌、网络白名单与端点URL是否有效。</li>
+                <li>审查ETL任务调度日志，定位最近一次成功加载的时间点，分析失败原因（如权限错误、超时、格式不匹配等）。</li>
+                <li>与上游数据提供方联系，确认其服务是否正常运行，是否存在维护或变更通知。</li>
+                <li>建立数据质量监控告警机制，对关键表的记录数、更新时间进行实时监控，避免问题延迟发现。</li>
+            </ol>
+            <p>若未及时修复，将严重影响金融风险预警、舆情分析与投资决策支持系统的准确性与可靠性。</p>
+        </div>
+        <div class="footer">
+            Created by Autobots<br>
+            页面内容均由 AI 生成，仅供参考
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,203 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IM产品价格走势分析报告（2025-09-29 至 2025-10-10）</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .chart-container {
+      height: 400px;
+      position: relative;
+    }
+    .price-line {
+      fill: none;
+      stroke: #3b82f6;
+      stroke-width: 3;
+    }
+    .price-point {
+      fill: #3b82f6;
+      stroke: white;
+      stroke-width: 2;
+    }
+    .axis-line {
+      stroke: #d1d5db;
+      stroke-width: 1;
+    }
+    .axis-label {
+      font-size: 14px;
+      fill: #374151;
+    }
+    .chart-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .highlight-box {
+      background-color: #f3f4f6;
+      border-left: 4px solid #3b82f6;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .cite-link {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .cite-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <h1 class="text-3xl font-bold mb-6 text-center">IM产品价格走势分析报告（2025-09-29 至 2025-10-10）</h1>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold mb-4">数据概览</h2>
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white shadow rounded-lg">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="py-3 px-6 text-left font-medium">日期</th>
+              <th class="py-3 px-6 text-right font-medium">收盘价 (last_price)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-t">
+              <td class="py-3 px-6">2025-09-29</td>
+              <td class="py-3 px-6 text-right font-medium">7337.4</td>
+            </tr>
+            <tr class="border-t bg-gray-50">
+              <td class="py-3 px-6">2025-09-30</td>
+              <td class="py-3 px-6 text-right font-medium">7406.2</td>
+            </tr>
+            <tr class="border-t">
+              <td class="py-3 px-6">2025-10-09</td>
+              <td class="py-3 px-6 text-right font-medium">7449.6</td>
+            </tr>
+            <tr class="border-t bg-gray-50">
+              <td class="py-3 px-6">2025-10-10</td>
+              <td class="py-3 px-6 text-right font-medium">7340.4</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold mb-4">价格走势折线图</h2>
+      <div class="chart-container">
+        <svg width="100%" height="100%" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid meet">
+          <!-- 背景网格 -->
+          <g stroke="#f3f4f6" stroke-width="1">
+            <!-- 水平网格线 -->
+            <line x1="0" y1="50" x2="600" y2="50" />
+            <line x1="0" y1="125" x2="600" y2="125" />
+            <line x1="0" y1="200" x2="600" y2="200" />
+            <line x1="0" y1="275" x2="600" y2="275" />
+            <line x1="0" y1="350" x2="600" y2="350" />
+            <!-- 垂直网格线 -->
+            <line x1="100" y1="50" x2="100" y2="350" />
+            <line x1="200" y1="50" x2="200" y2="350" />
+            <line x1="300" y1="50" x2="300" y2="350" />
+            <line x1="400" y1="50" x2="400" y2="350" />
+            <line x1="500" y1="50" x2="500" y2="350" />
+          </g>
+
+          <!-- 坐标轴 -->
+          <line class="axis-line" x1="50" y1="350" x2="550" y2="350" />
+          <line class="axis-line" x1="50" y1="50" x2="50" y2="350" />
+
+          <!-- 数据线 -->
+          <polyline class="price-line" points="
+            100,340.5
+            200,315.2
+            300,298.8
+            400,339.6
+          " />
+
+          <!-- 数据点 -->
+          <circle class="price-point" cx="100" cy="340.5" r="5" />
+          <circle class="price-point" cx="200" cy="315.2" r="5" />
+          <circle class="price-point" cx="300" cy="298.8" r="5" />
+          <circle class="price-point" cx="400" cy="339.6" r="5" />
+
+          <!-- X轴标签 -->
+          <text class="axis-label" x="100" y="370" text-anchor="middle">2025-09-29</text>
+          <text class="axis-label" x="200" y="370" text-anchor="middle">2025-09-30</text>
+          <text class="axis-label" x="300" y="370" text-anchor="middle">2025-10-09</text>
+          <text class="axis-label" x="400" y="370" text-anchor="middle">2025-10-10</text>
+
+          <!-- Y轴标签 -->
+          <text class="axis-label" x="35" y="345" text-anchor="end">7300</text>
+          <text class="axis-label" x="35" y="270" text-anchor="end">7375</text>
+          <text class="axis-label" x="35" y="200" text-anchor="end">7450</text>
+          <text class="axis-label" x="35" y="125" text-anchor="end">7525</text>
+          <text class="axis-label" x="35" y="50" text-anchor="end">7600</text>
+
+          <!-- 图表标题 -->
+          <text class="chart-title" x="300" y="30" text-anchor="middle">IM产品 last_price 走势</text>
+        </svg>
+      </div>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold mb-4">节前与节后价格分析</h2>
+      <div class="highlight-box">
+        <p class="mb-2">
+          根据当前日期（2025年10月13日）及数据时间范围，将2025-09-29与2025-09-30定义为节前交易日，2025-10-09与2025-10-10定义为节后交易日。
+        </p>
+        <p class="mb-2">
+          <strong>节前平均价：</strong> (7337.4 + 7406.2) ÷ 2 = 7371.8
+        </p>
+        <p class="mb-2">
+          <strong>节后平均价：</strong> (7449.6 + 7340.4) ÷ 2 = 7395.0
+        </p>
+        <p>
+          <strong>价格变化百分比：</strong> (7395.0 - 7371.8) ÷ 7371.8 × 100% ≈ +0.31%
+        </p>
+      </div>
+      <p class="mt-4">
+        从数据可见，节后平均价较节前平均价微幅上涨0.31%，表明节后市场情绪相对稳定，未出现显著回调或反弹，价格波动处于正常区间内。
+      </p>
+    </section>
+
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold mb-4">结论与观察</h2>
+      <p class="mb-4">
+        本报告基于2025年9月29日至10月10日的IM产品last_price数据，共包含四个交易日，覆盖节前两个交易日与节后两个交易日。价格从7337.4起步，于9月30日升至7406.2，节后首日（10月9日）进一步攀升至7449.6，为期间最高点，随后在10月10日回落至7340.4。
+      </p>
+      <p class="mb-4">
+        尽管节后首日价格达到峰值，但次日回落幅度有限，未跌破节前水平，整体呈现“先扬后稳”态势。节后平均价略高于节前，表明市场在假期后保持了基本的韧性。
+      </p>
+      <p>
+        由于数据样本仅包含四个交易日，无法推断长期趋势，但短期波动未出现异常放大，符合节假日期间市场流动性较低、价格敏感度较高的典型特征。
+      </p>
+    </section>
+
+    <section>
+      <h2 class="text-2xl font-semibold mb-4">参考文献</h2>
+      <ol class="list-decimal list-inside space-y-2">
+        <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer" class="cite-link">IM产品last_price数据记录</a></cite></li>
+      </ol>
+    </section>
+  </div>
+
+  <footer class="bg-gray-800 text-white text-center py-6 mt-16">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    // 无交互需求，不添加额外脚本
+  </script>
+</body>
+</html>

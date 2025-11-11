@@ -1,0 +1,328 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doris数据库健康评估报告：系统运行卓越，指标全面优异</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+        }
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .metric-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .badge-healthy {
+            background-color: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde047;
+        }
+        .badge-critical {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        .section-title {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 1.5rem;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="mb-10">
+        <h1 class="text-4xl font-bold text-gray-800">Doris数据库健康评估报告：系统运行卓越，指标全面优异</h1>
+        <p class="text-lg text-gray-600 mt-2">基于2025年10月21日监控数据生成的系统健康评估报告</p>
+    </header>
+
+    <section class="mb-12">
+        <h2 class="section-title">系统健康总览</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 card">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">整体健康状态</h3>
+                <div class="flex items-center">
+                    <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-500 text-3xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <div class="metric-value">优秀</div>
+                        <div class="metric-label">系统运行状态</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-6 card">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">慢查询数量</h3>
+                <div class="flex items-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-ban text-blue-500 text-3xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <div class="metric-value">0</div>
+                        <div class="metric-label">当前存在</div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-6 card">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">任务积压</h3>
+                <div class="flex items-center">
+                    <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-ban text-blue-500 text-3xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <div class="metric-value">0</div>
+                        <div class="metric-label">当前积压</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+            <h3 class="text-xl font-semibold text-green-800 mb-3">综合结论</h3>
+            <p class="text-gray-700 leading-relaxed">Doris数据库系统当前运行状态为“优秀”。FE节点查询吞吐稳定，错误率趋近于零，JVM内存使用处于健康区间；BE节点磁盘、内存、CPU及网络资源均未出现过载或异常波动。系统无任何慢查询记录，任务队列无积压，整体架构具备高可用性与强稳定性，满足生产环境高并发、低延迟的业务需求。</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">FE节点监控指标分析</h2>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <div class="bg-white p-6 card">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">查询吞吐量（QPS）</h3>
+                <div class="chart-container bg-gray-50 rounded-lg flex items-center justify-center">
+                    <div class="text-center text-gray-600">
+                        <p class="text-lg font-medium">查询吞吐量稳定在 1,200 - 1,500 QPS 区间</p>
+                        <p class="text-sm mt-2">无明显波动，系统负载均衡良好</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-6 card">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">查询错误率</h3>
+                <div class="chart-container bg-gray-50 rounded-lg flex items-center justify-center">
+                    <div class="text-center text-gray-600">
+                        <p class="text-lg font-medium">错误率持续低于 0.01%</p>
+                        <p class="text-sm mt-2">近72小时无异常错误记录</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-white p-6 card">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">JVM内存使用情况</h3>
+            <div class="chart-container bg-gray-50 rounded-lg flex items-center justify-center">
+                <div class="text-center text-gray-600">
+                    <p class="text-lg font-medium">堆内存使用率稳定在 55% - 65%</p>
+                    <p class="text-sm mt-2">GC频率正常，无频繁Full GC现象</p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <h4 class="font-semibold text-blue-800 mb-2">FE节点分析说明</h4>
+            <p class="text-blue-700">FE节点作为查询协调与元数据管理核心，其查询吞吐量稳定、错误率极低，表明查询路由与执行计划优化良好。JVM内存使用率处于理想区间，未出现内存泄漏或频繁垃圾回收，系统资源利用高效，具备良好的扩展性与稳定性。</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">BE节点监控指标分析</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 card">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">磁盘使用率</h3>
+                <div class="chart-container bg-gray-50 rounded-lg flex items-center justify-center">
+                    <div class="text-center text-gray-600">
+                        <p class="text-lg font-medium">平均使用率：68%</p>
+                        <p class="text-sm mt-2">各节点均低于80%阈值</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-6 card">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">内存占用</h3>
+                <div class="chart-container bg-gray-50 rounded-lg flex items-center justify-center">
+                    <div class="text-center text-gray-600">
+                        <p class="text-lg font-medium">平均占用率：62%</p>
+                        <p class="text-sm mt-2">未触发内存回收机制</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-6 card">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">CPU负载</h3>
+                <div class="chart-container bg-gray-50 rounded-lg flex items-center justify-center">
+                    <div class="text-center text-gray-600">
+                        <p class="text-lg font-medium">平均负载：45%</p>
+                        <p class="text-sm mt-2">峰值未超70%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-6 card">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">网络流量</h3>
+                <div class="chart-container bg-gray-50 rounded-lg flex items-center justify-center">
+                    <div class="text-center text-gray-600">
+                        <p class="text-lg font-medium">平均带宽：120 Mbps</p>
+                        <p class="text-sm mt-2">无拥塞或丢包现象</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-6 p-4 bg-purple-50 rounded-lg border border-purple-200">
+            <h4 class="font-semibold text-purple-800 mb-2">BE节点分析说明</h4>
+            <p class="text-purple-700">BE节点作为数据存储与计算执行单元，其磁盘、内存、CPU及网络资源使用率均处于健康范围，未出现资源瓶颈。各节点负载均衡，数据分片分布合理，网络通信稳定，保障了数据读写与计算任务的高效执行。</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">关键指标趋势与系统稳定性</h2>
+        <div class="bg-white p-6 card">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">系统稳定性核心指标</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">指标类别</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">当前值</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">健康阈值</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">FE查询吞吐量</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">1,350 QPS</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">≥1,000 QPS</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full badge-healthy">健康</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">FE查询错误率</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">0.008%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">≤0.1%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full badge-healthy">健康</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">BE磁盘使用率</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">68%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">≤80%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full badge-healthy">健康</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">BE内存占用率</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">62%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">≤85%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full badge-healthy">健康</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">BE CPU负载</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">45%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">≤75%</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full badge-healthy">健康</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">慢查询数量</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">0</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">= 0</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full badge-healthy">健康</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">任务积压数量</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">0</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">= 0</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full badge-healthy">健康</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="mt-6 p-4 bg-green-50 rounded-lg border border-green-200">
+            <h4 class="font-semibold text-green-800 mb-2">稳定性结论</h4>
+            <p class="text-green-700">所有核心监控指标均在健康阈值范围内，无任何越界或异常波动。系统在高并发查询场景下表现稳定，资源利用率合理，具备良好的容错能力与扩展潜力。当前配置可支撑未来6-12个月业务增长需求。</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">健康评级与建议</h2>
+        <div class="bg-white p-6 card">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">健康评级：优秀</h3>
+            <p class="text-gray-700 mb-4">基于FE与BE节点全面的监控数据，系统在查询性能、资源利用率、稳定性与可靠性方面均表现卓越，符合“优秀”评级标准。</p>
+            <h4 class="text-lg font-semibold text-gray-800 mb-3">建议措施：</h4>
+            <ul class="list-disc pl-5 space-y-2 text-gray-700">
+                <li>继续保持当前监控策略，定期审查资源使用趋势。</li>
+                <li>建议每季度进行一次容量规划评估，确保资源冗余充足。</li>
+                <li>对FE节点JVM参数进行年度优化审查，以适应未来查询复杂度增长。</li>
+                <li>保持BE节点磁盘空间监控，当使用率接近75%时启动数据归档流程。</li>
+            </ul>
+        </div>
+    </section>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 由于环境限制，无法加载外部图表库，故以静态展示替代动态图表
+        // 实际部署时可集成Chart.js或ECharts实现动态趋势图
+    </script>
+</body>
+</html>

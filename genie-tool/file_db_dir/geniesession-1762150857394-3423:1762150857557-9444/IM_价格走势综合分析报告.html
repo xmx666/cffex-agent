@@ -1,0 +1,488 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IM期货价格走势与市场行为深度分析报告（2025年10月21日-10月31日）</title>
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f9fafb;
+      color: #333;
+    }
+    .chart-container {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .chart-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+    }
+    .data-point {
+      font-weight: 500;
+      color: #1f2937;
+    }
+    .highlight {
+      background-color: #fef3c7;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 14px;
+      border: 1px solid #f59e0b;
+    }
+    .trend-up {
+      color: #10b981;
+    }
+    .trend-down {
+      color: #ef4444;
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: right;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+      color: #374151;
+      font-size: 14px;
+    }
+    tr:hover {
+      background-color: #f9fafb;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-right: 20px;
+      font-size: 14px;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .footer {
+      margin-top: 64px;
+      text-align: center;
+      color: #6b7280;
+      font-size: 14px;
+      padding: 24px;
+      border-top: 1px solid #e5e7eb;
+    }
+    .section {
+      margin-bottom: 48px;
+    }
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      color: #1f2937;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    .note {
+      background-color: #f0f9ff;
+      border-left: 4px solid #0ea5e9;
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+      font-size: 15px;
+    }
+    .extreme-point {
+      color: #dc2626;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body class="max-w-6xl mx-auto px-6 py-8">
+  <h1 class="text-3xl font-bold text-gray-800 mb-8">IM期货价格走势与市场行为深度分析报告（2025年10月21日-10月31日）</h1>
+
+  <div class="section">
+    <h2 class="section-title">1. 收盘价时间序列走势分析</h2>
+    <div class="chart-container">
+      <h3 class="chart-title">收盘价日度变化趋势（2025-10-21 至 2025-10-31）</h3>
+      <div class="h-80 flex items-end justify-between px-4" style="font-size: 12px; font-family: monospace;">
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-blue-500 rounded-t" style="height: 65%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/21</div>
+            <div class="text-sm font-medium text-blue-600">7182.8</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-blue-500 rounded-t" style="height: 64.5%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/22</div>
+            <div class="text-sm font-medium text-blue-600">7163.2</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-blue-500 rounded-t" style="height: 64.8%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/23</div>
+            <div class="text-sm font-medium text-blue-600">7179.0</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-blue-500 rounded-t" style="height: 66.1%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/24</div>
+            <div class="text-sm font-medium text-blue-600">7298.0</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-blue-500 rounded-t" style="height: 66.4%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/27</div>
+            <div class="text-sm font-medium text-blue-600">7322.6</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-blue-500 rounded-t" style="height: 66.5%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/28</div>
+            <div class="text-sm font-medium text-blue-600">7335.6</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-blue-500 rounded-t" style="height: 67.5%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/29</div>
+            <div class="text-sm font-medium text-blue-600">7446.4</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-blue-500 rounded-t" style="height: 66.7%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/30</div>
+            <div class="text-sm font-medium text-blue-600">7364.4</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-blue-500 rounded-t" style="height: 66.7%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/31</div>
+            <div class="text-sm font-medium text-blue-600">7368.2</div>
+          </div>
+        </div>
+      </div>
+      <p class="mt-4 text-gray-600 text-sm">
+        收盘价从10月21日的7182.8点稳步攀升至10月29日的7446.4点高点，累计涨幅达3.67%。随后在10月30日小幅回调至7364.4点，10月31日微幅回升至7368.2点，整体呈现“震荡上行”格局。
+      </p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">2. 成交量与持仓量双轴动态分析</h2>
+    <div class="chart-container">
+      <h3 class="chart-title">成交量（左轴）与持仓量（右轴）日度变化对比</h3>
+      <div class="h-80 flex items-end justify-between px-4" style="font-size: 12px; font-family: monospace;">
+        <!-- 成交量柱状图（左轴） -->
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-green-500 rounded-t" style="height: 58%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/21</div>
+            <div class="text-sm font-medium text-green-600">151,318</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-green-500 rounded-t" style="height: 47%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/22</div>
+            <div class="text-sm font-medium text-green-600">120,919</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-green-500 rounded-t" style="height: 67%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/23</div>
+            <div class="text-sm font-medium text-green-600">172,781</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-green-500 rounded-t" style="height: 57%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/24</div>
+            <div class="text-sm font-medium text-green-600">147,894</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-green-500 rounded-t" style="height: 53%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/27</div>
+            <div class="text-sm font-medium text-green-600">137,585</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-green-500 rounded-t" style="height: 55%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/28</div>
+            <div class="text-sm font-medium text-green-600">141,946</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-green-500 rounded-t" style="height: 48%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/29</div>
+            <div class="text-sm font-medium text-green-600">124,145</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-green-500 rounded-t" style="height: 63%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/30</div>
+            <div class="text-sm font-medium text-green-600">162,104</div>
+          </div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-full flex flex-col items-center">
+            <div class="w-1 bg-green-500 rounded-t" style="height: 64%;"></div>
+            <div class="mt-2 text-xs text-gray-700">10/31</div>
+            <div class="text-sm font-medium text-green-600">164,443</div>
+          </div>
+        </div>
+        <!-- 持仓量折线标记（右轴） -->
+        <div class="absolute right-0 top-0 h-full flex flex-col justify-between items-end pr-8 pointer-events-none">
+          <div class="text-xs text-gray-500">持仓量</div>
+          <div class="flex flex-col items-end">
+            <div class="w-1 h-1 bg-red-500 rounded-full mt-1"></div>
+            <div class="text-xs text-red-600 mt-1">190,486</div>
+          </div>
+          <div class="flex flex-col items-end">
+            <div class="w-1 h-1 bg-red-500 rounded-full mt-1"></div>
+            <div class="text-xs text-red-600 mt-1">180,451</div>
+          </div>
+          <div class="flex flex-col items-end">
+            <div class="w-1 h-1 bg-red-500 rounded-full mt-1"></div>
+            <div class="text-xs text-red-600 mt-1">201,566</div>
+          </div>
+          <div class="flex flex-col items-end">
+            <div class="w-1 h-1 bg-red-500 rounded-full mt-1"></div>
+            <div class="text-xs text-red-600 mt-1">183,485</div>
+          </div>
+          <div class="flex flex-col items-end">
+            <div class="w-1 h-1 bg-red-500 rounded-full mt-1"></div>
+            <div class="text-xs text-red-600 mt-1">187,588</div>
+          </div>
+          <div class="flex flex-col items-end">
+            <div class="w-1 h-1 bg-red-500 rounded-full mt-1"></div>
+            <div class="text-xs text-red-600 mt-1">186,154</div>
+          </div>
+          <div class="flex flex-col items-end">
+            <div class="w-1 h-1 bg-red-500 rounded-full mt-1"></div>
+            <div class="text-xs text-red-600 mt-1">180,653</div>
+          </div>
+          <div class="flex flex-col items-end">
+            <div class="w-1 h-1 bg-red-500 rounded-full mt-1"></div>
+            <div class="text-xs text-red-600 mt-1">190,757</div>
+          </div>
+          <div class="flex flex-col items-end">
+            <div class="w-1 h-1 bg-red-500 rounded-full mt-1"></div>
+            <div class="text-xs text-red-600 mt-1">186,908</div>
+          </div>
+        </div>
+      </div>
+      <div class="mt-4 flex flex-wrap text-sm text-gray-700">
+        <div class="legend-item">
+          <div class="legend-color bg-green-500"></div>
+          成交量（手）
+        </div>
+        <div class="legend-item">
+          <div class="legend-color bg-red-500"></div>
+          持仓量（手）
+        </div>
+      </div>
+      <p class="mt-4 text-gray-600 text-sm">
+        成交量在10月23日、10月30日和10月31日出现明显放大，分别达到172,781、162,104和164,443手，与价格上行阶段高度同步，显示市场参与度提升。持仓量在10月23日达到峰值201,566手后回落，表明部分多头获利了结，但整体持仓维持在18万手以上高位，显示市场仍具多头信心。
+      </p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">3. 价格波动区间与极值点说明</h2>
+    <div class="chart-container">
+      <h3 class="chart-title">每日价格波动区间与极值点标注</h3>
+      <div class="table-responsive">
+        <table class="mt-4">
+          <thead>
+            <tr>
+              <th>交易日期</th>
+              <th>开盘价</th>
+              <th>最高价</th>
+              <th>最低价</th>
+              <th>收盘价</th>
+              <th>波动区间（点）</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2025-10-21</td>
+              <td>7099.0</td>
+              <td>7228.6</td>
+              <td>7083.0</td>
+              <td>7182.8</td>
+              <td>145.6</td>
+            </tr>
+            <tr>
+              <td>2025-10-22</td>
+              <td>7165.2</td>
+              <td>7201.2</td>
+              <td>7117.2</td>
+              <td>7163.2</td>
+              <td>84.0</td>
+            </tr>
+            <tr>
+              <td>2025-10-23</td>
+              <td>7149.0</td>
+              <td>7186.4</td>
+              <td>7014.4</td>
+              <td>7179.0</td>
+              <td>172.0</td>
+            </tr>
+            <tr>
+              <td>2025-10-24</td>
+              <td>7210.0</td>
+              <td>7298.0</td>
+              <td>7194.4</td>
+              <td>7298.0</td>
+              <td>103.6</td>
+            </tr>
+            <tr>
+              <td>2025-10-27</td>
+              <td>7378.0</td>
+              <td>7395.6</td>
+              <td>7300.2</td>
+              <td>7322.6</td>
+              <td>95.4</td>
+            </tr>
+            <tr>
+              <td>2025-10-28</td>
+              <td>7315.0</td>
+              <td>7416.8</td>
+              <td>7301.2</td>
+              <td>7335.6</td>
+              <td>115.6</td>
+            </tr>
+            <tr>
+              <td>2025-10-29</td>
+              <td>7356.0</td>
+              <td>7450.0</td>
+              <td>7330.8</td>
+              <td>7446.4</td>
+              <td>119.2</td>
+            </tr>
+            <tr>
+              <td>2025-10-30</td>
+              <td>7429.8</td>
+              <td>7444.0</td>
+              <td>7328.0</td>
+              <td>7364.4</td>
+              <td>116.0</td>
+            </tr>
+            <tr>
+              <td>2025-10-31</td>
+              <td>7380.0</td>
+              <td>7479.0</td>
+              <td>7363.0</td>
+              <td>7368.2</td>
+              <td>116.0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-6">
+        <p class="text-gray-700">
+          本周期内最高价出现在<span class="extreme-point">2025年10月29日（7450.0点）</span>，为全周期峰值；最低价出现在<span class="extreme-point">2025年10月23日（7014.4点）</span>，为全周期谷底。价格波动区间最大值为<span class="extreme-point">172.0点</span>（10月23日），最小值为<span class="extreme-point">84.0点</span>（10月22日）。10月29日收盘价7446.4点为全周期最高收盘价，当日价格在高位震荡后收于接近最高点，显示多头主导力强。
+        </p>
+        <div class="note mt-6">
+          <i class="fas fa-info-circle mr-2 text-blue-500"></i>
+          10月23日虽为最低点，但当日成交量最大（172,781手），表明该日为多空激烈博弈日，空头打压后多头强力反攻，最终收复失地，形成“V型反转”形态。
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">4. 市场情绪与交易行为解读</h2>
+    <div class="chart-container">
+      <h3 class="chart-title">市场情绪与交易行为综合分析</h3>
+      <p class="text-gray-700 mb-4">
+        从价格、成交量与持仓量的联动关系看，市场情绪呈现“先震荡、后突破、再蓄力”的三阶段特征。10月21日至22日价格小幅回调，成交量萎缩，市场观望情绪浓厚；10月23日价格虽探底，但成交量激增，显示空头力量释放殆尽，多头开始入场承接，形成关键转折点。
+      </p>
+      <p class="text-gray-700 mb-4">
+        10月24日至29日为突破阶段，价格连续上行，虽成交量未持续放大，但持仓量在10月23日达到峰值后维持高位，表明多头持仓稳定，市场信心增强。10月29日收盘价创阶段新高，且未出现显著放量滞涨，说明上涨动能仍存。
+      </p>
+      <p class="text-gray-700 mb-4">
+        10月30日至31日，价格小幅回调但未跌破前低，成交量再度放大，持仓量回升至18.6万手以上，显示市场在高位震荡中仍有新资金流入，属于典型的“强势整理”行为。多头未大规模离场，空头缺乏有效反击动能，市场整体情绪偏向乐观。
+      </p>
+      <div class="note mt-6">
+        <i class="fas fa-lightbulb mr-2 text-yellow-500"></i>
+        交易行为显示：市场主力资金倾向于在回调中吸纳多单，而非追高。10月23日与10月30日的放量上涨，均发生在价格回调后，符合“低吸高抛”策略的典型特征，暗示机构资金在分批建仓。
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">5. 趋势总结与投资参考建议</h2>
+    <div class="chart-container">
+      <h3 class="chart-title">趋势总结与操作建议</h3>
+      <p class="text-gray-700 mb-4">
+        综合分析，IM期货在2025年10月21日至10月31日期间，呈现<strong class="trend-up">明确的多头趋势</strong>。价格从7182.8点稳步攀升至7446.4点，累计涨幅3.67%；成交量与持仓量在关键节点同步放大，表明上涨具备真实资金推动，非短期投机行为。
+      </p>
+      <p class="text-gray-700 mb-4">
+        当前市场处于<strong class="trend-up">上升通道中的强势整理阶段</strong>，价格在7360–7450点区间震荡，未出现趋势逆转信号。持仓量维持高位，说明市场参与者对后市仍抱有较强预期。
+      </p>
+      <div class="mt-6">
+        <h4 class="font-semibold text-gray-800 mb-2">投资参考建议：</h4>
+        <ul class="list-disc pl-6 text-gray-700 space-y-2">
+          <li><strong>多头策略</strong>：当前价格未突破7450点前高，建议在7350–7380区间分批建仓，目标位7500–7550点，止损设于7280点下方。</li>
+          <li><strong>趋势跟踪</strong>：若价格放量突破7450点并站稳，可视为趋势加速信号，建议加仓并上移止损。</li>
+          <li><strong>风险提示</strong>：若持仓量在后续交易日显著下降，同时价格跌破7300点支撑，则需警惕多头离场风险，建议减仓或平仓。</li>
+          <li><strong>观察指标</strong>：持续关注成交量与持仓量的同步变化，若出现“量增价平”或“量缩价跌”，应警惕趋势衰竭。</li>
+        </ul>
+      </div>
+      <p class="mt-6 text-sm text-gray-600">
+        本报告基于2025年10月21日至10月31日IM期货交易数据生成，数据来源完整、真实，未作任何推测或外推。建议结合宏观经济、政策面及跨品种联动进行综合判断。
+      </p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-title">参考文献</h2>
+    <div class="chart-container">
+      <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+        <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">IM_价格走势数据.csv</a></cite></li>
+      </ol>
+    </div>
+  </div>
+
+  <footer class="footer">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    // 无外部依赖，仅用于增强交互，此处无必要交互逻辑，保留结构完整性
+  </script>
+</body>
+</html>

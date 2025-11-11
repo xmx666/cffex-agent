@@ -1,0 +1,262 @@
+/* 历史记录相关样式 */
+
+/* 历史记录侧边栏样式 */
+.history-sidebar .ant-drawer-content {
+  background: #fafafa;
+}
+
+.history-sidebar-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.search-section {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.filter-row {
+  margin-top: 8px;
+}
+
+.sessions-list {
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+.session-card {
+  transition: all 0.3s ease;
+  border: 1px solid #e8e8e8;
+}
+
+.session-card:hover {
+  border-color: #4040ff;
+  box-shadow: 0 4px 12px rgba(64, 64, 255, 0.15);
+}
+
+.session-header {
+  margin-bottom: 8px;
+}
+
+.session-title {
+  font-weight: 500;
+  color: #262626;
+  line-height: 1.4;
+}
+
+.session-meta {
+  color: #8c8c8c;
+  font-size: 12px;
+}
+
+.session-preview {
+  color: #595959;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.session-tags {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.session-actions {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.session-card:hover .session-actions {
+  opacity: 1;
+}
+
+.sidebar-footer {
+  background: white;
+  padding: 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 历史记录详情页面样式 */
+.history-detail-modal .ant-modal-content {
+  padding: 0;
+}
+
+.history-detail-content {
+  padding: 24px;
+}
+
+/* 对话消息样式 */
+.message-item {
+  border: none !important;
+  padding: 16px 0 !important;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.message-item:last-child {
+  border-bottom: none !important;
+}
+
+.message-content {
+  width: 100%;
+}
+
+/* 文件卡片样式 */
+.file-card {
+  transition: all 0.3s ease;
+  border: 1px solid #e8e8e8;
+}
+
+.file-card:hover {
+  border-color: #4040ff;
+  box-shadow: 0 4px 12px rgba(64, 64, 255, 0.15);
+}
+
+/* 生成文件网格样式 */
+.generated-files {
+  padding: 16px 0;
+}
+
+/* 任务列表样式 */
+.tasks-list {
+  padding: 16px 0;
+}
+
+.task-files {
+  margin-top: 12px;
+}
+
+/* 折叠面板样式 */
+.ant-collapse {
+  border: none;
+}
+
+.ant-collapse-item {
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  margin-bottom: 16px;
+}
+
+.ant-collapse-item:last-child {
+  margin-bottom: 0;
+}
+
+.ant-collapse-header {
+  background: #fafafa;
+  border-radius: 8px 8px 0 0;
+  font-weight: 500;
+}
+
+.ant-collapse-content {
+  border-radius: 0 0 8px 8px;
+}
+
+.ant-collapse-content-box {
+  padding: 16px;
+}
+
+.session-header {
+  background: #fafafa;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.session-meta {
+  color: #8c8c8c;
+  font-size: 14px;
+}
+
+.session-tags {
+  margin-top: 12px;
+}
+
+.session-content {
+  margin-bottom: 24px;
+}
+
+.session-info {
+  background: #fafafa;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
+}
+
+.session-actions {
+  text-align: center;
+  padding-top: 16px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .history-sidebar {
+    width: 100% !important;
+  }
+  
+  .history-detail-modal {
+    width: 95% !important;
+    margin: 0 auto;
+  }
+}
+
+/* 滚动条样式 */
+.sessions-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sessions-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.sessions-list::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.sessions-list::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 动画效果 */
+.session-card {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 加载状态 */
+.history-sidebar .ant-spin {
+  color: #4040ff;
+}
+
+/* 空状态样式 */
+.history-sidebar .ant-empty {
+  margin: 40px 0;
+}
+
+.history-sidebar .ant-empty-description {
+  color: #8c8c8c;
+}

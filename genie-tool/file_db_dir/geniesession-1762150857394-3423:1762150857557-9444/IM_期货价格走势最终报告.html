@@ -1,0 +1,432 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IM期货价格走势与市场行为深度分析报告（2025年10月21日-10月31日）</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f9fafb;
+      color: #333;
+    }
+    .chart-container {
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+    .chart-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #1f2937;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+    }
+    .data-point {
+      font-weight: 600;
+      color: #007bff;
+    }
+    .highlight {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 12px 16px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    .table-container {
+      overflow-x: auto;
+      margin: 24px 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px 16px;
+      text-align: right;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+      color: #374151;
+      text-align: center;
+    }
+    tr:hover {
+      background-color: #f9fafb;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 20px;
+      font-size: 0.9rem;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 64px;
+      padding: 24px;
+      color: #6b7280;
+      font-size: 0.9rem;
+      border-top: 1px solid #e5e7eb;
+    }
+    .trend-arrow {
+      font-size: 0.9rem;
+      margin-left: 4px;
+    }
+    .trend-up {
+      color: #10b981;
+    }
+    .trend-down {
+      color: #ef4444;
+    }
+  </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold text-gray-800 mb-8">IM期货价格走势与市场行为深度分析报告（2025年10月21日-10月31日）</h1>
+
+  <div class="chart-container">
+    <h2 class="chart-title">收盘价时间序列走势</h2>
+    <div class="h-80 flex items-end justify-between px-4" style="position: relative;">
+      <div class="relative w-full h-full flex items-end">
+        <div class="w-1/9 bg-blue-500 rounded-t-md relative" style="height: 78%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">7182.8</div>
+        </div>
+        <div class="w-1/9 bg-blue-500 rounded-t-md relative" style="height: 77%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">7163.2</div>
+        </div>
+        <div class="w-1/9 bg-blue-500 rounded-t-md relative" style="height: 78%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">7179.0</div>
+        </div>
+        <div class="w-1/9 bg-blue-500 rounded-t-md relative" style="height: 81%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">7298.0</div>
+        </div>
+        <div class="w-1/9 bg-blue-500 rounded-t-md relative" style="height: 81%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">7322.6</div>
+        </div>
+        <div class="w-1/9 bg-blue-500 rounded-t-md relative" style="height: 81%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">7335.6</div>
+        </div>
+        <div class="w-1/9 bg-blue-500 rounded-t-md relative" style="height: 83%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">7446.4</div>
+        </div>
+        <div class="w-1/9 bg-blue-500 rounded-t-md relative" style="height: 80%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">7364.4</div>
+        </div>
+        <div class="w-1/9 bg-blue-500 rounded-t-md relative" style="height: 80%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">7368.2</div>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center mt-4 text-sm text-gray-600">
+      <span class="legend-item"><span class="legend-color bg-blue-500"></span>收盘价</span>
+    </div>
+    <p class="mt-4 text-gray-700">在2025年10月21日至10月31日期间，IM期货收盘价呈现震荡上行趋势，从7182.8点逐步攀升至7368.2点，累计涨幅2.58%。价格在10月29日达到阶段高点7446.4点后出现小幅回调，但整体未跌破10月24日形成的支撑位7194.4点，显示市场多头力量持续主导。该走势表明投资者对标的资产未来预期趋于乐观，市场情绪逐步升温。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">成交量与持仓量双轴变化趋势</h2>
+    <div class="h-80 flex items-end justify-between px-4" style="position: relative;">
+      <div class="relative w-full h-full flex items-end">
+        <div class="w-1/9 bg-green-400 rounded-t-md relative" style="height: 65%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">151318</div>
+        </div>
+        <div class="w-1/9 bg-green-400 rounded-t-md relative" style="height: 52%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">120919</div>
+        </div>
+        <div class="w-1/9 bg-green-400 rounded-t-md relative" style="height: 74%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">172781</div>
+        </div>
+        <div class="w-1/9 bg-green-400 rounded-t-md relative" style="height: 63%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">147894</div>
+        </div>
+        <div class="w-1/9 bg-green-400 rounded-t-md relative" style="height: 59%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">137585</div>
+        </div>
+        <div class="w-1/9 bg-green-400 rounded-t-md relative" style="height: 61%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">141946</div>
+        </div>
+        <div class="w-1/9 bg-green-400 rounded-t-md relative" style="height: 53%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">124145</div>
+        </div>
+        <div class="w-1/9 bg-green-400 rounded-t-md relative" style="height: 70%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">162104</div>
+        </div>
+        <div class="w-1/9 bg-green-400 rounded-t-md relative" style="height: 71%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">164443</div>
+        </div>
+      </div>
+      <div class="absolute top-0 left-0 w-full h-full flex items-end pointer-events-none">
+        <div class="w-1/9 bg-purple-400 rounded-t-md relative" style="height: 60%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">190486</div>
+        </div>
+        <div class="w-1/9 bg-purple-400 rounded-t-md relative" style="height: 57%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">180451</div>
+        </div>
+        <div class="w-1/9 bg-purple-400 rounded-t-md relative" style="height: 64%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">201566</div>
+        </div>
+        <div class="w-1/9 bg-purple-400 rounded-t-md relative" style="height: 58%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">183485</div>
+        </div>
+        <div class="w-1/9 bg-purple-400 rounded-t-md relative" style="height: 59%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">187588</div>
+        </div>
+        <div class="w-1/9 bg-purple-400 rounded-t-md relative" style="height: 59%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">186154</div>
+        </div>
+        <div class="w-1/9 bg-purple-400 rounded-t-md relative" style="height: 57%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">180653</div>
+        </div>
+        <div class="w-1/9 bg-purple-400 rounded-t-md relative" style="height: 60%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">190757</div>
+        </div>
+        <div class="w-1/9 bg-purple-400 rounded-t-md relative" style="height: 59%; margin: 0 2px;">
+          <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700 whitespace-nowrap">186908</div>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center mt-4 text-sm text-gray-600">
+      <span class="legend-item"><span class="legend-color bg-green-400"></span>成交量</span>
+      <span class="legend-item"><span class="legend-color bg-purple-400"></span>持仓量</span>
+    </div>
+    <p class="mt-4 text-gray-700">成交量与持仓量在观察期内呈现同步波动特征。10月23日成交量达172,781手，为全周期峰值，同时持仓量亦升至201,566手，显示市场在价格突破7186.4点时出现显著多头加仓行为。10月30日与10月31日成交量维持高位（16万手以上），但持仓量未再创新高，表明部分多头在价格高位选择获利了结，市场出现“量增价稳、持仓持平”的典型多头动能衰减信号。整体来看，市场活跃度保持高位，但多空博弈趋于谨慎。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">价格波动区间与极值点分析</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>指标</th>
+            <th>数值</th>
+            <th>日期</th>
+            <th>备注</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>最高收盘价</td>
+            <td>7446.4</td>
+            <td>2025-10-29</td>
+            <td>阶段顶部，伴随成交量萎缩</td>
+          </tr>
+          <tr>
+            <td>最低收盘价</td>
+            <td>7163.2</td>
+            <td>2025-10-22</td>
+            <td>次日即反弹，支撑有效</td>
+          </tr>
+          <tr>
+            <td>最高日内高点</td>
+            <td>7450.0</td>
+            <td>2025-10-29</td>
+            <td>突破前高，引发技术性买盘</td>
+          </tr>
+          <tr>
+            <td>最低日内低点</td>
+            <td>7014.4</td>
+            <td>2025-10-23</td>
+            <td>大幅下探后快速回升，空头力量衰竭</td>
+          </tr>
+          <tr>
+            <td>最大单日涨幅</td>
+            <td>1.51%</td>
+            <td>2025-10-24</td>
+            <td>从7210.0至7298.0，突破关键阻力</td>
+          </tr>
+          <tr>
+            <td>最大单日跌幅</td>
+            <td>1.45%</td>
+            <td>2025-10-28</td>
+            <td>从7416.8至7301.2，获利回吐压力显现</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="highlight">
+      <p class="font-medium text-gray-800">关键观察：</p>
+      <p class="text-gray-700">价格在7014.4–7450.0区间内剧烈震荡，波动幅度达5.9%。10月23日的极端低点7014.4点未被有效跌破，反而成为多头反攻的起点，显示该位置为重要技术支撑。10月29日的7450.0点为全周期最高点，但未能持续站稳，随后出现回调，表明7450点为短期压力位。价格在7300–7400区间形成密集成交区，成为多空争夺焦点。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+    </div>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">市场情绪与交易行为解读</h2>
+    <p class="text-gray-700 mb-4">从交易行为看，市场呈现“震荡上行、量价配合、高位分化”的特征：</p>
+    <ul class="list-disc pl-6 mb-6 text-gray-700">
+      <li><strong>多头主导</strong>：收盘价连续7个交易日中6日上涨，仅10月22日小幅回调，表明市场整体趋势偏向多头。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+      <li><strong>加仓确认</strong>：10月23日价格突破7186.4点时，成交量与持仓量同步放大，为趋势延续提供动能支持，符合“突破+放量”经典多头信号。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+      <li><strong>高位分歧</strong>：10月29日价格冲高至7446.4点后，成交量下降至124,145手，持仓量同步回落，显示部分资金选择获利了结，市场出现“涨不动”迹象。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+      <li><strong>流动性充裕</strong>：全周期日均成交量达15.1万手，日均持仓量18.7万手，市场深度良好，未出现流动性枯竭风险，有利于趋势延续。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+      <li><strong>情绪修复</strong>：10月30日与10月31日价格在7360–7370区间企稳，成交量回升至16万手以上，表明市场在经历回调后重新获得买盘承接，情绪趋于稳定。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+    </ul>
+    <p class="text-gray-700">综合判断，当前市场处于多头趋势的中后期，多头动能虽未完全衰竭，但追涨意愿减弱，市场进入震荡蓄势阶段，等待新的基本面或政策信号驱动下一波行情。</p>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">趋势总结与投资参考建议</h2>
+    <p class="text-gray-700 mb-4">基于上述分析，得出以下结论：</p>
+    <ul class="list-disc pl-6 mb-6 text-gray-700">
+      <li><strong>趋势结论</strong>：IM期货在2025年10月21日至31日期间形成“震荡上行”主趋势，价格从7182.8点上涨至7368.2点，累计涨幅2.58%，技术形态呈现“高点逐步抬高、低点稳步上移”的多头排列。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+      <li><strong>关键支撑</strong>：7300点为短期强支撑位，若跌破则可能下探7200–7250区间；7014.4点为中期重要支撑，具备战略意义。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+      <li><strong>关键压力</strong>：7450点为短期强阻力，突破后有望打开至7550–7600空间；若无法突破，可能形成双顶结构，引发回调。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+      <li><strong>操作建议</strong>：
+        <ul class="list-circle pl-6 mt-2">
+          <li><strong>趋势交易者</strong>：可于7320–7350区间轻仓试多，止损设于7280下方，目标7450–7500。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+          <li><strong>波段交易者</strong>：在7400以上区域可考虑分批止盈，保留部分仓位等待突破确认。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+          <li><strong>保守投资者</strong>：建议观望，等待价格突破7450点或有效跌破7300点后，再择机入场，避免在震荡区间内频繁交易。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+        </ul>
+      </li>
+    </ul>
+    <p class="text-gray-700">本报告基于2025年10月21日至10月31日的交易数据生成，后续需持续关注宏观政策、市场流动性变化及关联品种走势，以动态调整策略。</p>
+  </div>
+
+  <div class="chart-container">
+    <h2 class="chart-title">原始数据摘要</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>交易日期</th>
+            <th>收盘价</th>
+            <th>开盘价</th>
+            <th>最高价</th>
+            <th>最低价</th>
+            <th>成交量</th>
+            <th>成交额</th>
+            <th>持仓量</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2025-10-21</td>
+            <td>7182.8</td>
+            <td>7099.0</td>
+            <td>7228.6</td>
+            <td>7083.0</td>
+            <td>151,318</td>
+            <td>217,057,963,960</td>
+            <td>190,486</td>
+          </tr>
+          <tr>
+            <td>2025-10-22</td>
+            <td>7163.2</td>
+            <td>7165.2</td>
+            <td>7201.2</td>
+            <td>7117.2</td>
+            <td>120,919</td>
+            <td>173,221,570,480</td>
+            <td>180,451</td>
+          </tr>
+          <tr>
+            <td>2025-10-23</td>
+            <td>7179.0</td>
+            <td>7149.0</td>
+            <td>7186.4</td>
+            <td>7014.4</td>
+            <td>172,781</td>
+            <td>244,656,421,720</td>
+            <td>201,566</td>
+          </tr>
+          <tr>
+            <td>2025-10-24</td>
+            <td>7298.0</td>
+            <td>7210.0</td>
+            <td>7298.0</td>
+            <td>7194.4</td>
+            <td>147,894</td>
+            <td>214,255,112,520</td>
+            <td>183,485</td>
+          </tr>
+          <tr>
+            <td>2025-10-27</td>
+            <td>7322.6</td>
+            <td>7378.0</td>
+            <td>7395.6</td>
+            <td>7300.2</td>
+            <td>137,585</td>
+            <td>202,089,585,520</td>
+            <td>187,588</td>
+          </tr>
+          <tr>
+            <td>2025-10-28</td>
+            <td>7335.6</td>
+            <td>7315.0</td>
+            <td>7416.8</td>
+            <td>7301.2</td>
+            <td>141,946</td>
+            <td>208,873,403,640</td>
+            <td>186,154</td>
+          </tr>
+          <tr>
+            <td>2025-10-29</td>
+            <td>7446.4</td>
+            <td>7356.0</td>
+            <td>7450.0</td>
+            <td>7330.8</td>
+            <td>124,145</td>
+            <td>183,466,571,200</td>
+            <td>180,653</td>
+          </tr>
+          <tr>
+            <td>2025-10-30</td>
+            <td>7364.4</td>
+            <td>7429.8</td>
+            <td>7444.0</td>
+            <td>7328.0</td>
+            <td>162,104</td>
+            <td>239,500,120,520</td>
+            <td>190,757</td>
+          </tr>
+          <tr>
+            <td>2025-10-31</td>
+            <td>7368.2</td>
+            <td>7380.0</td>
+            <td>7479.0</td>
+            <td>7363.0</td>
+            <td>164,443</td>
+            <td>243,638,602,760</td>
+            <td>186,908</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const bars = document.querySelectorAll('.w-1/9');
+      bars.forEach(bar => {
+        bar.addEventListener('mouseenter', function() {
+          this.style.transform = 'scaleY(1.1)';
+          this.style.zIndex = '10';
+        });
+        bar.addEventListener('mouseleave', function() {
+          this.style.transform = 'scaleY(1)';
+          this.style.zIndex = '1';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

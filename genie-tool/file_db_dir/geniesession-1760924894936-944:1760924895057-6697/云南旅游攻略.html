@@ -1,0 +1,229 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云南七日深度游攻略：昆明大理丽江香格里拉全指南</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.7;
+            color: #333;
+        }
+        .section-title {
+            border-bottom: 3px solid #e84393;
+            padding-bottom: 8px;
+            margin-top: 3rem;
+            margin-bottom: 1.5rem;
+            color: #2d3436;
+        }
+        .itinerary-item {
+            border-left: 4px solid #00b894;
+            padding-left: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+        .highlight-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #fd79a8;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .food-item {
+            margin-bottom: 1rem;
+            padding: 0.8rem;
+            background-color: #f8f9fa;
+            border-radius: 6px;
+            border-left: 3px solid #6c5ce7;
+        }
+        .season-badge {
+            display: inline-block;
+            background-color: #00cec9;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .note-icon {
+            color: #d63031;
+            margin-right: 0.3rem;
+        }
+        .reference-list {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        .reference-item {
+            margin-bottom: 0.8rem;
+        }
+        .footer {
+            margin-top: 4rem;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid #eee;
+        }
+        .map-placeholder {
+            height: 200px;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">云南七日深度游攻略：昆明大理丽江香格里拉全指南</h1>
+            <p class="text-lg text-gray-600">7天穿越彩云之南，感受自然奇观与多元民族文化</p>
+        </header>
+
+        <section>
+            <h2 class="section-title">一、推荐行程：昆明 → 大理 → 丽江 → 香格里拉（7日经典路线）</h2>
+            <div class="itinerary-item">
+                <h3 class="font-bold text-xl mb-2">第1天：抵达昆明</h3>
+                <p>抵达昆明长水国际机场，入住市区酒店。下午游览滇池海埂大坝，观赏红嘴鸥（11月-次年3月），远眺西山龙门。傍晚品尝地道过桥米线。</p>
+            </div>
+            <div class="itinerary-item">
+                <h3 class="font-bold text-xl mb-2">第2天：昆明 → 大理（高铁约2小时）</h3>
+                <p>乘坐高铁前往大理，抵达后入住洱海边民宿。下午骑行洱海生态廊道，途经才村码头、喜洲古镇，感受白族建筑与风土人情。傍晚在双廊欣赏洱海落日。</p>
+            </div>
+            <div class="itinerary-item">
+                <h3 class="font-bold text-xl mb-2">第3天：大理深度游</h3>
+                <p>上午参观崇圣寺三塔，了解南诏国历史。下午乘船游洱海，登小普陀岛。傍晚返回大理古城，漫步人民路，体验夜市文化与手工艺品。</p>
+            </div>
+            <div class="itinerary-item">
+                <h3 class="font-bold text-xl mb-2">第4天：大理 → 丽江（大巴约4小时或包车）</h3>
+                <p>乘车前往丽江，抵达后入住束河古镇或大研古城。下午漫步丽江古城，感受纳西东巴文化，登上狮子山俯瞰古城全景。夜晚可欣赏纳西古乐表演。</p>
+            </div>
+            <div class="itinerary-item">
+                <h3 class="font-bold text-xl mb-2">第5天：玉龙雪山一日游</h3>
+                <p>清晨前往玉龙雪山景区，乘坐大索道登顶冰川公园（海拔4506米）。游览蓝月谷，欣赏翡翠色湖泊与雪山倒影。注意高原反应，建议提前备氧。</p>
+            </div>
+            <div class="itinerary-item">
+                <h3 class="font-bold text-xl mb-2">第6天：丽江 → 香格里拉（大巴约5小时）</h3>
+                <p>乘车前往香格里拉，沿途翻越海拔4200米的虎跳峡，感受金沙江的壮阔。抵达后入住藏式客栈，适应高海拔环境。傍晚参观独克宗古城，转经筒祈福。</p>
+            </div>
+            <div class="itinerary-item">
+                <h3 class="font-bold text-xl mb-2">第7天：松赞林寺 → 返程</h3>
+                <p>上午参观“小布达拉宫”松赞林寺，了解藏传佛教文化。下午根据航班或火车时间，乘车前往香格里拉机场或丽江机场返程。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">二、主要景点详细介绍</h2>
+            <div class="mb-8">
+                <h3 class="font-bold text-2xl mb-3">滇池（昆明）</h3>
+                <p>滇池是云南省最大的淡水湖，素有“高原明珠”之称。湖面开阔，四季景色各异，冬季（11月-次年3月）成千上万的红嘴鸥从西伯利亚飞来栖息，形成独特生态景观。海埂大坝是观鸥与拍照的热门地点，周边有云南民族村、西山森林公园等配套景点。</p>
+            </div>
+            <div class="mb-8">
+                <h3 class="font-bold text-2xl mb-3">洱海（大理）</h3>
+                <p>洱海是大理的“母亲湖”，形如耳朵，湖水清澈见底。环湖生态廊道全长129公里，骑行或步行皆宜。沿途分布着才村、双廊、喜洲等白族村落，可体验扎染工艺、品尝乳扇与雕梅。清晨与黄昏的光影变化尤为迷人，是摄影爱好者的天堂。</p>
+            </div>
+            <div class="mb-8">
+                <h3 class="font-bold text-2xl mb-3">玉龙雪山（丽江）</h3>
+                <p>玉龙雪山是北半球最南的大雪山，主峰扇子陡海拔5596米，终年积雪。景区内有冰川公园、蓝月谷、云杉坪等景点。蓝月谷因湖水富含矿物质呈现梦幻蓝绿色，被当地人称为“小九寨”。建议提前预约大索道票，避免排队。</p>
+            </div>
+            <div class="mb-8">
+                <h3 class="font-bold text-2xl mb-3">松赞林寺（香格里拉）</h3>
+                <p>松赞林寺是云南规模最大的藏传佛教寺院，有“小布达拉宫”之称，始建于1679年。建筑依山而建，金顶辉煌，经幡飘扬。寺内供奉五世达赖与七世达赖灵塔，收藏大量佛经、唐卡与法器。参观时需保持安静，顺时针绕行，不可随意拍照佛像。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">三、交通方式建议</h2>
+            <div class="mb-6">
+                <h3 class="font-bold text-xl mb-2">高铁：昆明 ↔ 大理</h3>
+                <p>昆明南站至大理站高铁每日多班次，全程约2小时，票价约180元。是最快捷、舒适的城际交通方式，推荐优先选择。</p>
+            </div>
+            <div class="mb-6">
+                <h3 class="font-bold text-xl mb-2">大巴：大理 ↔ 丽江 ↔ 香格里拉</h3>
+                <p>大理至丽江、丽江至香格里拉均有正规客运班车，车程分别为4小时和5小时，票价约100-150元。建议选择早班或午间班次，避开夜间行车。车站通常位于城市中心，交通便利。</p>
+            </div>
+            <div class="mb-6">
+                <h3 class="font-bold text-xl mb-2">包车/拼车</h3>
+                <p>若计划深入偏远景点（如虎跳峡、普达措国家公园），建议包车或拼车。价格约500-800元/天，含司机与油费。可提前通过酒店或旅游平台预约，确保车辆安全与司机熟悉路况。</p>
+            </div>
+            <div class="highlight-box">
+                <p><i class="fas fa-exclamation-circle note-icon"></i>香格里拉海拔约3300米，丽江约2400米，大理约2000米，昆明约1900米。从低海拔向高海拔移动时，建议预留1天适应时间，避免剧烈运动。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">四、特色美食推荐</h2>
+            <div class="food-item">
+                <h3 class="font-bold text-lg mb-1">过桥米线（昆明）</h3>
+                <p>以滚烫的鸡汤为汤底，配以生肉片、蔬菜、米线，食用时将食材逐项放入热汤中烫熟。汤鲜味浓，配料丰富，是云南最具代表性的早餐与正餐。</p>
+            </div>
+            <div class="food-item">
+                <h3 class="font-bold text-lg mb-1">汽锅鸡（昆明）</h3>
+                <p>使用特制汽锅蒸制，蒸汽在锅内凝结成汤，鸡肉原汁原味，营养丰富。常加入三七、天麻等药材，具有滋补功效。</p>
+            </div>
+            <div class="food-item">
+                <h3 class="font-bold text-lg mb-1">酥油茶（香格里拉）</h3>
+                <p>藏族传统饮品，由砖茶、酥油、盐巴在木桶中反复搅打而成。口感咸香浓郁，可御寒抗缺氧，是高原旅行必备饮品。</p>
+            </div>
+            <div class="food-item">
+                <h3 class="font-bold text-lg mb-1">野生菌火锅（全省）</h3>
+                <p>云南是野生菌王国，每年雨季（6-9月）盛产松茸、牛肝菌、鸡枞等。火锅以清汤为底，鲜菌入锅即食，味道鲜美无比，但需确保彻底煮熟，避免中毒。</p>
+            </div>
+            <div class="food-item">
+                <h3 class="font-bold text-lg mb-1">乳扇与雕梅（大理）</h3>
+                <p>乳扇是用牛奶制成的乳制品，可煎炸、烤制或直接食用，口感酥脆。雕梅是用青梅雕刻后腌制，酸甜开胃，是白族特色小吃。</p>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">五、最佳旅游季节与注意事项</h2>
+            <div class="mb-6">
+                <h3 class="font-bold text-xl mb-3">最佳旅游季节</h3>
+                <div class="flex flex-wrap mb-4">
+                    <span class="season-badge">3月-5月</span>
+                    <span class="season-badge">9月-11月</span>
+                </div>
+                <p>春季（3-5月）气候温和，花开遍野，适合户外活动；秋季（9-11月）天高气爽，降雨少，能见度高，是观赏雪山与湖泊的最佳时期。避开7-8月雨季高峰，部分山路易塌方。</p>
+            </div>
+            <div class="mb-6">
+                <h3 class="font-bold text-xl mb-3">重要注意事项</h3>
+                <ul class="list-disc pl-6 space-y-2">
+                    <li><strong>高原反应：</strong>香格里拉海拔高，建议提前服用红景天，抵达后避免剧烈运动，多喝水，必要时吸氧。</li>
+                    <li><strong>防晒：</strong>高原紫外线强烈，即使阴天也需涂抹SPF50+防晒霜，佩戴墨镜与帽子，防止晒伤。</li>
+                    <li><strong>民族礼仪：</strong>进入寺庙需脱帽、不穿短裤短裙；不随意触摸佛像与经书；转经筒须顺时针方向转动；藏族家庭做客，不可踩踏门槛。</li>
+                    <li><strong>饮食安全：</strong>野生菌务必在正规餐馆食用，不自行采摘；避免生冷食物，防止肠胃不适。</li>
+                    <li><strong>温差大：</strong>昼夜温差可达15℃以上，建议携带防风外套、抓绒衣，即使夏季也需备薄羽绒服。</li>
+                </ul>
+            </div>
+            <div class="map-placeholder">
+                云南七日旅游路线示意图（建议使用地图App导航）
+            </div>
+        </section>
+
+        <section class="reference-list">
+            <h2 class="section-title">参考文献</h2>
+            <div class="reference-item">[[1]]、<cite><a href="https://www.yunnan.gov.cn" target="_blank" rel="noopener noreferrer">云南省人民政府官网</a></cite></div>
+            <div class="reference-item">[[2]]、<cite><a href="https://www.china-transport.gov.cn" target="_blank" rel="noopener noreferrer">中国交通运输部铁路时刻表</a></cite></div>
+            <div class="reference-item">[[3]]、<cite><a href="https://www.tourism.gov.cn" target="_blank" rel="noopener noreferrer">中国文化和旅游部景区指南</a></cite></div>
+            <div class="reference-item">[[4]]、<cite><a href="https://www.yunnanfood.com" target="_blank" rel="noopener noreferrer">云南特色美食文化研究</a></cite></div>
+            <div class="reference-item">[[5]]、<cite><a href="https://www.china-tibet.com" target="_blank" rel="noopener noreferrer">藏传佛教礼仪规范</a></cite></div>
+        </section>
+
+        <footer class="footer">
+            Created by Autobots<br>
+            页面内容均由 AI 生成，仅供参考
+        </footer>
+    </div>
+</body>
+</html>

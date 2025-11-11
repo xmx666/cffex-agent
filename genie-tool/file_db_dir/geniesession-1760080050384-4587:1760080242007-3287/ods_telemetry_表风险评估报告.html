@@ -1,0 +1,218 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ods_telemetry 数据采集风险评估报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+    }
+    .section-title {
+      border-left: 4px solid #007bff;
+      padding-left: 1rem;
+      margin: 2rem 0 1.5rem 0;
+    }
+    .table-structure th,
+    .table-structure td {
+      border: 1px solid #e0e0e0;
+      padding: 0.75rem;
+      text-align: left;
+    }
+    .table-structure th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+    }
+    .risk-badge {
+      background-color: #fef2f2;
+      color: #dc2626;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .recommendation-badge {
+      background-color: #f0f9ff;
+      color: #007bff;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .cite-link {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .cite-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-6 py-8 max-w-4xl">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">ods_telemetry 数据采集风险评估报告</h1>
+    <p class="text-gray-700 mb-8">本报告基于2025年10月10日对ods_telemetry数据库的结构与数据状态分析，识别关键数据采集异常，为数据平台稳定性提供技术依据。</p>
+
+    <section class="section-title border-l-4 border-blue-600">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">1. ods_telemetry 数据库表清单</h2>
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <ul class="list-disc pl-5 space-y-2 text-gray-700">
+          <li>ods_telemetry_infrastructure_dcgm_metrics_10second</li>
+          <li>ods_telemetry_infrastructure_cpu_metrics_1minute</li>
+          <li>ods_telemetry_infrastructure_memory_metrics_1minute</li>
+          <li>ods_telemetry_infrastructure_network_metrics_1minute</li>
+          <li>ods_telemetry_infrastructure_gpu_metrics_10second</li>
+          <li>ods_telemetry_infrastructure_disk_metrics_1minute</li>
+          <li>ods_telemetry_infrastructure_system_status_5minute</li>
+        </ul>
+        <p class="text-sm text-gray-500 mt-4">以上为ods_telemetry数据库当前所有表结构清单，涵盖基础设施多维度监控指标。</p>
+      </div>
+    </section>
+
+    <section class="section-title border-l-4 border-blue-600">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">2. 重点表结构与数据状态分析：ods_telemetry_infrastructure_dcgm_metrics_10second</h2>
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <h3 class="text-xl font-medium text-gray-700 mb-4">表结构信息</h3>
+        <table class="table-structure w-full mb-6">
+          <thead>
+            <tr>
+              <th>字段名</th>
+              <th>数据类型</th>
+              <th>是否为空</th>
+              <th>主键</th>
+              <th>注释</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>timestamp</td>
+              <td>DATETIME</td>
+              <td>NO</td>
+              <td>是</td>
+              <td>数据采集时间戳，精确到秒</td>
+            </tr>
+            <tr>
+              <td>node_id</td>
+              <td>VARCHAR(64)</td>
+              <td>NO</td>
+              <td>是</td>
+              <td>节点唯一标识符</td>
+            </tr>
+            <tr>
+              <td>gpu_index</td>
+              <td>TINYINT</td>
+              <td>NO</td>
+              <td>是</td>
+              <td>GPU设备索引号</td>
+            </tr>
+            <tr>
+              <td>temperature</td>
+              <td>SMALLINT</td>
+              <td>YES</td>
+              <td>否</td>
+              <td>GPU当前温度（摄氏度）</td>
+            </tr>
+            <tr>
+              <td>utilization_gpu</td>
+              <td>TINYINT</td>
+              <td>YES</td>
+              <td>否</td>
+              <td>GPU计算单元利用率（%）</td>
+            </tr>
+            <tr>
+              <td>utilization_memory</td>
+              <td>TINYINT</td>
+              <td>YES</td>
+              <td>否</td>
+              <td>GPU显存利用率（%）</td>
+            </tr>
+            <tr>
+              <td>memory_used</td>
+              <td>BIGINT</td>
+              <td>YES</td>
+              <td>否</td>
+              <td>已使用显存容量（字节）</td>
+            </tr>
+            <tr>
+              <td>memory_total</td>
+              <td>BIGINT</td>
+              <td>YES</td>
+              <td>否</td>
+              <td>总显存容量（字节）</td>
+            </tr>
+            <tr>
+              <td>power_usage</td>
+              <td>SMALLINT</td>
+              <td>YES</td>
+              <td>否</td>
+              <td>GPU当前功耗（瓦特）</td>
+            </tr>
+            <tr>
+              <td>fan_speed</td>
+              <td>TINYINT</td>
+              <td>YES</td>
+              <td>否</td>
+              <td>风扇转速（%）</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h3 class="text-xl font-medium text-gray-700 mb-4">数据量状态</h3>
+        <p class="text-gray-700 mb-4">经查询确认，表 <code>ods_telemetry_infrastructure_dcgm_metrics_10second</code> 当前数据量为 <strong>0</strong> 行，无任何历史或实时数据记录。</p>
+        <p class="text-gray-700 mb-4">该表设计为每10秒采集一次GPU多维指标，理论上应持续写入数据。当前零数据状态与预期采集频率严重不符，表明数据采集链路存在中断。</p>
+        <p class="text-gray-700 mb-4">索引状态正常，包含复合主键索引 (timestamp, node_id, gpu_index)，无索引失效或缺失问题，排除因索引异常导致写入失败的可能性。</p>
+      </div>
+    </section>
+
+    <section class="section-title border-l-4 border-blue-600">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">3. 风险综合判断</h2>
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <p class="text-gray-700 mb-4">综合表结构完整性、索引有效性与零数据量三方面分析，可明确判定：<span class="risk-badge">ods_telemetry_infrastructure_dcgm_metrics_10second 表存在数据采集失败或采集服务未激活的高风险</span>。</p>
+        <p class="text-gray-700 mb-4">该表为GPU性能监控的核心数据源，其数据缺失将直接导致：</p>
+        <ul class="list-disc pl-6 text-gray-700 mb-4">
+          <li>无法监控GPU温度异常与过热风险</li>
+          <li>无法评估GPU计算资源利用率与负载均衡</li>
+          <li>无法识别显存泄漏或资源争用问题</li>
+          <li>影响AI训练任务的性能调优与故障诊断</li>
+        </ul>
+        <p class="text-gray-700">由于该表数据量为0，且其他基础设施监控表（如CPU、内存、网络）数据正常，可初步排除全局数据采集系统故障，风险范围聚焦于该表专属采集代理或配置。</p>
+      </div>
+    </section>
+
+    <section class="section-title border-l-4 border-blue-600">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">4. 建议与行动项</h2>
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <p class="text-gray-700 mb-4">为恢复数据采集能力，建议立即执行以下核查步骤：</p>
+        <ol class="list-decimal pl-6 text-gray-700 space-y-2 mb-6">
+          <li>核查部署于GPU节点的DCGM（NVIDIA Data Center GPU Manager）采集代理是否运行正常，日志是否存在连接失败或权限错误。</li>
+          <li>确认ETL流程中该表对应的数据采集任务是否被禁用、配置错误或调度失败。</li>
+          <li>验证采集代理与目标数据库的网络连通性及认证凭据有效性。</li>
+          <li>检查数据库用户权限，确保采集服务账户具备对 <code>ods_telemetry_infrastructure_dcgm_metrics_10second</code> 表的INSERT权限。</li>
+          <li>在采集代理端执行手动采集测试，验证是否能成功输出指标数据。</li>
+        </ol>
+        <p class="text-gray-700">建议在24小时内完成上述核查，并同步更新数据平台监控告警规则，对关键表数据量为0的情况设置实时告警，避免同类问题再次被忽略。</p>
+        <p class="recommendation-badge">立即行动：优先核查DCGM代理状态与ETL任务调度日志。</p>
+      </div>
+    </section>
+
+    <section class="mt-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6">参考文献</h2>
+      <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+        <li><cite><a href="https://docs.nvidia.com/datacenter/dcgm/latest/index.html" target="_blank" rel="noopener noreferrer">NVIDIA DCGM Documentation</a></cite></li>
+        <li><cite><a href="https://docs.oracle.com/en-us/iaas/Content/Compute/Concepts/gpuinstances.htm" target="_blank" rel="noopener noreferrer">GPU Instance Monitoring Best Practices</a></cite></li>
+      </ol>
+    </section>
+
+    <footer class="mt-16 text-center text-gray-500 text-sm border-t pt-6">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

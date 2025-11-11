@@ -1,0 +1,233 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新疆深度旅游攻略：气候、景点、美食与实用指南</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.7;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        .city-card {
+            border-left: 4px solid #2563eb;
+            padding-left: 1.2rem;
+            margin-bottom: 1.5rem;
+            background-color: #f8f9ff;
+            border-radius: 0 8px 8px 0;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 0.3rem 0.6rem;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #856404;
+        }
+        .icon-circle {
+            width: 40px;
+            height: 40px;
+            background-color: #dbeafe;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: #1e40af;
+            font-size: 1.2rem;
+        }
+        .food-item {
+            margin-bottom: 0.8rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .food-item:before {
+            content: "•";
+            color: #d97706;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+        .tip-item {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #f0fdf4;
+            border-left: 3px solid #10b981;
+            border-radius: 0 6px 6px 0;
+        }
+        .travel-tip {
+            background-color: #fef3c7;
+            border-left: 3px solid #d97706;
+            padding: 1rem;
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 1.5rem;
+        }
+        .chart-container {
+            height: 200px;
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9fafb;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.9rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+        }
+        @media print {
+            body {
+                font-size: 12pt;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 max-w-4xl mx-auto px-4 py-8">
+    <header class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">新疆深度旅游攻略</h1>
+        <p class="text-lg text-gray-700">气候、景点、美食与实用指南全解析</p>
+    </header>
+
+    <section class="section">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+            <span class="icon-circle">
+                <i class="fas fa-sun"></i>
+            </span>
+            主要旅游城市气候与最佳旅行时间
+        </h2>
+        <div class="city-card">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">乌鲁木齐</h3>
+            <p>乌鲁木齐属温带大陆性干旱气候，夏季炎热干燥，冬季寒冷漫长。年温差大，昼夜温差可达15℃以上。最佳旅行时间为5月至9月，此时气温适宜，植被茂盛，适合户外活动。</p>
+        </div>
+        <div class="city-card">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">喀纳斯</h3>
+            <p>喀纳斯位于阿尔泰山脉，属寒温带大陆性气候，冬季漫长严寒，夏季短暂凉爽。7月至8月为旅游旺季，气温在15-25℃之间，湖水湛蓝，森林金黄；9月下旬至10月上旬为秋色最佳观赏期，层林尽染。</p>
+        </div>
+        <div class="city-card">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">吐鲁番</h3>
+            <p>吐鲁番是中国最热的地方之一，属典型的大陆性荒漠气候，夏季极端高温可达49℃以上，冬季寒冷。最佳旅行时间为4月至5月、9月至10月，此时气温适中，避开酷暑，可清晰观赏火焰山地貌与葡萄沟风光。</p>
+        </div>
+        <div class="city-card">
+            <h3 class="text-xl font-semibold text-gray-800 mb-2">伊犁</h3>
+            <p>伊犁河谷气候温和湿润，素有“塞外江南”之称。春季（4-5月）野花盛开，夏季（6-8月）草原翠绿，秋季（9-10月）金黄一片。冬季寒冷但降雪较少，适合喜欢宁静风光的游客。6月至8月为最佳旅游时段。</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+            <span class="icon-circle">
+                <i class="fas fa-map-marker-alt"></i>
+            </span>
+            推荐景点清单
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">天山天池</h3>
+                <p>位于乌鲁木齐以东约110公里，是天山博格达峰下的高山湖泊，湖水清澈如镜，四周雪峰倒映，被誉为“瑶池仙境”。夏季可乘船游湖，冬季可滑雪登山。</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">喀纳斯湖</h3>
+                <p>位于阿勒泰地区布尔津县，是中国最深的高山湖泊之一。湖水随季节和天气呈现不同色彩，被誉为“变色湖”。周边有观鱼台、神仙湾、月亮湾等经典观景点，是摄影与徒步爱好者的天堂。</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">火焰山</h3>
+                <p>位于吐鲁番盆地北缘，因红色砂岩在烈日下如火燃烧而得名。是《西游记》中“三借芭蕉扇”故事的原型地。可参观葡萄沟、坎儿井等配套景点，感受古代水利智慧。</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">那拉提草原</h3>
+                <p>位于伊犁河谷东部，是世界四大高山河谷草原之一。夏季绿草如茵，野花遍地，牛羊成群，毡房点点，被誉为“空中草原”。可体验骑马、住牧民家、品尝哈萨克族美食。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+            <span class="icon-circle">
+                <i class="fas fa-utensils"></i>
+            </span>
+            特色美食推荐
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">经典主食</h3>
+                <div class="food-item">烤羊肉串：选用新鲜羊肉，炭火慢烤，外焦里嫩，香气扑鼻，是新疆最具代表性的街头美食。</div>
+                <div class="food-item">大盘鸡：鸡肉与土豆、辣椒同炖，配以宽面，汤汁浓郁，辣而不燥，分量十足，是新疆宴客的招牌菜。</div>
+                <div class="food-item">手抓饭：以羊肉、胡萝卜、洋葱、大米为主料，用清油炒制后蒸熟，油润不腻，香气四溢，是维吾尔族传统主食。</div>
+            </div>
+            <div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">特色面点</h3>
+                <div class="food-item">馕：新疆人的主食之一，用馕坑烤制，外皮酥脆，内里柔软，可搭配奶茶、酸奶或肉食食用，耐储存，便于携带。</div>
+                <div class="food-item">拉条子：手工拉制的面条，配以牛肉、番茄、青椒等炒制，口感筋道，风味独特，是当地人日常饮食的重要组成部分。</div>
+                <div class="food-item">酸奶疙瘩：由牛奶发酵制成，口感酸香，可直接食用或拌入蜂蜜，是解腻助消化的佳品。</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+            <span class="icon-circle">
+                <i class="fas fa-car"></i>
+            </span>
+            交通出行建议
+        </h2>
+        <div class="travel-tip">
+            <p>新疆地域辽阔，城市间距离远，公共交通班次有限，强烈建议选择包车或自驾出行。包车可灵活安排行程，尤其适合家庭或小团体游客；自驾需注意：道路多为国道或省道，部分路段限速严格，夜间行车需谨慎。</p>
+            <p>新疆昼夜温差大，即使在夏季，早晚也需备外套；冬季严寒，需穿戴羽绒服、防风帽等保暖装备。同时，紫外线强度极高，建议携带防晒霜（SPF50+）、墨镜、遮阳帽，避免晒伤。</p>
+        </div>
+        <div class="chart-container">
+            <p>新疆主要城市间平均车程参考：<br>乌鲁木齐→喀纳斯：约8小时<br>乌鲁木齐→吐鲁番：约2小时<br>乌鲁木齐→伊犁：约6小时</p>
+        </div>
+    </section>
+
+    <section class="section">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+            <span class="icon-circle">
+                <i class="fas fa-info-circle"></i>
+            </span>
+            实用贴士
+        </h2>
+        <div class="tip-item">
+            <strong>防紫外线：</strong>新疆海拔高、空气稀薄，紫外线辐射强度是平原地区的2-3倍。建议每日涂抹高倍数防晒霜，佩戴UV400墨镜，穿戴长袖衣物，避免正午长时间暴露在阳光下。
+        </div>
+        <div class="tip-item">
+            <strong>备氧气瓶：</strong>喀纳斯、那拉提等高海拔地区（海拔2000米以上）可能出现轻微高原反应，如头晕、气短。建议随身携带便携氧气瓶，尤其老人与儿童需提前准备。
+        </div>
+        <div class="tip-item">
+            <strong>尊重民族习俗：</strong>新疆是多民族聚居区，维吾尔族、哈萨克族等少数民族有独特宗教信仰与生活习惯。进入清真寺需脱鞋，不随意触摸宗教物品；用餐时避免使用左手传递食物；不主动拍摄穆斯林群众，尤其女性。
+        </div>
+        <div class="tip-item">
+            <strong>饮水安全：</strong>建议饮用瓶装水，避免直接饮用自来水或未煮沸的井水。部分景区水源含矿物质较高，肠胃敏感者需注意。
+        </div>
+        <div class="tip-item">
+            <strong>购物提醒：</strong>购买干果、药材、手工艺品时，建议选择正规商店或市场，索要发票。避免在路边摊购买不明来源的蜂蜜、药材，谨防假冒。
+        </div>
+    </section>
+
+    <footer class="footer no-print">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>
