@@ -1,0 +1,786 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lingma 系统数据库表结构完整技术报告</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .table-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            overflow: hidden;
+        }
+        .table-header {
+            background-color: #4a6fa5;
+            color: white;
+            padding: 1rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        .table-content {
+            padding: 1rem;
+        }
+        .table-content table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-content th,
+        .table-content td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .table-content th {
+            background-color: #f1f3f4;
+            font-weight: 600;
+            color: #212529;
+        }
+        .table-content tr:hover {
+            background-color: #f8f9fa;
+        }
+        .index-suggestion {
+            background-color: #e8f5e9;
+            padding: 1rem;
+            border-left: 4px solid #4caf50;
+            margin: 1rem 0;
+            border-radius: 0 4px 4px 0;
+        }
+        .comment {
+            font-style: italic;
+            color: #6c757d;
+        }
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 1rem;
+        }
+        .tab-nav button {
+            padding: 0.75rem 1.5rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            color: #6c757d;
+            border-bottom: 3px solid transparent;
+        }
+        .tab-nav button.active {
+            color: #4a6fa5;
+            border-bottom-color: #4a6fa5;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            color: #6c757d;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        .create-table {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid #e9ecef;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #4a6fa5;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            border-radius: 0.25rem;
+            margin-right: 0.5rem;
+        }
+        .badge-nullable {
+            background-color: #e2e3e5;
+            color: #495057;
+        }
+        .badge-not-nullable {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 0.2rem 0.4rem;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <h1 class="section-title">Lingma 系统数据库表结构完整技术报告</h1>
+    <p class="mb-6 text-gray-700">本报告基于 <code>lingma_table_schema_summary.csv</code> 文件完整字段信息，系统整理了 Lingma 系统中六张核心数据表的结构定义，包含 CREATE TABLE 语句、字段明细、索引建议及注释说明，供技术团队查阅与维护使用。</p>
+
+    <div class="tab-nav">
+        <button class="tab-link active" data-tab="lingma_chat_info">lingma_chat_info</button>
+        <button class="tab-link" data-tab="lingma_coding_info">lingma_coding_info</button>
+        <button class="tab-link" data-tab="lingma_completion_info">lingma_completion_info</button>
+        <button class="tab-link" data-tab="lingma_developer_members">lingma_developer_members</button>
+        <button class="tab-link" data-tab="lingma_feedbacks_info">lingma_feedbacks_info</button>
+        <button class="tab-link" data-tab="lingma_statistics_info">lingma_statistics_info</button>
+    </div>
+
+    <!-- lingma_chat_info -->
+    <div id="lingma_chat_info" class="tab-content active">
+        <div class="table-container">
+            <div class="table-header">lingma_chat_info</div>
+            <div class="table-content">
+                <div class="create-table">
+CREATE TABLE `lingma_chat_info` (
+  `uuid` varchar(255) NOT NULL,
+  `user_id` varchar(255) NOT NULL,
+  `display_name` varchar(255) NOT NULL,
+  `chat_type` varchar(255) NOT NULL,
+  `chat_turns` int NOT NULL,
+  `ide` varchar(255) NOT NULL,
+  `update_time` datetime NOT NULL
+);
+                </div>
+                <p class="comment">表注释：记录用户与AI的对话交互信息，用于分析对话行为与交互模式。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>字段名</th>
+                            <th>数据类型</th>
+                            <th>是否可空</th>
+                            <th>注释</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>uuid</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>对话唯一标识符</td>
+                        </tr>
+                        <tr>
+                            <td>user_id</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>用户唯一标识符</td>
+                        </tr>
+                        <tr>
+                            <td>display_name</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>用户显示名称</td>
+                        </tr>
+                        <tr>
+                            <td>chat_type</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>对话类型（如：代码问答、调试辅助等）</td>
+                        </tr>
+                        <tr>
+                            <td>chat_turns</td>
+                            <td>int</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>对话轮数</td>
+                        </tr>
+                        <tr>
+                            <td>ide</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>使用的集成开发环境</td>
+                        </tr>
+                        <tr>
+                            <td>update_time</td>
+                            <td>datetime</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>记录更新时间</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="index-suggestion">
+                    <strong>索引建议：</strong>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li><code>INDEX idx_user_id (user_id)</code> —— 加速按用户查询对话记录</li>
+                        <li><code>INDEX idx_update_time (update_time)</code> —— 支持按时间范围分析对话趋势</li>
+                        <li><code>INDEX idx_chat_type (chat_type)</code> —— 便于按对话类型聚合分析</li>
+                        <li><code>INDEX idx_ide (ide)</code> —— 分析不同IDE的使用分布</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- lingma_coding_info -->
+    <div id="lingma_coding_info" class="tab-content">
+        <div class="table-container">
+            <div class="table-header">lingma_coding_info</div>
+            <div class="table-content">
+                <div class="create-table">
+CREATE TABLE `lingma_coding_info` (
+  `uuid` varchar(255) NOT NULL,
+  `user_id` varchar(255) NOT NULL,
+  `display_name` varchar(255) NOT NULL,
+  `language` varchar(255) NOT NULL,
+  `lines_accepted` int NOT NULL,
+  `lines_changed` int NOT NULL,
+  `ai_lines_rate` decimal(10,4) NOT NULL,
+  `update_time` datetime NOT NULL
+);
+                </div>
+                <p class="comment">表注释：记录用户在编码过程中接受AI建议的代码行数统计，用于评估AI辅助编码效率。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>字段名</th>
+                            <th>数据类型</th>
+                            <th>是否可空</th>
+                            <th>注释</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>uuid</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>编码事件唯一标识符</td>
+                        </tr>
+                        <tr>
+                            <td>user_id</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>用户唯一标识符</td>
+                        </tr>
+                        <tr>
+                            <td>display_name</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>用户显示名称</td>
+                        </tr>
+                        <tr>
+                            <td>language</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>编程语言类型</td>
+                        </tr>
+                        <tr>
+                            <td>lines_accepted</td>
+                            <td>int</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>接受的AI生成代码行数</td>
+                        </tr>
+                        <tr>
+                            <td>lines_changed</td>
+                            <td>int</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>用户修改的总代码行数（含AI建议）</td>
+                        </tr>
+                        <tr>
+                            <td>ai_lines_rate</td>
+                            <td>decimal(10,4)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>AI生成代码行数占总修改行数的比例</td>
+                        </tr>
+                        <tr>
+                            <td>update_time</td>
+                            <td>datetime</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>记录更新时间</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="index-suggestion">
+                    <strong>索引建议：</strong>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li><code>INDEX idx_user_id (user_id)</code> —— 按用户分析编码行为</li>
+                        <li><code>INDEX idx_language (language)</code> —— 分析不同语言的AI采纳率</li>
+                        <li><code>INDEX idx_update_time (update_time)</code> —— 支持时间维度趋势分析</li>
+                        <li><code>INDEX idx_ai_lines_rate (ai_lines_rate)</code> —— 用于筛选高AI采纳率用户</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- lingma_completion_info -->
+    <div id="lingma_completion_info" class="tab-content">
+        <div class="table-container">
+            <div class="table-header">lingma_completion_info</div>
+            <div class="table-content">
+                <div class="create-table">
+CREATE TABLE `lingma_completion_info` (
+  `uuid` varchar(255) NOT NULL,
+  `user_id` varchar(255) NOT NULL,
+  `display_name` varchar(255) NOT NULL,
+  `language` varchar(255) NOT NULL,
+  `ide` varchar(255) NOT NULL,
+  `count_accepted` int NOT NULL,
+  `count_suggested` int NOT NULL,
+  `lines_accepted` int NOT NULL,
+  `lines_suggested` int NOT NULL,
+  `ai_accept_rate_count` decimal(10,4) NOT NULL,
+  `ai_accept_rate_lines` decimal(10,4) NOT NULL,
+  `update_time` datetime NOT NULL
+);
+                </div>
+                <p class="comment">表注释：记录代码补全建议的接受与建议统计，用于评估AI补全功能的使用效果。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>字段名</th>
+                            <th>数据类型</th>
+                            <th>是否可空</th>
+                            <th>注释</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>uuid</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>补全事件唯一标识符</td>
+                        </tr>
+                        <tr>
+                            <td>user_id</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>用户唯一标识符</td>
+                        </tr>
+                        <tr>
+                            <td>display_name</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>用户显示名称</td>
+                        </tr>
+                        <tr>
+                            <td>language</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>编程语言类型</td>
+                        </tr>
+                        <tr>
+                            <td>ide</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>使用的集成开发环境</td>
+                        </tr>
+                        <tr>
+                            <td>count_accepted</td>
+                            <td>int</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>接受的补全建议次数</td>
+                        </tr>
+                        <tr>
+                            <td>count_suggested</td>
+                            <td>int</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>AI建议的补全总次数</td>
+                        </tr>
+                        <tr>
+                            <td>lines_accepted</td>
+                            <td>int</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>接受的补全代码总行数</td>
+                        </tr>
+                        <tr>
+                            <td>lines_suggested</td>
+                            <td>int</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>AI建议的补全代码总行数</td>
+                        </tr>
+                        <tr>
+                            <td>ai_accept_rate_count</td>
+                            <td>decimal(10,4)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>按次数计算的AI建议接受率</td>
+                        </tr>
+                        <tr>
+                            <td>ai_accept_rate_lines</td>
+                            <td>decimal(10,4)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>按行数计算的AI建议接受率</td>
+                        </tr>
+                        <tr>
+                            <td>update_time</td>
+                            <td>datetime</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>记录更新时间</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="index-suggestion">
+                    <strong>索引建议：</strong>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li><code>INDEX idx_user_id (user_id)</code> —— 按用户分析补全行为</li>
+                        <li><code>INDEX idx_language (language)</code> —— 分析不同语言的补全接受率</li>
+                        <li><code>INDEX idx_ide (ide)</code> —— 评估不同IDE的补全功能使用差异</li>
+                        <li><code>INDEX idx_update_time (update_time)</code> —— 支持时间序列分析</li>
+                        <li><code>INDEX idx_ai_accept_rate_count (ai_accept_rate_count)</code> —— 识别高接受率用户群体</li>
+                        <li><code>INDEX idx_ai_accept_rate_lines (ai_accept_rate_lines)</code> —— 识别高行数采纳用户</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- lingma_developer_members -->
+    <div id="lingma_developer_members" class="tab-content">
+        <div class="table-container">
+            <div class="table-header">lingma_developer_members</div>
+            <div class="table-content">
+                <div class="create-table">
+CREATE TABLE `lingma_developer_members` (
+  `user_id` varchar(255) NOT NULL,
+  `user_name` varchar(255) NOT NULL,
+  `display_name` varchar(255) NOT NULL,
+  `gmt_create` datetime NOT NULL,
+  `member_id` varchar(255) NOT NULL,
+  `status` char(1) NOT NULL
+);
+                </div>
+                <p class="comment">表注释：记录系统内开发者成员的基本信息与状态，用于用户管理与权限控制。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>字段名</th>
+                            <th>数据类型</th>
+                            <th>是否可空</th>
+                            <th>注释</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>user_id</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>用户唯一标识符</td>
+                        </tr>
+                        <tr>
+                            <td>user_name</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>用户登录名</td>
+                        </tr>
+                        <tr>
+                            <td>display_name</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>用户显示名称</td>
+                        </tr>
+                        <tr>
+                            <td>gmt_create</td>
+                            <td>datetime</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>账户创建时间</td>
+                        </tr>
+                        <tr>
+                            <td>member_id</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>成员在组织中的唯一ID</td>
+                        </tr>
+                        <tr>
+                            <td>status</td>
+                            <td>char(1)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>账户状态（如：A-激活，I-禁用）</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="index-suggestion">
+                    <strong>索引建议：</strong>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li><code>INDEX idx_user_id (user_id)</code> —— 主键索引，用于关联其他表</li>
+                        <li><code>INDEX idx_member_id (member_id)</code> —— 快速定位组织成员</li>
+                        <li><code>INDEX idx_status (status)</code> —— 快速筛选活跃或禁用用户</li>
+                        <li><code>INDEX idx_gmt_create (gmt_create)</code> —— 分析用户增长趋势</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- lingma_feedbacks_info -->
+    <div id="lingma_feedbacks_info" class="tab-content">
+        <div class="table-container">
+            <div class="table-header">lingma_feedbacks_info</div>
+            <div class="table-content">
+                <div class="create-table">
+CREATE TABLE `lingma_feedbacks_info` (
+  `id` int NOT NULL,
+  `userId` varchar(255) NOT NULL,
+  `organizationId` varchar(255) NOT NULL,
+  `requestId` varchar(255) NOT NULL,
+  `sessionId` varchar(255) NOT NULL,
+  `gmtCreate` datetime NOT NULL,
+  `gmtModified` datetime NOT NULL,
+  `adviceText` text,
+  `chatTask` text,
+  `checkBoxItems` text,
+  `context` text,
+  `deleted` tinyint NOT NULL
+);
+                </div>
+                <p class="comment">表注释：记录用户提交的反馈信息，包含文本建议、任务上下文与勾选项，用于产品优化与用户体验分析。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>字段名</th>
+                            <th>数据类型</th>
+                            <th>是否可空</th>
+                            <th>注释</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>id</td>
+                            <td>int</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>反馈记录自增主键</td>
+                        </tr>
+                        <tr>
+                            <td>userId</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>提交反馈的用户ID</td>
+                        </tr>
+                        <tr>
+                            <td>organizationId</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>用户所属组织ID</td>
+                        </tr>
+                        <tr>
+                            <td>requestId</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>关联的请求ID</td>
+                        </tr>
+                        <tr>
+                            <td>sessionId</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>关联的会话ID</td>
+                        </tr>
+                        <tr>
+                            <td>gmtCreate</td>
+                            <td>datetime</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>反馈创建时间</td>
+                        </tr>
+                        <tr>
+                            <td>gmtModified</td>
+                            <td>datetime</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>反馈最后修改时间</td>
+                        </tr>
+                        <tr>
+                            <td>adviceText</td>
+                            <td>text</td>
+                            <td><span class="badge badge-nullable">NULL</span></td>
+                            <td>用户填写的文本建议</td>
+                        </tr>
+                        <tr>
+                            <td>chatTask</td>
+                            <td>text</td>
+                            <td><span class="badge badge-nullable">NULL</span></td>
+                            <td>用户反馈所关联的对话任务内容</td>
+                        </tr>
+                        <tr>
+                            <td>checkBoxItems</td>
+                            <td>text</td>
+                            <td><span class="badge badge-nullable">NULL</span></td>
+                            <td>用户勾选的选项列表（JSON格式）</td>
+                        </tr>
+                        <tr>
+                            <td>context</td>
+                            <td>text</td>
+                            <td><span class="badge badge-nullable">NULL</span></td>
+                            <td>用户反馈的上下文信息</td>
+                        </tr>
+                        <tr>
+                            <td>deleted</td>
+                            <td>tinyint</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>逻辑删除标记（0-未删除，1-已删除）</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="index-suggestion">
+                    <strong>索引建议：</strong>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li><code>PRIMARY KEY (id)</code> —— 主键索引</li>
+                        <li><code>INDEX idx_userId (userId)</code> —— 按用户分析反馈分布</li>
+                        <li><code>INDEX idx_organizationId (organizationId)</code> —— 按组织聚合反馈</li>
+                        <li><code>INDEX idx_requestId (requestId)</code> —— 关联请求分析问题根源</li>
+                        <li><code>INDEX idx_sessionId (sessionId)</code> —— 关联会话分析上下文</li>
+                        <li><code>INDEX idx_gmtCreate (gmtCreate)</code> —— 支持时间维度趋势分析</li>
+                        <li><code>INDEX idx_deleted (deleted)</code> —— 快速过滤有效反馈</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- lingma_statistics_info -->
+    <div id="lingma_statistics_info" class="tab-content">
+        <div class="table-container">
+            <div class="table-header">lingma_statistics_info</div>
+            <div class="table-content">
+                <div class="create-table">
+CREATE TABLE `lingma_statistics_info` (
+  `uuid` varchar(255) NOT NULL,
+  `user_id` varchar(255) NOT NULL,
+  `display_name` varchar(255) NOT NULL,
+  `statusActive` varchar(255) NOT NULL,
+  `statusActiveChat` varchar(255) NOT NULL,
+  `statusActiveCompletion` varchar(255) NOT NULL,
+  `statusActiveLastedTime` datetime NOT NULL,
+  `totalChatTurns` int NOT NULL,
+  `totalLinesChanged` int NOT NULL,
+  `totalLinesAccepted` int NOT NULL,
+  `update_time` datetime NOT NULL
+);
+                </div>
+                <p class="comment">表注释：记录用户在Lingma系统中的综合使用统计信息，用于用户活跃度评估与行为画像构建。</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>字段名</th>
+                            <th>数据类型</th>
+                            <th>是否可空</th>
+                            <th>注释</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>uuid</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>统计记录唯一标识符</td>
+                        </tr>
+                        <tr>
+                            <td>user_id</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>用户唯一标识符</td>
+                        </tr>
+                        <tr>
+                            <td>display_name</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>用户显示名称</td>
+                        </tr>
+                        <tr>
+                            <td>statusActive</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>用户整体活跃状态（如：活跃、非活跃）</td>
+                        </tr>
+                        <tr>
+                            <td>statusActiveChat</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>对话功能活跃状态</td>
+                        </tr>
+                        <tr>
+                            <td>statusActiveCompletion</td>
+                            <td>varchar(255)</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>代码补全功能活跃状态</td>
+                        </tr>
+                        <tr>
+                            <td>statusActiveLastedTime</td>
+                            <td>datetime</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>最近一次活跃时间</td>
+                        </tr>
+                        <tr>
+                            <td>totalChatTurns</td>
+                            <td>int</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>累计对话轮数</td>
+                        </tr>
+                        <tr>
+                            <td>totalLinesChanged</td>
+                            <td>int</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>累计修改代码行数</td>
+                        </tr>
+                        <tr>
+                            <td>totalLinesAccepted</td>
+                            <td>int</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>累计接受AI建议代码行数</td>
+                        </tr>
+                        <tr>
+                            <td>update_time</td>
+                            <td>datetime</td>
+                            <td><span class="badge badge-not-nullable">NOT NULL</span></td>
+                            <td>统计信息更新时间</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="index-suggestion">
+                    <strong>索引建议：</strong>
+                    <ul class="list-disc pl-5 mt-2">
+                        <li><code>INDEX idx_user_id (user_id)</code> —— 主键索引，用于关联用户</li>
+                        <li><code>INDEX idx_statusActive (statusActive)</code> —— 快速筛选活跃用户</li>
+                        <li><code>INDEX idx_statusActiveChat (statusActiveChat)</code> —— 分析对话功能使用情况</li>
+                        <li><code>INDEX idx_statusActiveCompletion (statusActiveCompletion)</code> —— 分析补全功能使用情况</li>
+                        <li><code>INDEX idx_statusActiveLastedTime (statusActiveLastedTime)</code> —— 识别近期活跃用户</li>
+                        <li><code>INDEX idx_update_time (update_time)</code> —— 支持统计信息版本管理</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    // 移除所有激活状态
+                    tabLinks.forEach(l => l.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // 激活当前点击的tab
+                    link.classList.add('active');
+                    const tabId = link.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

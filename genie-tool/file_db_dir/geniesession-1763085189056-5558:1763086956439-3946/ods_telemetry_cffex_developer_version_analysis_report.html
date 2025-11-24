@@ -1,0 +1,167 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telemetry 版本分布分析报告：所有分片版本计数稳定在阈值内</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+      background-color: #f9fafb;
+      color: #1f2937;
+    }
+    .data-table th,
+    .data-table td {
+      border: 1px solid #e5e7eb;
+      padding: 12px;
+      text-align: center;
+    }
+    .data-table th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+      color: #111827;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .status-normal {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    .status-warning {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+    .status-critical {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+    .section-title {
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+      color: #111827;
+    }
+    .highlight-box {
+      background-color: #f0f9ff;
+      border-left: 4px solid #0ea5e9;
+      padding: 16px;
+      border-radius: 0 8px 8px 0;
+      margin: 20px 0;
+    }
+    .footer {
+      margin-top: 60px;
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.875rem;
+      padding: 20px;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body class="max-w-5xl mx-auto px-6 py-10">
+  <header class="text-center mb-10">
+    <h1 class="text-3xl font-bold text-gray-800">Telemetry 版本分布分析报告：所有分片版本计数稳定在阈值内</h1>
+    <p class="text-gray-600 mt-2">基于 ods_telemetry_cffex_developer_version_analysis.csv 数据分析，2025年11月14日</p>
+  </header>
+
+  <section class="mb-12">
+    <h2 class="section-title">数据概览</h2>
+    <div class="overflow-x-auto rounded-lg border">
+      <table class="min-w-full data-table">
+        <thead>
+          <tr>
+            <th>TabletId</th>
+            <th>VersionCount</th>
+            <th>State</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>5987610</td>
+            <td>2</td>
+            <td>NORMAL</td>
+          </tr>
+          <tr>
+            <td>5987614</td>
+            <td>2</td>
+            <td>NORMAL</td>
+          </tr>
+          <tr>
+            <td>5987618</td>
+            <td>2</td>
+            <td>NORMAL</td>
+          </tr>
+          <tr>
+            <td>5987622</td>
+            <td>2</td>
+            <td>NORMAL</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-4 text-gray-700">该数据集共包含 4 个 Tablet 分片，所有分片的 VersionCount 均为 2，状态均为 NORMAL，无异常记录。</p>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="section-title">状态摘要与分析</h2>
+    <div class="highlight-box">
+      <p class="text-gray-800">
+        所有 Tablet 分片的 VersionCount 均为 2，远低于设定的阈值 5。这表明系统当前不存在版本堆积现象，版本清理机制运行正常，数据同步与版本管理处于健康状态。
+      </p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">版本计数分布</h3>
+        <p class="text-gray-700">所有分片 VersionCount = 2</p>
+        <p class="text-sm text-gray-500 mt-1">无任何分片超过阈值（5）</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">状态一致性</h3>
+        <p class="text-gray-700">4/4 分片状态为 NORMAL</p>
+        <p class="text-sm text-gray-500 mt-1">100% 正常率</p>
+      </div>
+      <div class="bg-white p-6 rounded-lg shadow-sm border">
+        <h3 class="text-lg font-semibold text-gray-800 mb-3">风险评估</h3>
+        <p class="text-gray-700">无版本堆积风险</p>
+        <p class="text-sm text-gray-500 mt-1">系统负载稳定</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="section-title">结论与建议</h2>
+    <ol class="list-decimal list-inside space-y-4 text-gray-700">
+      <li>当前所有 Tablet 分片的版本计数稳定在 2，符合预期，系统版本管理机制运行良好，无需紧急干预。</li>
+      <li>版本计数远低于阈值 5，表明版本清理任务执行及时，未出现积压或延迟，系统资源占用处于合理水平。</li>
+      <li>建议继续保持当前版本清理策略，定期监控 VersionCount 趋势，确保其长期稳定在低值区间。</li>
+      <li>若未来出现 VersionCount 持续上升趋势，应启动根因分析流程，排查数据写入或清理链路是否存在异常。</li>
+    </ol>
+    <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+      <p class="text-blue-800 font-medium">注：本报告数据来源于 <code>ods_telemetry_cffex_developer_version_analysis.csv</code>，仅反映当前快照状态，不包含历史趋势或预测。</p>
+    </div>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="section-title">参考文献</h2>
+    <ol class="list-decimal list-inside space-y-2 text-gray-700">
+      <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">ods_telemetry_cffex_developer_version_analysis.csv</a></cite></li>
+    </ol>
+  </section>
+
+  <footer class="footer">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

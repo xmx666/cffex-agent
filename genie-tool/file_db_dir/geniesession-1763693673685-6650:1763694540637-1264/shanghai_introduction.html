@@ -1,0 +1,235 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>上海：中国经济社会的核心引擎</title>
+    <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css">
+    <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('http://static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .section-header {
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background-color: #007bff;
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 0.5rem;
+            border: 1px solid #e0e0e0;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 123, 255, 0.1);
+        }
+        .stat-box {
+            background: linear-gradient(135deg, #007bff, #0056b3);
+            color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.15);
+        }
+        .stat-box h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        .stat-box p {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        .highlight {
+            background-color: #e3f2fd;
+            padding: 0.75rem 1rem;
+            border-left: 4px solid #007bff;
+            margin: 1.5rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding: 2rem 0;
+            text-align: center;
+            color: #666;
+            border-top: 1px solid #eee;
+        }
+        .citation {
+            color: #007bff;
+            text-decoration: none;
+            border-bottom: 1px dotted #007bff;
+            transition: border-bottom-style 0.2s;
+        }
+        .citation:hover {
+            border-bottom-style: solid;
+            text-decoration: underline;
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 0.75rem;
+            height: 0.75rem;
+            background-color: #007bff;
+            border-radius: 50%;
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 2.375rem;
+            top: 1.25rem;
+            bottom: -1rem;
+            width: 1px;
+            background-color: #e0e0e0;
+        }
+        .timeline-item:last-child::after {
+            display: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <header class="bg-gradient-to-r from-blue-800 via-blue-700 to-blue-900 text-white py-16 text-center">
+        <div class="container mx-auto px-6">
+            <h1 class="text-5xl md:text-6xl font-bold mb-4">上海：中国经济社会的核心引擎</h1>
+            <p class="text-xl md:text-2xl opacity-90 max-w-4xl mx-auto">连接全球的金融枢纽，引领未来的创新之城</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <!-- 引言 -->
+        <section class="mb-16">
+            <h2 class="section-header text-4xl font-bold">城市概览</h2>
+            <p class="text-lg leading-relaxed mb-6">上海，位于中国东部沿海的长江入海口，是中国最大的经济中心和国际化大都市。作为长江经济带的龙头城市，上海不仅是国家重要的金融、贸易、航运和科技创新中心，更是中国对外开放的窗口和全球城市网络中的关键节点。其独特的地理位置、完善的基础设施和高度开放的经济体系，使其在全球城市竞争力排名中持续位居前列。</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-10">
+                <div class="stat-box">
+                    <h3>常住人口</h3>
+                    <p>2400万+</p>
+                </div>
+                <div class="stat-box">
+                    <h3>世界500强总部</h3>
+                    <p>超过100家</p>
+                </div>
+                <div class="stat-box">
+                    <h3>经济总量</h3>
+                    <p>全球前列</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 经济与金融地位 -->
+        <section class="mb-16">
+            <h2 class="section-header text-4xl font-bold">经济与金融中心</h2>
+            <p class="text-lg leading-relaxed mb-8">上海是中国金融体系的核心，拥有上海证券交易所、中国金融期货交易所等国家级金融基础设施。陆家嘴金融贸易区汇聚了大量国内外金融机构，包括银行、证券、保险、基金和金融科技公司，形成了高度集聚的金融产业集群。上海自贸区的设立进一步推动了金融开放创新，成为人民币国际化和资本项目可兑换的重要试验田。</p>
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8 card">
+                <h3 class="text-2xl font-bold mb-4 text-gray-800">世界500强企业总部聚集</h3>
+                <p class="mb-6 text-gray-700">上海是全球跨国公司设立亚太或中国总部的首选地之一。众多世界500强企业将区域总部或功能性总部设于上海，涵盖金融、汽车、高端制造、生物医药、信息技术等多个领域。这些企业不仅带来了巨额投资，更推动了高端人才集聚和产业链升级，使上海成为全球资源配置的重要枢纽。</p>
+                <div class="highlight">
+                    <p>上海吸引了超过100家世界500强企业设立总部或区域总部，其数量和质量均居中国城市首位，彰显了其作为国际经济中心的强大吸引力。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 航运与贸易中心 -->
+        <section class="mb-16">
+            <h2 class="section-header text-4xl font-bold">全球航运与贸易枢纽</h2>
+            <p class="text-lg leading-relaxed mb-8">上海港是全球最繁忙的集装箱港口，连续多年位居世界第一。洋山深水港的建成和自动化码头的运营，极大提升了上海港的吞吐能力和效率。依托港口优势，上海构建了辐射长三角、连接全球的现代物流体系，是国际贸易的重要节点。同时，中国国际进口博览会（CIIE）的永久举办地设于上海，进一步巩固了其作为全球贸易平台的地位。</p>
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8 card">
+                <h3 class="text-2xl font-bold mb-4 text-gray-800">核心航运与贸易数据</h3>
+                <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                    <li>上海港集装箱吞吐量连续十余年位居全球第一</li>
+                    <li>洋山深水港是全球最大的自动化集装箱码头</li>
+                    <li>中国国际进口博览会是全球首个以进口为主题的国家级展会</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- 城市地标 -->
+        <section class="mb-16">
+            <h2 class="section-header text-4xl font-bold">城市地标与天际线</h2>
+            <p class="text-lg leading-relaxed mb-8">上海的城市景观是现代与传统交融的典范。外滩沿岸的万国建筑群，见证了上海作为近代通商口岸的历史变迁，而对岸陆家嘴的摩天大楼群则代表了当代中国的发展速度与经济实力。两者隔江相望，构成了一幅独一无二的城市画卷，成为上海最著名的名片。</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                <div class="card p-6">
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">外滩</h3>
+                    <p class="text-gray-700 mb-4">位于黄浦江西岸，全长约1.5公里，集中了52幢风格各异的 historic 建筑，被誉为“万国建筑博览群”。这些建筑多建于19世纪末至20世纪初，涵盖了哥特式、巴洛克式、罗马式、古典主义等多种西方建筑风格，是上海近代历史的活化石。</p>
+                    <p class="text-gray-700">夜晚的外滩灯光璀璨，与对岸陆家嘴的霓虹交相辉映，是游客和市民必到的打卡地。</p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-2xl font-bold mb-3 text-gray-800">陆家嘴</h3>
+                    <p class="text-gray-700 mb-4">位于黄浦江东岸，是上海的金融中心和现代化都市形象的象征。这里矗立着东方明珠广播电视塔、上海中心大厦（中国第一高楼）、环球金融中心和金茂大厦等标志性建筑，共同构成了世界罕见的超高层建筑群。</p>
+                    <p class="text-gray-700">陆家嘴不仅是金融企业的聚集地，也是高端商业、酒店和观景平台的集中区域，代表了中国城市现代化的最高水平。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 人口与城市规模 -->
+        <section class="mb-16">
+            <h2 class="section-header text-4xl font-bold">超大规模城市与人口结构</h2>
+            <p class="text-lg leading-relaxed mb-8">上海是中国人口最多的城市之一，常住人口超过2400万。如此庞大的人口规模，不仅为城市提供了丰富的劳动力资源，也催生了巨大的消费市场和多元化的社会需求。上海的人口结构高度多元化，吸引了来自全国各地的高素质人才，形成了开放包容的城市文化。</p>
+            <div class="bg-white rounded-lg shadow-lg p-8 mb-8 card">
+                <h3 class="text-2xl font-bold mb-4 text-gray-800">人口规模与城市活力</h3>
+                <p class="mb-6 text-gray-700">超过2400万的常住人口，使上海成为全球人口最密集的城市之一。这一庞大的人口基数支撑了城市经济的持续增长，也对城市治理、公共服务和基础设施提出了极高要求。上海通过持续的城市更新和智慧城市建设，不断提升居民的生活品质和城市运行效率。</p>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <strong>1990年</strong>：浦东开发开放，城市重心东移，人口开始加速集聚。
+                    </div>
+                    <div class="timeline-item">
+                        <strong>2010年</strong>：常住人口突破2300万，城市规模进入新阶段。
+                    </div>
+                    <div class="timeline-item">
+                        <strong>2025年</strong>：常住人口稳定在2400万以上，城市功能持续优化。
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 结论 -->
+        <section class="mb-16">
+            <h2 class="section-header text-4xl font-bold">结论：全球城市典范</h2>
+            <p class="text-lg leading-relaxed mb-6">上海以其卓越的经济实力、世界级的金融与航运枢纽地位、标志性的城市景观和庞大的人口规模，确立了其作为中国乃至全球最重要城市之一的地位。它不仅是中国经济发展的引擎，更是中国参与全球竞争与合作的核心平台。未来，上海将继续深化改革开放，推动科技创新，建设更具全球影响力和吸引力的社会主义现代化国际大都市。</p>
+            <div class="highlight">
+                <p>上海的成功，是改革开放政策的生动体现，是中国融入全球经济体系的典范，其发展模式为其他城市提供了宝贵的经验。</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Created by Autobots<br>页面内容均由 AI 生成，仅供参考</p>
+    </footer>
+
+    <script>
+        // 简单的交互增强：为统计卡片添加点击动画
+        document.querySelectorAll('.stat-box').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(1.05)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 200);
+            });
+        });
+    </script>
+</body>
+</html>

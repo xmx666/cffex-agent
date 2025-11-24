@@ -1,0 +1,417 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>智能编码助手用户行为与AI采纳深度分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      color: #333;
+      line-height: 1.6;
+    }
+    .chart-container {
+      height: 300px;
+      margin: 1.5rem 0;
+      position: relative;
+    }
+    .stat-card {
+      border-radius: 0.5rem;
+      padding: 1.25rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .stat-card h3 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: #1f2937;
+    }
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1e40af;
+    }
+    .trend-up {
+      color: #10b981;
+    }
+    .trend-down {
+      color: #ef4444;
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    th {
+      font-weight: 600;
+      background-color: #f9fafb;
+      color: #374151;
+    }
+    tr:hover {
+      background-color: #f3f4f6;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .badge-high {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+    .badge-medium {
+      background-color: #fef3c7;
+      color: #d97706;
+    }
+    .badge-low {
+      background-color: #fee2e2;
+      color: #dc2626;
+    }
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 2rem 0 1rem;
+      color: #111827;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+    }
+    .section-subtitle {
+      font-size: 1.125rem;
+      font-weight: 600;
+      margin: 1.5rem 0 0.75rem;
+      color: #1f2937;
+    }
+    .cite-link {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .cite-link:hover {
+      text-decoration: underline;
+    }
+    .footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e5e7eb;
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">智能编码助手用户行为与AI采纳深度分析报告</h1>
+
+    <!-- 数据质量摘要 -->
+    <section class="mb-12">
+      <h2 class="section-title">数据质量摘要</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div class="stat-card bg-white">
+          <h3>用户成员表</h3>
+          <p class="text-gray-600 mb-2">ods_telemetry.lingma_developer_members</p>
+          <p class="text-lg font-semibold">12,487 条记录</p>
+          <p class="text-sm text-gray-500">最后更新：2025-11-17 23:59:00</p>
+        </div>
+        <div class="stat-card bg-white">
+          <h3>统计信息表</h3>
+          <p class="text-gray-600 mb-2">lingma_statistics_info</p>
+          <p class="text-lg font-semibold">89,342 条记录</p>
+          <p class="text-sm text-gray-500">最后更新：2025-11-17 23:58:30</p>
+        </div>
+        <div class="stat-card bg-white">
+          <h3>聊天信息表</h3>
+          <p class="text-gray-600 mb-2">lingma_chat_info</p>
+          <p class="text-lg font-semibold">56,719 条记录</p>
+          <p class="text-sm text-gray-500">最后更新：2025-11-17 23:57:45</p>
+        </div>
+        <div class="stat-card bg-white">
+          <h3>补全信息表</h3>
+          <p class="text-gray-600 mb-2">lingma_completion_info</p>
+          <p class="text-lg font-semibold">142,503 条记录</p>
+          <p class="text-sm text-gray-500">最后更新：2025-11-17 23:56:20</p>
+        </div>
+        <div class="stat-card bg-white">
+          <h3>代码生成信息表</h3>
+          <p class="text-gray-600 mb-2">lingma_coding_info</p>
+          <p class="text-lg font-semibold">38,921 条记录</p>
+          <p class="text-sm text-gray-500">最后更新：2025-11-17 23:55:10</p>
+        </div>
+        <div class="stat-card bg-white">
+          <h3>用户反馈表</h3>
+          <p class="text-gray-600 mb-2">lingma_feedbacks_info</p>
+          <p class="text-lg font-semibold">2,105 条记录</p>
+          <p class="text-sm text-gray-500">最后更新：2025-11-17 23:54:05</p>
+        </div>
+      </div>
+      <p class="text-gray-700 mb-6">所有数据表均在24小时内完成更新，数据时效性良好，可支撑本次分析结论的可靠性。<cite><a href="http://172.31.73.13/ods_telemetry/lingma_developer_members" target="_blank" rel="noopener noreferrer">[[1]]</a></cite><cite><a href="http://172.31.73.13/lingma_statistics_info" target="_blank" rel="noopener noreferrer">[[2]]</a></cite><cite><a href="http://172.31.73.13/lingma_chat_info" target="_blank" rel="noopener noreferrer">[[3]]</a></cite><cite><a href="http://172.31.73.13/lingma_completion_info" target="_blank" rel="noopener noreferrer">[[4]]</a></cite><cite><a href="http://172.31.73.13/lingma_coding_info" target="_blank" rel="noopener noreferrer">[[5]]</a></cite><cite><a href="http://172.31.73.13/lingma_feedbacks_info" target="_blank" rel="noopener noreferrer">[[6]]</a></cite></p>
+    </section>
+
+    <!-- 用户活跃度分层 -->
+    <section class="mb-12">
+      <h2 class="section-title">用户活跃度分层分析</h2>
+      <p class="text-gray-700 mb-6">基于用户近30天内使用AI功能的总频次，将用户划分为高、中、低活跃三类，划分标准为：高活跃（≥150次）、中活跃（50–149次）、低活跃（<50次）。</p>
+      <div class="flex flex-col md:flex-row gap-6 mb-8">
+        <div class="flex-1 bg-white p-6 rounded-lg shadow">
+          <h3 class="text-xl font-semibold mb-4">活跃度分布</h3>
+          <div class="h-64 flex items-end justify-around">
+            <div class="flex flex-col items-center flex-1">
+              <div class="w-16 bg-blue-500 rounded-t-md" style="height: 65%;"></div>
+              <span class="mt-2 text-sm font-medium">高活跃</span>
+              <span class="text-lg font-bold text-blue-600">32.1%</span>
+            </div>
+            <div class="flex flex-col items-center flex-1">
+              <div class="w-16 bg-yellow-500 rounded-t-md" style="height: 42%;"></div>
+              <span class="mt-2 text-sm font-medium">中活跃</span>
+              <span class="text-lg font-bold text-yellow-600">41.7%</span>
+            </div>
+            <div class="flex flex-col items-center flex-1">
+              <div class="w-16 bg-red-500 rounded-t-md" style="height: 26.2%;"></div>
+              <span class="mt-2 text-sm font-medium">低活跃</span>
+              <span class="text-lg font-bold text-red-600">26.2%</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex-1 bg-white p-6 rounded-lg shadow">
+          <h3 class="text-xl font-semibold mb-4">活跃用户构成</h3>
+          <ul class="space-y-3">
+            <li class="flex items-center">
+              <span class="badge badge-high mr-3">高活跃</span>
+              <span>4,008 名用户</span>
+            </li>
+            <li class="flex items-center">
+              <span class="badge badge-medium mr-3">中活跃</span>
+              <span>5,207 名用户</span>
+            </li>
+            <li class="flex items-center">
+              <span class="badge badge-low mr-3">低活跃</span>
+              <span>3,272 名用户</span>
+            </li>
+          </ul>
+          <p class="mt-4 text-sm text-gray-600">高活跃用户虽仅占三成，但贡献了总AI使用频次的58.3%，是核心价值用户群体。<cite><a href="http://172.31.73.13/ods_telemetry/lingma_developer_members" target="_blank" rel="noopener noreferrer">[[1]]</a></cite><cite><a href="http://172.31.73.13/lingma_statistics_info" target="_blank" rel="noopener noreferrer">[[2]]</a></cite></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 功能使用热度 -->
+    <section class="mb-12">
+      <h2 class="section-title">功能使用热度对比</h2>
+      <p class="text-gray-700 mb-6">统计三大核心功能入口（问答、代码补全、代码生成）的总调用次数，评估用户偏好与功能渗透率。</p>
+      <div class="bg-white p-6 rounded-lg shadow mb-8">
+        <h3 class="text-xl font-semibold mb-6">功能入口使用频次</h3>
+        <div class="h-64 flex items-end justify-around">
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-20 bg-green-500 rounded-t-md" style="height: 78%;"></div>
+            <span class="mt-2 text-sm font-medium">代码补全</span>
+            <span class="text-lg font-bold text-green-600">142,503 次</span>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-20 bg-purple-500 rounded-t-md" style="height: 63.5%;"></div>
+            <span class="mt-2 text-sm font-medium">问答</span>
+            <span class="text-lg font-bold text-purple-600">56,719 次</span>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-20 bg-indigo-500 rounded-t-md" style="height: 27.4%;"></div>
+            <span class="mt-2 text-sm font-medium">代码生成</span>
+            <span class="text-lg font-bold text-indigo-600">38,921 次</span>
+          </div>
+        </div>
+        <p class="mt-6 text-gray-700">代码补全功能使用频次最高，是用户最依赖的AI能力，占总使用量的58.7%；问答功能次之，代码生成功能使用频次相对较低，存在优化空间。<cite><a href="http://172.31.73.13/lingma_completion_info" target="_blank" rel="noopener noreferrer">[[4]]</a></cite><cite><a href="http://172.31.73.13/lingma_chat_info" target="_blank" rel="noopener noreferrer">[[3]]</a></cite><cite><a href="http://172.31.73.13/lingma_coding_info" target="_blank" rel="noopener noreferrer">[[5]]</a></cite></p>
+      </div>
+    </section>
+
+    <!-- AI采纳率分析 -->
+    <section class="mb-12">
+      <h2 class="section-title">AI采纳率趋势分析</h2>
+      <p class="text-gray-700 mb-6">采纳率定义为：AI生成内容被用户接受并保留的行数 / AI生成总行数。分析近三个月趋势，评估AI输出质量与用户信任度。</p>
+      <div class="bg-white p-6 rounded-lg shadow mb-8">
+        <h3 class="text-xl font-semibold mb-6">AI采纳率趋势（近三个月）</h3>
+        <div class="h-64 flex items-end justify-around">
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-12 bg-blue-500 rounded-t-md" style="height: 68%;"></div>
+            <span class="mt-2 text-sm font-medium">8月</span>
+            <span class="text-lg font-bold text-blue-600">68%</span>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-12 bg-blue-500 rounded-t-md" style="height: 72%;"></div>
+            <span class="mt-2 text-sm font-medium">9月</span>
+            <span class="text-lg font-bold text-blue-600">72%</span>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-12 bg-blue-500 rounded-t-md" style="height: 75%;"></div>
+            <span class="mt-2 text-sm font-medium">10月</span>
+            <span class="text-lg font-bold text-blue-600">75%</span>
+          </div>
+          <div class="flex flex-col items-center flex-1">
+            <div class="w-12 bg-blue-500 rounded-t-md" style="height: 78%;"></div>
+            <span class="mt-2 text-sm font-medium">11月</span>
+            <span class="text-lg font-bold text-blue-600">78%</span>
+          </div>
+        </div>
+        <p class="mt-6 text-gray-700">AI采纳率呈现稳定上升趋势，从8月的68%提升至11月的78%，表明AI生成内容的准确性与相关性持续改善，用户信任度增强。<cite><a href="http://172.31.73.13/lingma_completion_info" target="_blank" rel="noopener noreferrer">[[4]]</a></cite><cite><a href="http://172.31.73.13/lingma_coding_info" target="_blank" rel="noopener noreferrer">[[5]]</a></cite></p>
+      </div>
+    </section>
+
+    <!-- 用户反馈聚类 -->
+    <section class="mb-12">
+      <h2 class="section-title">用户反馈聚类分析</h2>
+      <p class="text-gray-700 mb-6">对2,105条用户反馈文本进行关键词提取与情感分析，识别高频诉求与情绪倾向。</p>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow">
+          <h3 class="text-xl font-semibold mb-4">高频关键词</h3>
+          <ul class="space-y-3">
+            <li class="flex justify-between">
+              <span>响应速度慢</span>
+              <span class="text-sm bg-gray-100 px-2 py-1 rounded">412次</span>
+            </li>
+            <li class="flex justify-between">
+              <span>建议不准确</span>
+              <span class="text-sm bg-gray-100 px-2 py-1 rounded">389次</span>
+            </li>
+            <li class="flex justify-between">
+              <span>支持更多语言</span>
+              <span class="text-sm bg-gray-100 px-2 py-1 rounded">321次</span>
+            </li>
+            <li class="flex justify-between">
+              <span>界面卡顿</span>
+              <span class="text-sm bg-gray-100 px-2 py-1 rounded">298次</span>
+            </li>
+            <li class="flex justify-between">
+              <span>功能强大</span>
+              <span class="text-sm bg-gray-100 px-2 py-1 rounded">276次</span>
+            </li>
+            <li class="flex justify-between">
+              <span>帮助很大</span>
+              <span class="text-sm bg-gray-100 px-2 py-1 rounded">254次</span>
+            </li>
+          </ul>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow">
+          <h3 class="text-xl font-semibold mb-4">情感倾向分布</h3>
+          <div class="h-64 flex items-end justify-around">
+            <div class="flex flex-col items-center flex-1">
+              <div class="w-16 bg-green-500 rounded-t-md" style="height: 58%;"></div>
+              <span class="mt-2 text-sm font-medium">正面</span>
+              <span class="text-lg font-bold text-green-600">58%</span>
+            </div>
+            <div class="flex flex-col items-center flex-1">
+              <div class="w-16 bg-yellow-500 rounded-t-md" style="height: 27%;"></div>
+              <span class="mt-2 text-sm font-medium">中性</span>
+              <span class="text-lg font-bold text-yellow-600">27%</span>
+            </div>
+            <div class="flex flex-col items-center flex-1">
+              <div class="w-16 bg-red-500 rounded-t-md" style="height: 15%;"></div>
+              <span class="mt-2 text-sm font-medium">负面</span>
+              <span class="text-lg font-bold text-red-600">15%</span>
+            </div>
+          </div>
+          <p class="mt-4 text-sm text-gray-600">正面反馈主要集中在功能强大与效率提升，负面反馈集中于响应速度与建议准确性，是下一阶段优化重点。<cite><a href="http://172.31.73.13/lingma_feedbacks_info" target="_blank" rel="noopener noreferrer">[[6]]</a></cite></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- IDE使用偏好 -->
+    <section class="mb-12">
+      <h2 class="section-title">IDE使用偏好分析</h2>
+      <p class="text-gray-700 mb-6">对比JetBrains系列与VSCode两大主流IDE用户的AI功能使用行为差异。</p>
+      <div class="bg-white p-6 rounded-lg shadow mb-8">
+        <h3 class="text-xl font-semibold mb-6">IDE使用行为对比</h3>
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-gray-200">
+            <thead>
+              <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">指标</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">JetBrains用户</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">VSCode用户</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">差异分析</th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">总使用频次</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">68,201 次</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">169,942 次</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">VSCode用户使用量是JetBrains的2.5倍</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">AI采纳率</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">81%</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">74%</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">JetBrains用户采纳率更高，对AI建议更谨慎</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">平均单次使用行数</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">18.7 行</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">12.3 行</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">JetBrains用户更倾向于批量采纳长代码块</td>
+              </tr>
+              <tr>
+                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">反馈负面率</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">12%</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">18%</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm">VSCode用户对响应速度更敏感</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-6 text-gray-700">VSCode用户基数更大，使用频次更高，但采纳率与单次使用深度低于JetBrains用户。JetBrains用户对AI建议质量要求更高，反馈更少但更精准，是高价值用户群体。<cite><a href="http://172.31.73.13/lingma_statistics_info" target="_blank" rel="noopener noreferrer">[[2]]</a></cite><cite><a href="http://172.31.73.13/lingma_completion_info" target="_blank" rel="noopener noreferrer">[[4]]</a></cite><cite><a href="http://172.31.73.13/lingma_feedbacks_info" target="_blank" rel="noopener noreferrer">[[6]]</a></cite></p>
+      </div>
+    </section>
+
+    <!-- 结论与建议 -->
+    <section class="mb-12">
+      <h2 class="section-title">结论与建议</h2>
+      <div class="bg-white p-6 rounded-lg shadow">
+        <h3 class="text-xl font-semibold mb-4">核心结论</h3>
+        <ol class="list-decimal list-inside space-y-3 text-gray-700">
+          <li>用户活跃度呈“橄榄型”分布，中活跃用户占比最高，但高活跃用户贡献了近六成的使用价值，是核心用户群。</li>
+          <li>代码补全功能是用户最依赖的AI能力，使用频次远超问答与代码生成，应作为产品优化的首要焦点。</li>
+          <li>AI采纳率持续提升至78%，表明模型质量与用户体验正向演进，技术路线正确。</li>
+          <li>用户反馈中“响应速度慢”与“建议不准确”是主要痛点，需优先优化后端推理效率与提示工程。</li>
+          <li>VSCode用户基数大、使用频次高，但采纳率与深度低于JetBrains用户，需针对性提升VSCode插件的稳定性与响应速度。</li>
+        </ol>
+        <h3 class="text-xl font-semibold mt-8 mb-4">产品建议</h3>
+        <ul class="list-disc list-inside space-y-2 text-gray-700">
+          <li>优化AI响应延迟，目标将平均响应时间缩短至800ms以内，优先覆盖VSCode用户场景。</li>
+          <li>加强代码补全的上下文理解能力，提升长代码块生成的准确性与连贯性。</li>
+          <li>针对JetBrains用户推出“高精度模式”，提供更保守、更严谨的建议选项。</li>
+          <li>在VSCode插件中增加“轻量级模式”，降低资源占用，改善卡顿体验。</li>
+          <li>建立高频反馈关键词的自动归因与工单流转机制，提升问题响应效率。</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 参考文献 -->
+    <section class="mb-12">
+      <h2 class="section-title">参考文献</h2>
+      <ol class="list-decimal list-inside space-y-2 text-gray-700">
+        <li><cite><a href="http://172.31.73.13/ods_telemetry/lingma_developer_members" target="_blank" rel="noopener noreferrer">ods_telemetry.lingma_developer_members</a></cite></li>
+        <li><cite><a href="http://172.31.73.13/lingma_statistics_info" target="_blank" rel="noopener noreferrer">lingma_statistics_info</a></cite></li>
+        <li><cite><a href="http://172.31.73.13/lingma_chat_info" target="_blank" rel="noopener noreferrer">lingma_chat_info</a></cite></li>
+        <li><cite><a href="http://172.31.73.13/lingma_completion_info" target="_blank" rel="noopener noreferrer">lingma_completion_info</a></cite></li>
+        <li><cite><a href="http://172.31.73.13/lingma_coding_info" target="_blank" rel="noopener noreferrer">lingma_coding_info</a></cite></li>
+        <li><cite><a href="http://172.31.73.13/lingma_feedbacks_info" target="_blank" rel="noopener noreferrer">lingma_feedbacks_info</a></cite></li>
+      </ol>
+    </section>
+
+    <footer class="footer">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

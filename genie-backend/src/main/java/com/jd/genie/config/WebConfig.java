@@ -17,5 +17,11 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/static/workspace/**")
                 .addResourceLocations("file:" + workspacePath + "/")
                 .setCachePeriod(0); // 禁用缓存，确保文件更新后能立即访问
+
+        // 配置本地静态资源访问 - 用于提供本地部署的CSS/JS文件
+        String staticResourcesPath = System.getProperty("user.dir") + "/static-resources";
+        registry.addResourceHandler("/static-resources/**")
+                .addResourceLocations("file:" + staticResourcesPath + "/")
+                .setCachePeriod(3600); // 缓存1小时，静态资源更新频率低
     }
 } 

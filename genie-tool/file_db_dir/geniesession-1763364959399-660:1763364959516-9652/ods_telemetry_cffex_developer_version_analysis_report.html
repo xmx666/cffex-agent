@@ -1,0 +1,233 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ods_telemetry_cffex_developer_version_analysis 版本计数分析报告</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .report-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .data-table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+        .data-table th,
+        .data-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .data-table th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .data-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .data-table tr:hover {
+            background-color: #e2e8f0;
+            transition: background-color 0.2s ease;
+        }
+        .conclusion-box {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            margin: 2rem 0;
+            font-size: 1.1rem;
+            color: #2e7d32;
+        }
+        .metric-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.2rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            margin-bottom: 1.5rem;
+            border: 1px solid #e0e0e0;
+        }
+        .metric-title {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.3rem;
+        }
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #333;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body class="container mx-auto px-4 py-8">
+    <header class="report-header">
+        <h1 class="text-3xl font-bold mb-2">ods_telemetry_cffex_developer_version_analysis 版本计数分析报告</h1>
+        <p class="text-lg opacity-90">基于2025年11月17日数据生成，评估版本计数分布与系统健康状态</p>
+    </header>
+
+    <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4 text-gray-800">数据概览</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="metric-card">
+                <div class="metric-title">版本计数最大值</div>
+                <div class="metric-value">2</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">版本计数平均值</div>
+                <div class="metric-value">2.0</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">是否存在大于5的版本计数</div>
+                <div class="metric-value">否</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4 text-gray-800">原始数据明细</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>TabletId</th>
+                    <th>ReplicaId</th>
+                    <th>BackendId</th>
+                    <th>Version</th>
+                    <th>VersionCount</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>5987610</td>
+                    <td>5987611</td>
+                    <td>13539</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>5987610</td>
+                    <td>5987612</td>
+                    <td>13540</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>5987610</td>
+                    <td>5987613</td>
+                    <td>13520</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>5987614</td>
+                    <td>5987615</td>
+                    <td>13539</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>5987614</td>
+                    <td>5987616</td>
+                    <td>13540</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>5987614</td>
+                    <td>5987617</td>
+                    <td>13520</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>5987618</td>
+                    <td>5987619</td>
+                    <td>13539</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>5987618</td>
+                    <td>5987620</td>
+                    <td>13540</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>5987618</td>
+                    <td>5987621</td>
+                    <td>13520</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>5987622</td>
+                    <td>5987623</td>
+                    <td>13539</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>5987622</td>
+                    <td>5987624</td>
+                    <td>13540</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+                <tr>
+                    <td>5987622</td>
+                    <td>5987625</td>
+                    <td>13520</td>
+                    <td>2</td>
+                    <td>2</td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="mt-4 text-sm text-gray-600">数据来源：ods_telemetry_cffex_developer_version_analysis.csv <cite><a href="http://172.31.73.223:1601/v1/file_tool/preview/geniesession-1763364959399-660:1763364959516-9652/读取已上传的CSV文件ods_telem_代码输出.md" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+    </section>
+
+    <section class="conclusion-box">
+        <h2 class="text-xl font-semibold mb-3">分析结论</h2>
+        <p>根据对 <code>ods_telemetry_cffex_developer_version_analysis</code> 表的版本计数（VersionCount）数据分析，最大值为2，平均值为2.0，且不存在任何大于5的版本计数值。这表明该表的版本分布稳定、均匀，未出现版本堆积现象。系统状态正常，无需进行版本清理或干预操作。</p>
+        <p class="mt-2">结论依据来源于原始数据与统计指标，数据完整且无异常波动。</p>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="text-2xl font-semibold mb-4 text-gray-800">参考文献</h2>
+        <ol class="list-decimal list-inside space-y-2">
+            <li><cite><a href="http://172.31.73.223:1601/v1/file_tool/preview/geniesession-1763364959399-660:1763364959516-9652/读取已上传的CSV文件ods_telem_代码输出.md" target="_blank" rel="noopener noreferrer">读取已上传的CSV文件ods_telem_代码输出.md</a></cite></li>
+        </ol>
+    </section>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>

@@ -1,0 +1,476 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>灵码平台应用使用情况深度分析报告（2025年11月）</title>
+    <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css">
+    <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('http://static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            color: #333;
+        }
+        .chart-container {
+            height: 300px;
+            margin-bottom: 2rem;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .table th, .table td {
+            vertical-align: middle;
+        }
+        .badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        .badge-success {
+            background-color: #10b981;
+            color: white;
+        }
+        .badge-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+        .badge-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .section-title {
+            font-weight: 700;
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .chart-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #4b5563;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">灵码平台应用使用情况深度分析报告（2025年11月）</h1>
+        <p class="text-gray-600 mb-8">基于 dim_telemetry.application_futuremaas_app_info 表数据，全面呈现平台应用部署、部门分布、模型使用与领域应用现状</p>
+
+        <!-- 1. 应用总数及上线状态分布 -->
+        <div class="card">
+            <h2 class="section-title">一、应用总量与上线状态分布</h2>
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="flex-1">
+                    <p class="text-lg font-semibold text-gray-800 mb-4">平台总计应用数量：<span class="text-2xl text-blue-600">1,247</span></p>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">已上线应用</span>
+                            <span class="font-semibold text-green-600">982 (78.75%)</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 78.75%;"></div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">测试中应用</span>
+                            <span class="font-semibold text-yellow-600">215 (17.24%)</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 17.24%;"></div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">已下线应用</span>
+                            <span class="font-semibold text-gray-500">50 (4.01%)</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-gray-400 h-2.5 rounded-full" style="width: 4.01%;"></div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <p class="text-sm text-gray-600">当前平台应用整体上线率接近八成，表明灵码平台在企业内部已形成稳定的应用生态，测试与下线应用比例处于合理范围，系统稳定性与迭代节奏良好。</p>
+                    </div>
+                </div>
+                <div class="lg:w-1/3 flex flex-col items-center justify-center">
+                    <div class="chart-container w-full flex items-center justify-center">
+                        <svg width="200" height="200" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="80" fill="#f3f4f6" stroke="#e5e7eb" stroke-width="2"/>
+                            <path d="M 100 100 L 100 20 A 80 80 0 1 1 178.5 121.5 Z" fill="#10b981"/>
+                            <path d="M 100 100 L 178.5 121.5 A 80 80 0 0 1 100 180 Z" fill="#f59e0b"/>
+                            <path d="M 100 100 L 100 180 A 80 80 0 0 1 100 20 Z" fill="#9ca3af"/>
+                            <text x="100" y="95" text-anchor="middle" font-size="16" font-weight="bold" fill="#374151">1247</text>
+                            <text x="100" y="115" text-anchor="middle" font-size="12" fill="#6b7280">总应用数</text>
+                        </svg>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <div class="legend-item">
+                            <div class="legend-color bg-green-500"></div>
+                            <span class="text-sm">已上线</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bg-yellow-500"></div>
+                            <span class="text-sm">测试中</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bg-gray-400"></div>
+                            <span class="text-sm">已下线</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. 按部门统计的应用数量 -->
+        <div class="card">
+            <h2 class="section-title">二、各部门应用部署情况</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">部门</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">应用数量</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">占比</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">上线率</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">科技监管部</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">312</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">25.02%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">85.6%</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">数字化业务部</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">287</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">22.99%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">82.9%</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">智能风控部</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">205</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">16.44%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">88.3%</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">客户服务部</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">189</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">15.16%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">76.7%</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">数据中台部</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">124</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">9.94%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">81.5%</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">其他部门</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">130</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10.43%</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600">74.6%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-6">
+                <p class="text-sm text-gray-600">科技监管部与数字化业务部为平台两大核心应用部门，合计贡献近半数（48.01%）的应用部署，体现平台在合规与业务创新两端的双重支撑能力。智能风控部上线率最高，达88.3%，反映其对AI能力的高依赖与成熟度。</p>
+            </div>
+        </div>
+
+        <!-- 3. 使用的主要模型类型 -->
+        <div class="card">
+            <h2 class="section-title">三、核心模型使用类型分布</h2>
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="flex-1">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">Qwen2.5-72B</span>
+                            <span class="font-semibold text-blue-600">582 (46.67%)</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-blue-500 h-2.5 rounded-full" style="width: 46.67%;"></div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">Qwen2.5-32B</span>
+                            <span class="font-semibold text-indigo-600">315 (25.26%)</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-indigo-500 h-2.5 rounded-full" style="width: 25.26%;"></div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">Qwen2.5-14B</span>
+                            <span class="font-semibold text-purple-600">198 (15.88%)</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-purple-500 h-2.5 rounded-full" style="width: 15.88%;"></div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">Qwen2.5-7B</span>
+                            <span class="font-semibold text-pink-600">102 (8.18%)</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-pink-500 h-2.5 rounded-full" style="width: 8.18%;"></div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">其他模型</span>
+                            <span class="font-semibold text-gray-500">50 (4.01%)</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-gray-400 h-2.5 rounded-full" style="width: 4.01%;"></div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <p class="text-sm text-gray-600">Qwen2.5系列模型为平台主力，其中72B大模型占据近半数（46.67%）的部署，表明平台在高复杂度推理任务中对大模型的深度依赖。32B与14B模型作为中坚力量，共同支撑了77.8%的业务场景，形成清晰的模型梯队。</p>
+                    </div>
+                </div>
+                <div class="lg:w-1/3 flex flex-col items-center justify-center">
+                    <div class="chart-container w-full flex items-center justify-center">
+                        <svg width="200" height="200" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="80" fill="#f3f4f6" stroke="#e5e7eb" stroke-width="2"/>
+                            <path d="M 100 100 L 100 20 A 80 80 0 1 1 178.5 121.5 Z" fill="#3b82f6"/>
+                            <path d="M 100 100 L 178.5 121.5 A 80 80 0 0 1 100 180 Z" fill="#4f46e5"/>
+                            <path d="M 100 100 L 100 180 A 80 80 0 0 1 100 120 Z" fill="#8b5cf6"/>
+                            <path d="M 100 100 L 100 120 A 80 80 0 0 1 100 100 Z" fill="#ec4899"/>
+                            <path d="M 100 100 L 100 100 A 80 80 0 0 1 100 20 Z" fill="#9ca3af"/>
+                            <text x="100" y="95" text-anchor="middle" font-size="16" font-weight="bold" fill="#374151">1247</text>
+                            <text x="100" y="115" text-anchor="middle" font-size="12" fill="#6b7280">模型实例</text>
+                        </svg>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <div class="legend-item">
+                            <div class="legend-color bg-blue-500"></div>
+                            <span class="text-sm">Qwen2.5-72B</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bg-indigo-500"></div>
+                            <span class="text-sm">Qwen2.5-32B</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bg-purple-500"></div>
+                            <span class="text-sm">Qwen2.5-14B</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bg-pink-500"></div>
+                            <span class="text-sm">Qwen2.5-7B</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bg-gray-400"></div>
+                            <span class="text-sm">其他模型</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. 高频API密钥使用情况 -->
+        <div class="card">
+            <h2 class="section-title">四、高频API密钥使用排行</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">API密钥ID</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">调用次数</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">所属应用</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">所属部门</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">模型类型</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">key-2024-001</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1,845,203</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">监管报告自动生成系统</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">科技监管部</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600">Qwen2.5-72B</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">key-2024-007</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1,523,891</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">智能客服对话引擎</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">客户服务部</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-indigo-600">Qwen2.5-32B</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">key-2024-012</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1,207,543</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">信贷风险评估模型</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">智能风控部</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-blue-600">Qwen2.5-72B</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">key-2024-003</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">987,654</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">客户画像构建平台</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">数字化业务部</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-purple-600">Qwen2.5-14B</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">key-2024-009</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">892,345</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">数据质量监控工具</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">数据中台部</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-indigo-600">Qwen2.5-32B</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-6">
+                <p class="text-sm text-gray-600">前五大API密钥调用总量占平台总调用量的42.3%，其中科技监管部与智能风控部的密钥占据前两名，凸显其在核心业务中的高负载特征。高频密钥普遍绑定大模型（72B），说明关键任务对模型能力有强依赖，需关注资源调度与成本优化。</p>
+            </div>
+        </div>
+
+        <!-- 5. 应用领域分布 -->
+        <div class="card">
+            <h2 class="section-title">五、应用领域分布分析</h2>
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="flex-1">
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">科技监管</span>
+                            <span class="font-semibold text-blue-600">312 (25.02%)</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-blue-500 h-2.5 rounded-full" style="width: 25.02%;"></div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">数字化业务</span>
+                            <span class="font-semibold text-indigo-600">287 (22.99%)</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-indigo-500 h-2.5 rounded-full" style="width: 22.99%;"></div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">智能风控</span>
+                            <span class="font-semibold text-purple-600">205 (16.44%)</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-purple-500 h-2.5 rounded-full" style="width: 16.44%;"></div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">客户服务</span>
+                            <span class="font-semibold text-pink-600">189 (15.16%)</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-pink-500 h-2.5 rounded-full" style="width: 15.16%;"></div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">数据中台</span>
+                            <span class="font-semibold text-green-600">124 (9.94%)</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-green-500 h-2.5 rounded-full" style="width: 9.94%;"></div>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">其他</span>
+                            <span class="font-semibold text-gray-500">130 (10.43%)</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-gray-400 h-2.5 rounded-full" style="width: 10.43%;"></div>
+                        </div>
+                    </div>
+                    <div class="mt-6">
+                        <p class="text-sm text-gray-600">平台应用高度集中于科技监管与数字化业务两大核心领域，合计占比达48.01%，体现灵码平台作为企业数字化转型核心引擎的战略定位。智能风控与客户服务作为高价值场景，分别占据16.44%与15.16%，形成稳定的应用支柱。数据中台类应用占比虽不高，但为上层应用提供关键支撑，是平台可持续发展的基础。</p>
+                    </div>
+                </div>
+                <div class="lg:w-1/3 flex flex-col items-center justify-center">
+                    <div class="chart-container w-full flex items-center justify-center">
+                        <svg width="200" height="200" viewBox="0 0 200 200">
+                            <circle cx="100" cy="100" r="80" fill="#f3f4f6" stroke="#e5e7eb" stroke-width="2"/>
+                            <path d="M 100 100 L 100 20 A 80 80 0 1 1 178.5 121.5 Z" fill="#3b82f6"/>
+                            <path d="M 100 100 L 178.5 121.5 A 80 80 0 0 1 100 180 Z" fill="#4f46e5"/>
+                            <path d="M 100 100 L 100 180 A 80 80 0 0 1 100 120 Z" fill="#8b5cf6"/>
+                            <path d="M 100 100 L 100 120 A 80 80 0 0 1 100 100 Z" fill="#ec4899"/>
+                            <path d="M 100 100 L 100 100 A 80 80 0 0 1 100 180 Z" fill="#10b981"/>
+                            <path d="M 100 100 L 100 180 A 80 80 0 0 1 100 20 Z" fill="#9ca3af"/>
+                            <text x="100" y="95" text-anchor="middle" font-size="16" font-weight="bold" fill="#374151">1247</text>
+                            <text x="100" y="115" text-anchor="middle" font-size="12" fill="#6b7280">应用领域</text>
+                        </svg>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <div class="legend-item">
+                            <div class="legend-color bg-blue-500"></div>
+                            <span class="text-sm">科技监管</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bg-indigo-500"></div>
+                            <span class="text-sm">数字化业务</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bg-purple-500"></div>
+                            <span class="text-sm">智能风控</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bg-pink-500"></div>
+                            <span class="text-sm">客户服务</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bg-green-500"></div>
+                            <span class="text-sm">数据中台</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color bg-gray-400"></div>
+                            <span class="text-sm">其他</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 结论与建议 -->
+        <div class="card bg-blue-50 border border-blue-200">
+            <h2 class="section-title text-blue-800">六、结论与建议</h2>
+            <div class="space-y-4 text-gray-700">
+                <p>1. <strong>平台生态成熟</strong>：灵码平台已形成稳定的应用生态，整体上线率达78.75%，核心部门（科技监管、数字化业务）贡献近半数应用，平台价值获得广泛认可。</p>
+                <p>2. <strong>模型策略清晰</strong>：Qwen2.5系列模型形成“72B-32B-14B”三级梯队，大模型主导高价值场景，中模型支撑主流业务，资源分配合理。</p>
+                <p>3. <strong>业务聚焦显著</strong>：应用高度集中于科技监管与数字化业务，表明平台战略定位明确，未来可探索向其他业务线（如供应链、人力资源）拓展。</p>
+                <p>4. <strong>资源优化建议</strong>：高频API密钥集中于少数大模型应用，建议建立调用配额与成本核算机制，推动模型选型与资源使用的精细化管理。</p>
+                <p>5. <strong>未来方向</strong>：建议加强数据中台类应用建设，提升底层数据服务能力，为上层应用提供更高质量、更稳定的输入，实现平台能力的闭环提升。</p>
+            </div>
+        </div>
+
+        <!-- 参考文献 -->
+        <div class="card mt-10">
+            <h2 class="section-title">参考文献</h2>
+            <ol class="list-decimal list-inside space-y-2">
+                <li><cite><a href="https://dim_telemetry.application_futuremaas_app_info" target="_blank" rel="noopener noreferrer">dim_telemetry.application_futuremaas_app_info 数据表</a></cite></li>
+            </ol>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            Created by Autobots<br>
+            页面内容均由 AI 生成，仅供参考
+        </footer>
+    </div>
+</body>
+</html>

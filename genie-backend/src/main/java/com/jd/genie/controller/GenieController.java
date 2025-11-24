@@ -233,9 +233,9 @@ public class GenieController {
         }
 
         // 自定义Agent工具
-        WeatherTool weatherTool = new WeatherTool();
-        weatherTool.setAgentContext(agentContext);
-        toolCollection.addTool(weatherTool);
+//         WeatherTool weatherTool = new WeatherTool();
+//         weatherTool.setAgentContext(agentContext);
+//         toolCollection.addTool(weatherTool);
 
         TranslationTool translationTool = new TranslationTool();
         translationTool.setAgentContext(agentContext);
@@ -261,10 +261,10 @@ public class GenieController {
         }
 
         // 新增股票查询工具
-        StockTool stockTool = new StockTool();
-        stockTool.setAgentContext(agentContext);
-        toolCollection.addTool(stockTool);
-        log.info("{} 成功注册股票工具: agent_stock", agentContext.getRequestId());
+//         StockTool stockTool = new StockTool();
+//         stockTool.setAgentContext(agentContext);
+//         toolCollection.addTool(stockTool);
+//         log.info("{} 成功注册股票工具: agent_stock", agentContext.getRequestId());
 
         // 新增新闻内容生成工具
         NewsContentGeneratorTool newsContentGeneratorTool = new NewsContentGeneratorTool();

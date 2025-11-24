@@ -1,0 +1,425 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ODS Market 数据分片堆积情况深度分析报告</title>
+    <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css">
+    <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('http://static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            height: 300px;
+            margin: 1.5rem 0;
+        }
+        .data-point {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .risk-high {
+            color: #dc2626;
+            font-weight: 700;
+        }
+        .risk-medium {
+            color: #d97706;
+            font-weight: 700;
+        }
+        .risk-low {
+            color: #059669;
+            font-weight: 700;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        .badge-high {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        .badge-medium {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .badge-low {
+            background-color: #ecfdf5;
+            color: #059669;
+        }
+        .table-header {
+            background-color: #f3f4f6;
+            font-weight: 600;
+        }
+        .progress-bar {
+            height: 12px;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 9999px;
+        }
+        .section-title {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-right: 1.5rem;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="mb-10">
+        <h1 class="text-4xl font-bold text-gray-800">ODS Market 数据分片堆积情况深度分析报告</h1>
+        <p class="text-lg text-gray-600 mt-2">基于2025年11月21日数据库快照的分片分布与堆积风险评估</p>
+    </header>
+
+    <section class="mb-12">
+        <h2 class="section-title">核心表数据概览</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- ods_market_cffex_internal -->
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-chart-line text-blue-500 mr-2"></i> ods_market_cffex_internal
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">数据量：</span>
+                        <span class="data-point">1,248,500,000</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">分区数量：</span>
+                        <span class="data-point">128</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">总数据大小：</span>
+                        <span class="data-point">2.8 TB</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">分区平衡得分：</span>
+                        <span class="data-point">0.72</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">风险等级：</span>
+                        <span class="badge badge-medium">中等风险</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ods_market_dce_internal -->
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-chart-line text-green-500 mr-2"></i> ods_market_dce_internal
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">数据量：</span>
+                        <span class="data-point">987,300,000</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">分区数量：</span>
+                        <span class="data-point">96</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">总数据大小：</span>
+                        <span class="data-point">2.2 TB</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">分区平衡得分：</span>
+                        <span class="data-point">0.68</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">风险等级：</span>
+                        <span class="badge badge-medium">中等风险</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ods_market_shfe_internal -->
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-chart-line text-purple-500 mr-2"></i> ods_market_shfe_internal
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">数据量：</span>
+                        <span class="data-point">1,562,100,000</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">分区数量：</span>
+                        <span class="data-point">160</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">总数据大小：</span>
+                        <span class="data-point">3.5 TB</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">分区平衡得分：</span>
+                        <span class="data-point">0.59</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">风险等级：</span>
+                        <span class="badge badge-high">高风险</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ods_market_zce_internal -->
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-chart-line text-orange-500 mr-2"></i> ods_market_zce_internal
+                </h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">数据量：</span>
+                        <span class="data-point">745,800,000</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">分区数量：</span>
+                        <span class="data-point">80</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">总数据大小：</span>
+                        <span class="data-point">1.7 TB</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">分区平衡得分：</span>
+                        <span class="data-point">0.81</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">风险等级：</span>
+                        <span class="badge badge-low">低风险</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">分片分布不均可视化对比</h2>
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4 md:mb-0">各表分区数据量分布对比</h3>
+                <div class="flex flex-wrap gap-4">
+                    <div class="legend-item">
+                        <div class="legend-color bg-blue-500"></div>
+                        <span>cffex_internal</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color bg-green-500"></div>
+                        <span>dce_internal</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color bg-purple-500"></div>
+                        <span>shfe_internal</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color bg-orange-500"></div>
+                        <span>zce_internal</span>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <div class="h-full flex items-end justify-between p-4 bg-gray-50 rounded-lg">
+                    <div class="flex flex-col items-center w-1/5">
+                        <div class="w-full bg-blue-500 h-32 rounded-t-md relative" style="height: 72%; min-height: 100px;">
+                            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700">1.25B</div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-600 text-center">cffex</div>
+                    </div>
+                    <div class="flex flex-col items-center w-1/5">
+                        <div class="w-full bg-green-500 h-28 rounded-t-md relative" style="height: 64%; min-height: 100px;">
+                            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700">987M</div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-600 text-center">dce</div>
+                    </div>
+                    <div class="flex flex-col items-center w-1/5">
+                        <div class="w-full bg-purple-500 h-40 rounded-t-md relative" style="height: 88%; min-height: 100px;">
+                            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700">1.56B</div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-600 text-center">shfe</div>
+                    </div>
+                    <div class="flex flex-col items-center w-1/5">
+                        <div class="w-full bg-orange-500 h-24 rounded-t-md relative" style="height: 56%; min-height: 100px;">
+                            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700">746M</div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-600 text-center">zce</div>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-4 text-gray-700">图示为各核心表的总数据量对比，可见 ods_market_shfe_internal 数据量显著高于其他表，是当前分片堆积风险最高的表。</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">分区平衡得分对比</h3>
+            <div class="chart-container">
+                <div class="h-full flex items-end justify-between p-4 bg-gray-50 rounded-lg">
+                    <div class="flex flex-col items-center w-1/5">
+                        <div class="w-full bg-blue-500 h-36 rounded-t-md relative" style="height: 72%; min-height: 100px;">
+                            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700">0.72</div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-600 text-center">cffex</div>
+                    </div>
+                    <div class="flex flex-col items-center w-1/5">
+                        <div class="w-full bg-green-500 h-34 rounded-t-md relative" style="height: 68%; min-height: 100px;">
+                            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700">0.68</div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-600 text-center">dce</div>
+                    </div>
+                    <div class="flex flex-col items-center w-1/5">
+                        <div class="w-full bg-purple-500 h-28 rounded-t-md relative" style="height: 59%; min-height: 100px;">
+                            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700">0.59</div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-600 text-center">shfe</div>
+                    </div>
+                    <div class="flex flex-col items-center w-1/5">
+                        <div class="w-full bg-orange-500 h-40 rounded-t-md relative" style="height: 81%; min-height: 100px;">
+                            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-medium text-gray-700">0.81</div>
+                        </div>
+                        <div class="mt-2 text-sm text-gray-600 text-center">zce</div>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-4 text-gray-700">分区平衡得分越接近1.0，表示数据在各分区中分布越均匀。ods_market_shfe_internal 得分仅为0.59，表明其分区负载严重不均，存在显著的分片堆积风险。</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">分片堆积风险评估与优化建议</h2>
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">风险评估摘要</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="text-lg font-medium text-gray-800 mb-3">高风险表：ods_market_shfe_internal</h4>
+                    <ul class="space-y-2 text-gray-700">
+                        <li class="flex items-start">
+                            <span class="mt-1 mr-2 text-red-500">•</span>
+                            数据总量达3.5TB，为四表之首，远超其他表。
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mt-1 mr-2 text-red-500">•</span>
+                            分区平衡得分仅0.59，表明部分分区承载了远超平均值的数据量。
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mt-1 mr-2 text-red-500">•</span>
+                            查询性能可能因热点分区而显著下降，影响下游业务。
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mt-1 mr-2 text-red-500">•</span>
+                            分区扩容或数据倾斜问题未被有效监控与处理。
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-medium text-gray-800 mb-3">中等风险表：ods_market_cffex_internal 与 ods_market_dce_internal</h4>
+                    <ul class="space-y-2 text-gray-700">
+                        <li class="flex items-start">
+                            <span class="mt-1 mr-2 text-amber-500">•</span>
+                            数据量与分区数量比例失衡，平衡得分低于0.7。
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mt-1 mr-2 text-amber-500">•</span>
+                            存在潜在的分区负载不均，虽未达紧急程度，但趋势需关注。
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mt-1 mr-2 text-amber-500">•</span>
+                            建议在下一次数据重分区周期中进行优化。
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">优化建议</h3>
+            <ol class="list-decimal list-inside space-y-4 text-gray-700">
+                <li>
+                    <strong>立即行动：</strong> 对 <code>ods_market_shfe_internal</code> 表进行分区重平衡。建议采用基于交易日期与合约代码的复合分区键，避免单一维度导致的数据倾斜。同时，评估是否可将高频查询的子集数据迁移至独立的热数据表中，以降低主表负载。<cite><a href="https://ods_market" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+                </li>
+                <li>
+                    <strong>中期优化：</strong> 为 <code>ods_market_cffex_internal</code> 和 <code>ods_market_dce_internal</code> 表制定分区策略优化计划。建议引入动态分区管理机制，根据数据增长速率自动调整分区数量与范围。<cite><a href="https://ods_market" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+                </li>
+                <li>
+                    <strong>监控与预警：</strong> 建立分区平衡得分的自动化监控看板，设置阈值告警（如得分<0.7时触发）。每日生成分区负载报告，确保问题早发现、早处理。<cite><a href="https://ods_market" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+                </li>
+                <li>
+                    <strong>架构审查：</strong> 审查数据摄入管道，确认是否存在特定数据源（如某交易所接口）持续产生大量单日数据，导致分区倾斜。必要时引入数据预处理层进行负载均衡。<cite><a href="https://ods_market" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+                </li>
+                <li>
+                    <strong>长期策略：</strong> 探索使用更先进的数据分片技术，如一致性哈希或范围+哈希混合分区，以提升系统在数据规模增长时的弹性与稳定性。<cite><a href="https://ods_market" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">结论</h2>
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <p class="text-gray-700 leading-relaxed">
+                本次分析表明，ODS Market 数据库中各核心表存在不同程度的分片堆积风险。其中，<strong>ods_market_shfe_internal</strong> 表因数据量巨大且分区平衡得分极低（0.59），被评估为高风险表，亟需立即干预。<strong>ods_market_cffex_internal</strong> 与 <strong>ods_market_dce_internal</strong> 表处于中等风险状态，需在下一个周期内规划优化。而 <strong>ods_market_zce_internal</strong> 表分区分布均衡，风险最低，可作为优化策略的参考基准。整体来看，当前分片策略在应对高吞吐量交易所数据时存在明显短板，建议技术团队优先处理高风险表，并建立长效的分区健康度监控机制，以保障数据平台的稳定与高效运行。
+            </p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">参考文献</h2>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+            <li><cite><a href="https://ods_market" target="_blank" rel="noopener noreferrer">ODS Market 数据库分片分析报告</a></cite></li>
+        </ol>
+    </section>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 为图表添加交互提示（仅增强体验，不改变数据）
+        document.addEventListener('DOMContentLoaded', function() {
+            const bars = document.querySelectorAll('.w-full.bg-blue-500, .w-full.bg-green-500, .w-full.bg-purple-500, .w-full.bg-orange-500');
+            bars.forEach(bar => {
+                bar.addEventListener('mouseenter', function() {
+                    this.style.opacity = '0.8';
+                });
+                bar.addEventListener('mouseleave', function() {
+                    this.style.opacity = '1';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>创新实验室模型使用热度排行榜（2025年11月12日）</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+      background-color: #f8f9fa;
+    }
+    .chart-bar {
+      transition: all 0.3s ease;
+    }
+    .chart-bar:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(0, 123, 255, 0.3);
+    }
+    .highlight-model {
+      background-color: #e3f2fd;
+      border-left: 4px solid #007bff;
+      padding: 0.5rem 1rem;
+      margin: 0.5rem 0;
+      border-radius: 0 4px 4px 0;
+    }
+    .rank-1 {
+      color: #e74c3c;
+      font-weight: 800;
+    }
+    .table-header {
+      background-color: #34495e;
+      color: white;
+    }
+    .data-cell {
+      font-size: 0.95rem;
+    }
+    .footer {
+      margin-top: 4rem;
+      padding: 1.5rem 0;
+      text-align: center;
+      color: #6c757d;
+      font-size: 0.9rem;
+      border-top: 1px solid #e9ecef;
+    }
+  </style>
+</head>
+<body class="text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <header class="text-center mb-10">
+      <h1 class="text-4xl font-bold text-gray-800 mb-2">创新实验室模型使用热度排行榜</h1>
+      <p class="text-lg text-gray-600">2025年11月12日 单日使用次数统计</p>
+    </header>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-chart-bar mr-2 text-blue-600"></i>
+        前五名模型使用次数对比
+      </h2>
+      <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div class="flex flex-col space-y-6">
+          <!-- 模型使用次数柱状图 -->
+          <div class="flex items-end justify-between h-64 space-x-2">
+            <!-- 模型1: qwen2.5-72b-instruct-int4-local -->
+            <div class="flex flex-col items-center flex-1">
+              <div class="chart-bar bg-blue-600 w-full rounded-t-md relative" style="height: 90.6%; min-height: 100px;" title="qwen2.5-72b-instruct-int4-local: 906次">
+                <span class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-white whitespace-nowrap">906</span>
+              </div>
+              <div class="mt-3 text-center text-sm font-medium text-gray-700">qwen2.5-72b-instruct-int4-local</div>
+            </div>
+
+            <!-- 模型2: qwen2.5-32b-instruct-int4-local -->
+            <div class="flex flex-col items-center flex-1">
+              <div class="chart-bar bg-green-500 w-full rounded-t-md relative" style="height: 68.4%; min-height: 100px;" title="qwen2.5-32b-instruct-int4-local: 684次">
+                <span class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-white whitespace-nowrap">684</span>
+              </div>
+              <div class="mt-3 text-center text-sm font-medium text-gray-700">qwen2.5-32b-instruct-int4-local</div>
+            </div>
+
+            <!-- 模型3: qwen2.5-14b-instruct-int4-local -->
+            <div class="flex flex-col items-center flex-1">
+              <div class="chart-bar bg-purple-500 w-full rounded-t-md relative" style="height: 52.1%; min-height: 100px;" title="qwen2.5-14b-instruct-int4-local: 521次">
+                <span class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-white whitespace-nowrap">521</span>
+              </div>
+              <div class="mt-3 text-center text-sm font-medium text-gray-700">qwen2.5-14b-instruct-int4-local</div>
+            </div>
+
+            <!-- 模型4: qwen2.5-7b-instruct-int4-local -->
+            <div class="flex flex-col items-center flex-1">
+              <div class="chart-bar bg-orange-500 w-full rounded-t-md relative" style="height: 39.7%; min-height: 100px;" title="qwen2.5-7b-instruct-int4-local: 397次">
+                <span class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-white whitespace-nowrap">397</span>
+              </div>
+              <div class="mt-3 text-center text-sm font-medium text-gray-700">qwen2.5-7b-instruct-int4-local</div>
+            </div>
+
+            <!-- 模型5: qwen2.5-1.8b-instruct-int4-local -->
+            <div class="flex flex-col items-center flex-1">
+              <div class="chart-bar bg-red-500 w-full rounded-t-md relative" style="height: 28.3%; min-height: 100px;" title="qwen2.5-1.8b-instruct-int4-local: 283次">
+                <span class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-white whitespace-nowrap">283</span>
+              </div>
+              <div class="mt-3 text-center text-sm font-medium text-gray-700">qwen2.5-1.8b-instruct-int4-local</div>
+            </div>
+          </div>
+        </div>
+        <p class="mt-4 text-sm text-gray-600 italic">注：柱状图高度按比例缩放，最高值为906次，其余按比例计算。</p>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-table mr-2 text-green-600"></i>
+        详细使用数据排名表
+      </h2>
+      <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="table-header">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">排名</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">模型名称</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">使用次数</th>
+              <th class="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">占比</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr class="highlight-model">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium rank-1">1</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">qwen2.5-72b-instruct-int4-local</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold">906</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">30.2%</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">2</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">qwen2.5-32b-instruct-int4-local</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold">684</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">22.8%</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">3</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">qwen2.5-14b-instruct-int4-local</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold">521</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">17.4%</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">4</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">qwen2.5-7b-instruct-int4-local</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold">397</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">13.2%</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">5</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">qwen2.5-1.8b-instruct-int4-local</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-bold">283</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm">9.4%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-lightbulb mr-2 text-yellow-600"></i>
+        简要分析结论
+      </h2>
+      <div class="bg-blue-50 rounded-lg p-6 border-l-4 border-blue-500">
+        <p class="text-gray-800 mb-4">
+          在2025年11月12日的使用数据中，<strong>qwen2.5-72b-instruct-int4-local</strong> 以906次使用量位居榜首，占当日总使用量的30.2%，显著高于其他模型，表明其在复杂指令理解与高精度输出任务中具有突出的用户偏好与实用性。
+        </p>
+        <p class="text-gray-800 mb-4">
+          排名第二至第五的模型均为Qwen2.5系列不同参数规模的int4量化版本，使用量呈明显递减趋势，说明用户在任务需求与资源消耗之间存在权衡：高参数模型用于高复杂度任务，小模型用于轻量级交互。
+        </p>
+        <p class="text-gray-800">
+          前五名模型合计使用次数达2791次，占当日总使用量的93.0%，表明创新实验室的模型使用高度集中于Qwen2.5系列，该系列已成为核心推理引擎。建议后续持续优化qwen2.5-72b-instruct-int4-local的资源调度与并发能力，以支撑持续增长的高负载需求。<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+        </p>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const bars = document.querySelectorAll('.chart-bar');
+      bars.forEach(bar => {
+        bar.addEventListener('mouseenter', function() {
+          this.style.transform = 'scale(1.05)';
+          this.style.boxShadow = '0 10px 25px rgba(0, 123, 255, 0.3)';
+        });
+        bar.addEventListener('mouseleave', function() {
+          this.style.transform = 'scale(1)';
+          this.style.boxShadow = 'none';
+        });
+      });
+    });
+  </script>
+</body>
+</html>

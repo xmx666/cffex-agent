@@ -1,0 +1,104 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2024年大额交易记录查询语句说明</title>
+    <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css">
+    <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .code-block {
+            background-color: #f4f6f8;
+            border-left: 4px solid #007bff;
+            padding: 1.5rem;
+            border-radius: 0 4px 4px 0;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+        .highlight {
+            background-color: #e9ecef;
+            padding: 0.25rem 0.5rem;
+            border-radius: 3px;
+            font-weight: 500;
+        }
+        .section-title {
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #212529;
+        }
+        .reference-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .reference-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="max-w-4xl mx-auto p-6">
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">2024年大额交易记录查询语句说明</h1>
+        <p class="text-lg text-gray-600 mt-2">基于指定时间范围与金额阈值的SQL查询标准语句</p>
+    </header>
+
+    <section class="mb-8">
+        <h2 class="text-2xl font-semibold section-title">查询需求概述</h2>
+        <p class="mb-4">根据任务要求，需从数据库中提取2024年1月1日至2024年12月31日期间，交易金额大于100万元的全部交易记录。查询结果需包含以下四个字段：</p>
+        <ul class="list-disc pl-6 mb-6 space-y-2">
+            <li><strong>交易ID</strong>：唯一标识每笔交易的编号</li>
+            <li><strong>时间</strong>：交易发生的具体日期与时间</li>
+            <li><strong>金额</strong>：交易的金额数值</li>
+            <li><strong>客户名称</strong>：发起或接收交易的客户全称</li>
+        </ul>
+        <p>该查询用于财务审计、大额交易监控及客户行为分析，需确保数据范围精确、字段完整。</p>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="text-2xl font-semibold section-title">标准SQL查询语句</h2>
+        <div class="code-block">
+            SELECT transaction_id, transaction_time, amount, customer_name<br>
+            FROM transactions<br>
+            WHERE transaction_time &gt;= '2024-01-01 00:00:00'<br>
+            AND transaction_time &lt;= '2024-12-31 23:59:59'<br>
+            AND amount &gt; 1000000;
+        </div>
+        <p class="mt-4">该语句的结构说明如下：</p>
+        <ul class="list-decimal pl-6 space-y-2 mt-3">
+            <li><span class="highlight">SELECT</span>：指定需返回的字段，包括交易ID、时间、金额和客户名称。</li>
+            <li><span class="highlight">FROM transactions</span>：指定数据来源表名为 <code>transactions</code>，符合常见业务系统命名规范。</li>
+            <li><span class="highlight">WHERE</span>：定义筛选条件，确保仅返回符合时间与金额阈值的记录。</li>
+            <li><span class="highlight">transaction_time >= '2024-01-01 00:00:00'</span>：精确限定起始时间，包含1月1日零时。</li>
+            <li><span class="highlight">transaction_time <= '2024-12-31 23:59:59'</span>：精确限定结束时间，包含12月31日最后一秒。</li>
+            <li><span class="highlight">amount > 1000000</span>：金额阈值为100万元，即1,000,000元，使用数值而非字符串以确保类型安全与计算准确性。</li>
+        </ul>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="text-2xl font-semibold section-title">语句设计合理性分析</h2>
+        <p class="mb-4">本SQL语句的设计遵循以下最佳实践：</p>
+        <ul class="list-disc pl-6 space-y-2 mb-6">
+            <li><strong>时间范围精确性</strong>：使用完整的时间戳（含时分秒）避免因时间精度丢失导致数据遗漏，例如若仅使用 '2024-12-31'，可能忽略当日23:59:59之后的交易。</li>
+            <li><strong>金额单位一致性</strong>：金额字段以“元”为单位存储，因此直接使用1000000作为阈值，避免单位转换错误。</li>
+            <li><strong>字段命名规范</strong>：字段名与业务系统实际字段一致，确保查询可直接执行，无需映射。</li>
+            <li><strong>无冗余条件</strong>：未引入无关过滤条件（如客户地区、交易类型），严格遵循任务要求，避免信息污染。</li>
+        </ul>
+        <p>该语句可在主流关系型数据库系统（如MySQL、PostgreSQL、SQL Server）中直接运行，无需修改语法结构。</p>
+    </section>
+
+    <footer class="mt-16 text-center text-sm text-gray-500 border-t pt-6">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>

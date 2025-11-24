@@ -1,0 +1,652 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lingma 系统数据库表结构完整建表语句汇总报告</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .table-section {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+        }
+        .table-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+        .create-table-code {
+            background-color: #f3f4f6;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            line-height: 1.6;
+            border-left: 4px solid #3b82f6;
+        }
+        .field-row {
+            display: flex;
+            margin-bottom: 0.5rem;
+            padding: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .field-row:last-child {
+            border-bottom: none;
+        }
+        .field-name {
+            flex: 2;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .field-type {
+            flex: 1;
+            color: #3b82f6;
+            font-weight: 500;
+        }
+        .field-null {
+            flex: 1;
+            color: #ef4444;
+            font-weight: 500;
+        }
+        .field-comment {
+            flex: 3;
+            color: #4b5563;
+            font-size: 0.9rem;
+        }
+        .section-index {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #3b82f6;
+            margin-bottom: 0.5rem;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            color: #6b7280;
+            font-size: 0.9rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .reference-list {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .reference-item {
+            margin-bottom: 0.5rem;
+        }
+        .reference-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .reference-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="max-w-6xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">Lingma 系统数据库表结构完整建表语句汇总报告</h1>
+    
+    <div class="table-section">
+        <h2 class="table-title">1. lingma_chat_info 表结构</h2>
+        <div class="section-index">建表语句</div>
+        <pre class="create-table-code">CREATE TABLE `lingma_chat_info` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `session_id` varchar(128) NOT NULL COMMENT '会话唯一标识',
+  `chat_content` longtext NOT NULL COMMENT '聊天内容，JSON格式存储',
+  `chat_type` varchar(32) NOT NULL COMMENT '聊天类型：code_review, completion, debug, general',
+  `model_name` varchar(64) NOT NULL COMMENT '使用的模型名称',
+  `tokens_used` int(11) NOT NULL COMMENT '本次对话消耗的token数量',
+  `response_time_ms` int(11) NOT NULL COMMENT '响应时间（毫秒）',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_session_id` (`session_id`),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户聊天会话记录表'</pre>
+        <div class="section-index">字段说明</div>
+        <div class="field-row">
+            <div class="field-name">id</div>
+            <div class="field-type">bigint(20)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">主键ID</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">user_id</div>
+            <div class="field-type">bigint(20)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">用户ID</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">session_id</div>
+            <div class="field-type">varchar(128)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">会话唯一标识</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">chat_content</div>
+            <div class="field-type">longtext</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">聊天内容，JSON格式存储</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">chat_type</div>
+            <div class="field-type">varchar(32)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">聊天类型：code_review, completion, debug, general</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">model_name</div>
+            <div class="field-type">varchar(64)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">使用的模型名称</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">tokens_used</div>
+            <div class="field-type">int(11)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">本次对话消耗的token数量</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">response_time_ms</div>
+            <div class="field-type">int(11)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">响应时间（毫秒）</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">created_at</div>
+            <div class="field-type">datetime</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">创建时间</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">updated_at</div>
+            <div class="field-type">datetime</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">更新时间</div>
+        </div>
+    </div>
+
+    <div class="table-section">
+        <h2 class="table-title">2. lingma_coding_info 表结构</h2>
+        <div class="section-index">建表语句</div>
+        <pre class="create-table-code">CREATE TABLE `lingma_coding_info` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `session_id` varchar(128) NOT NULL COMMENT '会话唯一标识',
+  `file_path` varchar(512) NOT NULL COMMENT '代码文件路径',
+  `file_language` varchar(32) NOT NULL COMMENT '文件编程语言',
+  `file_size_bytes` int(11) NOT NULL COMMENT '文件大小（字节）',
+  `code_context` longtext NOT NULL COMMENT '代码上下文，包含前后文',
+  `suggested_code` longtext NOT NULL COMMENT 'AI建议的代码片段',
+  `acceptance_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '采纳状态：0未采纳，1已采纳',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_session_id` (`session_id`),
+  KEY `idx_file_path` (`file_path`(255)),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='AI代码建议与采纳记录表'</pre>
+        <div class="section-index">字段说明</div>
+        <div class="field-row">
+            <div class="field-name">id</div>
+            <div class="field-type">bigint(20)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">主键ID</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">user_id</div>
+            <div class="field-type">bigint(20)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">用户ID</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">session_id</div>
+            <div class="field-type">varchar(128)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">会话唯一标识</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">file_path</div>
+            <div class="field-type">varchar(512)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">代码文件路径</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">file_language</div>
+            <div class="field-type">varchar(32)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">文件编程语言</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">file_size_bytes</div>
+            <div class="field-type">int(11)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">文件大小（字节）</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">code_context</div>
+            <div class="field-type">longtext</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">代码上下文，包含前后文</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">suggested_code</div>
+            <div class="field-type">longtext</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">AI建议的代码片段</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">acceptance_status</div>
+            <div class="field-type">tinyint(1)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">采纳状态：0未采纳，1已采纳</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">created_at</div>
+            <div class="field-type">datetime</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">创建时间</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">updated_at</div>
+            <div class="field-type">datetime</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">更新时间</div>
+        </div>
+    </div>
+
+    <div class="table-section">
+        <h2 class="table-title">3. lingma_completion_info 表结构</h2>
+        <div class="section-index">建表语句</div>
+        <pre class="create-table-code">CREATE TABLE `lingma_completion_info` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `session_id` varchar(128) NOT NULL COMMENT '会话唯一标识',
+  `line_number` int(11) NOT NULL COMMENT '代码行号',
+  `prefix_code` longtext NOT NULL COMMENT '光标前的代码',
+  `suffix_code` longtext NOT NULL COMMENT '光标后的代码',
+  `generated_completion` longtext NOT NULL COMMENT 'AI生成的补全代码',
+  `completion_type` varchar(32) NOT NULL COMMENT '补全类型：line, block, function',
+  `acceptance_status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '采纳状态：0未采纳，1已采纳',
+  `tokens_used` int(11) NOT NULL COMMENT '本次补全消耗的token数量',
+  `response_time_ms` int(11) NOT NULL COMMENT '响应时间（毫秒）',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_session_id` (`session_id`),
+  KEY `idx_line_number` (`line_number`),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='AI代码行级补全记录表'</pre>
+        <div class="section-index">字段说明</div>
+        <div class="field-row">
+            <div class="field-name">id</div>
+            <div class="field-type">bigint(20)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">主键ID</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">user_id</div>
+            <div class="field-type">bigint(20)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">用户ID</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">session_id</div>
+            <div class="field-type">varchar(128)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">会话唯一标识</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">line_number</div>
+            <div class="field-type">int(11)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">代码行号</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">prefix_code</div>
+            <div class="field-type">longtext</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">光标前的代码</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">suffix_code</div>
+            <div class="field-type">longtext</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">光标后的代码</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">generated_completion</div>
+            <div class="field-type">longtext</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">AI生成的补全代码</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">completion_type</div>
+            <div class="field-type">varchar(32)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">补全类型：line, block, function</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">acceptance_status</div>
+            <div class="field-type">tinyint(1)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">采纳状态：0未采纳，1已采纳</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">tokens_used</div>
+            <div class="field-type">int(11)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">本次补全消耗的token数量</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">response_time_ms</div>
+            <div class="field-type">int(11)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">响应时间（毫秒）</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">created_at</div>
+            <div class="field-type">datetime</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">创建时间</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">updated_at</div>
+            <div class="field-type">datetime</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">更新时间</div>
+        </div>
+    </div>
+
+    <div class="table-section">
+        <h2 class="table-title">4. lingma_developer_members 表结构</h2>
+        <div class="section-index">建表语句</div>
+        <pre class="create-table-code">CREATE TABLE `lingma_developer_members` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint(20) NOT NULL UNIQUE COMMENT '用户ID，关联用户系统',
+  `username` varchar(128) NOT NULL COMMENT '用户名',
+  `email` varchar(255) NOT NULL COMMENT '邮箱地址',
+  `department` varchar(128) DEFAULT NULL COMMENT '所属部门',
+  `team` varchar(128) DEFAULT NULL COMMENT '所属团队',
+  `role` varchar(64) NOT NULL COMMENT '角色：developer, lead, manager, admin',
+  `is_active` tinyint(1) NOT NULL DEFAULT '1' COMMENT '是否激活：0否，1是',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '注册时间',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '最后更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_username` (`username`),
+  KEY `idx_email` (`email`),
+  KEY `idx_department` (`department`),
+  KEY `idx_team` (`team`),
+  KEY `idx_role` (`role`),
+  KEY `idx_is_active` (`is_active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='开发者成员信息表'</pre>
+        <div class="section-index">字段说明</div>
+        <div class="field-row">
+            <div class="field-name">id</div>
+            <div class="field-type">bigint(20)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">主键ID</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">user_id</div>
+            <div class="field-type">bigint(20)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">用户ID，关联用户系统</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">username</div>
+            <div class="field-type">varchar(128)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">用户名</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">email</div>
+            <div class="field-type">varchar(255)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">邮箱地址</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">department</div>
+            <div class="field-type">varchar(128)</div>
+            <div class="field-null">DEFAULT NULL</div>
+            <div class="field-comment">所属部门</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">team</div>
+            <div class="field-type">varchar(128)</div>
+            <div class="field-null">DEFAULT NULL</div>
+            <div class="field-comment">所属团队</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">role</div>
+            <div class="field-type">varchar(64)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">角色：developer, lead, manager, admin</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">is_active</div>
+            <div class="field-type">tinyint(1)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">是否激活：0否，1是</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">created_at</div>
+            <div class="field-type">datetime</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">注册时间</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">updated_at</div>
+            <div class="field-type">datetime</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">最后更新时间</div>
+        </div>
+    </div>
+
+    <div class="table-section">
+        <h2 class="table-title">5. lingma_feedbacks_info 表结构</h2>
+        <div class="section-index">建表语句</div>
+        <pre class="create-table-code">CREATE TABLE `lingma_feedbacks_info` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `user_id` bigint(20) NOT NULL COMMENT '用户ID',
+  `session_id` varchar(128) NOT NULL COMMENT '关联会话ID',
+  `feedback_type` varchar(64) NOT NULL COMMENT '反馈类型：bug_report, feature_request, usability, performance',
+  `feedback_content` longtext NOT NULL COMMENT '反馈内容',
+  `screenshot_path` varchar(512) DEFAULT NULL COMMENT '截图路径（相对路径）',
+  `priority_level` tinyint(1) NOT NULL DEFAULT '2' COMMENT '优先级：1低，2中，3高',
+  `status` varchar(32) NOT NULL DEFAULT 'open' COMMENT '状态：open, in_progress, resolved, closed',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  PRIMARY KEY (`id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_session_id` (`session_id`),
+  KEY `idx_feedback_type` (`feedback_type`),
+  KEY `idx_status` (`status`),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='用户反馈信息表'</pre>
+        <div class="section-index">字段说明</div>
+        <div class="field-row">
+            <div class="field-name">id</div>
+            <div class="field-type">bigint(20)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">主键ID</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">user_id</div>
+            <div class="field-type">bigint(20)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">用户ID</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">session_id</div>
+            <div class="field-type">varchar(128)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">关联会话ID</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">feedback_type</div>
+            <div class="field-type">varchar(64)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">反馈类型：bug_report, feature_request, usability, performance</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">feedback_content</div>
+            <div class="field-type">longtext</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">反馈内容</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">screenshot_path</div>
+            <div class="field-type">varchar(512)</div>
+            <div class="field-null">DEFAULT NULL</div>
+            <div class="field-comment">截图路径（相对路径）</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">priority_level</div>
+            <div class="field-type">tinyint(1)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">优先级：1低，2中，3高</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">status</div>
+            <div class="field-type">varchar(32)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">状态：open, in_progress, resolved, closed</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">created_at</div>
+            <div class="field-type">datetime</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">创建时间</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">updated_at</div>
+            <div class="field-type">datetime</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">更新时间</div>
+        </div>
+    </div>
+
+    <div class="table-section">
+        <h2 class="table-title">6. lingma_statistics_info 表结构</h2>
+        <div class="section-index">建表语句</div>
+        <pre class="create-table-code">CREATE TABLE `lingma_statistics_info` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `date` date NOT NULL COMMENT '统计日期',
+  `total_users` int(11) NOT NULL COMMENT '当日活跃用户数',
+  `total_sessions` int(11) NOT NULL COMMENT '当日总会话数',
+  `total_code_completions` int(11) NOT NULL COMMENT '当日代码补全次数',
+  `total_code_suggestions` int(11) NOT NULL COMMENT '当日代码建议次数',
+  `total_feedbacks` int(11) NOT NULL COMMENT '当日收到反馈数',
+  `avg_response_time_ms` decimal(10,2) NOT NULL COMMENT '平均响应时间（毫秒）',
+  `total_tokens_used` bigint(20) NOT NULL COMMENT '当日总消耗token数',
+  `acceptance_rate` decimal(5,2) NOT NULL COMMENT '代码采纳率（%）',
+  `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '记录创建时间',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uk_date` (`date`),
+  KEY `idx_created_at` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='每日系统使用统计表'</pre>
+        <div class="section-index">字段说明</div>
+        <div class="field-row">
+            <div class="field-name">id</div>
+            <div class="field-type">bigint(20)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">主键ID</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">date</div>
+            <div class="field-type">date</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">统计日期</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">total_users</div>
+            <div class="field-type">int(11)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">当日活跃用户数</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">total_sessions</div>
+            <div class="field-type">int(11)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">当日总会话数</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">total_code_completions</div>
+            <div class="field-type">int(11)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">当日代码补全次数</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">total_code_suggestions</div>
+            <div class="field-type">int(11)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">当日代码建议次数</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">total_feedbacks</div>
+            <div class="field-type">int(11)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">当日收到反馈数</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">avg_response_time_ms</div>
+            <div class="field-type">decimal(10,2)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">平均响应时间（毫秒）</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">total_tokens_used</div>
+            <div class="field-type">bigint(20)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">当日总消耗token数</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">acceptance_rate</div>
+            <div class="field-type">decimal(5,2)</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">代码采纳率（%）</div>
+        </div>
+        <div class="field-row">
+            <div class="field-name">created_at</div>
+            <div class="field-type">datetime</div>
+            <div class="field-null">NOT NULL</div>
+            <div class="field-comment">记录创建时间</div>
+        </div>
+    </div>
+
+    <div class="reference-list">
+        <h3 class="text-xl font-semibold mb-4 text-gray-800">参考文献</h3>
+        <div class="reference-item">[[1]]、<cite><a href="http://172.31.73.13/tailwindcss/tailwind.min.css" target="_blank" rel="noopener noreferrer">Tailwind CSS</a></cite></div>
+        <div class="reference-item">[[2]]、<cite><a href="http://172.31.73.13/font-awesome/all.min.css" target="_blank" rel="noopener noreferrer">Font Awesome</a></cite></div>
+        <div class="reference-item">[[3]]、<cite><a href="http://172.31.73.13/googleapis-fonts/css2.css" target="_blank" rel="noopener noreferrer">Google Fonts - Noto Sans SC</a></cite></div>
+    </div>
+
+    <footer>
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>

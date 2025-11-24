@@ -1,0 +1,180 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>小金灵码插件端与网页端使用活跃度对比报告</title>
+  <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css" />
+  <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://static-resources/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f9fafb;
+      color: #1f2937;
+    }
+    .chart-container {
+      height: 300px;
+      position: relative;
+      margin: 2rem 0;
+    }
+    .bar {
+      transition: all 0.3s ease;
+      border-radius: 8px 8px 0 0;
+      position: absolute;
+      bottom: 0;
+      width: 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      color: white;
+      font-weight: 600;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .bar-label {
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .value-label {
+      font-size: 1.125rem;
+      margin-bottom: 0.25rem;
+    }
+    .tooltip {
+      position: absolute;
+      background-color: #333;
+      color: white;
+      padding: 0.5rem;
+      border-radius: 4px;
+      font-size: 0.875rem;
+      opacity: 0;
+      transition: opacity 0.2s;
+      pointer-events: none;
+      z-index: 10;
+      white-space: nowrap;
+    }
+    .bar:hover + .tooltip {
+      opacity: 1;
+    }
+    .section-title {
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 1rem;
+    }
+    .data-table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 1.5rem 0;
+    }
+    .data-table th,
+    .data-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .data-table th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .data-table tr:hover {
+      background-color: #f9fafb;
+    }
+    .conclusion-box {
+      background-color: #f0f9ff;
+      border-left: 4px solid #0ea5e9;
+      padding: 1rem;
+      border-radius: 0 4px 4px 0;
+      margin: 2rem 0;
+    }
+    .conclusion-box strong {
+      color: #0369a1;
+    }
+  </style>
+</head>
+<body class="max-w-4xl mx-auto p-6">
+  <header class="text-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">小金灵码插件端与网页端使用活跃度对比报告</h1>
+    <p class="text-gray-600 mt-2">基于过去一周问答数量数据统计 · 2025年11月20日</p>
+  </header>
+
+  <section class="mb-10">
+    <h2 class="section-title">数据概览</h2>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>端口</th>
+          <th>问答数量</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>插件端</td>
+          <td>491</td>
+        </tr>
+        <tr>
+          <td>网页端</td>
+          <td>332</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="mb-10">
+    <h2 class="section-title">问答数量柱状图对比</h2>
+    <div class="chart-container relative">
+      <div class="bar" style="left: 20%; height: 100%; background-color: #3b82f6;">
+        <div class="value-label">491</div>
+        <div class="bar-label">插件端</div>
+      </div>
+      <div class="tooltip" style="left: 20%; top: -40px;">插件端：491次问答</div>
+
+      <div class="bar" style="left: 50%; height: 67.6%; background-color: #10b981;">
+        <div class="value-label">332</div>
+        <div class="bar-label">网页端</div>
+      </div>
+      <div class="tooltip" style="left: 50%; top: -40px;">网页端：332次问答</div>
+    </div>
+  </section>
+
+  <section class="mb-10">
+    <h2 class="section-title">分析结论</h2>
+    <div class="conclusion-box">
+      <p>根据过去一周的使用数据，<strong>插件端问答数量为491次</strong>，显著高于网页端的<strong>332次</strong>。这表明用户更倾向于通过插件端与小金灵码进行交互，插件端的使用活跃度更高。可能的原因包括插件端集成于开发环境，使用更便捷，响应更即时，从而提升了用户粘性与使用频率。</p>
+    </div>
+  </section>
+
+  <section class="mb-10">
+    <h2 class="section-title">参考文献</h2>
+    <ol class="list-decimal list-inside space-y-2">
+      <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">小金灵码两端使用活跃度对比.csv</a></cite></li>
+    </ol>
+  </section>
+
+  <footer class="text-center text-gray-500 text-sm mt-12 pt-6 border-t border-gray-200">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    document.querySelectorAll('.bar').forEach(bar => {
+      bar.addEventListener('mouseenter', () => {
+        const tooltip = bar.nextElementSibling;
+        if (tooltip.classList.contains('tooltip')) {
+          tooltip.style.opacity = '1';
+        }
+      });
+      bar.addEventListener('mouseleave', () => {
+        const tooltip = bar.nextElementSibling;
+        if (tooltip.classList.contains('tooltip')) {
+          tooltip.style.opacity = '0';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

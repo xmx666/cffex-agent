@@ -1,0 +1,2 @@
+表名,分区数,总行数,分片字段,分片桶数,是否堆积
+ods_telemetry.cffex_developer,1,199,user_name,10,否

@@ -1,0 +1,216 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2025年第三季度小金灵码聊天服务问答类型调用分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .chart-container {
+      height: 400px;
+      margin-bottom: 2rem;
+    }
+    .pie-chart {
+      width: 300px;
+      height: 300px;
+      margin: 0 auto;
+    }
+    .data-label {
+      font-weight: bold;
+      color: #1f2937;
+      margin: 0.5rem 0;
+    }
+    .highlight {
+      background-color: #f3f4f6;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      border-left: 4px solid #3b82f6;
+    }
+    .chart-bar {
+      transition: fill 0.3s ease;
+    }
+    .chart-bar:hover {
+      fill: #1e40af;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <h1 class="text-4xl font-bold text-center mb-2 text-gray-900">2025年第三季度小金灵码聊天服务问答类型调用分析报告</h1>
+    <p class="text-lg text-center text-gray-600 mb-8">基于2025年第三季度调用数据，揭示用户交互行为特征与服务使用偏好</p>
+
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">核心数据概览</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="text-center p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+          <p class="text-sm text-gray-600">最高调用类型</p>
+          <p class="text-3xl font-bold text-blue-700">FREE_INPUT</p>
+        </div>
+        <div class="text-center p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+          <p class="text-sm text-gray-600">总调用次数</p>
+          <p class="text-3xl font-bold text-green-700">5,640</p>
+        </div>
+        <div class="text-center p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+          <p class="text-sm text-gray-600">主要类型占比</p>
+          <p class="text-3xl font-bold text-purple-700">81.74%</p>
+        </div>
+      </div>
+      <div class="mt-6 highlight">
+        <p class="text-gray-800">FREE_INPUT（自由问答）以4,610次调用占据绝对主导地位，占总调用量的81.74%，表明用户更倾向于开放式提问而非结构化指令。</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-2xl font-semibold mb-6 text-gray-800">问答类型调用次数柱状图（降序排列）</h2>
+      <div class="chart-container flex items-end justify-center space-x-2 h-80">
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-16 bg-blue-500 rounded-t-md relative" style="height: 81.74%;">
+            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-gray-800">4,610</div>
+          </div>
+          <div class="mt-2 text-center text-sm font-medium text-gray-700">FREE_INPUT</div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-16 bg-green-500 rounded-t-md relative" style="height: 9.26%;">
+            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-gray-800">522</div>
+          </div>
+          <div class="mt-2 text-center text-sm font-medium text-gray-700">EXPLAIN_CODE</div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-16 bg-yellow-500 rounded-t-md relative" style="height: 5.12%;">
+            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-gray-800">289</div>
+          </div>
+          <div class="mt-2 text-center text-sm font-medium text-gray-700">OPTIMIZE_CODE</div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-16 bg-red-500 rounded-t-md relative" style="height: 2.11%;">
+            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-gray-800">119</div>
+          </div>
+          <div class="mt-2 text-center text-sm font-medium text-gray-700">CODE_GENERATE_COMMENT</div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-16 bg-indigo-500 rounded-t-md relative" style="height: 1.72%;">
+            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-gray-800">97</div>
+          </div>
+          <div class="mt-2 text-center text-sm font-medium text-gray-700">GENERATE_TESTCASE</div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-16 bg-gray-400 rounded-t-md relative" style="height: 0.04%;">
+            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-gray-800">2</div>
+          </div>
+          <div class="mt-2 text-center text-sm font-medium text-gray-700">b09359cdbc763c5a6290b36a</div>
+        </div>
+        <div class="flex flex-col items-center flex-1">
+          <div class="w-16 bg-gray-400 rounded-t-md relative" style="height: 0.02%;">
+            <div class="absolute -top-8 left-1/2 transform -translate-x-1/2 text-xs font-bold text-gray-800">1</div>
+          </div>
+          <div class="mt-2 text-center text-sm font-medium text-gray-700">be2640990e4a83345487d262</div>
+        </div>
+      </div>
+      <p class="text-sm text-gray-600 mt-4 text-center">注：柱状图按调用次数降序排列，FREE_INPUT为绝对主导类型。</p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-2xl font-semibold mb-6 text-gray-800">问答类型调用占比饼图</h2>
+      <div class="flex flex-col md:flex-row items-center justify-center gap-12">
+        <div class="pie-chart relative">
+          <svg width="300" height="300" viewBox="0 0 300 300">
+            <circle cx="150" cy="150" r="140" fill="#f3f4f6" />
+            <path d="M150,150 L150,10 A140,140 0 1,1 285.5,150 Z" fill="#3b82f6" />
+            <path d="M150,150 L285.5,150 A140,140 0 0,1 255.5,255.5 Z" fill="#10b981" />
+            <path d="M150,150 L255.5,255.5 A140,140 0 0,1 205.5,275.5 Z" fill="#f59e0b" />
+            <path d="M150,150 L205.5,275.5 A140,140 0 0,1 150,290 Z" fill="#ef4444" />
+            <path d="M150,150 L150,290 A140,140 0 0,1 94.5,275.5 Z" fill="#8b5cf6" />
+            <path d="M150,150 L94.5,275.5 A140,140 0 0,1 94.5,275.5 Z" fill="#d1d5db" />
+            <path d="M150,150 L94.5,275.5 A140,140 0 0,1 94.5,275.5 Z" fill="#d1d5db" />
+          </svg>
+          <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center text-sm font-medium text-gray-700">
+            <div>5,640</div>
+            <div>总调用</div>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-blue-500 rounded mr-3"></div>
+            <span class="text-sm">FREE_INPUT: 4,610 (81.74%)</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-green-500 rounded mr-3"></div>
+            <span class="text-sm">EXPLAIN_CODE: 522 (9.26%)</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-yellow-500 rounded mr-3"></div>
+            <span class="text-sm">OPTIMIZE_CODE: 289 (5.12%)</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-red-500 rounded mr-3"></div>
+            <span class="text-sm">CODE_GENERATE_COMMENT: 119 (2.11%)</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-indigo-500 rounded mr-3"></div>
+            <span class="text-sm">GENERATE_TESTCASE: 97 (1.72%)</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-gray-400 rounded mr-3"></div>
+            <span class="text-sm">b09359cdbc763c5a6290b36a: 2 (0.04%)</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-4 h-4 bg-gray-400 rounded mr-3"></div>
+            <span class="text-sm">be2640990e4a83345487d262: 1 (0.02%)</span>
+          </div>
+        </div>
+      </div>
+      <p class="text-sm text-gray-600 mt-4 text-center">注：饼图按调用占比可视化，FREE_INPUT占据绝对主导，其余类型占比均低于10%。</p>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">分析结论</h2>
+      <p class="text-gray-700 mb-4">2025年第三季度小金灵码聊天服务的用户交互行为呈现出显著的集中性特征。自由问答（FREE_INPUT）以4,610次调用占据总调用量的81.74%，远超其他所有结构化指令类型之和，表明用户更倾向于以自然语言形式进行开放式探索，而非使用预设功能指令。</p>
+      <p class="text-gray-700 mb-4">次高频类型为EXPLAIN_CODE（522次，9.26%）与OPTIMIZE_CODE（289次，5.12%），说明在非自由问答场景中，代码解释与优化仍是核心需求，但使用频率远低于自由提问。</p>
+      <p class="text-gray-700 mb-4">其余类型如生成注释（119次）、生成测试用例（97次）及两个标识符（2次、1次）调用量极低，可能为系统内部测试、边缘功能或数据异常，建议后续评估其使用价值与优化空间。</p>
+      <p class="text-gray-700">综上，服务设计应持续强化对自然语言理解与开放式问答的支持能力，同时可考虑将EXPLAIN_CODE与OPTIMIZE_CODE功能进一步整合至自由问答流程中，提升用户体验的一致性与效率。</p>
+    </div>
+
+    <div class="bg-gray-100 rounded-lg p-6 mb-8">
+      <h2 class="text-2xl font-semibold mb-4 text-gray-800">数据来源</h2>
+      <p class="text-gray-700">本报告所有数据均来源于2025年第三季度小金灵码聊天服务问答类型调用数据（2025_Q3_chat_type_usage.csv），原始数据包含7个问答类型及其对应调用次数，数据完整、无缺失。</p>
+      <p class="text-gray-700 mt-2">原始数据内容如下：</p>
+      <pre class="bg-gray-900 text-green-400 p-4 rounded-lg text-sm overflow-x-auto mt-2">
+chat_type,call_count
+FREE_INPUT,4610
+EXPLAIN_CODE,522
+OPTIMIZE_CODE,289
+CODE_GENERATE_COMMENT,119
+GENERATE_TESTCASE,97
+b09359cdbc763c5a6290b36a,2
+be2640990e4a83345487d262,1</pre>
+    </div>
+
+    <div class="bg-gray-900 text-white text-center py-6 rounded-lg mt-12">
+      <p>Created by Autobots</p>
+      <p class="text-gray-400 mt-1">页面内容均由 AI 生成，仅供参考</p>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const bars = document.querySelectorAll('.chart-bar');
+      bars.forEach(bar => {
+        bar.addEventListener('mouseenter', function() {
+          this.style.fill = '#1e40af';
+        });
+        bar.addEventListener('mouseleave', function() {
+          this.style.fill = this.style.backgroundColor;
+        });
+      });
+    });
+  </script>
+</body>
+</html>

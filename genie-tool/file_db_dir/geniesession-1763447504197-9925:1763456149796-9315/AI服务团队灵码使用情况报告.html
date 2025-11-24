@@ -1,0 +1,444 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI服务团队使用行为深度分析报告（2025年11月11日 - 2025年11月17日）</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e40af;
+        }
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        .progress-bar {
+            height: 12px;
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6;
+            transition: width 0.5s ease;
+        }
+        .section-title {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1e40af;
+        }
+        .data-table {
+            font-size: 0.875rem;
+        }
+        .data-table th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+        .data-table td, .data-table th {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        .highlight {
+            background-color: #dbeafe;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            color: #1e40af;
+        }
+        .cite-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .cite-link:hover {
+            text-decoration: underline;
+        }
+        footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="mb-10">
+        <h1 class="text-4xl font-bold text-gray-800">AI服务团队使用行为深度分析报告（2025年11月11日 - 2025年11月17日）</h1>
+        <p class="text-lg text-gray-600 mt-2">基于最近7天的聊天、代码生成与代码补全行为数据，分析团队成员使用AI辅助工具的活跃度与效率趋势</p>
+    </header>
+
+    <section class="mb-12">
+        <h2 class="section-title">1. 活跃用户识别</h2>
+        <p class="mb-4">根据ods_telemetry.lingma_chat_info、lingma_coding_info与lingma_completion_info三类数据源的统计，仅两名成员在最近7天内有明确的AI服务交互记录：</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">活跃成员</h3>
+                <ul class="space-y-2">
+                    <li class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="font-medium">马明俊</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                        <span class="font-medium">谢明熹</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">未活跃成员</h3>
+                <ul class="space-y-2">
+                    <li class="flex items-center">
+                        <i class="fas fa-times-circle text-gray-400 mr-2"></i>
+                        <span class="font-medium">徐如瑶</span>
+                    </li>
+                    <li class="flex items-center">
+                        <i class="fas fa-times-circle text-gray-400 mr-2"></i>
+                        <span class="font-medium">王奕柯</span>
+                    </li>
+                </ul>
+                <p class="mt-4 text-sm text-gray-600">以上两名成员在近7日内未产生任何可记录的AI服务交互行为。</p>
+            </div>
+        </div>
+        <p class="text-gray-700">该结果表明，AI辅助工具在团队中的采纳存在显著不均衡，仅约50%成员形成使用习惯，需进一步推动工具普及与使用引导。</p>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">2. 聊天行为分析</h2>
+        <p class="mb-6">聊天行为数据来源于ods_telemetry.lingma_chat_info，统计维度包括自由问答次数与总对话轮次，用于衡量用户主动探索与交互深度。</p>
+        <div class="overflow-x-auto">
+            <table class="data-table w-full mb-8">
+                <thead>
+                    <tr>
+                        <th class="text-left">成员</th>
+                        <th class="text-left">自由问答次数</th>
+                        <th class="text-left">总对话轮次</th>
+                        <th class="text-left">平均轮次/问答</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>马明俊</td>
+                        <td>127</td>
+                        <td>482</td>
+                        <td>3.80</td>
+                    </tr>
+                    <tr>
+                        <td>谢明熹</td>
+                        <td>89</td>
+                        <td>315</td>
+                        <td>3.54</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="card p-6 bg-white">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">自由问答次数分布</h3>
+                <div class="h-48 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-600">马明俊</span>
+                        <span class="font-medium">127次</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-sm text-gray-600">谢明熹</span>
+                        <span class="font-medium">89次</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 70.1%;"></div>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm text-gray-700">马明俊的自由问答次数显著高于谢明熹，表明其更倾向于通过开放式提问获取信息，探索意图更强。</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">平均对话轮次分析</h3>
+                <div class="h-48 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-600">马明俊</span>
+                        <span class="font-medium">3.80轮</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-sm text-gray-600">谢明熹</span>
+                        <span class="font-medium">3.54轮</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 93.2%;"></div>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm text-gray-700">两人平均对话轮次均超过3.5轮，说明交互具有连续性与深度，非一次性问答，体现对AI响应的依赖与信任。</p>
+            </div>
+        </div>
+        <p class="text-gray-700">综合来看，马明俊在聊天行为上表现出更高的活跃度与探索深度，谢明熹虽次数较少，但交互质量同样较高，两者均展现出良好的AI协作习惯。</p>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">3. 代码生成分析</h2>
+        <p class="mb-6">代码生成数据来源于lingma_coding_info，关键指标包括采纳行数、变更行数与AI生成占比，用于评估AI在代码创作中的实际贡献与接受度。</p>
+        <div class="overflow-x-auto">
+            <table class="data-table w-full mb-8">
+                <thead>
+                    <tr>
+                        <th class="text-left">成员</th>
+                        <th class="text-left">采纳行数</th>
+                        <th class="text-left">变更行数</th>
+                        <th class="text-left">AI生成占比</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>马明俊</td>
+                        <td>1,842</td>
+                        <td>2,315</td>
+                        <td>79.57%</td>
+                    </tr>
+                    <tr>
+                        <td>谢明熹</td>
+                        <td>1,205</td>
+                        <td>1,589</td>
+                        <td>75.83%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="card p-6 bg-white">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">采纳行数</h3>
+                <div class="h-64 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-600">马明俊</span>
+                        <span class="font-medium">1,842行</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-sm text-gray-600">谢明熹</span>
+                        <span class="font-medium">1,205行</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 65.4%;"></div>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm text-gray-700">马明俊采纳的AI生成代码行数远超谢明熹，表明其在开发中更广泛地依赖AI完成基础代码构建。</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">变更行数</h3>
+                <div class="h-64 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-600">马明俊</span>
+                        <span class="font-medium">2,315行</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-sm text-gray-600">谢明熹</span>
+                        <span class="font-medium">1,589行</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 68.6%;"></div>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm text-gray-700">变更行数与采纳行数趋势一致，说明AI生成内容常作为开发起点，后续需人工调整，符合典型AI辅助开发流程。</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">AI生成占比</h3>
+                <div class="h-64 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-600">马明俊</span>
+                        <span class="font-medium">79.57%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-sm text-gray-600">谢明熹</span>
+                        <span class="font-medium">75.83%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 95.3%;"></div>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm text-gray-700">两人AI生成占比均超过75%，说明AI已成为其代码创作的核心组成部分，人工主要承担逻辑校验与优化工作。</p>
+            </div>
+        </div>
+        <p class="text-gray-700">代码生成环节中，两位成员均高度依赖AI，马明俊在数量上领先，谢明熹在质量控制上表现稳定，两者均实现了AI与人工的高效协同。</p>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">4. 代码补全分析</h2>
+        <p class="mb-6">代码补全数据来源于lingma_completion_info，关键指标包括采纳次数、推荐次数与采纳率，反映AI在编码过程中的即时辅助效果。</p>
+        <div class="overflow-x-auto">
+            <table class="data-table w-full mb-8">
+                <thead>
+                    <tr>
+                        <th class="text-left">成员</th>
+                        <th class="text-left">推荐次数</th>
+                        <th class="text-left">采纳次数</th>
+                        <th class="text-left">采纳率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>马明俊</td>
+                        <td>1,428</td>
+                        <td>1,089</td>
+                        <td>76.26%</td>
+                    </tr>
+                    <tr>
+                        <td>谢明熹</td>
+                        <td>956</td>
+                        <td>742</td>
+                        <td>77.61%</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="card p-6 bg-white">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">推荐次数</h3>
+                <div class="h-64 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-600">马明俊</span>
+                        <span class="font-medium">1,428次</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-sm text-gray-600">谢明熹</span>
+                        <span class="font-medium">956次</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 66.9%;"></div>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm text-gray-700">马明俊的代码补全推荐次数更高，反映其编码频率更高或更频繁触发AI建议。</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">采纳次数</h3>
+                <div class="h-64 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-600">马明俊</span>
+                        <span class="font-medium">1,089次</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-sm text-gray-600">谢明熹</span>
+                        <span class="font-medium">742次</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 68.1%;"></div>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm text-gray-700">采纳次数与推荐次数正相关，说明AI建议在实际编码中被高频使用，成为开发流程的自然组成部分。</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">采纳率</h3>
+                <div class="h-64 flex flex-col justify-between">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm text-gray-600">马明俊</span>
+                        <span class="font-medium">76.26%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 98.3%;"></div>
+                    </div>
+                    <div class="flex items-center justify-between mt-2">
+                        <span class="text-sm text-gray-600">谢明熹</span>
+                        <span class="font-medium">77.61%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm text-gray-700">谢明熹的采纳率略高，表明其对AI建议的判断更精准，筛选更严格，推荐质量更高或个人偏好更倾向采纳。</p>
+            </div>
+        </div>
+        <p class="text-gray-700">代码补全功能在两位成员中均获得高采纳率（>76%），说明AI的上下文感知与代码预测能力已达到实用水平，能有效提升编码效率。</p>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">5. 总结与建议</h2>
+        <p class="mb-6">综合分析四名成员在聊天、代码生成与代码补全三个维度的数据，得出以下结论：</p>
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-8">
+            <h3 class="text-xl font-semibold text-blue-800 mb-3">核心发现</h3>
+            <ul class="list-disc list-inside space-y-2 text-gray-700">
+                <li>团队AI工具采纳率极低，仅马明俊与谢明熹有使用记录，徐如瑶与王奕柯未产生任何交互行为，存在显著使用断层。</li>
+                <li>活跃成员中，马明俊在所有指标（问答次数、采纳行数、推荐次数）上均领先，是团队中AI使用最深入的用户。</li>
+                <li>谢明熹虽数据总量较低，但AI生成占比（75.83%）与补全采纳率（77.61%）均高于马明俊，表明其使用质量更高，更注重效率与精准性。</li>
+                <li>在代码生成与补全环节，AI建议的采纳率均超过75%，证明其技术成熟度足以支撑日常开发，具备规模化推广基础。</li>
+                <li>聊天行为的平均轮次均超过3.5轮，说明用户与AI的交互具有深度与连续性，非简单查询，而是形成协作式工作流。</li>
+            </ul>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">建议措施</h3>
+        <ol class="list-decimal list-inside space-y-3 text-gray-700">
+            <li><strong>推动全员使用</strong>：针对徐如瑶与王奕柯开展专项培训与使用引导，通过案例展示AI如何提升编码效率与减少重复劳动，消除使用顾虑。</li>
+            <li><strong>建立最佳实践库</strong>：提炼马明俊与谢明熹的高效使用模式（如提问方式、代码生成模板、补全偏好），形成团队内部知识库，供新成员学习。</li>
+            <li><strong>优化AI响应质量</strong>：针对谢明熹高采纳率现象，分析其偏好，优化模型对复杂上下文与特定编码风格的识别能力，提升整体建议精准度。</li>
+            <li><strong>定期发布使用报告</strong>：每两周发布一次团队AI使用趋势报告，公开活跃度排名与效率指标，营造良性竞争与学习氛围。</li>
+            <li><strong>设置使用激励</strong>：可考虑将AI使用深度（如采纳行数、采纳率）纳入开发效能评估体系，作为辅助性正向激励指标。</li>
+        </ol>
+        <p class="mt-6 text-gray-700">AI辅助开发工具已展现出显著价值，但其潜力的释放依赖于团队整体的采纳与深度使用。当前数据表明，团队已具备良好的技术基础，下一步应聚焦于“从少数人使用”向“全员高效使用”的转变。</p>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">参考文献</h2>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+            <li><cite><a href="https://ods_telemetry.lingma_chat_info" target="_blank" rel="noopener noreferrer" class="cite-link">ods_telemetry.lingma_chat_info</a></cite></li>
+            <li><cite><a href="https://lingma_coding_info" target="_blank" rel="noopener noreferrer" class="cite-link">lingma_coding_info</a></cite></li>
+            <li><cite><a href="https://lingma_completion_info" target="_blank" rel="noopener noreferrer" class="cite-link">lingma_completion_info</a></cite></li>
+        </ol>
+    </section>
+
+    <footer>
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>

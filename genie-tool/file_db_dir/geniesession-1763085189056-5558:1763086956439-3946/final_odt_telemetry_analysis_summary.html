@@ -1,0 +1,162 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Telemetry系统版本分片健康状态报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+    }
+    .status-good {
+      background-color: #d1fae5;
+      border-left: 4px solid #10b981;
+    }
+    .status-label {
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .data-table th,
+    .data-table td {
+      border: 1px solid #e5e7eb;
+      padding: 0.75rem;
+    }
+    .data-table th {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .badge-normal {
+      background-color: #d1fae5;
+      color: #065f46;
+    }
+    .summary-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 0.5rem;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .icon-check {
+      color: #10b981;
+    }
+    .icon-info {
+      color: #3b82f6;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <header class="text-center mb-10">
+      <h1 class="text-3xl font-bold text-gray-900 mb-2">Telemetry系统版本分片健康状态报告</h1>
+      <p class="text-lg text-gray-600">基于 ods_telemetry_cffex_developer_version_analysis.csv 数据分析</p>
+      <p class="text-sm text-gray-500 mt-2">报告生成日期：2025年11月14日</p>
+    </header>
+
+    <div class="summary-card bg-white shadow-sm">
+      <div class="flex items-start mb-4">
+        <i class="fas fa-check-circle fa-2x icon-check mr-4 mt-1"></i>
+        <div>
+          <h2 class="text-2xl font-semibold text-gray-800 mb-2">核心结论</h2>
+          <p class="text-lg text-gray-700 leading-relaxed">经全面核查，系统中所有设备分片（TabletId）的版本计数均为2，且状态均为NORMAL，无任何版本堆积或异常状态。系统当前版本分片分布均衡，运行状态健康，符合预期规范。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white shadow rounded-lg overflow-hidden mb-8">
+      <div class="px-6 py-4 bg-gray-50 border-b">
+        <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+          <i class="fas fa-table mr-2 icon-info"></i>
+          数据明细
+        </h2>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full data-table">
+          <thead>
+            <tr>
+              <th class="text-left px-6 py-3">TabletId</th>
+              <th class="text-left px-6 py-3">VersionCount</th>
+              <th class="text-left px-6 py-3">State</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="px-6 py-4 font-mono text-gray-900">5987610</td>
+              <td class="px-6 py-4 font-mono text-gray-900">2</td>
+              <td class="px-6 py-4">
+                <span class="badge badge-normal">NORMAL</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 font-mono text-gray-900">5987614</td>
+              <td class="px-6 py-4 font-mono text-gray-900">2</td>
+              <td class="px-6 py-4">
+                <span class="badge badge-normal">NORMAL</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 font-mono text-gray-900">5987618</td>
+              <td class="px-6 py-4 font-mono text-gray-900">2</td>
+              <td class="px-6 py-4">
+                <span class="badge badge-normal">NORMAL</span>
+              </td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 font-mono text-gray-900">5987622</td>
+              <td class="px-6 py-4 font-mono text-gray-900">2</td>
+              <td class="px-6 py-4">
+                <span class="badge badge-normal">NORMAL</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="bg-white shadow rounded-lg p-6 mb-8">
+      <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+        <i class="fas fa-chart-line mr-2 icon-info"></i>
+        数据分析说明
+      </h2>
+      <p class="text-gray-700 leading-relaxed mb-4">
+        本报告所依据的数据源为 <code>ods_telemetry_cffex_developer_version_analysis.csv</code>，共包含4条设备分片记录。所有记录的 <code>VersionCount</code> 字段值均为2，表明每个设备分片均维持了统一且预期的版本数量，不存在版本滞后或版本冗余现象。
+      </p>
+      <p class="text-gray-700 leading-relaxed mb-4">
+        所有记录的 <code>State</code> 字段均为 <code>NORMAL</code>，表明系统运行状态稳定，无异常、警告或故障状态。该数据分布符合系统设计的健康阈值，未发现任何异常波动或潜在风险。
+      </p>
+      <p class="text-gray-700 leading-relaxed">
+        综上，系统版本分片管理机制运行良好，版本控制策略有效执行，无需干预或优化。
+      </p>
+    </div>
+
+    <div class="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
+      <h2 class="text-xl font-semibold text-green-800 mb-3 flex items-center">
+        <i class="fas fa-shield-alt mr-2"></i>
+        系统健康评估
+      </h2>
+      <ul class="list-disc list-inside text-green-700 space-y-2">
+        <li>所有 TabletId 的 VersionCount 均为 2，无版本堆积或缺失</li>
+        <li>所有设备状态均为 NORMAL，无异常状态</li>
+        <li>数据分布完全一致，系统版本管理稳定可靠</li>
+        <li>当前状态符合生产环境健康标准，无需告警或处理</li>
+      </ul>
+    </div>
+
+    <footer class="text-center text-gray-500 text-sm mt-12 pt-8 border-t border-gray-200">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

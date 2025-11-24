@@ -1,0 +1,140 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>创新实验室模型使用分析报告：DeepSeek-R1-Q4KM-Local 高频应用洞察</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+        }
+        .table-container {
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        th, td {
+            padding: 0.75rem;
+            border: 1px solid #e5e7eb;
+        }
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        tr:nth-child(even) {
+            background-color: #f3f4f6;
+        }
+        .highlight {
+            background-color: #dbeafe;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+            color: #2563eb;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .badge-online {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .badge-inference {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .section-title {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        .conclusion-card {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">创新实验室模型使用分析报告：DeepSeek-R1-Q4KM-Local 高频应用洞察</h1>
+        <p class="text-gray-600 mb-8">基于2025年11月12日最新使用数据，分析实验室核心推理模型的部署与应用特征</p>
+
+        <h2 class="section-title">核心模型使用数据</h2>
+        <div class="table-container">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead>
+                    <tr>
+                        <th class="text-left">模型名称</th>
+                        <th class="text-left">模型类型</th>
+                        <th class="text-left">部署状态</th>
+                        <th class="text-left">使用频率</th>
+                        <th class="text-left">主要应用场景</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                        <td class="font-medium text-gray-900">deepseek-r1-q4km-local</td>
+                        <td><span class="badge badge-inference">推理模型</span></td>
+                        <td><span class="badge badge-online">在线</span></td>
+                        <td class="text-green-700 font-semibold">最高</td>
+                        <td>内部API服务、自动化问答、文本生成、代码辅助</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2 class="section-title">高频使用特征分析</h2>
+        <div class="conclusion-card">
+            <p class="mb-4">在创新实验室的模型使用体系中，<span class="highlight">deepseek-r1-q4km-local</span> 作为当前最常用的模型，其高频使用特征主要体现在以下方面：</p>
+            <ul class="list-disc pl-5 mb-4 space-y-2">
+                <li>作为核心推理模型，其轻量化设计（Q4KM量化版本）在保证推理质量的同时显著降低资源消耗，适配实验室内部服务器的算力环境。</li>
+                <li>部署状态为“在线”，表明其已稳定接入核心服务链路，可被多个内部系统实时调用，支撑日常业务需求。</li>
+                <li>其使用频率位居榜首，反映出实验室对高效、稳定、低延迟文本生成与语义理解能力的强烈依赖，尤其在自动化问答与代码辅助场景中成为首选。</li>
+                <li>该模型的高频使用，体现了实验室在模型选型上倾向于平衡性能、效率与可部署性，而非单纯追求参数规模。</li>
+            </ul>
+            <p class="mb-4">综上所述，<span class="highlight">deepseek-r1-q4km-local</span> 已成为实验室内部服务的基础设施级模型，其稳定性和效率直接关系到多项核心业务的运行流畅度。</p>
+        </div>
+
+        <h2 class="section-title">结论摘要</h2>
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
+            <p class="text-lg font-medium text-blue-800 mb-3">核心结论：</p>
+            <ul class="list-disc pl-5 space-y-2 text-blue-700">
+                <li>创新实验室当前最常用的模型为 <strong>deepseek-r1-q4km-local</strong>，其类型为推理模型，部署状态为在线。</li>
+                <li>该模型因高效、稳定、资源占用低，被广泛应用于内部API服务、自动化问答与代码辅助等高频场景。</li>
+                <li>其使用频率最高，已成为支撑实验室日常智能服务的关键基础设施。</li>
+            </ul>
+        </div>
+
+        <h2 class="section-title">参考文献</h2>
+        <ol class="list-decimal pl-5 space-y-2">
+            <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">创新实验室模型使用数据报告</a></cite></li>
+        </ol>
+
+        <footer>
+            Created by Autobots<br>
+            页面内容均由 AI 生成，仅供参考
+        </footer>
+    </div>
+</body>
+</html>

@@ -1,0 +1,533 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>团队AI辅助开发使用行为深度分析报告</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        .chart-bar {
+            transition: all 0.3s ease;
+            border-radius: 4px;
+            margin: 0 2px;
+        }
+        .chart-bar:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .data-point {
+            font-weight: 600;
+            color: #007bff;
+        }
+        .section-header {
+            border-bottom: 2px solid #e9ecef;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #212529;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .legend-item {
+            display: inline-flex;
+            align-items: center;
+            margin-right: 1.5rem;
+            font-size: 0.9rem;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        .badge-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .badge-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .badge-primary {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        footer {
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            color: #6c757d;
+            border-top: 1px solid #e9ecef;
+            font-size: 0.9rem;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 180px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -90px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">团队AI辅助开发使用行为深度分析报告</h1>
+        <p class="text-lg text-gray-600">基于2025年11月18日前的使用数据，分析徐如瑶、马明俊、王奕柯、谢明熹四名成员的AI辅助开发行为</p>
+    </header>
+
+    <section class="mb-12">
+        <h2 class="section-header text-2xl font-bold">一、成员活跃度概览</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">问答次数</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span>徐如瑶</span>
+                        <span class="data-point">127</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>马明俊</span>
+                        <span class="data-point">98</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>王奕柯</span>
+                        <span class="data-point">156</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>谢明熹</span>
+                        <span class="data-point">89</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mt-4">问答次数反映成员主动寻求AI辅助解决问题的频率</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">代码采纳行数</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span>徐如瑶</span>
+                        <span class="data-point">2,456</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>马明俊</span>
+                        <span class="data-point">1,892</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>王奕柯</span>
+                        <span class="data-point">3,108</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>谢明熹</span>
+                        <span class="data-point">1,543</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mt-4">代码采纳行数衡量AI生成代码被实际采纳并集成到项目中的规模</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">补全采纳率</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span>徐如瑶</span>
+                        <span class="data-point">78.4%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>马明俊</span>
+                        <span class="data-point">72.1%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>王奕柯</span>
+                        <span class="data-point">85.6%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>谢明熹</span>
+                        <span class="data-point">69.8%</span>
+                    </div>
+                </div>
+                <p class="text-sm text-gray-600 mt-4">补全采纳率表示AI代码补全建议被接受的比例，反映建议质量与用户信任度</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-header text-2xl font-bold">二、语言与IDE使用分布</h2>
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">编程语言使用分布</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="font-medium text-gray-700 mb-4">按成员统计</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span>徐如瑶</span>
+                            <span class="text-sm text-gray-600">Python(62%), JavaScript(28%), Java(10%)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>马明俊</span>
+                            <span class="text-sm text-gray-600">Java(55%), Python(30%), C++(15%)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>王奕柯</span>
+                            <span class="text-sm text-gray-600">Python(75%), JavaScript(15%), TypeScript(10%)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>谢明熹</span>
+                            <span class="text-sm text-gray-600">JavaScript(65%), Python(25%), HTML/CSS(10%)</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-medium text-gray-700 mb-4">团队整体语言偏好</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span>Python</span>
+                            <span class="font-medium">68.5%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>JavaScript</span>
+                            <span class="font-medium">42.8%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>Java</span>
+                            <span class="font-medium">32.5%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>C++</span>
+                            <span class="font-medium">10.2%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>TypeScript</span>
+                            <span class="font-medium">8.7%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">IDE使用分布</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="font-medium text-gray-700 mb-4">按成员统计</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span>徐如瑶</span>
+                            <span class="text-sm text-gray-600">VS Code(95%), IntelliJ IDEA(5%)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>马明俊</span>
+                            <span class="text-sm text-gray-600">IntelliJ IDEA(85%), VS Code(15%)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>王奕柯</span>
+                            <span class="text-sm text-gray-600">VS Code(98%)</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>谢明熹</span>
+                            <span class="text-sm text-gray-600">VS Code(90%), WebStorm(10%)</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-medium text-gray-700 mb-4">团队整体IDE偏好</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span>VS Code</span>
+                            <span class="font-medium">95.3%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>IntelliJ IDEA</span>
+                            <span class="font-medium">42.5%</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span>WebStorm</span>
+                            <span class="font-medium">5.2%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-header text-2xl font-bold">三、反馈情况统计</h2>
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">反馈类型分布</h3>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">成员</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">正面反馈</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">负面反馈</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">建议反馈</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">总反馈数</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">徐如瑶</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">18</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">5</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">12</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">35</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">马明俊</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">15</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">8</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">10</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">33</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">王奕柯</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">22</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">3</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">15</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">40</td>
+                        </tr>
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">谢明熹</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">12</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">11</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">8</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">31</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-sm text-gray-600">正面反馈主要涉及AI建议准确、生成代码质量高、节省时间；负面反馈主要涉及建议不相关、生成代码有错误、响应延迟；建议反馈多为希望支持更多语言、优化上下文理解等</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">反馈情感倾向分析</h3>
+            <div class="flex flex-wrap items-center mb-6">
+                <div class="legend-item">
+                    <div class="legend-color bg-green-500"></div>
+                    <span>正面反馈占比</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color bg-red-500"></div>
+                    <span>负面反馈占比</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color bg-yellow-500"></div>
+                    <span>建议反馈占比</span>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-3xl font-bold text-green-600">51.4%</div>
+                    <div class="text-sm text-gray-600">徐如瑶</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-3xl font-bold text-green-600">45.5%</div>
+                    <div class="text-sm text-gray-600">马明俊</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-3xl font-bold text-green-600">55.0%</div>
+                    <div class="text-sm text-gray-600">王奕柯</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-3xl font-bold text-green-600">38.7%</div>
+                    <div class="text-sm text-gray-600">谢明熹</div>
+                </div>
+            </div>
+            <p class="mt-4 text-sm text-gray-600">王奕柯的正面反馈占比最高，表明其对AI辅助工具的满意度最高；谢明熹的负面反馈比例最高，可能与其主要使用JavaScript相关，AI在该语言的上下文理解上存在挑战</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-header text-2xl font-bold">四、关键指标对比图表</h2>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">活跃度指标对比柱状图</h3>
+            <div class="chart-container">
+                <div class="flex h-full items-end justify-between px-4">
+                    <div class="flex flex-col items-center flex-1">
+                        <div class="chart-bar bg-blue-500 h-3/4 w-full" style="height: 65%;"></div>
+                        <div class="mt-2 text-xs text-gray-700">徐如瑶</div>
+                        <div class="text-xs text-gray-500 mt-1">127</div>
+                    </div>
+                    <div class="flex flex-col items-center flex-1">
+                        <div class="chart-bar bg-blue-500 h-3/4 w-full" style="height: 50%;"></div>
+                        <div class="mt-2 text-xs text-gray-700">马明俊</div>
+                        <div class="text-xs text-gray-500 mt-1">98</div>
+                    </div>
+                    <div class="flex flex-col items-center flex-1">
+                        <div class="chart-bar bg-blue-500 h-3/4 w-full" style="height: 80%;"></div>
+                        <div class="mt-2 text-xs text-gray-700">王奕柯</div>
+                        <div class="text-xs text-gray-500 mt-1">156</div>
+                    </div>
+                    <div class="flex flex-col items-center flex-1">
+                        <div class="chart-bar bg-blue-500 h-3/4 w-full" style="height: 45%;"></div>
+                        <div class="mt-2 text-xs text-gray-700">谢明熹</div>
+                        <div class="text-xs text-gray-500 mt-1">89</div>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-4 text-sm text-gray-600">王奕柯在问答次数上表现最为活跃，是团队中使用AI辅助进行问题探索的主力成员；谢明熹的问答频率最低，可能与其工作性质或对AI工具的使用习惯有关</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">代码采纳行数对比柱状图</h3>
+            <div class="chart-container">
+                <div class="flex h-full items-end justify-between px-4">
+                    <div class="flex flex-col items-center flex-1">
+                        <div class="chart-bar bg-green-500 h-3/4 w-full" style="height: 55%;"></div>
+                        <div class="mt-2 text-xs text-gray-700">徐如瑶</div>
+                        <div class="text-xs text-gray-500 mt-1">2,456</div>
+                    </div>
+                    <div class="flex flex-col items-center flex-1">
+                        <div class="chart-bar bg-green-500 h-3/4 w-full" style="height: 42%;"></div>
+                        <div class="mt-2 text-xs text-gray-700">马明俊</div>
+                        <div class="text-xs text-gray-500 mt-1">1,892</div>
+                    </div>
+                    <div class="flex flex-col items-center flex-1">
+                        <div class="chart-bar bg-green-500 h-3/4 w-full" style="height: 70%;"></div>
+                        <div class="mt-2 text-xs text-gray-700">王奕柯</div>
+                        <div class="text-xs text-gray-500 mt-1">3,108</div>
+                    </div>
+                    <div class="flex flex-col items-center flex-1">
+                        <div class="chart-bar bg-green-500 h-3/4 w-full" style="height: 35%;"></div>
+                        <div class="mt-2 text-xs text-gray-700">谢明熹</div>
+                        <div class="text-xs text-gray-500 mt-1">1,543</div>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-4 text-sm text-gray-600">王奕柯的代码采纳行数远超其他成员，表明其不仅频繁使用AI，且采纳率高，是AI辅助开发的深度使用者；谢明熹的采纳行数最低，可能与其工作内容或对AI生成代码的审慎态度有关</p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">补全采纳率对比柱状图</h3>
+            <div class="chart-container">
+                <div class="flex h-full items-end justify-between px-4">
+                    <div class="flex flex-col items-center flex-1">
+                        <div class="chart-bar bg-purple-500 h-3/4 w-full" style="height: 78%;"></div>
+                        <div class="mt-2 text-xs text-gray-700">徐如瑶</div>
+                        <div class="text-xs text-gray-500 mt-1">78.4%</div>
+                    </div>
+                    <div class="flex flex-col items-center flex-1">
+                        <div class="chart-bar bg-purple-500 h-3/4 w-full" style="height: 72%;"></div>
+                        <div class="mt-2 text-xs text-gray-700">马明俊</div>
+                        <div class="text-xs text-gray-500 mt-1">72.1%</div>
+                    </div>
+                    <div class="flex flex-col items-center flex-1">
+                        <div class="chart-bar bg-purple-500 h-3/4 w-full" style="height: 86%;"></div>
+                        <div class="mt-2 text-xs text-gray-700">王奕柯</div>
+                        <div class="text-xs text-gray-500 mt-1">85.6%</div>
+                    </div>
+                    <div class="flex flex-col items-center flex-1">
+                        <div class="chart-bar bg-purple-500 h-3/4 w-full" style="height: 70%;"></div>
+                        <div class="mt-2 text-xs text-gray-700">谢明熹</div>
+                        <div class="text-xs text-gray-500 mt-1">69.8%</div>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-4 text-sm text-gray-600">王奕柯的补全采纳率最高，达到85.6%，表明其对AI生成代码的信任度和依赖度最高；谢明熹的采纳率最低，为69.8%，可能与其主要使用的JavaScript语言相关，AI在该语言的上下文理解上存在局限</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-header text-2xl font-bold">五、使用趋势总结与建议</h2>
+        
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">核心发现总结</h3>
+            <ul class="list-disc pl-6 space-y-3 text-gray-700">
+                <li>王奕柯是团队中AI辅助开发的标杆用户，其在问答次数、代码采纳行数和补全采纳率三项核心指标上均排名第一，展现出极高的AI工具使用深度与信任度</li>
+                <li>徐如瑶在问答次数和补全采纳率上表现优异，是积极的探索者和高质量的采纳者，其Python使用偏好与AI工具的强项高度契合</li>
+                <li>马明俊的使用数据均衡，但各项指标均处于中等水平，有潜力通过优化使用习惯提升效率</li>
+                <li>谢明熹的活跃度和采纳率均处于最低水平，其主要使用JavaScript，可能面临AI在该语言上下文理解不足的挑战，导致反馈负面比例最高</li>
+                <li>团队整体高度依赖VS Code作为主要IDE，其AI插件生态的完善是提升整体效率的关键</li>
+                <li>Python是团队最主流的编程语言，AI工具在该语言上的表现直接影响整体生产力</li>
+            </ul>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">针对性建议</h3>
+            <ol class="list-decimal pl-6 space-y-3 text-gray-700">
+                <li><strong>对王奕柯</strong>：鼓励其分享最佳实践，担任团队AI使用导师，帮助其他成员提升使用效率</li>
+                <li><strong>对徐如瑶</strong>：肯定其高质量采纳行为，可引导其参与AI提示词工程优化，提升建议生成质量</li>
+                <li><strong>对马明俊</strong>：提供个性化使用培训，重点提升其在代码补全和快速问答方面的使用频率，挖掘潜在效率提升空间</li>
+                <li><strong>对谢明熹</strong>：优先优化JavaScript语言支持，提供专门的JavaScript场景AI使用指南，减少负面反馈；鼓励其参与反馈闭环，帮助改进AI模型</li>
+                <li><strong>团队层面</strong>：建立AI辅助开发最佳实践知识库，定期组织经验分享会；针对JavaScript等AI支持较弱的语言，探索定制化模型微调方案</li>
+                <li><strong>技术层面</strong>：持续监控各语言的补全采纳率，优先投入资源优化Python和JavaScript的上下文理解能力</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-header text-2xl font-bold">六、参考文献</h2>
+        <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+            <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">lingma_chat_info</a></cite></li>
+            <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">lingma_coding_info</a></cite></li>
+            <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">lingma_completion_info</a></cite></li>
+            <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">lingma_feedbacks_info</a></cite></li>
+            <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">lingma_statistics_info</a></cite></li>
+        </ol>
+    </section>
+
+    <footer>
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 为图表添加交互提示
+        document.querySelectorAll('.chart-bar').forEach(bar => {
+            bar.addEventListener('mouseenter', function() {
+                const parent = this.parentElement;
+                const member = parent.querySelector('.text-gray-700').textContent;
+                const value = parent.querySelector('.text-gray-500').textContent;
+                const tooltip = document.createElement('div');
+                tooltip.className = 'absolute bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-10';
+                tooltip.textContent = `${member}: ${value}`;
+                tooltip.style.left = `${this.offsetLeft + this.offsetWidth / 2 - 40}px`;
+                tooltip.style.top = `${this.offsetTop - 30}px`;
+                document.body.appendChild(tooltip);
+                
+                this.style.transform = 'scale(1.05)';
+            });
+            
+            bar.addEventListener('mouseleave', function() {
+                const tooltip = document.querySelector('.absolute.bg-gray-800');
+                if (tooltip) tooltip.remove();
+                this.style.transform = 'scale(1)';
+            });
+        });
+    </script>
+</body>
+</html>

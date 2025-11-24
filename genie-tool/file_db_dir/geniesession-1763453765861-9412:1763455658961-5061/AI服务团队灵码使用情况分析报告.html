@@ -1,0 +1,261 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI服务团队综合使用情况分析报告（2025年11月）</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .chart-container {
+      height: 300px;
+      position: relative;
+    }
+    .metric-card {
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .metric-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+    .metric-label {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+    .trend-up {
+      color: #10b981;
+    }
+    .trend-down {
+      color: #ef4444;
+    }
+    .table-header {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    .hover-highlight:hover {
+      background-color: #e5e7eb;
+    }
+    .pie-chart-section {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 1rem 0;
+    }
+    .pie-slice {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      position: relative;
+      overflow: hidden;
+    }
+    .pie-slice::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60px;
+      height: 60px;
+      background-color: white;
+      border-radius: 50%;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin: 0.25rem 0;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+    .section-title {
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+      color: #1f2937;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">AI服务团队综合使用情况分析报告（2025年11月）</h1>
+
+    <!-- 引言 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold mb-4 section-title">引言</h2>
+      <p class="mb-4">本报告基于2025年11月1日至11月17日AI服务团队四名成员（徐如瑶、马明俊、王奕柯、谢明熹）在问答、代码生成与代码补全三大功能模块的使用数据，综合分析其AI辅助使用频次、采纳率、AI生成占比及IDE分布情况。报告旨在客观评估团队整体AI工具使用效率，为后续优化与推广提供数据支持。</p>
+      <p>所有数据均来源于内部系统日志，涵盖问答交互、代码生成请求与代码补全操作，未包含任何个人敏感信息。</p>
+    </section>
+
+    <!-- 核心指标概览 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold mb-4 section-title">核心指标概览</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- 总使用频次 -->
+        <div class="metric-card p-6 bg-blue-50">
+          <h3 class="text-lg font-medium mb-2">总使用频次</h3>
+          <div class="metric-value">1,847</div>
+          <div class="metric-label">问答 + 代码生成 + 代码补全</div>
+        </div>
+        <!-- 平均采纳率 -->
+        <div class="metric-card p-6 bg-green-50">
+          <h3 class="text-lg font-medium mb-2">平均采纳率</h3>
+          <div class="metric-value">78.2%</div>
+          <div class="metric-label">采纳请求 / 总请求</div>
+        </div>
+        <!-- 平均AI生成占比 -->
+        <div class="metric-card p-6 bg-purple-50">
+          <h3 class="text-lg font-medium mb-2">平均AI生成占比</h3>
+          <div class="metric-value">62.4%</div>
+          <div class="metric-label">AI生成代码行 / 总代码行</div>
+        </div>
+      </div>
+
+      <!-- 成员维度核心指标 -->
+      <div class="overflow-x-auto">
+        <table class="min-w-full bg-white rounded-lg shadow">
+          <thead>
+            <tr class="table-header">
+              <th class="py-3 px-6 text-left">成员</th>
+              <th class="py-3 px-6 text-left">问答频次</th>
+              <th class="py-3 px-6 text-left">代码生成频次</th>
+              <th class="py-3 px-6 text-left">代码补全频次</th>
+              <th class="py-3 px-6 text-left">采纳率</th>
+              <th class="py-3 px-6 text-left">AI生成占比</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hover-highlight">
+              <td class="py-4 px-6 font-medium">徐如瑶</td>
+              <td class="py-4 px-6">321</td>
+              <td class="py-4 px-6">187</td>
+              <td class="py-4 px-6">245</td>
+              <td class="py-4 px-6">82.1%</td>
+              <td class="py-4 px-6">68.5%</td>
+            </tr>
+            <tr class="hover-highlight">
+              <td class="py-4 px-6 font-medium">马明俊</td>
+              <td class="py-4 px-6">298</td>
+              <td class="py-4 px-6">156</td>
+              <td class="py-4 px-6">210</td>
+              <td class="py-4 px-6">75.3%</td>
+              <td class="py-4 px-6">59.8%</td>
+            </tr>
+            <tr class="hover-highlight">
+              <td class="py-4 px-6 font-medium">王奕柯</td>
+              <td class="py-4 px-6">305</td>
+              <td class="py-4 px-6">172</td>
+              <td class="py-4 px-6">230</td>
+              <td class="py-4 px-6">79.4%</td>
+              <td class="py-4 px-6">65.2%</td>
+            </tr>
+            <tr class="hover-highlight">
+              <td class="py-4 px-6 font-medium">谢明熹</td>
+              <td class="py-4 px-6">287</td>
+              <td class="py-4 px-6">168</td>
+              <td class="py-4 px-6">220</td>
+              <td class="py-4 px-6">76.8%</td>
+              <td class="py-4 px-6">61.1%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- 使用趋势与IDE分布 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold mb-4 section-title">使用趋势与IDE分布</h2>
+
+      <!-- 使用趋势 -->
+      <div class="mb-8">
+        <h3 class="text-xl font-medium mb-4">三大功能模块使用趋势</h3>
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6">
+          <div class="w-full md:w-1/3 mb-4 md:mb-0">
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+              <div class="text-sm text-gray-600 mb-1">问答</div>
+              <div class="text-2xl font-bold text-gray-800">1,211</div>
+              <div class="text-xs text-gray-500">占总使用量 65.5%</div>
+            </div>
+          </div>
+          <div class="w-full md:w-1/3 mb-4 md:mb-0">
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+              <div class="text-sm text-gray-600 mb-1">代码生成</div>
+              <div class="text-2xl font-bold text-gray-800">683</div>
+              <div class="text-xs text-gray-500">占总使用量 37.0%</div>
+            </div>
+          </div>
+          <div class="w-full md:w-1/3">
+            <div class="text-center p-4 bg-gray-50 rounded-lg">
+              <div class="text-sm text-gray-600 mb-1">代码补全</div>
+              <div class="text-2xl font-bold text-gray-800">953</div>
+              <div class="text-xs text-gray-500">占总使用量 51.6%</div>
+            </div>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 italic">注：由于单次操作可能同时触发多个功能，使用频次总和超过总使用量。</p>
+      </div>
+
+      <!-- IDE分布 -->
+      <div class="mb-8">
+        <h3 class="text-xl font-medium mb-4">IDE使用分布</h3>
+        <div class="flex flex-col md:flex-row justify-center items-center">
+          <div class="pie-chart-section">
+            <div class="pie-slice" style="background: conic-gradient(#3b82f6 0% 45%, #e5e7eb 45% 100%);"></div>
+            <div class="ml-4">
+              <div class="legend-item">
+                <div class="legend-color" style="background-color: #3b82f6;"></div>
+                <span>IntelliJ IDEA: 45%</span>
+              </div>
+              <div class="legend-item">
+                <div class="legend-color" style="background-color: #e5e7eb;"></div>
+                <span>其他: 55%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 mt-4">在所有AI辅助操作中，45%的请求来自IntelliJ IDEA，其余55%来自VS Code、PyCharm等其他开发环境。</p>
+      </div>
+    </section>
+
+    <!-- 效率评估 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold mb-4 section-title">AI辅助效率评估</h2>
+      <p class="mb-6">综合分析表明，AI工具在团队中已形成稳定使用习惯，整体采纳率（78.2%）与AI生成占比（62.4%）均处于较高水平，说明AI辅助显著提升了开发效率。</p>
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>高采纳率</strong>：所有成员采纳率均高于75%，其中徐如瑶以82.1%位居首位，表明其对AI生成内容的判断与整合能力突出。</li>
+        <li><strong>高AI生成占比</strong>：平均62.4%的代码行由AI生成，意味着开发者将大量重复性、模式化编码工作交由AI处理，有效释放了创造力。</li>
+        <li><strong>问答主导</strong>：问答功能使用频次（1,211次）远超其他模块，反映出团队成员在解决技术难题、理解API和调试时，高度依赖AI作为即时知识库。</li>
+        <li><strong>IDE偏好</strong>：IntelliJ IDEA作为主要开发环境，其45%的使用占比表明团队核心项目仍以Java/Kotlin等强类型语言为主，AI工具与主流IDE集成良好。</li>
+      </ul>
+      <p class="mb-6">综上所述，AI辅助工具已成为团队日常开发流程中不可或缺的效率倍增器。建议未来可针对代码生成与补全功能进行更精细化的模板优化，以进一步提升AI生成内容的准确率与上下文契合度。</p>
+    </section>
+
+    <!-- 参考文献 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold mb-4 section-title">参考文献</h2>
+      <ol class="list-decimal pl-6 space-y-2">
+        <li><cite><a href="https://lingma_chat_info" target="_blank" rel="noopener noreferrer">lingma_chat_info</a></cite></li>
+        <li><cite><a href="https://lingma_coding_info" target="_blank" rel="noopener noreferrer">lingma_coding_info</a></cite></li>
+        <li><cite><a href="https://lingma_completion_info" target="_blank" rel="noopener noreferrer">lingma_completion_info</a></cite></li>
+      </ol>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center text-sm text-gray-500 mt-16 border-t pt-6">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

@@ -1,0 +1,200 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>业务影响分析报告：系统异常事件评估</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    .section-title {
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      color: #007bff;
+    }
+    .impact-level-high {
+      color: #dc3545;
+      font-weight: bold;
+    }
+    .impact-level-medium {
+      color: #ffc107;
+      font-weight: bold;
+    }
+    .impact-level-low {
+      color: #28a745;
+      font-weight: bold;
+    }
+    .risk-badge {
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.85rem;
+    }
+    .recommendation-item {
+      padding-left: 1rem;
+      position: relative;
+    }
+    .recommendation-item:before {
+      content: "•";
+      color: #007bff;
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+    .table th,
+    .table td {
+      padding: 10px 12px;
+      border: 1px solid #dee2e6;
+    }
+    .table th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+    }
+    .table tbody tr:nth-child(even) {
+      background-color: #f8f9fa;
+    }
+    .cite-link {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .cite-link:hover {
+      text-decoration: underline;
+    }
+    footer {
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 0.9rem;
+      color: #666;
+      text-align: center;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-6 py-8 max-w-4xl">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">业务影响分析报告：系统异常事件评估</h1>
+    <p class="text-gray-600 mb-8">报告生成日期：2025年11月12日</p>
+
+    <section>
+      <h2 class="section-title">异常时间</h2>
+      <p>系统异常发生于2025年11月11日 14:23至15:47，持续时间为1小时24分钟。异常期间，核心交易处理模块出现响应延迟与部分请求失败，导致下游业务流程中断。</p>
+    </section>
+
+    <section class="mt-10">
+      <h2 class="section-title">系统功能</h2>
+      <p>受影响系统功能为“核心交易处理引擎”（Core Transaction Processing Engine），该模块负责订单路由、价格匹配、交易确认与状态同步。异常期间，该模块未能正常响应来自前端交易接口的请求，部分交易指令超时未处理，系统日志显示高频连接超时与线程池耗尽现象。</p>
+    </section>
+
+    <section class="mt-10">
+      <h2 class="section-title">受影响业务</h2>
+      <table class="table w-full mb-8">
+        <thead>
+          <tr>
+            <th>业务类型</th>
+            <th>受影响范围</th>
+            <th>异常期间处理量</th>
+            <th>异常后恢复状态</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>交易</td>
+            <td>全部交易通道</td>
+            <td>1,247笔交易未完成</td>
+            <td>已全部重试成功</td>
+          </tr>
+          <tr>
+            <td>结算</td>
+            <td>当日T+0结算批次</td>
+            <td>89个结算单延迟</td>
+            <td>延迟批次已人工补发</td>
+          </tr>
+          <tr>
+            <td>交割</td>
+            <td>次日交割指令</td>
+            <td>15笔交割指令未生成</td>
+            <td>已通过系统日志回溯补发</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="mt-10">
+      <h2 class="section-title">影响程度评估</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+          <h3 class="text-lg font-semibold mb-2">交易</h3>
+          <p class="text-2xl font-bold impact-level-high">高</p>
+          <p class="text-sm text-gray-600 mt-1">直接影响客户交易执行，存在资金占用风险</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+          <h3 class="text-lg font-semibold mb-2">结算</h3>
+          <p class="text-2xl font-bold impact-level-medium">中</p>
+          <p class="text-sm text-gray-600 mt-1">延迟影响资金流动性，需人工干预</p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-md text-center">
+          <h3 class="text-lg font-semibold mb-2">交割</h3>
+          <p class="text-2xl font-bold impact-level-low">低</p>
+          <p class="text-sm text-gray-600 mt-1">可通过日志回溯补发，未造成客户损失</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="mt-10">
+      <h2 class="section-title">风险提示</h2>
+      <ul class="space-y-3">
+        <li class="flex items-start">
+          <span class="risk-badge mr-3">高风险</span>
+          <span>交易模块线程池配置不足，未设置动态扩容机制，极端负载下易崩溃。</span>
+        </li>
+        <li class="flex items-start">
+          <span class="risk-badge mr-3">中风险</span>
+          <span>结算与交割依赖交易模块状态同步，缺乏独立校验与异步补偿机制。</span>
+        </li>
+        <li class="flex items-start">
+          <span class="risk-badge mr-3">中风险</span>
+          <span>监控系统未对“线程池使用率”设置实时告警，导致异常未能及时发现。</span>
+        </li>
+        <li class="flex items-start">
+          <span class="risk-badge mr-3">低风险</span>
+          <span>客户通知机制滞后，异常期间未主动推送状态变更信息。</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="mt-10">
+      <h2 class="section-title">建议措施</h2>
+      <ul class="space-y-3">
+        <li class="recommendation-item">立即优化交易处理引擎线程池配置，引入动态伸缩策略，最大线程数提升至原值的150%，并设置熔断阈值。</li>
+        <li class="recommendation-item">为结算与交割模块增加独立状态校验接口，实现与交易模块的异步解耦，避免单点故障传导。</li>
+        <li class="recommendation-item">部署“线程池使用率”与“请求超时率”实时监控指标，设置阈值告警（>85%持续5分钟触发），并接入运维告警平台。</li>
+        <li class="recommendation-item">建立客户状态通知机制，在交易异常期间自动推送短信/站内信，提升客户体验与透明度。</li>
+        <li class="recommendation-item">在下一版本发布前，完成全链路压力测试，模拟峰值交易量（当前峰值2倍）下的系统表现。</li>
+      </ul>
+    </section>
+
+    <section class="mt-16">
+      <h2 class="section-title">参考文献</h2>
+      <ol class="list-decimal list-inside space-y-2">
+        <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer" class="cite-link">业务影响分析报告：系统异常事件评估</a></cite></li>
+      </ol>
+    </section>
+  </div>
+
+  <footer>
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

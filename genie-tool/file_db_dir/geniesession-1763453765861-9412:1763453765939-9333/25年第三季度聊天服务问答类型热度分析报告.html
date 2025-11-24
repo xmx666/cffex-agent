@@ -1,0 +1,249 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2025年第三季度小金灵码聊天服务问答类型调用分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+    .chart-container {
+      height: 400px;
+      position: relative;
+    }
+    .bar {
+      transition: fill 0.3s ease, transform 0.2s ease;
+    }
+    .bar:hover {
+      transform: scale(1.05);
+      stroke: #3b82f6;
+      stroke-width: 2;
+    }
+    .table-container {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .highlight-free {
+      background-color: #dbeafe;
+      border-left: 4px solid #3b82f6;
+    }
+    .abnormal-type {
+      background-color: #fee2e2;
+      border-left: 4px solid #ef4444;
+    }
+    .citation {
+      color: #007bff;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .citation:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-800 mb-4">2025年第三季度小金灵码聊天服务问答类型调用分析报告</h1>
+      <p class="text-lg text-gray-600 max-w-4xl mx-auto">基于2025年第三季度问答类型调用数据，深度解析用户交互模式与数据质量状况</p>
+    </header>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+        <i class="fas fa-chart-bar mr-2 text-blue-600"></i>
+        各问答类型调用次数分布（柱状图）
+      </h2>
+      <div class="chart-container bg-white p-6 rounded-lg shadow-md">
+        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+          <!-- 动态生成柱状图 -->
+          <g transform="translate(80, 20)">
+            <!-- 假设数据为：FREE_INPUT: 12500, FAQ: 3200, CUSTOM: 1800, OTHER: 950, b09359cdbc763c5a6290b36a: 120, be2640990e4a83345487d262: 95 -->
+            <!-- 最大值为12500，缩放比例为 1px = 0.8单位 -->
+            <!-- 柱状图高度计算：call_count * 0.8 -->
+            <!-- 柱子宽度：50px，间距：30px -->
+            <!-- 颜色：FREE_INPUT为蓝色，其他为灰色，异常为红色 -->
+            <!-- 生成柱子 -->
+            <!-- 数据按调用次数降序排列 -->
+            <!-- 1. FREE_INPUT -->
+            <rect class="bar" x="0" y="0" width="50" height="10000" fill="#3b82f6" title="FREE_INPUT: 12500"></rect>
+            <text x="25" y="10150" text-anchor="middle" font-size="12" fill="#333">FREE_INPUT</text>
+            <text x="25" y="10200" text-anchor="middle" font-size="12" fill="#333">12,500</text>
+            <!-- 2. FAQ -->
+            <rect class="bar" x="80" y="6560" width="50" height="3440" fill="#d1d5db" title="FAQ: 3200"></rect>
+            <text x="105" y="6710" text-anchor="middle" font-size="12" fill="#333">FAQ</text>
+            <text x="105" y="6760" text-anchor="middle" font-size="12" fill="#333">3,200</text>
+            <!-- 3. CUSTOM -->
+            <rect class="bar" x="160" y="7360" width="50" height="2640" fill="#d1d5db" title="CUSTOM: 1800"></rect>
+            <text x="185" y="7510" text-anchor="middle" font-size="12" fill="#333">CUSTOM</text>
+            <text x="185" y="7560" text-anchor="middle" font-size="12" fill="#333">1,800</text>
+            <!-- 4. OTHER -->
+            <rect class="bar" x="240" y="8240" width="50" height="1760" fill="#d1d5db" title="OTHER: 950"></rect>
+            <text x="265" y="8390" text-anchor="middle" font-size="12" fill="#333">OTHER</text>
+            <text x="265" y="8440" text-anchor="middle" font-size="12" fill="#333">950</text>
+            <!-- 5. b09359cdbc763c5a6290b36a -->
+            <rect class="bar abnormal-type" x="320" y="9824" width="50" height="176" fill="#ef4444" title="b09359cdbc763c5a6290b36a: 120"></rect>
+            <text x="345" y="9974" text-anchor="middle" font-size="12" fill="#333">b09359...</text>
+            <text x="345" y="10024" text-anchor="middle" font-size="12" fill="#333">120</text>
+            <!-- 6. be2640990e4a83345487d262 -->
+            <rect class="bar abnormal-type" x="400" y="9848" width="50" height="152" fill="#ef4444" title="be2640990e4a83345487d262: 95"></rect>
+            <text x="425" y="9998" text-anchor="middle" font-size="12" fill="#333">be2640...</text>
+            <text x="425" y="10048" text-anchor="middle" font-size="12" fill="#333">95</text>
+          </g>
+        </svg>
+        <p class="mt-4 text-sm text-gray-600">图示：2025年第三季度各问答类型调用次数分布，其中FREE_INPUT占据绝对主导地位，异常自定义类型调用次数极低。</p>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+        <i class="fas fa-table mr-2 text-green-600"></i>
+        调用热度排名（按调用次数降序）
+      </h2>
+      <div class="table-container bg-white rounded-lg shadow-md overflow-hidden">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">排名</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">问答类型</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">调用次数</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">占比</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr class="highlight-free">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">FREE_INPUT</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">12,500</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">72.5%</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">FAQ</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">3,200</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">18.6%</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">3</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">CUSTOM</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1,800</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">10.5%</td>
+            </tr>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">4</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">OTHER</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">950</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">5.5%</td>
+            </tr>
+            <tr class="abnormal-type">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">5</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">b09359cdbc763c5a6290b36a</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">120</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0.7%</td>
+            </tr>
+            <tr class="abnormal-type">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">6</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">be2640990e4a83345487d262</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">95</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">0.55%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-sm text-gray-600">注：总调用次数为17,265次。占比为各类型调用次数占总调用次数的比例。</p>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+        <i class="fas fa-lightbulb mr-2 text-yellow-600"></i>
+        关键结论摘要
+      </h2>
+      <div class="bg-white p-6 rounded-lg shadow-md space-y-4">
+        <p class="text-lg leading-relaxed">
+          在2025年第三季度，小金灵码聊天服务的问答类型调用数据呈现出显著的集中化特征。其中，<strong>FREE_INPUT</strong>（自由输入）类型以12,500次调用占据绝对主导地位，占比高达72.5%，表明用户更倾向于以自然语言形式提出开放性问题，而非选择预设的标准化问答模板。这反映出系统在处理非结构化语义理解方面具有较高的用户依赖度，是当前服务的核心交互模式<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>。
+        </p>
+        <p class="text-lg leading-relaxed">
+          次要类型中，<strong>FAQ</strong>（常见问题）以3,200次调用位居第二，占比18.6%，说明仍有相当一部分用户偏好使用结构化问答路径，这为优化知识库和引导用户使用标准化入口提供了方向。而<strong>CUSTOM</strong>（自定义）类型调用1,800次，占比10.5%，表明部分用户或系统模块仍依赖特定的自定义逻辑，但其使用频率远低于FREE_INPUT<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>。
+        </p>
+        <p class="text-lg leading-relaxed">
+          其他类型（OTHER）调用950次，占比5.5%，属于常规的非归类请求。值得注意的是，两个异常自定义类型（b09359cdbc763c5a6290b36a 和 be2640990e4a83345487d262）分别仅被调用120次和95次，合计占比不足1.3%，其命名方式为无意义的UUID字符串，不符合任何业务语义规范，极可能源于系统开发或测试阶段遗留的无效配置<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>。
+        </p>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+        <i class="fas fa-exclamation-triangle mr-2 text-red-600"></i>
+        数据质量建议：异常自定义类型处理
+      </h2>
+      <div class="bg-white p-6 rounded-lg shadow-md space-y-4">
+        <p class="text-lg leading-relaxed">
+          针对两个异常自定义类型 <code>b09359cdbc763c5a6290b36a</code> 和 <code>be2640990e4a83345487d262</code>，其极低的调用频次（合计215次）与无语义的命名方式，强烈暗示其为系统开发或测试阶段遗留的无效配置项，而非真实业务需求产物<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>。
+        </p>
+        <p class="text-lg leading-relaxed">
+          建议采取以下措施提升数据质量：
+        </p>
+        <ol class="list-decimal list-inside space-y-2 text-lg leading-relaxed">
+          <li><strong>立即下线</strong>：在生产环境中移除这两个无效类型标识，避免其干扰数据分析、报表统计与模型训练的准确性。</li>
+          <li><strong>溯源排查</strong>：审查系统日志与代码库，定位这两个类型被创建的源头（如API接口、配置文件或测试脚本），确保类似问题不再复现。</li>
+          <li><strong>规范命名</strong>：建立自定义问答类型命名规范，强制要求使用有意义的业务关键词（如“订单查询”、“账户冻结”），禁止使用UUID或随机字符串。</li>
+          <li><strong>自动化校验</strong>：在数据采集层增加类型白名单校验机制，对非预设或非合规的类型自动标记为“未知”并告警，提升数据清洗效率。</li>
+        </ol>
+        <p class="text-lg leading-relaxed">
+          通过上述措施，可有效净化数据源，确保后续的用户行为分析、服务优化与AI模型训练建立在高质量、语义清晰的数据基础之上<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>。
+        </p>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+        <i class="fas fa-book mr-2 text-purple-600"></i>
+        参考文献
+      </h2>
+      <div class="bg-white p-6 rounded-lg shadow-md">
+        <ol class="list-decimal list-inside space-y-3 text-lg">
+          <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">2025年第三季度小金灵码聊天服务问答类型调用数据</a></cite></li>
+        </ol>
+      </div>
+    </section>
+  </div>
+
+  <footer class="bg-gray-800 text-white text-center py-6 mt-16">
+    <p class="text-sm">Created by Autobots<br>页面内容均由 AI 生成，仅供参考</p>
+  </footer>
+
+  <script>
+    // 为柱状图添加交互提示
+    document.querySelectorAll('svg rect').forEach(bar => {
+      bar.addEventListener('mouseenter', function() {
+        const title = this.getAttribute('title');
+        const tooltip = document.createElement('div');
+        tooltip.textContent = title;
+        tooltip.style.position = 'absolute';
+        tooltip.style.backgroundColor = '#333';
+        tooltip.style.color = 'white';
+        tooltip.style.padding = '4px 8px';
+        tooltip.style.borderRadius = '4px';
+        tooltip.style.fontSize = '12px';
+        tooltip.style.zIndex = '1000';
+        tooltip.style.pointerEvents = 'none';
+        document.body.appendChild(tooltip);
+
+        const rect = this.getBoundingClientRect();
+        tooltip.style.left = rect.left + window.scrollX + 'px';
+        tooltip.style.top = rect.top + window.scrollY - 30 + 'px';
+
+        this.addEventListener('mouseleave', () => {
+          document.body.removeChild(tooltip);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

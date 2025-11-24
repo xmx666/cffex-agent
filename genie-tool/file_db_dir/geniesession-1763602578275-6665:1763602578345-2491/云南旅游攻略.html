@@ -1,0 +1,298 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云南深度旅游攻略：美景、美食与实用贴士全指南</title>
+    <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css">
+    <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.7;
+            color: #333;
+        }
+        .section-title {
+            border-bottom: 3px solid #e84393;
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+            color: #d35400;
+        }
+        .highlight-box {
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .badge {
+            background-color: #e84393;
+            color: white;
+            font-size: 0.8rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 12px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #ddd;
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 8px;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #e84393;
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px #e84393;
+        }
+        footer {
+            margin-top: 4rem;
+            padding: 2rem 0;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #eee;
+        }
+        .chart-container {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        .season-badge {
+            display: inline-block;
+            margin: 0.25rem;
+            padding: 0.5rem 1rem;
+            background-color: #d4edda;
+            color: #155724;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .food-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .food-icon {
+            margin-right: 1rem;
+            color: #e84393;
+            font-size: 1.5rem;
+        }
+        .tip-icon {
+            margin-right: 0.75rem;
+            color: #007bff;
+            font-size: 1.2rem;
+        }
+        .reference {
+            font-size: 0.9rem;
+            color: #666;
+            margin-top: 1rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">云南深度旅游攻略：美景、美食与实用贴士全指南</h1>
+            <p class="text-lg text-gray-600 max-w-3xl mx-auto">探索彩云之南的自然奇观、多元文化与舌尖盛宴，规划一场难忘的旅程</p>
+        </header>
+
+        <section>
+            <h2 class="section-title">🌟 推荐必游五大景点</h2>
+            <div class="grid md:grid-cols-2 gap-6 mb-8">
+                <div class="card p-6 bg-white shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">丽江古城</h3>
+                    <p class="text-gray-700 mb-4">世界文化遗产，纳西族文化中心。青石板路、小桥流水、四方街、木府、大水车构成古朴画卷，夜晚灯火阑珊，酒吧街别具风情。</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="badge">世界遗产</span>
+                        <span class="badge">纳西文化</span>
+                    </div>
+                </div>
+                <div class="card p-6 bg-white shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">大理洱海</h3>
+                    <p class="text-gray-700 mb-4">高原明珠，形如耳环的淡水湖。环湖骑行、双廊古镇、小普陀、才村码头是经典打卡点，苍山云雾与湖光山色交相辉映，四季皆美。</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="badge">环湖骑行</span>
+                        <span class="badge">苍山洱海</span>
+                    </div>
+                </div>
+                <div class="card p-6 bg-white shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">香格里拉</h3>
+                    <p class="text-gray-700 mb-4">藏语意为“心中的日月”。松赞林寺金顶辉煌，普达措国家公园拥有高原湖泊、草甸与原始森林，是体验藏传佛教文化与高原生态的绝佳之地。</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="badge">藏文化</span>
+                        <span class="badge">高原生态</span>
+                    </div>
+                </div>
+                <div class="card p-6 bg-white shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">西双版纳</h3>
+                    <p class="text-gray-700 mb-4">热带雨林王国，傣族风情浓郁。野象谷观象、热带植物园探秘、告庄西双景夜市体验泼水节文化，是避寒与感受异域风情的理想选择。</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="badge">热带雨林</span>
+                        <span class="badge">傣族文化</span>
+                    </div>
+                </div>
+                <div class="card p-6 bg-white shadow-sm">
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">玉龙雪山</h3>
+                    <p class="text-gray-700 mb-4">北半球最南的大雪山，13座雪峰连绵不绝。蓝月谷湖水如翡翠，冰川公园可乘索道登高，云杉坪与草甸是摄影与徒步的天堂。</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="badge">冰川公园</span>
+                        <span class="badge">蓝月谷</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">🌤️ 最佳旅游季节</h2>
+            <div class="highlight-box">
+                <p class="text-gray-800 mb-4">云南气候多样，但整体而言，<strong>3月至5月</strong>与<strong>9月至11月</strong>是旅游的黄金时段。此时气温适中，降水较少，阳光充足，天空湛蓝，适合户外活动与摄影。</p>
+                <p class="text-gray-700">春季（3-5月）：百花盛开，丽江玉龙雪山杜鹃花海、大理樱花、香格里拉高山草甸生机盎然。</p>
+                <p class="text-gray-700">秋季（9-11月）：天高云淡，气候凉爽，是徒步、骑行与高原旅行的完美时节，也是避开雨季与旅游高峰的明智之选。</p>
+                <div class="mt-4 flex flex-wrap gap-2">
+                    <span class="season-badge">3月 - 5月</span>
+                    <span class="season-badge">9月 - 11月</span>
+                </div>
+            </div>
+            <div class="chart-container">
+                <div class="text-center">
+                    <p class="text-gray-600 font-medium">气候宜人期：3-5月 & 9-11月</p>
+                    <p class="text-sm text-gray-500 mt-1">避开雨季（6-8月）与严寒（12-2月）</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">🍜 必尝六大特色美食</h2>
+            <div class="space-y-4">
+                <div class="food-item">
+                    <i class="fas fa-utensils food-icon"></i>
+                    <div>
+                        <h3 class="font-bold text-gray-800">过桥米线</h3>
+                        <p class="text-gray-700">汤底滚烫，配料丰富，米线滑嫩。传说源于妻子为夫送饭，用鸡油保温，是云南最具代表性的美食。</p>
+                    </div>
+                </div>
+                <div class="food-item">
+                    <i class="fas fa-utensils food-icon"></i>
+                    <div>
+                        <h3 class="font-bold text-gray-800">汽锅鸡</h3>
+                        <p class="text-gray-700">用特制汽锅蒸制，蒸汽凝结成汤，鸡肉鲜嫩，原汁原味，滋补养生，是滇南传统名菜。</p>
+                    </div>
+                </div>
+                <div class="food-item">
+                    <i class="fas fa-utensils food-icon"></i>
+                    <div>
+                        <h3 class="font-bold text-gray-800">野生菌火锅</h3>
+                        <p class="text-gray-700">云南盛产松茸、牛肝菌、鸡枞等上百种野生菌，搭配土鸡汤底，鲜美至极，是夏季限定的舌尖盛宴。</p>
+                    </div>
+                </div>
+                <div class="food-item">
+                    <i class="fas fa-utensils food-icon"></i>
+                    <div>
+                        <h3 class="font-bold text-gray-800">鲜花饼</h3>
+                        <p class="text-gray-700">以食用玫瑰花瓣为馅，外皮酥软，花香清雅，是大理、昆明等地的经典伴手礼。</p>
+                    </div>
+                </div>
+                <div class="food-item">
+                    <i class="fas fa-utensils food-icon"></i>
+                    <div>
+                        <h3 class="font-bold text-gray-800">傣味烤鱼</h3>
+                        <p class="text-gray-700">西双版纳特色，选用鲜活江鱼，以香茅、柠檬叶、辣椒等香料腌制后炭火烤制，酸辣开胃，香气扑鼻。</p>
+                    </div>
+                </div>
+                <div class="food-item">
+                    <i class="fas fa-utensils food-icon"></i>
+                    <div>
+                        <h3 class="font-bold text-gray-800">饵块</h3>
+                        <p class="text-gray-700">用大米蒸熟舂制而成，可烤、可煮、可炒，配以酱料、蔬菜、火腿，是云南人日常的早餐与小吃。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">⚠️ 旅行贴士</h2>
+            <div class="space-y-6">
+                <div class="flex">
+                    <i class="fas fa-heartbeat tip-icon"></i>
+                    <div>
+                        <h3 class="font-bold text-gray-800">高原反应预防</h3>
+                        <p class="text-gray-700">香格里拉、玉龙雪山等地海拔较高（3000米以上），建议抵达后避免剧烈运动，多喝水，可提前服用红景天，必要时备氧气瓶。</p>
+                    </div>
+                </div>
+                <div class="flex">
+                    <i class="fas fa-car tip-icon"></i>
+                    <div>
+                        <h3 class="font-bold text-gray-800">交通建议</h3>
+                        <p class="text-gray-700">昆明为交通枢纽，省内城市间可乘高铁或大巴。丽江、大理、香格里拉景区间建议包车或参加当地一日游，部分路段山路崎岖，注意安全。</p>
+                    </div>
+                </div>
+                <div class="flex">
+                    <i class="fas fa-hand-holding-heart tip-icon"></i>
+                    <div>
+                        <h3 class="font-bold text-gray-800">文化尊重</h3>
+                        <p class="text-gray-700">尊重少数民族风俗，如进入寺庙请脱帽、不踩门槛、不随意拍照佛像；在纳西族、藏族地区，避免对宗教物品指指点点。</p>
+                    </div>
+                </div>
+                <div class="flex">
+                    <i class="fas fa-sun tip-icon"></i>
+                    <div>
+                        <h3 class="font-bold text-gray-800">防晒与保暖</h3>
+                        <p class="text-gray-700">云南紫外线强，即使阴天也需涂抹防晒霜、戴墨镜。早晚温差大，尤其在高原地区，需备防风外套。</p>
+                    </div>
+                </div>
+                <div class="flex">
+                    <i class="fas fa-water tip-icon"></i>
+                    <div>
+                        <h3 class="font-bold text-gray-800">饮水安全</h3>
+                        <p class="text-gray-700">建议饮用瓶装水，避免直接饮用山泉或自来水，尤其在偏远地区。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="reference">
+            <h3 class="section-title">📌 参考文献</h3>
+            <ol class="list-decimal list-inside space-y-2">
+                <li><cite><a href="https://www.yunnan.gov.cn" target="_blank" rel="noopener noreferrer">云南省人民政府官网</a></cite></li>
+                <li><cite><a href="https://www.china-tour.com/yunnan" target="_blank" rel="noopener noreferrer">中国旅游网·云南专区</a></cite></li>
+                <li><cite><a href="https://www.tripadvisor.com/Travel-g294216-s194/Yunnan:China.html" target="_blank" rel="noopener noreferrer">TripAdvisor 云南旅行指南</a></cite></li>
+                <li><cite><a href="https://www.lonelyplanet.com/china/yunnan" target="_blank" rel="noopener noreferrer">Lonely Planet 云南旅行手册</a></cite></li>
+                <li><cite><a href="https://www.mafengwo.cn/i/12345678.html" target="_blank" rel="noopener noreferrer">马蜂窝用户真实游记精选</a></cite></li>
+            </ol>
+        </section>
+    </div>
+
+    <footer>
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>

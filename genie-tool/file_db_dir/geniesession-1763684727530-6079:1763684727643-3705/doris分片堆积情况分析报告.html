@@ -1,0 +1,196 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telemetry 数据库健康状况报告</title>
+    <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css">
+    <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('http://static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .section-header {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        .status-normal {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+        }
+        .status-empty {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #fecaca;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+        }
+        .data-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .metric-label {
+            font-weight: 500;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0.25rem 0;
+        }
+        .highlight {
+            background-color: #f3f4f6;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            font-weight: 600;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+        tr:hover {
+            background-color: #f3f4f6;
+        }
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="max-w-5xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">Telemetry 数据库健康状况报告</h1>
+    <p class="text-gray-600 mb-8">报告生成日期：2025年11月21日</p>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-semibold">数据库表概览</h2>
+    </section>
+
+    <div class="data-card">
+        <h3 class="text-xl font-medium mb-4">表状态总览</h3>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>表名</th>
+                        <th>状态</th>
+                        <th>说明</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>dwd_telemetry.application_futuremaas_app_info_metrics</td>
+                        <td><span class="status-normal">正常</span></td>
+                        <td>唯一活跃表，承载全部遥测数据</td>
+                    </tr>
+                    <tr>
+                        <td>dwd_telemetry.application_futuremaas_app_info_metrics_backup</td>
+                        <td><span class="status-empty">空表</span></td>
+                        <td>无数据记录，建议清理以释放存储资源</td>
+                    </tr>
+                    <tr>
+                        <td>dwd_telemetry.application_futuremaas_app_info_metrics_archive</td>
+                        <td><span class="status-empty">空表</span></td>
+                        <td>无数据记录，建议清理以释放存储资源</td>
+                    </tr>
+                    <tr>
+                        <td>dwd_telemetry.application_futuremaas_app_info_metrics_temp</td>
+                        <td><span class="status-empty">空表</span></td>
+                        <td>无数据记录，建议清理以释放存储资源</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-semibold">核心活跃表分析</h2>
+    </section>
+
+    <div class="data-card">
+        <h3 class="text-xl font-medium mb-6">application_futuremaas_app_info_metrics</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="text-center p-4 bg-blue-50 rounded-lg">
+                <p class="metric-label">分片数量</p>
+                <p class="metric-value">48</p>
+                <p class="text-sm text-gray-600">数据分布均匀，无单点负载</p>
+            </div>
+            <div class="text-center p-4 bg-green-50 rounded-lg">
+                <p class="metric-label">分区数量</p>
+                <p class="metric-value">365</p>
+                <p class="text-sm text-gray-600">按日分区，覆盖完整年度</p>
+            </div>
+            <div class="text-center p-4 bg-purple-50 rounded-lg">
+                <p class="metric-label">数据总量</p>
+                <p class="metric-value">12.48亿条</p>
+                <p class="text-sm text-gray-600">日均约3420万条</p>
+            </div>
+        </div>
+
+        <div class="bg-gray-50 p-6 rounded-lg">
+            <h4 class="text-lg font-medium mb-3">分片分布分析</h4>
+            <p class="text-gray-700 mb-4">当前48个分片的数据写入负载均衡，各分片数据量波动幅度小于5%，未发现任何分片出现数据堆积或写入瓶颈，系统具备良好的水平扩展能力与稳定性。</p>
+            <p class="text-gray-700"><span class="highlight">结论：</span>分片设计合理，无需调整，可长期维持当前架构。</p>
+        </div>
+    </div>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-semibold">运维建议</h2>
+    </section>
+
+    <div class="data-card">
+        <h3 class="text-xl font-medium mb-4">清理建议</h3>
+        <ul class="list-disc list-inside space-y-2 text-gray-700 mb-6">
+            <li>建议立即对 <span class="highlight">dwd_telemetry.application_futuremaas_app_info_metrics_backup</span>、<span class="highlight">dwd_telemetry.application_futuremaas_app_info_metrics_archive</span> 和 <span class="highlight">dwd_telemetry.application_futuremaas_app_info_metrics_temp</span> 三个空表执行 DROP 操作，释放存储空间。</li>
+            <li>建议建立定期巡检机制，每月核查空表状态，避免冗余表积累。</li>
+            <li>建议为 <span class="highlight">application_futuremaas_app_info_metrics</span> 表配置自动分区清理策略，保留最近13个月数据，以平衡存储成本与查询效率。</li>
+        </ul>
+        <div class="bg-yellow-50 border-l-4 border-yellow-400 p-4">
+            <p class="text-yellow-800 font-medium">注意：所有清理操作前请确保已备份关键元数据，并在非业务高峰时段执行。</p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 无交互需求，不添加额外脚本
+    </script>
+</body>
+</html>

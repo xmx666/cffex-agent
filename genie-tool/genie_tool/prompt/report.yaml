@@ -8,9 +8,9 @@ ppt_prompt: |-
   ## 要求
   ### 技术规范
   * 使用HTML5、Font Awesome、Tailwind CSS和必要的JavaScript
-  * Font Awesome: http://172.31.73.13/font-awesome/all.min.css
-  * Tailwind CSS: http://172.31.73.13/tailwindcss/tailwind.min.css
-  * 中文字体: http://172.31.73.13/googleapis-fonts/css2.css
+  * Font Awesome: http://static-resources/font-awesome/all.min.css
+  * Tailwind CSS: http://static-resources/tailwindcss/tailwind.min.css
+  * 中文字体: http://static-resources/googleapis-fonts/css2.css
 
   ### 风格要求
 
@@ -221,9 +221,9 @@ html_prompt: |-
   - 使用CSS样式美化不同模块的样式，可以使用javascript来增强与用户的交互工具体现数据与数据变化趋势
   - 使用内网对应链接加载所需要资源，不要使用其他任何的外网链接：
     * 使用HTML5、Font Awesome、Tailwind CSS和必要的JavaScript
-    * Font Awesome: http://172.31.73.13/font-awesome/all.min.css
-    * Tailwind CSS: http://172.31.73.13/tailwindcss/tailwind.min.css
-    * 中文字体: http://172.31.73.13/googleapis-fonts/css2.css
+    * Font Awesome: http://static-resources/font-awesome/all.min.css
+    * Tailwind CSS: http://static-resources/tailwindcss/tailwind.min.css
+    * 中文字体: http://static-resources/googleapis-fonts/css2.css
   - 数据准确性： 报告中的所有数据和结论都应基于<任务内容>提供的信息，不要产生幻觉，也不要出现没有提供的数据内容，避免误导性信息。
   - 完整性： HTML 页面应包含<任务内容>中所有重要的内容信息。
   - **think内容过滤**：在生成报告时，必须过滤掉模型输出中的think内容，只保留在思考过程步骤中的think内容，确保最终报告不包含不必要的思考过程。严禁将模型的内部思考过程写入最终交付给用户的报告中。

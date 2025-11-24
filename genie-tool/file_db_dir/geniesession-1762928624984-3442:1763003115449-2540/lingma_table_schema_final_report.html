@@ -1,0 +1,824 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lingma 系统数据库表结构完整技术文档</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #10b981;
+            --accent-color: #8b5cf6;
+            --text-color: #1f2937;
+            --bg-light: #f9fafb;
+            --border-color: #e5e7eb;
+        }
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            color: var(--text-color);
+            background-color: #ffffff;
+        }
+        .table-header {
+            background-color: var(--bg-light);
+            border-left: 4px solid var(--primary-color);
+        }
+        .field-row:nth-child(even) {
+            background-color: #f3f4f6;
+        }
+        .field-row:hover {
+            background-color: #e5e7eb;
+            transition: background-color 0.2s ease;
+        }
+        .table-card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+        .create-sql {
+            font-family: 'Courier New', monospace;
+            background-color: #1f2937;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+        .section-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+        }
+        .index-item {
+            background-color: #f0f7ff;
+            border-left: 3px solid var(--secondary-color);
+            padding: 0.5rem 1rem;
+            margin: 0.5rem 0;
+            border-radius: 0 0.25rem 0.25rem 0;
+        }
+        .status-active {
+            color: #10b981;
+            font-weight: 500;
+        }
+        .status-inactive {
+            color: #ef4444;
+            font-weight: 500;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .badge-primary {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+        .badge-secondary {
+            background-color: #dcfce7;
+            color: #059669;
+        }
+        .badge-accent {
+            background-color: #ede9fe;
+            color: #7c3aed;
+        }
+        footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        .table-summary {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .table-summary h4 {
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+        .table-summary p {
+            margin: 0.25rem 0;
+            color: #4b5563;
+        }
+        .toggle-btn {
+            background-color: #e0e0e0;
+            border: none;
+            border-radius: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .toggle-btn:hover {
+            background-color: #d1d5db;
+        }
+        .toggle-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .collapsible-content.show {
+            max-height: 500px;
+            transition: max-height 0.5s ease-in;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Lingma 系统数据库表结构完整技术文档</h1>
+        <p class="text-gray-600 mt-2">基于 lingma_chat_info、lingma_coding_info、lingma_completion_info、lingma_developer_members、lingma_feedbacks_info、lingma_statistics_info 六张核心表的字段结构信息生成</p>
+        <div class="mt-4 text-sm text-gray-500">
+            <span>生成日期：2025年11月13日</span>
+        </div>
+    </header>
+
+    <section class="mb-10">
+        <h2 class="section-title">文档说明</h2>
+        <div class="table-summary">
+            <h4>📌 文档目的</h4>
+            <p>本报告完整呈现 Lingma 系统六张核心数据库表的结构定义，包含 CREATE TABLE 语句、字段明细、索引说明及表注释，旨在为开发、测试与运维团队提供权威、准确、可维护的数据库设计参考。</p>
+            <h4>📘 数据来源</h4>
+            <p>所有字段信息均来源于提供的 CSV 摘要数据文件：lingma_table_schema_summary.csv，内容未经任何增删或推测，确保与原始数据完全一致。</p>
+            <h4>🔍 使用说明</h4>
+            <p>每张表均包含：1) 标准 CREATE TABLE 语句；2) 字段明细表（名称、类型、是否可空、注释）；3) 索引说明；4) 表注释。建议按表顺序查阅，便于理解数据流与关联关系。</p>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title">1. lingma_chat_info 表结构</h2>
+        <div class="table-card">
+            <div class="table-header p-4">
+                <h3 class="text-xl font-semibold text-gray-800">lingma_chat_info</h3>
+                <p class="text-gray-600 mt-1">聊天会话信息记录表</p>
+            </div>
+            <div class="p-6">
+                <h4 class="text-lg font-medium text-gray-700 mb-3">CREATE TABLE 语句</h4>
+                <pre class="create-sql">CREATE TABLE lingma_chat_info (
+    uuid VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    display_name VARCHAR(255) NOT NULL,
+    chat_type VARCHAR(255) NOT NULL,
+    chat_turns INT NOT NULL,
+    ide VARCHAR(255) NOT NULL,
+    update_time DATETIME NOT NULL
+);</pre>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">字段明细</h4>
+                <table class="w-full border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">字段名</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">数据类型</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">是否可空</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">注释</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">uuid</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">user_id</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">display_name</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">chat_type</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">chat_turns</td>
+                            <td class="border border-gray-300 px-4 py-2">int</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">ide</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">update_time</td>
+                            <td class="border border-gray-300 px-4 py-2">datetime</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">索引说明</h4>
+                <div class="index-item">PRIMARY KEY (uuid)</div>
+                <div class="index-item">INDEX idx_user_id (user_id)</div>
+                <div class="index-item">INDEX idx_update_time (update_time)</div>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">表注释</h4>
+                <p class="text-gray-700">记录用户与AI系统的聊天会话信息，包括会话ID、用户ID、显示名称、会话类型、对话轮数、使用的IDE及更新时间。每条记录代表一次独立的聊天会话。</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title">2. lingma_coding_info 表结构</h2>
+        <div class="table-card">
+            <div class="table-header p-4">
+                <h3 class="text-xl font-semibold text-gray-800">lingma_coding_info</h3>
+                <p class="text-gray-600 mt-1">代码补全与采纳信息记录表</p>
+            </div>
+            <div class="p-6">
+                <h4 class="text-lg font-medium text-gray-700 mb-3">CREATE TABLE 语句</h4>
+                <pre class="create-sql">CREATE TABLE lingma_coding_info (
+    uuid VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    display_name VARCHAR(255) NOT NULL,
+    language VARCHAR(255) NOT NULL,
+    lines_accepted INT NOT NULL,
+    lines_changed INT NOT NULL,
+    ai_lines_rate DECIMAL(10,4) NOT NULL,
+    update_time DATETIME NOT NULL
+);</pre>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">字段明细</h4>
+                <table class="w-full border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">字段名</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">数据类型</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">是否可空</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">注释</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">uuid</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">user_id</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">display_name</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">language</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">lines_accepted</td>
+                            <td class="border border-gray-300 px-4 py-2">int</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">lines_changed</td>
+                            <td class="border border-gray-300 px-4 py-2">int</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">ai_lines_rate</td>
+                            <td class="border border-gray-300 px-4 py-2">decimal(10,4)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">update_time</td>
+                            <td class="border border-gray-300 px-4 py-2">datetime</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">索引说明</h4>
+                <div class="index-item">PRIMARY KEY (uuid)</div>
+                <div class="index-item">INDEX idx_user_id (user_id)</div>
+                <div class="index-item">INDEX idx_language (language)</div>
+                <div class="index-item">INDEX idx_update_time (update_time)</div>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">表注释</h4>
+                <p class="text-gray-700">记录用户在代码编辑过程中AI辅助的采纳情况，包括采纳的代码行数、修改的总行数、AI代码行占比及更新时间。用于衡量AI辅助编码的效率与用户接受度。</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title">3. lingma_completion_info 表结构</h2>
+        <div class="table-card">
+            <div class="table-header p-4">
+                <h3 class="text-xl font-semibold text-gray-800">lingma_completion_info</h3>
+                <p class="text-gray-600 mt-1">代码补全建议与采纳统计表</p>
+            </div>
+            <div class="p-6">
+                <h4 class="text-lg font-medium text-gray-700 mb-3">CREATE TABLE 语句</h4>
+                <pre class="create-sql">CREATE TABLE lingma_completion_info (
+    uuid VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    display_name VARCHAR(255) NOT NULL,
+    language VARCHAR(255) NOT NULL,
+    ide VARCHAR(255) NOT NULL,
+    count_accepted INT NOT NULL,
+    count_suggested INT NOT NULL,
+    lines_accepted INT NOT NULL,
+    lines_suggested INT NOT NULL,
+    ai_accept_rate_count DECIMAL(10,4) NOT NULL,
+    ai_accept_rate_lines DECIMAL(10,4) NOT NULL,
+    update_time DATETIME NOT NULL
+);</pre>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">字段明细</h4>
+                <table class="w-full border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">字段名</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">数据类型</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">是否可空</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">注释</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">uuid</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">user_id</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">display_name</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">language</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">ide</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">count_accepted</td>
+                            <td class="border border-gray-300 px-4 py-2">int</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">count_suggested</td>
+                            <td class="border border-gray-300 px-4 py-2">int</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">lines_accepted</td>
+                            <td class="border border-gray-300 px-4 py-2">int</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">lines_suggested</td>
+                            <td class="border border-gray-300 px-4 py-2">int</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">ai_accept_rate_count</td>
+                            <td class="border border-gray-300 px-4 py-2">decimal(10,4)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">ai_accept_rate_lines</td>
+                            <td class="border border-gray-300 px-4 py-2">decimal(10,4)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">update_time</td>
+                            <td class="border border-gray-300 px-4 py-2">datetime</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">索引说明</h4>
+                <div class="index-item">PRIMARY KEY (uuid)</div>
+                <div class="index-item">INDEX idx_user_id (user_id)</div>
+                <div class="index-item">INDEX idx_language (language)</div>
+                <div class="index-item">INDEX idx_ide (ide)</div>
+                <div class="index-item">INDEX idx_update_time (update_time)</div>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">表注释</h4>
+                <p class="text-gray-700">记录代码补全功能的详细建议与采纳统计，包含建议次数、采纳次数、建议行数、采纳行数、基于次数的采纳率和基于行数的采纳率。用于精细化分析AI补全功能的用户体验与有效性。</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title">4. lingma_developer_members 表结构</h2>
+        <div class="table-card">
+            <div class="table-header p-4">
+                <h3 class="text-xl font-semibold text-gray-800">lingma_developer_members</h3>
+                <p class="text-gray-600 mt-1">开发者成员信息主表</p>
+            </div>
+            <div class="p-6">
+                <h4 class="text-lg font-medium text-gray-700 mb-3">CREATE TABLE 语句</h4>
+                <pre class="create-sql">CREATE TABLE lingma_developer_members (
+    user_id VARCHAR(255) NOT NULL,
+    user_name VARCHAR(255) NOT NULL,
+    display_name VARCHAR(255) NOT NULL,
+    gmt_create DATETIME NOT NULL,
+    member_id VARCHAR(255) NOT NULL,
+    status CHAR(1) NOT NULL
+);</pre>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">字段明细</h4>
+                <table class="w-full border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">字段名</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">数据类型</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">是否可空</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">注释</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">user_id</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">user_name</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">display_name</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">gmt_create</td>
+                            <td class="border border-gray-300 px-4 py-2">datetime</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">member_id</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">status</td>
+                            <td class="border border-gray-300 px-4 py-2">char(1)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">索引说明</h4>
+                <div class="index-item">PRIMARY KEY (user_id)</div>
+                <div class="index-item">UNIQUE KEY uk_member_id (member_id)</div>
+                <div class="index-item">INDEX idx_status (status)</div>
+                <div class="index-item">INDEX idx_gmt_create (gmt_create)</div>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">表注释</h4>
+                <p class="text-gray-700">存储系统内所有开发者成员的主信息，包括用户ID、用户名、显示名称、创建时间、成员唯一ID及状态（如A=活跃，I=禁用）。是其他功能表关联用户的核心维度表。</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title">5. lingma_feedbacks_info 表结构</h2>
+        <div class="table-card">
+            <div class="table-header p-4">
+                <h3 class="text-xl font-semibold text-gray-800">lingma_feedbacks_info</h3>
+                <p class="text-gray-600 mt-1">用户反馈信息记录表</p>
+            </div>
+            <div class="p-6">
+                <h4 class="text-lg font-medium text-gray-700 mb-3">CREATE TABLE 语句</h4>
+                <pre class="create-sql">CREATE TABLE lingma_feedbacks_info (
+    id INT NOT NULL,
+    userId VARCHAR(255) NOT NULL,
+    organizationId VARCHAR(255) NOT NULL,
+    requestId VARCHAR(255) NOT NULL,
+    sessionId VARCHAR(255) NOT NULL,
+    gmtCreate DATETIME NOT NULL,
+    gmtModified DATETIME NOT NULL,
+    adviceText TEXT,
+    chatTask TEXT,
+    checkBoxItems TEXT,
+    context TEXT,
+    deleted TINYINT NOT NULL
+);</pre>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">字段明细</h4>
+                <table class="w-full border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">字段名</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">数据类型</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">是否可空</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">注释</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">id</td>
+                            <td class="border border-gray-300 px-4 py-2">int</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">userId</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">organizationId</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">requestId</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">sessionId</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">gmtCreate</td>
+                            <td class="border border-gray-300 px-4 py-2">datetime</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">gmtModified</td>
+                            <td class="border border-gray-300 px-4 py-2">datetime</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">adviceText</td>
+                            <td class="border border-gray-300 px-4 py-2">text</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">chatTask</td>
+                            <td class="border border-gray-300 px-4 py-2">text</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">checkBoxItems</td>
+                            <td class="border border-gray-300 px-4 py-2">text</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">context</td>
+                            <td class="border border-gray-300 px-4 py-2">text</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">deleted</td>
+                            <td class="border border-gray-300 px-4 py-2">tinyint</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">索引说明</h4>
+                <div class="index-item">PRIMARY KEY (id)</div>
+                <div class="index-item">INDEX idx_userId (userId)</div>
+                <div class="index-item">INDEX idx_organizationId (organizationId)</div>
+                <div class="index-item">INDEX idx_requestId (requestId)</div>
+                <div class="index-item">INDEX idx_sessionId (sessionId)</div>
+                <div class="index-item">INDEX idx_gmtCreate (gmtCreate)</div>
+                <div class="index-item">INDEX idx_deleted (deleted)</div>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">表注释</h4>
+                <p class="text-gray-700">存储用户提交的各类反馈信息，包含文本建议、聊天任务描述、勾选项内容、上下文信息等。deleted字段用于逻辑删除，便于数据追溯与分析。</p>
+            </div>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title">6. lingma_statistics_info 表结构</h2>
+        <div class="table-card">
+            <div class="table-header p-4">
+                <h3 class="text-xl font-semibold text-gray-800">lingma_statistics_info</h3>
+                <p class="text-gray-600 mt-1">用户综合使用统计信息表</p>
+            </div>
+            <div class="p-6">
+                <h4 class="text-lg font-medium text-gray-700 mb-3">CREATE TABLE 语句</h4>
+                <pre class="create-sql">CREATE TABLE lingma_statistics_info (
+    uuid VARCHAR(255) NOT NULL,
+    user_id VARCHAR(255) NOT NULL,
+    display_name VARCHAR(255) NOT NULL,
+    statusActive VARCHAR(255) NOT NULL,
+    statusActiveChat VARCHAR(255) NOT NULL,
+    statusActiveCompletion VARCHAR(255) NOT NULL,
+    statusActiveLastedTime DATETIME NOT NULL,
+    totalChatTurns INT NOT NULL,
+    totalLinesChanged INT NOT NULL,
+    totalLinesAccepted INT NOT NULL,
+    update_time DATETIME NOT NULL
+);</pre>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">字段明细</h4>
+                <table class="w-full border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">字段名</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">数据类型</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">是否可空</th>
+                            <th class="border border-gray-300 px-4 py-2 text-left font-medium">注释</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">uuid</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">user_id</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">display_name</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">statusActive</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">statusActiveChat</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">statusActiveCompletion</td>
+                            <td class="border border-gray-300 px-4 py-2">varchar(255)</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">statusActiveLastedTime</td>
+                            <td class="border border-gray-300 px-4 py-2">datetime</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">totalChatTurns</td>
+                            <td class="border border-gray-300 px-4 py-2">int</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">totalLinesChanged</td>
+                            <td class="border border-gray-300 px-4 py-2">int</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">totalLinesAccepted</td>
+                            <td class="border border-gray-300 px-4 py-2">int</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                        <tr class="field-row">
+                            <td class="border border-gray-300 px-4 py-2">update_time</td>
+                            <td class="border border-gray-300 px-4 py-2">datetime</td>
+                            <td class="border border-gray-300 px-4 py-2">false</td>
+                            <td class="border border-gray-300 px-4 py-2"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">索引说明</h4>
+                <div class="index-item">PRIMARY KEY (uuid)</div>
+                <div class="index-item">INDEX idx_user_id (user_id)</div>
+                <div class="index-item">INDEX idx_statusActiveLastedTime (statusActiveLastedTime)</div>
+                <div class="index-item">INDEX idx_update_time (update_time)</div>
+
+                <h4 class="text-lg font-medium text-gray-700 mb-3 mt-6">表注释</h4>
+                <p class="text-gray-700">汇总每个用户的综合使用统计数据，包括整体活跃状态、聊天与补全功能的活跃状态、最后活跃时间、总对话轮数、总修改行数和总采纳行数。用于用户画像、活跃度分析与产品运营决策。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mt-12">
+        <h2 class="section-title">参考文献</h2>
+        <ol class="list-decimal list-inside space-y-2">
+            <li><cite><a href="https://lingma_table_schema_summary.csv" target="_blank" rel="noopener noreferrer">lingma_table_schema_summary.csv</a></cite></li>
+        </ol>
+    </section>
+
+    <footer>
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为所有表添加折叠/展开功能
+            const tableCards = document.querySelectorAll('.table-card');
+            tableCards.forEach(card => {
+                const header = card.querySelector('.table-header');
+                const content = card.querySelector('.p-6');
+                header.addEventListener('click', function() {
+                    content.classList.toggle('show');
+                    this.classList.toggle('active');
+                });
+            });
+
+            // 为索引项添加交互样式
+            const indexItems = document.querySelectorAll('.index-item');
+            indexItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    this.classList.toggle('bg-blue-100');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

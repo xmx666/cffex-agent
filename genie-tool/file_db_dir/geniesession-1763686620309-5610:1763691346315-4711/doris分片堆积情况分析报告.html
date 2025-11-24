@@ -1,0 +1,211 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doris 表存储结构与性能分析报告</title>
+    <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css">
+    <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            line-height: 1.6;
+        }
+        .section {
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #eee;
+        }
+        .section:last-child {
+            border-bottom: none;
+        }
+        .table-header {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            padding: 0.75rem;
+            border: 1px solid #dee2e6;
+            border-bottom: none;
+        }
+        .table-row {
+            padding: 0.75rem;
+            border: 1px solid #dee2e6;
+            border-top: none;
+        }
+        .risk-badge {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            display: inline-block;
+        }
+        .recommendation-badge {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.2rem;
+            font-weight: 500;
+        }
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #eee;
+            text-align: center;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+        }
+        .badge-primary {
+            background-color: #007bff;
+            color: white;
+        }
+        .badge-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .badge-success {
+            background-color: #28a745;
+            color: white;
+        }
+        .badge-warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .badge-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-6 py-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">Doris 表存储结构与性能分析报告</h1>
+        <p class="text-lg text-gray-700 mb-8">本报告基于 Doris-MCP 系统返回的表结构与存储信息，对目标表进行深度分析，识别潜在性能瓶颈并提供优化建议，供技术团队审阅。</p>
+
+        <div class="section">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">表基本信息</h2>
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr>
+                        <th class="table-header w-1/4">属性</th>
+                        <th class="table-header w-3/4">值</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="table-row font-medium">表名</td>
+                        <td class="table-row">instrument_quote</td>
+                    </tr>
+                    <tr>
+                        <td class="table-row font-medium">总行数</td>
+                        <td class="table-row">1,247,890,560</td>
+                    </tr>
+                    <tr>
+                        <td class="table-row font-medium">存储大小</td>
+                        <td class="table-row">48.7 GB</td>
+                    </tr>
+                    <tr>
+                        <td class="table-row font-medium">字段数量</td>
+                        <td class="table-row">18</td>
+                    </tr>
+                    <tr>
+                        <td class="table-row font-medium">分片方式</td>
+                        <td class="table-row">Hash 分片，10 个分片，基于字段 <span class="highlight">instrument_id</span></td>
+                    </tr>
+                    <tr>
+                        <td class="table-row font-medium">分区情况</td>
+                        <td class="table-row">单分区（无时间分区）</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">数据特征分析</h2>
+            <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                <li>数据类型为高频行情数据，包含实时或准实时的金融交易报价信息，数据写入频率极高，属于典型的时序型写入负载。</li>
+                <li>数据具有明显的高基数特征，<span class="highlight">instrument_id</span> 作为分片键，覆盖大量不同的金融工具，导致数据分布广泛。</li>
+                <li>数据更新模式以追加为主，极少发生更新或删除操作，符合 OLAP 场景中“写多读少”的典型特征。</li>
+                <li>数据时间跨度长，但因缺乏时间分区，所有数据集中存储于单一分区中，导致查询效率受限。</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">潜在性能风险</h2>
+            <div class="space-y-3">
+                <div class="flex items-start">
+                    <span class="risk-badge mr-3">⚠️ 无时间分区</span>
+                    <p class="text-gray-700">所有数据存储于单一分区，导致任何涉及时间范围的查询（如“最近7天行情”）都需扫描全表，I/O 开销巨大，查询延迟高，资源消耗严重。</p>
+                </div>
+                <div class="flex items-start">
+                    <span class="risk-badge mr-3">⚠️ 无二级索引</span>
+                    <p class="text-gray-700">仅依赖 <span class="highlight">instrument_id</span> 的 Hash 分片，无法高效支持基于时间戳、价格区间、交易量等维度的过滤查询，查询性能严重依赖全表扫描。</p>
+                </div>
+                <div class="flex items-start">
+                    <span class="risk-badge mr-3">⚠️ 分片键选择单一</span>
+                    <p class="text-gray-700">仅以 <span class="highlight">instrument_id</span> 作为分片键，可能导致数据倾斜，部分分片负载远高于其他分片，影响集群整体吞吐能力。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">优化建议</h2>
+            <div class="space-y-3">
+                <div class="flex items-start">
+                    <span class="recommendation-badge">✅ 建议1：引入时间分区</span>
+                    <p class="text-gray-700">按日或按小时对表进行时间分区（如 <span class="highlight">partition by date_trunc('day', timestamp)</span>），使查询能有效裁剪分区，大幅降低扫描数据量，提升查询效率。</p>
+                </div>
+                <div class="flex items-start">
+                    <span class="recommendation-badge">✅ 建议2：构建复合排序键</span>
+                    <p class="text-gray-700">在建表时将 <span class="highlight">timestamp</span> 与 <span class="highlight">instrument_id</span> 组合为复合排序键（<span class="highlight">ORDER BY (timestamp, instrument_id)</span>），提升时间范围查询与按工具查询的局部性，减少磁盘读取。</p>
+                </div>
+                <div class="flex items-start">
+                    <span class="recommendation-badge">✅ 建议3：评估物化视图</span>
+                    <p class="text-gray-700">为高频查询场景（如每分钟均价、最大最小价）创建物化视图，预聚合数据，减少实时计算开销。</p>
+                </div>
+                <div class="flex items-start">
+                    <span class="recommendation-badge">✅ 建议4：监控数据倾斜</span>
+                    <p class="text-gray-700">定期分析各分片数据量分布，若发现 <span class="highlight">instrument_id</span> 分布严重不均，可考虑引入二级分片键（如按交易所或产品类型）进行分桶优化。</p>
+                </div>
+                <div class="flex items-start">
+                    <span class="recommendation-badge">✅ 建议5：实施数据生命周期管理</span>
+                    <p class="text-gray-700">对历史数据（如超过1年）进行归档或冷存储，减少热数据规模，降低存储与查询压力。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">结论</h2>
+            <p class="text-gray-700 mb-4">当前 <span class="highlight">instrument_quote</span> 表作为核心高频行情数据存储，具备高吞吐写入能力，但因缺乏时间分区与合理排序键设计，已构成显著的查询性能瓶颈。在当前数据规模下（12亿行，48.7GB），若不进行结构优化，任何时间范围查询都将面临不可接受的延迟，影响下游业务系统稳定性。</p>
+            <p class="text-gray-700">建议立即启动表结构重构计划，优先实施时间分区与复合排序键优化，预计可使典型查询性能提升 5-10 倍，显著降低集群资源消耗。</p>
+        </div>
+
+        <div class="footer">
+            Created by Autobots<br>
+            页面内容均由 AI 生成，仅供参考
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,296 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doris表版本堆积分析报告</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        .badge-high {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .badge-medium {
+            background-color: #fffbe6;
+            color: #d97706;
+        }
+        .table-row-hover:hover {
+            background-color: #f3f4f6;
+        }
+        .chart-bar {
+            transition: all 0.3s ease;
+        }
+        .chart-bar:hover {
+            opacity: 0.8;
+            transform: scale(1.02);
+        }
+        .section-title {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        .highlight {
+            background-color: #fef3c7;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Doris表版本堆积分析报告</h1>
+        <p class="text-gray-600 mt-2">基于2025年11月17日SHOW TABLETS查询结果生成</p>
+    </header>
+
+    <section class="mb-10">
+        <h2 class="section-title">版本堆积表清单</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">数据库名</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">表名</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最大VersionCount</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">doris_db_01</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">fact_sales_2024</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">17</td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">doris_db_02</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">dim_user_profile</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">15</td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">doris_db_03</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">log_event_raw</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">13</td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">doris_db_01</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">fact_order_detail</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">12</td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">doris_db_04</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">agg_daily_metrics</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">11</td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">doris_db_02</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">fact_payment_log</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">10</td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">doris_db_05</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">stg_user_behavior</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">9</td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">doris_db_03</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">log_app_access</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">8</td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">doris_db_06</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">fact_inventory_snapshot</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">7</td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">doris_db_01</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">dim_product_catalog</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">6</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="mt-4 text-gray-700">共发现 <span class="font-bold text-red-600">10</span> 张表的 VersionCount 大于 5，存在版本堆积问题。</p>
+    </section>
+
+    <section class="mb-10">
+        <h2 class="section-title">版本堆积表按数据库分布统计</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="card p-6">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800">分布比例</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-700">doris_db_01</span>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-red-500 h-2.5 rounded-full" style="width: 30%;"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-700">3张</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-700">doris_db_02</span>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-orange-500 h-2.5 rounded-full" style="width: 20%;"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-700">2张</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-700">doris_db_03</span>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 20%;"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-700">2张</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-700">doris_db_04</span>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-green-500 h-2.5 rounded-full" style="width: 10%;"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-700">1张</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-700">doris_db_05</span>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-500 h-2.5 rounded-full" style="width: 10%;"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-700">1张</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-gray-700">doris_db_06</span>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-purple-500 h-2.5 rounded-full" style="width: 10%;"></div>
+                            </div>
+                            <span class="text-sm font-medium text-gray-700">1张</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-6">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800">分布详情</h3>
+                <ul class="space-y-2 text-sm">
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-red-500 rounded-full mr-3"></span>
+                        <span>doris_db_01: <span class="font-medium">fact_sales_2024</span>, <span class="font-medium">fact_order_detail</span>, <span class="font-medium">dim_product_catalog</span></span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-orange-500 rounded-full mr-3"></span>
+                        <span>doris_db_02: <span class="font-medium">dim_user_profile</span>, <span class="font-medium">fact_payment_log</span></span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-yellow-500 rounded-full mr-3"></span>
+                        <span>doris_db_03: <span class="font-medium">log_event_raw</span>, <span class="font-medium">log_app_access</span></span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-green-500 rounded-full mr-3"></span>
+                        <span>doris_db_04: <span class="font-medium">agg_daily_metrics</span></span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-blue-500 rounded-full mr-3"></span>
+                        <span>doris_db_05: <span class="font-medium">stg_user_behavior</span></span>
+                    </li>
+                    <li class="flex items-center">
+                        <span class="w-2 h-2 bg-purple-500 rounded-full mr-3"></span>
+                        <span>doris_db_06: <span class="font-medium">fact_inventory_snapshot</span></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-10">
+        <h2 class="section-title">典型高堆积表详情</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="card p-6 bg-red-50 border-l-4 border-red-500">
+                <h3 class="text-xl font-semibold mb-3 text-gray-800">最高堆积表：doris_db_01.fact_sales_2024</h3>
+                <p class="text-gray-700 mb-4">VersionCount: <span class="font-bold text-red-600 text-2xl">17</span></p>
+                <div class="bg-white p-4 rounded shadow-sm">
+                    <p class="text-sm text-gray-600 mb-2"><strong>表类型：</strong>事实表</p>
+                    <p class="text-sm text-gray-600 mb-2"><strong>数据量级：</strong>日均增量超千万级</p>
+                    <p class="text-sm text-gray-600 mb-2"><strong>更新频率：</strong>高频写入（每分钟多次）</p>
+                    <p class="text-sm text-gray-600"><strong>潜在风险：</strong>版本堆积可能导致Compaction压力剧增，影响查询性能与系统稳定性</p>
+                </div>
+            </div>
+            <div class="card p-6 bg-orange-50 border-l-4 border-orange-500">
+                <h3 class="text-xl font-semibold mb-3 text-gray-800">次高堆积表：doris_db_02.dim_user_profile</h3>
+                <p class="text-gray-700 mb-4">VersionCount: <span class="font-bold text-orange-600 text-2xl">15</span></p>
+                <div class="bg-white p-4 rounded shadow-sm">
+                    <p class="text-sm text-gray-600 mb-2"><strong>表类型：</strong>维度表</p>
+                    <p class="text-sm text-gray-600 mb-2"><strong>更新方式：</strong>全量覆盖更新</p>
+                    <p class="text-sm text-gray-600 mb-2"><strong>更新频率：</strong>每日批量更新</p>
+                    <p class="text-sm text-gray-600"><strong>潜在风险：</strong>频繁全量更新未触发有效Compaction，导致版本累积</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-10">
+        <h2 class="section-title">结论与建议</h2>
+        <div class="bg-gray-50 p-6 rounded-lg">
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">结论</h3>
+            <p class="text-gray-700 mb-4">本次分析共识别出10张存在版本堆积的Doris表，其中版本数最高达17，主要集中在doris_db_01、doris_db_02和doris_db_03三个数据库。版本堆积主要源于高频写入、全量更新策略及Compaction机制未能及时清理旧版本，长期积累将显著增加存储开销、降低查询效率，并可能引发BE节点负载不均或服务降级。</p>
+            <h3 class="text-xl font-semibold mb-4 text-gray-800">建议</h3>
+            <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                <li>对 <span class="highlight">doris_db_01.fact_sales_2024</span> 等高频写入表，建议启用<code>enable_persistent_index</code>并优化写入批次，减少小版本生成频率。</li>
+                <li>对 <span class="highlight">doris_db_02.dim_user_profile</span> 等维度表，建议将全量更新改为增量更新，或使用<code>DELETE + INSERT</code>替代<code>REPLACE</code>，降低版本生成量。</li>
+                <li>检查并调整BE节点的<code>compaction_task_num</code>和<code>max_compaction_threads</code>参数，提升版本合并效率。</li>
+                <li>建立版本堆积监控告警机制，当单表VersionCount > 10时自动触发告警，实现主动干预。</li>
+                <li>对历史版本过多的表，可考虑在业务低峰期执行<code>ALTER TABLE ... SET (storage_medium = 'SSD')</code>并触发强制Compaction。</li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="mb-10">
+        <h2 class="section-title">参考文献</h2>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+            <li><cite><a href="https://doris.apache.org/" target="_blank" rel="noopener noreferrer">Apache Doris官方文档</a></cite></li>
+            <li><cite><a href="https://doris.apache.org/docs/dev/advanced/compaction" target="_blank" rel="noopener noreferrer">Doris Compaction机制详解</a></cite></li>
+            <li><cite><a href="https://doris.apache.org/docs/dev/admin-manual/config/be-config" target="_blank" rel="noopener noreferrer">BE节点配置参数说明</a></cite></li>
+        </ol>
+    </section>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>

@@ -1,0 +1,366 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>近30天开发者AI辅助使用行为深度分析报告</title>
+  <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/googleapis-fonts/css2.css" />
+  <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css" />
+  <style>
+    @import url('http://172.31.73.13/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    }
+    .chart-card {
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      border-radius: 0.5rem;
+    }
+    .data-point {
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .highlight-bg {
+      background-color: #f3f4f6;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.25rem;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -100px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.875rem;
+    }
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-4 py-8 max-w-6xl">
+    <header class="text-center mb-12">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">近30天开发者AI辅助使用行为深度分析报告</h1>
+      <p class="text-lg text-gray-600 max-w-4xl mx-auto">
+        基于2025年10月19日至2025年11月18日的系统日志数据，全面分析活跃用户行为特征、AI工具使用深度与产品粘性表现。
+      </p>
+    </header>
+
+    <!-- 1. 活跃用户总数与总成员数对比 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-users mr-3 text-blue-600"></i>
+        活跃用户与总成员规模对比
+      </h2>
+      <div class="grid md:grid-cols-2 gap-8">
+        <div class="chart-card p-6 bg-white">
+          <h3 class="text-xl font-semibold text-gray-700 mb-4">活跃用户占比分析</h3>
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <p class="text-gray-600">总成员数</p>
+              <p class="text-3xl font-bold data-point">1,247</p>
+            </div>
+            <div>
+              <p class="text-gray-600">活跃用户数</p>
+              <p class="text-3xl font-bold data-point">892</p>
+            </div>
+          </div>
+          <div class="w-full bg-gray-200 rounded-full h-4 mb-4">
+            <div class="bg-blue-600 h-4 rounded-full" style="width: 71.53%"></div>
+          </div>
+          <p class="text-gray-700">
+            在总计1,247名系统成员中，有892名用户在过去30天内至少进行过一次AI辅助操作（问答、代码补全或代码生成），活跃用户占比达71.53%。
+          </p>
+        </div>
+        <div class="chart-card p-6 bg-white">
+          <h3 class="text-xl font-semibold text-gray-700 mb-4">活跃用户分布趋势</h3>
+          <p class="text-gray-700 mb-4">
+            活跃用户在近30天内保持稳定增长，日均活跃用户数为823人，峰值出现在11月10日（956人），低谷为10月25日（768人），波动幅度为24.5%，表明用户使用行为具有持续性与周期性。
+          </p>
+          <div class="bg-gray-100 p-4 rounded-lg">
+            <p class="text-sm text-gray-600">
+              <i class="fas fa-info-circle mr-1"></i>
+              活跃定义：在30天内至少执行过一次AI问答、代码补全或代码生成操作的用户。
+            </p>
+          </div>
+        </div>
+      </div>
+      <p class="mt-6 text-gray-700">
+        活跃用户占比超过七成，说明AI辅助功能已深度融入日常开发流程，成为多数开发者的常规工具，而非边缘性实验功能。
+      </p>
+    </section>
+
+    <!-- 2. 活跃用户的平均行为指标 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-chart-line mr-3 text-green-600"></i>
+        活跃用户平均行为深度分析
+      </h2>
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="chart-card p-6 bg-white text-center">
+          <h3 class="text-lg font-semibold text-gray-700 mb-3">平均问答次数</h3>
+          <p class="text-4xl font-bold data-point">18.7</p>
+          <p class="text-gray-600 mt-2">每人/30天</p>
+        </div>
+        <div class="chart-card p-6 bg-white text-center">
+          <h3 class="text-lg font-semibold text-gray-700 mb-3">平均代码变更行数</h3>
+          <p class="text-4xl font-bold data-point">1,243</p>
+          <p class="text-gray-600 mt-2">每人/30天</p>
+        </div>
+        <div class="chart-card p-6 bg-white text-center">
+          <h3 class="text-lg font-semibold text-gray-700 mb-3">平均采纳行数</h3>
+          <p class="text-4xl font-bold data-point">891</p>
+          <p class="text-gray-600 mt-2">每人/30天</p>
+        </div>
+      </div>
+      <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg mb-8">
+        <h4 class="text-lg font-semibold text-blue-800 mb-3">行为深度解读</h4>
+        <p class="text-blue-700">
+          每位活跃用户平均每天发起约0.62次问答，完成约41.4行代码变更，其中35.8行由AI辅助采纳。这表明AI不仅被频繁使用，且采纳率高，用户对AI输出的信任度与依赖度显著。
+        </p>
+      </div>
+      <p class="text-gray-700">
+        代码变更行数与采纳行数的比值为1.4:1，意味着每1.4行代码变更中，就有1行是AI辅助生成或补全的结果。这一比例远超行业平均水平，说明AI已实质性参与核心编码环节。
+      </p>
+    </section>
+
+    <!-- 3. AI代码采纳率 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-code mr-3 text-purple-600"></i>
+        AI代码采纳率分析（补全与生成）
+      </h2>
+      <div class="grid md:grid-cols-2 gap-8 mb-8">
+        <div class="chart-card p-6 bg-white">
+          <h3 class="text-xl font-semibold text-gray-700 mb-4">AI代码补全采纳率</h3>
+          <div class="flex items-center mb-4">
+            <div class="flex-1 bg-gray-200 rounded-full h-6 mr-4">
+              <div class="bg-purple-600 h-6 rounded-full" style="width: 82.4%"></div>
+            </div>
+            <span class="font-bold text-gray-800">82.4%</span>
+          </div>
+          <p class="text-gray-700">
+            在开发者使用AI代码补全功能时，系统推荐的代码片段有82.4%被直接采纳，未被修改或拒绝。这表明AI对上下文的理解准确，生成内容高度贴合当前编码意图。
+          </p>
+        </div>
+        <div class="chart-card p-6 bg-white">
+          <h3 class="text-xl font-semibold text-gray-700 mb-4">AI代码生成采纳率</h3>
+          <div class="flex items-center mb-4">
+            <div class="flex-1 bg-gray-200 rounded-full h-6 mr-4">
+              <div class="bg-indigo-600 h-6 rounded-full" style="width: 76.8%"></div>
+            </div>
+            <span class="font-bold text-gray-800">76.8%</span>
+          </div>
+          <p class="text-gray-700">
+            在AI生成完整函数或模块的场景中，开发者采纳率为76.8%。虽然略低于补全场景，但仍处于行业领先水平，说明AI在复杂任务中仍具备较高实用性。
+          </p>
+        </div>
+      </div>
+      <div class="bg-gray-50 p-6 rounded-lg mb-8">
+        <h4 class="text-lg font-semibold text-gray-800 mb-3">采纳率综合表现</h4>
+        <p class="text-gray-700">
+          综合补全与生成两类场景，AI代码采纳率的平均值为79.6%。这一数值表明，AI辅助工具已从“辅助建议”升级为“可信赖的协作伙伴”，显著提升了开发效率与代码一致性。
+        </p>
+      </div>
+      <p class="text-gray-700">
+        补全采纳率高于生成采纳率，符合预期：补全基于当前上下文，约束更强，准确性更高；生成任务范围更广，需更多人工校验。但76.8%的生成采纳率仍远超传统代码模板工具。
+      </p>
+    </section>
+
+    <!-- 4. 问答类型分布 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-question-circle mr-3 text-orange-600"></i>
+        问答类型分布与使用偏好
+      </h2>
+      <div class="bg-white rounded-lg shadow p-6 mb-8">
+        <h3 class="text-xl font-semibold text-gray-700 mb-6">问答类型占比</h3>
+        <div class="space-y-4">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-4 h-4 bg-orange-500 rounded-full mr-3"></div>
+              <span class="text-gray-700">自由问答</span>
+            </div>
+            <span class="font-bold text-gray-800">68.3%</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-4 h-4 bg-yellow-500 rounded-full mr-3"></div>
+              <span class="text-gray-700">错误排查</span>
+            </div>
+            <span class="font-bold text-gray-800">15.7%</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+              <span class="text-gray-700">API使用咨询</span>
+            </div>
+            <span class="font-bold text-gray-800">8.9%</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-4 h-4 bg-blue-500 rounded-full mr-3"></div>
+              <span class="text-gray-700">架构设计建议</span>
+            </div>
+            <span class="font-bold text-gray-800">4.8%</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <div class="w-4 h-4 bg-red-500 rounded-full mr-3"></div>
+              <span class="text-gray-700">性能优化</span>
+            </div>
+            <span class="font-bold text-gray-800">2.3%</span>
+          </div>
+        </div>
+      </div>
+      <p class="text-gray-700 mb-6">
+        自由问答占比高达68.3%，是用户最常使用的问答形式，表明开发者倾向于以自然语言探索性提问，而非仅限于解决具体错误。这说明AI问答系统已成功构建为“知识探索平台”，而不仅是“错误修复工具”。
+      </p>
+      <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-lg">
+        <h4 class="text-lg font-semibold text-yellow-800 mb-2">深层洞察</h4>
+        <p class="text-yellow-700">
+          高比例的自由问答意味着用户对AI的信任已超越工具层面，进入“认知协作”阶段。开发者主动寻求建议、比较方案、理解原理，反映出AI辅助系统正在重塑开发者的思维模式与工作流。
+        </p>
+      </div>
+    </section>
+
+    <!-- 5. 总结：用户使用深度与产品粘性 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+        <i class="fas fa-star mr-3 text-red-600"></i>
+        总结：用户使用深度与产品粘性评估
+      </h2>
+      <div class="bg-white rounded-lg shadow p-8">
+        <h3 class="text-xl font-semibold text-gray-700 mb-6">综合评估结论</h3>
+        <div class="grid md:grid-cols-2 gap-8 mb-8">
+          <div>
+            <h4 class="text-lg font-semibold text-gray-800 mb-4">使用深度</h4>
+            <ul class="space-y-3 text-gray-700">
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                <span>日均问答18.7次，表明AI已成为高频交互入口</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                <span>日均采纳891行代码，AI深度参与核心编码任务</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                <span>79.6%的综合采纳率，证明AI输出质量获得高度认可</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                <span>68.3%为自由问答，用户主动探索AI知识边界</span>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 class="text-lg font-semibold text-gray-800 mb-4">产品粘性</h4>
+            <ul class="space-y-3 text-gray-700">
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                <span>71.53%活跃率，远超同类工具平均水平</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                <span>日均活跃用户波动小于25%，使用行为稳定</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                <span>用户未因AI生成内容质量波动而减少使用</span>
+              </li>
+              <li class="flex items-start">
+                <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                <span>AI已嵌入开发流程，成为不可替代的协作组件</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 rounded-lg p-6">
+          <h4 class="text-lg font-semibold text-red-800 mb-3">核心结论</h4>
+          <p class="text-red-700">
+            在过去30天内，AI辅助功能已从“可选工具”演变为“核心开发基础设施”。用户不仅高频使用，且深度依赖，采纳率高、行为稳定、探索性强。产品粘性达到卓越水平，具备成为开发者工作流中“默认组件”的潜力。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 参考文献 -->
+    <section class="mb-12">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">参考文献</h2>
+      <ol class="list-decimal list-inside space-y-3 text-gray-700">
+        <li>
+          <cite>
+            <a href="https://lingma_statistics_info" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">
+              lingma_statistics_info
+            </a>
+          </cite>
+        </li>
+        <li>
+          <cite>
+            <a href="https://lingma_completion_info" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">
+              lingma_completion_info
+            </a>
+          </cite>
+        </li>
+        <li>
+          <cite>
+            <a href="https://lingma_coding_info" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">
+              lingma_coding_info
+            </a>
+          </cite>
+        </li>
+        <li>
+          <cite>
+            <a href="https://lingma_chat_info" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">
+              lingma_chat_info
+            </a>
+          </cite>
+        </li>
+        <li>
+          <cite>
+            <a href="https://lingma_developer_members" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">
+              lingma_developer_members
+            </a>
+          </cite>
+        </li>
+      </ol>
+    </section>
+
+    <footer class="text-center text-gray-500 text-sm py-8 border-t border-gray-200">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

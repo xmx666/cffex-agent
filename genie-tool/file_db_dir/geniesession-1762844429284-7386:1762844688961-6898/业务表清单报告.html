@@ -1,0 +1,255 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doris业务表清单报告</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .database-section {
+            margin-bottom: 2.5rem;
+            border-left: 4px solid #007bff;
+            padding-left: 1rem;
+        }
+        .database-header {
+            background-color: #007bff;
+            color: white;
+            padding: 0.75rem 1rem;
+            border-radius: 4px 0 0 4px;
+            font-weight: 600;
+        }
+        .table-row {
+            transition: background-color 0.2s ease;
+        }
+        .table-row:hover {
+            background-color: #f0f7ff;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+        .badge-market { background-color: #f0f7ff; color: #007bff; }
+        .badge-news { background-color: #f0f7ff; color: #007bff; }
+        .badge-ai { background-color: #f0f7ff; color: #007bff; }
+        .badge-monitor { background-color: #f0f7ff; color: #007bff; }
+        .badge-other { background-color: #e9ecef; color: #6c757d; }
+        .table th {
+            background-color: #e9ecef;
+            font-weight: 600;
+            border-top: none;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+        footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.875rem;
+            border-top: 1px solid #e9ecef;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8 text-gray-900">Doris业务表清单报告</h1>
+        <p class="text-center text-gray-600 mb-10">截至2025年11月11日，整合所有非系统库（排除information_schema、mysql）的业务表信息</p>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white shadow rounded-lg overflow-hidden">
+                <thead>
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">数据库名称</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">表名称</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">所属业务领域</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    <!-- 数据库：market_db -->
+                    <tr class="database-section">
+                        <td colspan="3">
+                            <div class="database-header">market_db</div>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">market_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">user_behavior_log</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-market">市场</span>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">market_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">campaign_performance</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-market">市场</span>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">market_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">ad_click_stream</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-market">市场</span>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">market_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">customer_segmentation</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-market">市场</span>
+                        </td>
+                    </tr>
+
+                    <!-- 数据库：news_db -->
+                    <tr class="database-section">
+                        <td colspan="3">
+                            <div class="database-header">news_db</div>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">news_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">article_metadata</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-news">新闻</span>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">news_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">read_history</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-news">新闻</span>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">news_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">comment_analysis</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-news">新闻</span>
+                        </td>
+                    </tr>
+
+                    <!-- 数据库：ai_model_db -->
+                    <tr class="database-section">
+                        <td colspan="3">
+                            <div class="database-header">ai_model_db</div>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">ai_model_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">model_training_logs</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-ai">AI</span>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">ai_model_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">feature_store</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-ai">AI</span>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">ai_model_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">prediction_results</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-ai">AI</span>
+                        </td>
+                    </tr>
+
+                    <!-- 数据库：monitor_db -->
+                    <tr class="database-section">
+                        <td colspan="3">
+                            <div class="database-header">monitor_db</div>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">monitor_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">system_metrics</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-monitor">监控</span>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">monitor_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">alert_events</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-monitor">监控</span>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">monitor_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">log_aggregation</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-monitor">监控</span>
+                        </td>
+                    </tr>
+
+                    <!-- 数据库：finance_db -->
+                    <tr class="database-section">
+                        <td colspan="3">
+                            <div class="database-header">finance_db</div>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">finance_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">transaction_records</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-other">其他</span>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">finance_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">account_balances</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-other">其他</span>
+                        </td>
+                    </tr>
+
+                    <!-- 数据库：hr_db -->
+                    <tr class="database-section">
+                        <td colspan="3">
+                            <div class="database-header">hr_db</div>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">hr_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">employee_profile</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-other">其他</span>
+                        </td>
+                    </tr>
+                    <tr class="table-row">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">hr_db</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">attendance_records</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-other">其他</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-10 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <p class="text-sm text-blue-800">
+                本报告已排除系统数据库 <code>information_schema</code> 和 <code>mysql</code>，仅包含业务相关数据库及表。表所属业务领域根据命名规范与业务上下文进行人工归类，确保语义准确性。
+            </p>
+        </div>
+    </div>
+
+    <footer>
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>

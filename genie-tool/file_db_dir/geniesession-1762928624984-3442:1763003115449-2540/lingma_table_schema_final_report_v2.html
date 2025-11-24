@@ -1,0 +1,913 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lingma 系统数据库表结构完整技术报告</title>
+    <link rel="stylesheet" href="http://172.31.73.13/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://172.31.73.13/font-awesome/all.min.css">
+    <link href="http://172.31.73.13/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3b82f6;
+            --secondary-color: #10b981;
+            --accent-color: #8b5cf6;
+            --text-color: #1f2937;
+            --bg-light: #f9fafb;
+            --border-color: #e5e7eb;
+        }
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            color: var(--text-color);
+            background-color: #ffffff;
+        }
+        .table-header {
+            background-color: var(--bg-light);
+            border-left: 4px solid var(--primary-color);
+            padding: 1rem;
+            margin: 1.5rem 0 1rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .table-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--text-color);
+        }
+        .table-subtitle {
+            font-size: 1.1rem;
+            font-weight: 500;
+            color: #6b7280;
+            margin: 0.5rem 0 0 0;
+        }
+        .create-table {
+            background-color: #f3f4f6;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            margin: 1rem 0;
+            border: 1px solid var(--border-color);
+        }
+        .field-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .field-table th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        .field-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+        .field-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .field-table tr:hover {
+            background-color: #f1f5f9;
+        }
+        .field-name {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        .data-type {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+        .nullable {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        .nullable.false {
+            color: #10b981;
+        }
+        .index-suggestion {
+            background-color: #eff6ff;
+            padding: 1rem;
+            border-left: 4px solid var(--accent-color);
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+        .index-suggestion h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--accent-color);
+        }
+        .index-suggestion ul {
+            padding-left: 1.5rem;
+            margin: 0.5rem 0;
+        }
+        .index-suggestion li {
+            margin-bottom: 0.25rem;
+        }
+        .table-comment {
+            background-color: #f0fdf4;
+            padding: 1rem;
+            border-left: 4px solid var(--secondary-color);
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+        }
+        .table-comment h4 {
+            margin: 0 0 0.5rem 0;
+            color: var(--secondary-color);
+        }
+        .nav-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 1.5rem;
+        }
+        .nav-tab {
+            padding: 0.75rem 1.5rem;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+            margin-right: 0.5rem;
+            font-weight: 500;
+            color: #6b7280;
+        }
+        .nav-tab.active {
+            background-color: var(--bg-light);
+            color: var(--primary-color);
+            border-color: var(--border-color);
+        }
+        .tab-content {
+            display: none;
+            padding: 1.5rem 0;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .footer {
+            margin-top: 4rem;
+            text-align: center;
+            padding: 1.5rem 0;
+            color: #6b7280;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .reference-list {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+        .reference-item {
+            margin-bottom: 0.5rem;
+        }
+        .reference-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .reference-link:hover {
+            text-decoration: underline;
+        }
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 9999px;
+            margin-left: 0.5rem;
+        }
+        .badge-nullable {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        .badge-not-nullable {
+            background-color: #d1fae5;
+            color: #059669;
+        }
+        .code-keyword {
+            color: #007bff;
+            font-weight: 600;
+        }
+        .code-type {
+            color: #d97706;
+            font-weight: 500;
+        }
+        .code-comment {
+            color: #6b7280;
+            font-style: italic;
+        }
+        .toggle-btn {
+            background-color: #f3f4f6;
+            border: 1px solid #d1d5db;
+            color: #374151;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .toggle-btn:hover {
+            background-color: #e5e7eb;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="section-title">Lingma 系统数据库表结构完整技术报告</h1>
+    <p class="text-lg text-gray-600 mb-8">本报告基于 lingma_table_schema_summary.csv 文件完整字段信息，系统整理了 Lingma 系统六张核心数据表的 CREATE TABLE 语句、字段明细、索引建议及表注释，便于技术团队查阅与维护。</p>
+
+    <div class="nav-tabs">
+        <div class="nav-tab active" data-tab="lingma_chat_info">lingma_chat_info</div>
+        <div class="nav-tab" data-tab="lingma_coding_info">lingma_coding_info</div>
+        <div class="nav-tab" data-tab="lingma_completion_info">lingma_completion_info</div>
+        <div class="nav-tab" data-tab="lingma_developer_members">lingma_developer_members</div>
+        <div class="nav-tab" data-tab="lingma_feedbacks_info">lingma_feedbacks_info</div>
+        <div class="nav-tab" data-tab="lingma_statistics_info">lingma_statistics_info</div>
+    </div>
+
+    <!-- lingma_chat_info -->
+    <div id="lingma_chat_info" class="tab-content active">
+        <div class="table-header">
+            <h2 class="table-title">lingma_chat_info</h2>
+            <p class="table-subtitle">聊天会话信息表</p>
+        </div>
+
+        <div class="create-table">
+            CREATE TABLE `lingma_chat_info` (<br>
+            &nbsp;&nbsp;`uuid` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`user_id` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`display_name` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`chat_type` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`chat_turns` int NOT NULL,<br>
+            &nbsp;&nbsp;`ide` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`update_time` datetime NOT NULL<br>
+            );
+        </div>
+
+        <table class="field-table">
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>数据类型</th>
+                    <th>是否可空</th>
+                    <th>注释</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="field-name">uuid</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">user_id</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">display_name</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">chat_type</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">chat_turns</td>
+                    <td class="data-type">int</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">ide</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">update_time</td>
+                    <td class="data-type">datetime</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="index-suggestion">
+            <h4>索引建议</h4>
+            <ul>
+                <li>建议在 <code>user_id</code> 上创建索引，用于快速查询用户聊天记录</li>
+                <li>建议在 <code>update_time</code> 上创建索引，用于按时间范围查询</li>
+                <li>建议在 <code>chat_type</code> 上创建索引，用于按会话类型筛选</li>
+                <li>建议在 <code>uuid</code> 上创建唯一索引，确保主键唯一性</li>
+            </ul>
+        </div>
+
+        <div class="table-comment">
+            <h4>表注释</h4>
+            <p>存储用户与AI助手之间的聊天会话记录，每条记录代表一次完整的对话会话，包含会话ID、用户ID、显示名称、会话类型、对话轮数、使用的IDE及最后更新时间。</p>
+        </div>
+    </div>
+
+    <!-- lingma_coding_info -->
+    <div id="lingma_coding_info" class="tab-content">
+        <div class="table-header">
+            <h2 class="table-title">lingma_coding_info</h2>
+            <p class="table-subtitle">代码补全信息表</p>
+        </div>
+
+        <div class="create-table">
+            CREATE TABLE `lingma_coding_info` (<br>
+            &nbsp;&nbsp;`uuid` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`user_id` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`display_name` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`language` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`lines_accepted` int NOT NULL,<br>
+            &nbsp;&nbsp;`lines_changed` int NOT NULL,<br>
+            &nbsp;&nbsp;`ai_lines_rate` decimal(10,4) NOT NULL,<br>
+            &nbsp;&nbsp;`update_time` datetime NOT NULL<br>
+            );
+        </div>
+
+        <table class="field-table">
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>数据类型</th>
+                    <th>是否可空</th>
+                    <th>注释</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="field-name">uuid</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">user_id</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">display_name</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">language</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">lines_accepted</td>
+                    <td class="data-type">int</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">lines_changed</td>
+                    <td class="data-type">int</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">ai_lines_rate</td>
+                    <td class="data-type">decimal(10,4)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">update_time</td>
+                    <td class="data-type">datetime</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="index-suggestion">
+            <h4>索引建议</h4>
+            <ul>
+                <li>建议在 <code>user_id</code> 上创建索引，用于统计用户代码贡献</li>
+                <li>建议在 <code>language</code> 上创建索引，用于分析不同语言的AI辅助使用情况</li>
+                <li>建议在 <code>update_time</code> 上创建索引，用于按时间维度分析代码行为趋势</li>
+                <li>建议在 <code>uuid</code> 上创建唯一索引，确保主键唯一性</li>
+            </ul>
+        </div>
+
+        <div class="table-comment">
+            <h4>表注释</h4>
+            <p>记录用户在代码编辑过程中AI辅助的接受情况，包含接受的代码行数、修改的总行数、AI代码行占比及更新时间，用于评估AI辅助编码效率。</p>
+        </div>
+    </div>
+
+    <!-- lingma_completion_info -->
+    <div id="lingma_completion_info" class="tab-content">
+        <div class="table-header">
+            <h2 class="table-title">lingma_completion_info</h2>
+            <p class="table-subtitle">代码补全建议统计表</p>
+        </div>
+
+        <div class="create-table">
+            CREATE TABLE `lingma_completion_info` (<br>
+            &nbsp;&nbsp;`uuid` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`user_id` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`display_name` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`language` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`ide` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`count_accepted` int NOT NULL,<br>
+            &nbsp;&nbsp;`count_suggested` int NOT NULL,<br>
+            &nbsp;&nbsp;`lines_accepted` int NOT NULL,<br>
+            &nbsp;&nbsp;`lines_suggested` int NOT NULL,<br>
+            &nbsp;&nbsp;`ai_accept_rate_count` decimal(10,4) NOT NULL,<br>
+            &nbsp;&nbsp;`ai_accept_rate_lines` decimal(10,4) NOT NULL,<br>
+            &nbsp;&nbsp;`update_time` datetime NOT NULL<br>
+            );
+        </div>
+
+        <table class="field-table">
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>数据类型</th>
+                    <th>是否可空</th>
+                    <th>注释</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="field-name">uuid</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">user_id</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">display_name</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">language</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">ide</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">count_accepted</td>
+                    <td class="data-type">int</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">count_suggested</td>
+                    <td class="data-type">int</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">lines_accepted</td>
+                    <td class="data-type">int</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">lines_suggested</td>
+                    <td class="data-type">int</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">ai_accept_rate_count</td>
+                    <td class="data-type">decimal(10,4)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">ai_accept_rate_lines</td>
+                    <td class="data-type">decimal(10,4)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">update_time</td>
+                    <td class="data-type">datetime</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="index-suggestion">
+            <h4>索引建议</h4>
+            <ul>
+                <li>建议在 <code>user_id</code> 上创建索引，用于分析用户补全行为</li>
+                <li>建议在 <code>language</code> 上创建索引，用于统计语言级接受率</li>
+                <li>建议在 <code>ide</code> 上创建索引，用于分析不同IDE的使用差异</li>
+                <li>建议在 <code>update_time</code> 上创建索引，用于时间序列分析</li>
+                <li>建议在 <code>uuid</code> 上创建唯一索引，确保主键唯一性</li>
+            </ul>
+        </div>
+
+        <div class="table-comment">
+            <h4>表注释</h4>
+            <p>详细记录代码补全建议的接受与建议情况，包含建议次数、接受次数、建议行数、接受行数、按次数和行数计算的AI接受率，以及更新时间，用于精细化评估AI补全功能效果。</p>
+        </div>
+    </div>
+
+    <!-- lingma_developer_members -->
+    <div id="lingma_developer_members" class="tab-content">
+        <div class="table-header">
+            <h2 class="table-title">lingma_developer_members</h2>
+            <p class="table-subtitle">开发者成员信息表</p>
+        </div>
+
+        <div class="create-table">
+            CREATE TABLE `lingma_developer_members` (<br>
+            &nbsp;&nbsp;`user_id` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`user_name` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`display_name` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`gmt_create` datetime NOT NULL,<br>
+            &nbsp;&nbsp;`member_id` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`status` char(1) NOT NULL<br>
+            );
+        </div>
+
+        <table class="field-table">
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>数据类型</th>
+                    <th>是否可空</th>
+                    <th>注释</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="field-name">user_id</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">user_name</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">display_name</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">gmt_create</td>
+                    <td class="data-type">datetime</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">member_id</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">status</td>
+                    <td class="data-type">char(1)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="index-suggestion">
+            <h4>索引建议</h4>
+            <ul>
+                <li>建议在 <code>user_id</code> 上创建唯一索引，确保用户唯一性</li>
+                <li>建议在 <code>member_id</code> 上创建唯一索引，确保成员ID唯一性</li>
+                <li>建议在 <code>status</code> 上创建索引，用于快速筛选活跃/非活跃成员</li>
+                <li>建议在 <code>gmt_create</code> 上创建索引，用于按注册时间分析用户增长趋势</li>
+            </ul>
+        </div>
+
+        <div class="table-comment">
+            <h4>表注释</h4>
+            <p>存储系统内所有开发者成员的基本信息，包括用户ID、用户名、显示名称、注册时间、成员ID及账户状态，作为用户身份与权限管理的基础数据表。</p>
+        </div>
+    </div>
+
+    <!-- lingma_feedbacks_info -->
+    <div id="lingma_feedbacks_info" class="tab-content">
+        <div class="table-header">
+            <h2 class="table-title">lingma_feedbacks_info</h2>
+            <p class="table-subtitle">用户反馈信息表</p>
+        </div>
+
+        <div class="create-table">
+            CREATE TABLE `lingma_feedbacks_info` (<br>
+            &nbsp;&nbsp;`id` int NOT NULL,<br>
+            &nbsp;&nbsp;`userId` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`organizationId` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`requestId` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`sessionId` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`gmtCreate` datetime NOT NULL,<br>
+            &nbsp;&nbsp;`gmtModified` datetime NOT NULL,<br>
+            &nbsp;&nbsp;`adviceText` text,<br>
+            &nbsp;&nbsp;`chatTask` text,<br>
+            &nbsp;&nbsp;`checkBoxItems` text,<br>
+            &nbsp;&nbsp;`context` text,<br>
+            &nbsp;&nbsp;`deleted` tinyint NOT NULL<br>
+            );
+        </div>
+
+        <table class="field-table">
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>数据类型</th>
+                    <th>是否可空</th>
+                    <th>注释</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="field-name">id</td>
+                    <td class="data-type">int</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">userId</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">organizationId</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">requestId</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">sessionId</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">gmtCreate</td>
+                    <td class="data-type">datetime</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">gmtModified</td>
+                    <td class="data-type">datetime</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">adviceText</td>
+                    <td class="data-type">text</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">chatTask</td>
+                    <td class="data-type">text</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">checkBoxItems</td>
+                    <td class="data-type">text</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">context</td>
+                    <td class="data-type">text</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">deleted</td>
+                    <td class="data-type">tinyint</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="index-suggestion">
+            <h4>索引建议</h4>
+            <ul>
+                <li>建议在 <code>id</code> 上创建主键索引（自增）</li>
+                <li>建议在 <code>userId</code> 上创建索引，用于追踪用户反馈历史</li>
+                <li>建议在 <code>organizationId</code> 上创建索引，用于按组织分析反馈</li>
+                <li>建议在 <code>gmtCreate</code> 上创建索引，用于按时间分析反馈趋势</li>
+                <li>建议在 <code>deleted</code> 上创建索引，用于快速过滤有效反馈</li>
+            </ul>
+        </div>
+
+        <div class="table-comment">
+            <h4>表注释</h4>
+            <p>存储用户提交的反馈信息，包含反馈内容、关联的聊天任务、勾选项、上下文信息、创建与修改时间及删除状态，用于收集和分析用户对AI功能的改进建议。</p>
+        </div>
+    </div>
+
+    <!-- lingma_statistics_info -->
+    <div id="lingma_statistics_info" class="tab-content">
+        <div class="table-header">
+            <h2 class="table-title">lingma_statistics_info</h2>
+            <p class="table-subtitle">用户综合统计信息表</p>
+        </div>
+
+        <div class="create-table">
+            CREATE TABLE `lingma_statistics_info` (<br>
+            &nbsp;&nbsp;`uuid` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`user_id` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`display_name` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`statusActive` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`statusActiveChat` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`statusActiveCompletion` varchar(255) NOT NULL,<br>
+            &nbsp;&nbsp;`statusActiveLastedTime` datetime NOT NULL,<br>
+            &nbsp;&nbsp;`totalChatTurns` int NOT NULL,<br>
+            &nbsp;&nbsp;`totalLinesChanged` int NOT NULL,<br>
+            &nbsp;&nbsp;`totalLinesAccepted` int NOT NULL,<br>
+            &nbsp;&nbsp;`update_time` datetime NOT NULL<br>
+            );
+        </div>
+
+        <table class="field-table">
+            <thead>
+                <tr>
+                    <th>字段名</th>
+                    <th>数据类型</th>
+                    <th>是否可空</th>
+                    <th>注释</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="field-name">uuid</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">user_id</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">display_name</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">statusActive</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">statusActiveChat</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">statusActiveCompletion</td>
+                    <td class="data-type">varchar(255)</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">statusActiveLastedTime</td>
+                    <td class="data-type">datetime</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">totalChatTurns</td>
+                    <td class="data-type">int</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">totalLinesChanged</td>
+                    <td class="data-type">int</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">totalLinesAccepted</td>
+                    <td class="data-type">int</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td class="field-name">update_time</td>
+                    <td class="data-type">datetime</td>
+                    <td class="nullable false">false</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="index-suggestion">
+            <h4>索引建议</h4>
+            <ul>
+                <li>建议在 <code>user_id</code> 上创建唯一索引，确保每个用户一条统计记录</li>
+                <li>建议在 <code>statusActive</code> 上创建索引，用于快速识别活跃用户</li>
+                <li>建议在 <code>statusActiveLastedTime</code> 上创建索引，用于分析用户活跃周期</li>
+                <li>建议在 <code>update_time</code> 上创建索引，用于追踪统计更新时间</li>
+                <li>建议在 <code>uuid</code> 上创建唯一索引，确保主键唯一性</li>
+            </ul>
+        </div>
+
+        <div class="table-comment">
+            <h4>表注释</h4>
+            <p>汇总用户在Lingma系统中的综合使用统计数据，包括整体活跃状态、聊天与补全功能的活跃状态、最后活跃时间、总对话轮数、总修改行数和总接受行数，用于用户行为分析与产品运营决策。</p>
+        </div>
+    </div>
+
+    <div class="reference-list">
+        <h3 class="section-title">参考文献</h3>
+        <div class="reference-item">[[1]]、<cite><a href="https://lingma_table_schema_summary.csv" target="_blank" rel="noopener noreferrer">lingma_table_schema_summary.csv</a></cite></div>
+    </div>
+
+    <div class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navTabs = document.querySelectorAll('.nav-tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            navTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // 移除所有激活状态
+                    navTabs.forEach(t => t.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // 激活当前标签
+                    tab.classList.add('active');
+                    const targetId = tab.getAttribute('data-tab');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>
