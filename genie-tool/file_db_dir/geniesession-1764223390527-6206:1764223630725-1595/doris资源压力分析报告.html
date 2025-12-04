@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Doris 集群资源压力分析报告（2025年11月27日）</title>
+  <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://static-resources/googleapis-fonts/css2.css" />
+  <style>
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .reference-link {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .reference-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <div class="container mx-auto p-6 max-w-6xl">
+    <header class="mb-8">
+      <h1 class="text-3xl font-bold text-center mb-4">Doris 集群资源压力分析报告</h1>
+      <p class="text-center text-gray-600">2025年11月27日</p>
+    </header>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">1. BE节点资源使用情况</h2>
+      <p>根据当前监控数据，Doris集群中BE节点的磁盘使用率范围为18%至19.94%，内存分配范围为7.2GB至7.7GB。整体来看，磁盘和内存资源的使用均处于较低水平，未出现明显的资源瓶颈。</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">2. 资源状态评估</h2>
+      <p>当前BE节点的磁盘使用率较低，表明存储空间充足，暂无扩容需求。内存分配在7.2GB至7.7GB之间，也未达到系统推荐的内存上限，说明内存资源使用合理，未出现内存溢出或资源争抢的情况。</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">3. 存储增长趋势数据说明</h2>
+      <p>目前缺乏足够的历史存储增长数据，无法准确预测未来存储需求。建议运维团队定期收集并记录磁盘使用情况，以便进行趋势分析和容量规划。</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">4. 结论与建议</h2>
+      <p>综上所述，当前Doris集群的资源使用情况良好，磁盘和内存资源均未出现压力。建议运维团队：</p>
+      <ul class="list-disc pl-6">
+        <li>持续监控磁盘和内存使用情况，确保资源使用在合理范围内。</li>
+        <li>收集并分析历史存储增长数据，为未来的扩容决策提供依据。</li>
+        <li>定期检查系统日志，确保集群运行稳定。</li>
+      </ul>
+    </section>
+
+    <footer class="mt-12 text-center text-gray-500">
+      <p>Created by Autobots</p>
+      <p>页面内容均由 AI 生成，仅供参考</p>
+    </footer>
+  </div>
+</body>
+</html>

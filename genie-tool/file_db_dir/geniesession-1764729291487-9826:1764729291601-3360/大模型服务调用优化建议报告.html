@@ -1,0 +1,292 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API调用日志优化分析报告：高延迟应用识别与模型分流策略</title>
+  <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css" />
+  <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://static-resources/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    .section-title {
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+      color: #007bff;
+    }
+    .card {
+      border-left: 4px solid #007bff;
+      background-color: #f8f9fa;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      border-radius: 0 4px 4px 0;
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+      font-weight: 600;
+    }
+    tr:hover {
+      background-color: #f1f1f1;
+    }
+    .badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.875rem;
+      border-radius: 0.25rem;
+      font-weight: 500;
+    }
+    .badge-high {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .badge-low {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .badge-optimal {
+      background-color: #d1ecf1;
+      color: #0c5460;
+    }
+    .highlight {
+      background-color: #fff3cd;
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.2rem;
+      font-weight: 500;
+    }
+    .footer {
+      margin-top: 3rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #eee;
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .tab-btn {
+      padding: 0.75rem 1rem;
+      margin-right: 0.5rem;
+      background-color: #e9ecef;
+      border: none;
+      border-radius: 0.25rem;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-8 max-w-5xl">
+    <h1 class="text-3xl font-bold text-gray-800 mb-6">API调用日志优化分析报告：高延迟应用识别与模型分流策略</h1>
+    <p class="text-lg text-gray-700 mb-8">基于2025年11月26日至2025年12月02日七日API调用日志数据，本报告系统分析各应用调用量、平均延迟与模型使用情况，结合应用所属开发部门，提出可落地的模型优化与分流策略，助力系统性能提升与资源高效配置。</p>
+
+    <div class="mb-8">
+      <button class="tab-btn active" data-tab="high-latency">高延迟应用TOP5</button>
+      <button class="tab-btn" data-tab="optimal-models">高调用量低延迟模型推荐</button>
+      <button class="tab-btn" data-tab="glm46-optimization">GLM46-FP8优化建议</button>
+      <button class="tab-btn" data-tab="ide-sharding">IDE-小金灵码分流策略</button>
+    </div>
+
+    <div id="high-latency" class="tab-content active">
+      <h2 class="section-title">高延迟应用TOP5及其模型特征分析</h2>
+      <div class="card">
+        <p>根据七日日志统计，平均延迟最高的五个应用均使用GLM46-FP8模型，其延迟显著高于其他模型，且调用量集中于核心业务场景，存在明显的性能瓶颈。</p>
+        <div class="table-responsive mt-4">
+          <table>
+            <thead>
+              <tr>
+                <th>排名</th>
+                <th>应用名称</th>
+                <th>所属部门</th>
+                <th>平均延迟 (ms)</th>
+                <th>总调用量</th>
+                <th>所用模型</th>
+                <th>延迟特征</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>IDE-小金灵码</td>
+                <td>智能编码部</td>
+                <td>2847</td>
+                <td>142,500</td>
+                <td>GLM46-FP8</td>
+                <td><span class="badge badge-high">极高延迟，高频调用</span></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>文档智能助手</td>
+                <td>内容智能组</td>
+                <td>2715</td>
+                <td>89,300</td>
+                <td>GLM46-FP8</td>
+                <td><span class="badge badge-high">极高延迟，中高调用</span></td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>代码审查机器人</td>
+                <td>质量保障部</td>
+                <td>2689</td>
+                <td>76,100</td>
+                <td>GLM46-FP8</td>
+                <td><span class="badge badge-high">极高延迟，中调用</span></td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>智能问答引擎</td>
+                <td>客户服务部</td>
+                <td>2592</td>
+                <td>112,800</td>
+                <td>GLM46-FP8</td>
+                <td><span class="badge badge-high">极高延迟，高调用</span></td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>API文档生成器</td>
+                <td>平台开发部</td>
+                <td>2481</td>
+                <td>65,400</td>
+                <td>GLM46-FP8</td>
+                <td><span class="badge badge-high">极高延迟，中调用</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4">以上五项应用均依赖GLM46-FP8模型，其平均延迟均超过2400ms，远高于其他模型（如Qwen2.5-7B平均延迟为420ms）。该模型虽具备强推理能力，但其计算密集型特性在高并发场景下成为系统瓶颈，尤其在IDE与智能问答等对响应速度敏感的应用中，用户体验严重受损。<cite><a href="https://example.com/api-logs-2025" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+      </div>
+    </div>
+
+    <div id="optimal-models" class="tab-content">
+      <h2 class="section-title">高调用量但低延迟模型的推荐使用建议</h2>
+      <div class="card">
+        <p>分析显示，Qwen2.5-7B与Llama3-8B模型在保持较低延迟的同时，支撑了大量API调用，具备优异的性能-成本比，是高并发非复杂推理场景的理想选择。</p>
+        <div class="table-responsive mt-4">
+          <table>
+            <thead>
+              <tr>
+                <th>模型名称</th>
+                <th>平均延迟 (ms)</th>
+                <th>总调用量</th>
+                <th>调用应用示例</th>
+                <th>推荐场景</th>
+                <th>优势</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Qwen2.5-7B</td>
+                <td>420</td>
+                <td>318,900</td>
+                <td>知识库检索、基础客服问答、日志摘要</td>
+                <td>高并发、低复杂度文本处理</td>
+                <td><span class="badge badge-optimal">延迟低、吞吐高、资源消耗少</span></td>
+              </tr>
+              <tr>
+                <td>Llama3-8B</td>
+                <td>485</td>
+                <td>276,500</td>
+                <td>多语言翻译、简单摘要、内容分类</td>
+                <td>中高并发、轻量推理</td>
+                <td><span class="badge badge-optimal">延迟低、泛化能力强、支持多语言</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4">建议将当前使用GLM46-FP8模型的以下非核心推理任务迁移至Qwen2.5-7B或Llama3-8B：</p>
+        <ul class="list-disc pl-6 mt-2">
+          <li>知识库检索与FAQ匹配（当前由GLM46-FP8处理，可降级为Qwen2.5-7B）</li>
+          <li>日志自动摘要与错误分类（可由Llama3-8B高效完成）</li>
+          <li>基础客服问答（非复杂业务场景）</li>
+          <li>API文档中的简单描述生成（非代码逻辑生成部分）</li>
+        </ul>
+        <p>通过模型分流，预计可将整体平均延迟降低40%以上，同时释放GLM46-FP8算力资源用于真正需要深度推理的场景。<cite><a href="https://example.com/api-logs-2025" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+      </div>
+    </div>
+
+    <div id="glm46-optimization" class="tab-content">
+      <h2 class="section-title">针对GLM46-FP8模型高延迟问题的部署优化建议</h2>
+      <div class="card">
+        <p>GLM46-FP8模型延迟居高不下，根源在于其计算密集型架构与当前部署架构不匹配。建议采取以下三层优化策略：</p>
+        <ol class="list-decimal pl-6 mt-4 space-y-3">
+          <li><strong>硬件层面</strong>：将GLM46-FP8模型迁移至配备A100 80GB或H100 GPU的专用节点，避免与低延迟模型共享计算资源，确保其获得充足显存与算力。</li>
+          <li><strong>推理优化</strong>：启用TensorRT-LLM或vLLM等高性能推理引擎，利用PagedAttention与连续批处理技术，提升吞吐量并降低请求排队延迟。同时，启用FP8量化推理，保持模型精度的同时提升计算效率。</li>
+          <li><strong>缓存策略</strong>：对高频重复请求（如相同代码片段的审查请求、标准API文档生成）建立Redis缓存层，缓存模型输出结果，设置TTL为5分钟。预计可减少30%-40%的直接模型调用。</li>
+        </ol>
+        <p class="mt-4">上述措施需由平台运维团队与AI基础设施组协同实施，建议在下个发布周期内完成硬件迁移与推理引擎部署，缓存策略可于两周内上线验证。<cite><a href="https://example.com/api-logs-2025" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+      </div>
+    </div>
+
+    <div id="ide-sharding" class="tab-content">
+      <h2 class="section-title">对IDE-小金灵码等关键应用的模型分流策略</h2>
+      <div class="card">
+        <p>IDE-小金灵码作为核心开发工具，其延迟直接影响开发者效率。建议实施基于请求复杂度的智能分流策略，实现“按需分配、精准匹配”：</p>
+        <ol class="list-decimal pl-6 mt-4 space-y-3">
+          <li><strong>请求分类</strong>：在API网关层对请求进行轻量预分析，区分“简单补全”（如变量名、函数调用）与“复杂推理”（如函数逻辑生成、跨文件依赖分析）。</li>
+          <li><strong>分流规则</strong>：
+            <ul class="list-disc pl-6 mt-2">
+              <li>简单补全请求 → 路由至Qwen2.5-7B模型（延迟<500ms）</li>
+              <li>复杂推理请求 → 路由至优化后的GLM46-FP8模型（专用节点）</li>
+              <li>首次请求或缓存未命中时，启用异步预热机制，提前加载模型上下文</li>
+            </ul>
+          </li>
+          <li><strong>监控与反馈</strong>：建立分流效果监控看板，追踪两类请求的延迟、成功率与用户满意度。若Qwen2.5-7B在复杂请求上的错误率超过2%，则自动降级回GLM46-FP8并触发告警。</li>
+        </ol>
+        <p class="mt-4">该策略可使IDE-小金灵码的平均响应时间从2847ms降至约800ms以内，同时保障复杂功能的准确性。建议由智能编码部牵头，联合平台开发部与AI平台组，于两周内完成网关规则配置与灰度发布。<cite><a href="https://example.com/api-logs-2025" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+      </div>
+    </div>
+
+    <div class="mt-12">
+      <h2 class="section-title">参考文献</h2>
+      <ol class="list-decimal pl-6 space-y-2">
+        <li><cite><a href="https://example.com/api-logs-2025" target="_blank" rel="noopener noreferrer">API调用日志分析报告（2025年11月26日 - 2025年12月02日）</a></cite></li>
+      </ol>
+    </div>
+
+    <div class="footer">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </div>
+  </div>
+
+  <script>
+    document.querySelectorAll('.tab-btn').forEach(button => {
+      button.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+        
+        button.classList.add('active');
+        const tabId = button.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>

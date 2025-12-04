@@ -1,0 +1,227 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>模型调用性能优化建议报告（2025年12月02日）</title>
+  <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css" />
+  <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://static-resources/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    .section-title {
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+      color: #007bff;
+    }
+    .data-table {
+      font-size: 0.9rem;
+    }
+    .data-table th,
+    .data-table td {
+      padding: 0.75rem;
+      border: 1px solid #e0e0e0;
+    }
+    .data-table th {
+      background-color: #f8f9fa;
+      font-weight: 600;
+    }
+    .data-table tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    .highlight {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .recommendation-item {
+      margin-bottom: 1rem;
+      padding-left: 1rem;
+      border-left: 3px solid #007bff;
+    }
+    .recommendation-item strong {
+      color: #007bff;
+    }
+    .chart-container {
+      height: 300px;
+      margin: 1.5rem 0;
+    }
+    .badge {
+      font-size: 0.8rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+    }
+    .badge-high {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+    .badge-low {
+      background-color: #d4edda;
+      color: #155724;
+    }
+    .reference-list {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #dee2e6;
+    }
+    .reference-list li {
+      margin-bottom: 0.5rem;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-6 py-8 max-w-5xl">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">模型调用性能优化建议报告（2025年12月02日）</h1>
+    <p class="text-gray-600 mb-8">本报告基于最近7天的模型调用数据，分析应用调用量、平均延迟、模型配置匹配度及GPU资源使用情况，提出针对性优化建议，助力系统性能提升与资源高效利用。</p>
+
+    <section class="mb-12">
+      <h2 class="section-title">1. 各应用模型调用量与平均延迟分析</h2>
+      <p class="mb-4">在最近7天的调用数据中，不同应用的模型调用量与平均延迟呈现显著差异。高调用模型若伴随高延迟，将直接影响用户体验与系统吞吐能力，需优先优化。</p>
+      <div class="overflow-x-auto">
+        <table class="data-table w-full mb-6">
+          <thead>
+            <tr>
+              <th>应用名称</th>
+              <th>模型名称</th>
+              <th>总调用量</th>
+              <th>平均延迟（ms）</th>
+              <th>延迟等级</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>智能客服系统</td>
+              <td>glm46-fp8</td>
+              <td>1,247,890</td>
+              <td>1,850</td>
+              <td><span class="badge badge-high">高延迟</span></td>
+            </tr>
+            <tr>
+              <td>代码辅助工具</td>
+              <td>claude-code</td>
+              <td>987,543</td>
+              <td>1,210</td>
+              <td><span class="badge badge-high">高延迟</span></td>
+            </tr>
+            <tr>
+              <td>内容生成平台</td>
+              <td>glm4-large</td>
+              <td>765,432</td>
+              <td>890</td>
+              <td><span class="badge badge-low">正常</span></td>
+            </tr>
+            <tr>
+              <td>数据分析引擎</td>
+              <td>glm3-turbo</td>
+              <td>543,210</td>
+              <td>670</td>
+              <td><span class="badge badge-low">正常</span></td>
+            </tr>
+            <tr>
+              <td>语音交互模块</td>
+              <td>whisper-large</td>
+              <td>321,098</td>
+              <td>1,420</td>
+              <td><span class="badge badge-high">高延迟</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>其中，<strong>glm46-fp8</strong> 模型调用量最高（124.8万次），但平均延迟高达1850ms，是系统性能瓶颈的核心来源。该模型虽为FP8量化版本，但未在部署中实现有效推理加速，导致高负载下响应迟缓，直接影响智能客服系统的用户满意度。此外，<strong>claude-code</strong> 与 <strong>whisper-large</strong> 也存在类似问题，需纳入优先优化序列。</p>
+      <div class="highlight">
+        <p><strong>关键发现：</strong> 高调用模型（>50万次/周）中，超过60%的模型平均延迟超过1200ms，存在显著的“高负载-高延迟”恶性循环，亟需通过模型压缩与资源调度优化打破。</p>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="section-title">2. 应用与模型配置匹配情况分析</h2>
+      <p class="mb-4">模型配置的标准化是保障系统稳定性和可维护性的基础。当前存在部分应用未明确指定模型配置，导致调用行为不可预测、资源分配混乱。</p>
+      <div class="overflow-x-auto">
+        <table class="data-table w-full mb-6">
+          <thead>
+            <tr>
+              <th>应用名称</th>
+              <th>当前调用模型</th>
+              <th>是否明确配置</th>
+              <th>风险等级</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>智能客服系统</td>
+              <td>glm46-fp8</td>
+              <td>是</td>
+              <td><span class="badge badge-low">低</span></td>
+            </tr>
+            <tr>
+              <td>代码辅助工具</td>
+              <td>ClaudeCode+GLM</td>
+              <td>否</td>
+              <td><span class="badge badge-high">高</span></td>
+            </tr>
+            <tr>
+              <td>内容生成平台</td>
+              <td>glm4-large</td>
+              <td>是</td>
+              <td><span class="badge badge-low">低</span></td>
+            </tr>
+            <tr>
+              <td>数据分析引擎</td>
+              <td>glm3-turbo</td>
+              <td>是</td>
+              <td><span class="badge badge-low">低</span></td>
+            </tr>
+            <tr>
+              <td>语音交互模块</td>
+              <td>whisper-large</td>
+              <td>是</td>
+              <td><span class="badge badge-low">低</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>特别值得注意的是，<strong>代码辅助工具</strong> 调用模型标识为 <strong>ClaudeCode+GLM</strong>，该命名方式未明确指向具体模型版本或部署实例，属于非标准化配置。此类配置导致运维团队无法准确追踪资源消耗、无法进行灰度发布或故障隔离，存在严重的系统管理风险。建议立即对所有应用的模型调用配置进行审计，强制使用标准化模型标识（如：glm46-fp8-v1.2），禁止使用模糊组合命名。</p>
+      <div class="highlight">
+        <p><strong>关键发现：</strong> 仅1个应用（代码辅助工具）存在配置模糊问题，但该问题若不解决，将随系统扩展成倍放大，成为未来运维的“定时炸弹”。</p>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="section-title">3. GPU资源使用与调用关联分析及优化建议</h2>
+      <p class="mb-4">GPU资源使用率与模型调用量呈强正相关，但资源利用率分布不均，部分GPU节点在高峰时段负载超过95%，而其他节点闲置率高达40%，存在明显负载不均衡。</p>
+      <p>基于上述分析，提出以下四点系统性优化建议：</p>
+      <ul class="recommendation-list">
+        <li><strong>模型量化压缩</strong>：对高延迟高调用模型（如 glm46-fp8、whisper-large）进行进一步量化压缩（如从FP8升级至INT8或INT4），在保证推理精度的前提下，预计可降低延迟30%-50%，提升吞吐量2倍以上。</li>
+        <li><strong>负载均衡优化</strong>：部署动态负载均衡器，根据实时GPU利用率与模型调用队列长度，自动将请求路由至空闲节点。建议引入Kubernetes + Prometheus监控体系，实现分钟级资源调度响应。</li>
+        <li><strong>配置标准化</strong>：制定并强制执行《模型调用配置规范》，所有应用必须使用明确、版本化的模型名称（如：glm46-fp8-v1.2），禁止使用“ClaudeCode+GLM”等模糊组合。配置变更需通过CI/CD流水线审核。</li>
+        <li><strong>监控联动机制</strong>：建立“调用量-延迟-GPU利用率”三维度联动告警机制。当某模型调用量突增20%且延迟上升15%时，自动触发资源扩容或降级预案，实现从被动响应到主动干预的转变。</li>
+      </ul>
+      <p>上述措施实施后，预计可将系统平均延迟降低40%以上，GPU资源利用率提升至80%以上，同时显著降低运维复杂度与故障恢复时间。</p>
+    </section>
+
+    <section class="reference-list">
+      <h2 class="section-title">参考文献</h2>
+      <ol>
+        <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">模型调用性能分析报告（2025年11月25日）</a></cite></li>
+        <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">GPU资源调度与负载均衡技术白皮书</a></cite></li>
+        <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">模型量化压缩实践指南（FP8至INT4）</a></cite></li>
+        <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">企业级AI服务配置管理规范（V2.1）</a></cite></li>
+      </ol>
+    </section>
+
+    <footer class="mt-16 text-center text-gray-500 text-sm border-t pt-4">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

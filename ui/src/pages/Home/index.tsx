@@ -6,16 +6,78 @@ import UserIdentity from "@/components/UserIdentity";
 import SettingsModal from "@/components/SettingsModal";
 import HistorySidebar from "@/components/HistorySidebar";
 import HistoryDetail from "@/components/HistoryDetail";
+import TemplateSidebar from "@/components/TemplateSidebar";
 import { productList, defaultProduct } from "@/utils/constants";
-import { Image, Button } from "antd";
+import { Image, Button, Tag } from "antd";
 import { demoList } from "@/utils/constants";
 import { BrowserFingerprint } from "@/utils/browserFingerprint";
 import { SimpleHistoryManager, ChatSession } from "@/utils/historyManager";
+import { globalTemplateManager, TemplateConfig } from "@/utils/templateManager";
 import "@/styles/history.css";
 
 type HomeProps = Record<string, never>;
 
 const Home: GenieType.FC<HomeProps> = memo(() => {
+  const [templateConfig, setTemplateConfig] = useState<TemplateConfig>({
+    domains: [],
+    templateList: []
+  });
+
+  // 用户选择的模板（用户级别）
+  const [selectedTemplates, setSelectedTemplates] = useState<Array<{ id: string; name: string; domainName?: string }>>([]);
+
+  // 加载模板配置
+  useEffect(() => {
+    loadTemplateConfig();
+    loadUserSelectedTemplates();
+
+    // 定期刷新模板配置（从后端获取最新数据）
+    const interval = setInterval(() => {
+      loadTemplateConfig();
+      loadUserSelectedTemplates();
+    }, 3000); // 每3秒刷新一次
+
+    return () => clearInterval(interval);
+  }, []);
+
+  const loadTemplateConfig = async () => {
+    try {
+      const config = await globalTemplateManager.getTemplateConfig();
+      setTemplateConfig(config);
+    } catch (error) {
+      console.error('加载模板配置失败:', error);
+    }
+  };
+
+  const loadUserSelectedTemplates = () => {
+    const selectedIds = globalTemplateManager.getUserSelectedTemplateIds();
+    if (selectedIds.length > 0 && templateConfig.templateList.length > 0) {
+      const templates = selectedIds
+        .map(id => {
+          const template = templateConfig.templateList.find(t => t.id === id);
+          if (template) {
+            const domain = templateConfig.domains.find(d => d.id === template.domainId);
+            return {
+              id: template.id,
+              name: template.name,
+              domainName: domain?.name
+            };
+          }
+          return null;
+        })
+        .filter(t => t !== null) as Array<{ id: string; name: string; domainName?: string }>;
+      setSelectedTemplates(templates);
+    } else {
+      setSelectedTemplates([]);
+    }
+  };
+
+  // 当模板配置加载完成后，更新用户选择的模板显示
+  useEffect(() => {
+    if (templateConfig.templateList.length > 0) {
+      loadUserSelectedTemplates();
+    }
+  }, [templateConfig]);
   const [inputInfo, setInputInfo] = useState<CHAT.TInputInfo>({
     message: "",
     deepThink: false,
@@ -25,6 +87,7 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [historySidebarVisible, setHistorySidebarVisible] = useState(false);
   const [historyDetailVisible, setHistoryDetailVisible] = useState(false);
+  const [templateSidebarVisible, setTemplateSidebarVisible] = useState(false);
   const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null);
   const [restoreSession, setRestoreSession] = useState<ChatSession | null>(null);
   const [isRestoring, setIsRestoring] = useState(false);
@@ -215,6 +278,19 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
               product={product}
               send={changeInputInfo}
             />
+            {/* 显示已选择的模板（用户级别） */}
+            {selectedTemplates.length > 0 && (
+              <div className="mt-12 px-12 py-8 bg-blue-50 rounded-lg border border-blue-200">
+                <div className="text-[12px] text-gray-600 mb-4">已使用的模板：</div>
+                <div className="flex flex-wrap gap-4">
+                  {selectedTemplates.map(template => (
+                    <Tag key={template.id} color="blue" className="text-[12px]">
+                      {template.domainName ? `${template.domainName}: ` : ''}{template.name}
+                    </Tag>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
           <div className="w-640 flex flex-wrap gap-16 mt-[16px]">
             {productList.map((item, i) => (
@@ -272,6 +348,12 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
             历史记录
           </Button>
           <Button
+            icon={<i className="font_family icon-wendang"></i>}
+            onClick={() => setTemplateSidebarVisible(true)}
+          >
+            模板设置
+          </Button>
+          <Button
             icon={<i className="font_family icon-shezhi"></i>}
             onClick={() => setSettingsVisible(true)}
           >
@@ -304,6 +386,12 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
         visible={historyDetailVisible}
         onClose={() => setHistoryDetailVisible(false)}
         onContinueChat={handleContinueChat}
+      />
+
+      {/* 模板设置侧边栏 */}
+      <TemplateSidebar
+        visible={templateSidebarVisible}
+        onClose={() => setTemplateSidebarVisible(false)}
       />
     </div>
   );

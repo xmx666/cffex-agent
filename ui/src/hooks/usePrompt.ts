@@ -12,8 +12,9 @@ import {
   buildSummaryPrompt, 
   buildUserPrompt, 
   buildPlanningPrompt,
+  getSelectedTemplateContents,
   getEnabledPrompts,
-  type PromptConfig 
+  type PromptConfig
 } from '@/utils/promptBuilder';
 
 /**
@@ -63,6 +64,11 @@ export function usePrompt() {
     return buildUserPrompt(config, userInput);
   };
 
+  // 获取已选择的模板内容（使用全局模板管理器，不依赖config）
+  const selectedTemplateContents = useMemo(() => {
+    return getSelectedTemplateContents();
+  }, []);
+
   // 构建规划Prompt
   const buildPlanningPromptWithBase = (basePlanningPrompt?: string) => {
     return buildPlanningPrompt(config, basePlanningPrompt);
@@ -72,6 +78,7 @@ export function usePrompt() {
     promptConfig,
     systemPrompt,
     enabledPrompts,
+    selectedTemplateContents,
     buildTaskPrompt: buildTaskPromptWithBase,
     buildSummaryPrompt: buildSummaryPromptWithBase,
     buildUserPrompt: buildUserPromptWithInput,

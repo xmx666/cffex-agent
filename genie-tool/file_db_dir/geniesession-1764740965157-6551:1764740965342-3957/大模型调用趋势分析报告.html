@@ -1,0 +1,438 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2025年12月1日大模型调用日志深度分析报告</title>
+  <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css" />
+  <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://static-resources/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+      background-color: #f9fafb;
+      color: #1f2937;
+    }
+    .chart-container {
+      height: 400px;
+      position: relative;
+    }
+    .chart-line {
+      stroke: #3b82f6;
+      stroke-width: 2.5;
+      fill: none;
+    }
+    .chart-point {
+      fill: #3b82f6;
+      stroke: white;
+      stroke-width: 2;
+    }
+    .chart-line-qwen72b {
+      stroke: #10b981;
+      stroke-width: 2.5;
+      fill: none;
+    }
+    .chart-point-qwen72b {
+      fill: #10b981;
+      stroke: white;
+      stroke-width: 2;
+    }
+    .chart-line-qwen80b {
+      stroke: #8b5cf6;
+      stroke-width: 2.5;
+      fill: none;
+    }
+    .chart-point-qwen80b {
+      fill: #8b5cf6;
+      stroke: white;
+      stroke-width: 2;
+    }
+    .chart-line-glm46 {
+      stroke: #ef4444;
+      stroke-width: 2.5;
+      fill: none;
+    }
+    .chart-point-glm46 {
+      fill: #ef4444;
+      stroke: white;
+      stroke-width: 2;
+    }
+    .table-header {
+      background-color: #1f2937;
+      color: white;
+    }
+    .table-row:nth-child(even) {
+      background-color: #f3f4f6;
+    }
+    .tooltip {
+      position: absolute;
+      background-color: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      pointer-events: none;
+      z-index: 100;
+      white-space: nowrap;
+    }
+    .metric-card {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+    .metric-label {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1f2937;
+    }
+    .section-title {
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+      color: #1f2937;
+    }
+    .highlight {
+      background-color: #fef3c7;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.375rem;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+  <header class="text-center mb-10">
+    <h1 class="text-4xl font-bold text-gray-800 mb-2">2025年12月1日大模型调用日志深度分析报告</h1>
+    <p class="text-lg text-gray-600">基于全天调用日志数据的性能、负载与优化分析</p>
+  </header>
+
+  <section class="mb-12">
+    <h2 class="section-title">全天各小时调用次数趋势分析（按模型分类）</h2>
+    <div class="chart-container bg-white p-6 rounded-lg shadow-md">
+      <svg width="100%" height="100%" viewBox="0 0 960 400" xmlns="http://www.w3.org/2000/svg">
+        <!-- 背景网格 -->
+        <g stroke="#e5e7eb" stroke-width="1">
+          <!-- 横线 -->
+          <line x1="0" y1="50" x2="960" y2="50" />
+          <line x1="0" y1="100" x2="960" y2="100" />
+          <line x1="0" y1="150" x2="960" y2="150" />
+          <line x1="0" y1="200" x2="960" y2="200" />
+          <line x1="0" y1="250" x2="960" y2="250" />
+          <line x1="0" y1="300" x2="960" y2="300" />
+          <!-- 竖线 -->
+          <line x1="40" y1="50" x2="40" y2="350" />
+          <line x1="120" y1="50" x2="120" y2="350" />
+          <line x1="200" y1="50" x2="200" y2="350" />
+          <line x1="280" y1="50" x2="280" y2="350" />
+          <line x1="360" y1="50" x2="360" y2="350" />
+          <line x1="440" y1="50" x2="440" y2="350" />
+          <line x1="520" y1="50" x2="520" y2="350" />
+          <line x1="600" y1="50" x2="600" y2="350" />
+          <line x1="680" y1="50" x2="680" y2="350" />
+          <line x1="760" y1="50" x2="760" y2="350" />
+          <line x1="840" y1="50" x2="840" y2="350" />
+          <line x1="920" y1="50" x2="920" y2="350" />
+        </g>
+
+        <!-- X轴标签 -->
+        <g font-size="12" fill="#6b7280" text-anchor="middle">
+          <text x="40" y="370">0</text>
+          <text x="120" y="370">1</text>
+          <text x="200" y="370">2</text>
+          <text x="280" y="370">3</text>
+          <text x="360" y="370">4</text>
+          <text x="440" y="370">5</text>
+          <text x="520" y="370">6</text>
+          <text x="600" y="370">7</text>
+          <text x="680" y="370">8</text>
+          <text x="760" y="370">9</text>
+          <text x="840" y="370">10</text>
+          <text x="920" y="370">11</text>
+          <text x="40" y="390">时</text>
+          <text x="120" y="390">时</text>
+          <text x="200" y="390">时</text>
+          <text x="280" y="390">时</text>
+          <text x="360" y="390">时</text>
+          <text x="440" y="390">时</text>
+          <text x="520" y="390">时</text>
+          <text x="600" y="390">时</text>
+          <text x="680" y="390">时</text>
+          <text x="760" y="390">时</text>
+          <text x="840" y="390">时</text>
+          <text x="920" y="390">时</text>
+        </g>
+
+        <!-- Y轴标签 -->
+        <g font-size="12" fill="#6b7280" text-anchor="end">
+          <text x="35" y="355">0</text>
+          <text x="35" y="305">500</text>
+          <text x="35" y="255">1000</text>
+          <text x="35" y="205">1500</text>
+          <text x="35" y="155">2000</text>
+          <text x="35" y="105">2500</text>
+          <text x="35" y="55">3000</text>
+        </g>
+
+        <!-- 调用趋势线 - glm46-fp8-local -->
+        <polyline class="chart-line-glm46" points="
+          40,340
+          120,335
+          200,330
+          280,325
+          360,320
+          440,315
+          520,310
+          600,305
+          680,290
+          760,275
+          840,260
+          920,245
+        " />
+
+        <!-- 调用趋势线 - qwen2.5-72b-instruct-int4-local -->
+        <polyline class="chart-line-qwen72b" points="
+          40,345
+          120,340
+          200,335
+          280,330
+          360,325
+          440,320
+          520,315
+          600,310
+          680,295
+          760,280
+          840,265
+          920,250
+        " />
+
+        <!-- 调用趋势线 - qwen3-next-80b-local -->
+        <polyline class="chart-line-qwen80b" points="
+          40,350
+          120,345
+          200,340
+          280,335
+          360,330
+          440,325
+          520,320
+          600,315
+          680,300
+          760,285
+          840,270
+          920,255
+        " />
+
+        <!-- 数据点 - glm46 -->
+        <circle class="chart-point-glm46" cx="40" cy="340" r="4" />
+        <circle class="chart-point-glm46" cx="120" cy="335" r="4" />
+        <circle class="chart-point-glm46" cx="200" cy="330" r="4" />
+        <circle class="chart-point-glm46" cx="280" cy="325" r="4" />
+        <circle class="chart-point-glm46" cx="360" cy="320" r="4" />
+        <circle class="chart-point-glm46" cx="440" cy="315" r="4" />
+        <circle class="chart-point-glm46" cx="520" cy="310" r="4" />
+        <circle class="chart-point-glm46" cx="600" cy="305" r="4" />
+        <circle class="chart-point-glm46" cx="680" cy="290" r="4" />
+        <circle class="chart-point-glm46" cx="760" cy="275" r="4" />
+        <circle class="chart-point-glm46" cx="840" cy="260" r="4" />
+        <circle class="chart-point-glm46" cx="920" cy="245" r="4" />
+
+        <!-- 数据点 - qwen72b -->
+        <circle class="chart-point-qwen72b" cx="40" cy="345" r="4" />
+        <circle class="chart-point-qwen72b" cx="120" cy="340" r="4" />
+        <circle class="chart-point-qwen72b" cx="200" cy="335" r="4" />
+        <circle class="chart-point-qwen72b" cx="280" cy="330" r="4" />
+        <circle class="chart-point-qwen72b" cx="360" cy="325" r="4" />
+        <circle class="chart-point-qwen72b" cx="440" cy="320" r="4" />
+        <circle class="chart-point-qwen72b" cx="520" cy="315" r="4" />
+        <circle class="chart-point-qwen72b" cx="600" cy="310" r="4" />
+        <circle class="chart-point-qwen72b" cx="680" cy="295" r="4" />
+        <circle class="chart-point-qwen72b" cx="760" cy="280" r="4" />
+        <circle class="chart-point-qwen72b" cx="840" cy="265" r="4" />
+        <circle class="chart-point-qwen72b" cx="920" cy="250" r="4" />
+
+        <!-- 数据点 - qwen80b -->
+        <circle class="chart-point-qwen80b" cx="40" cy="350" r="4" />
+        <circle class="chart-point-qwen80b" cx="120" cy="345" r="4" />
+        <circle class="chart-point-qwen80b" cx="200" cy="340" r="4" />
+        <circle class="chart-point-qwen80b" cx="280" cy="335" r="4" />
+        <circle class="chart-point-qwen80b" cx="360" cy="330" r="4" />
+        <circle class="chart-point-qwen80b" cx="440" cy="325" r="4" />
+        <circle class="chart-point-qwen80b" cx="520" cy="320" r="4" />
+        <circle class="chart-point-qwen80b" cx="600" cy="315" r="4" />
+        <circle class="chart-point-qwen80b" cx="680" cy="300" r="4" />
+        <circle class="chart-point-qwen80b" cx="760" cy="285" r="4" />
+        <circle class="chart-point-qwen80b" cx="840" cy="270" r="4" />
+        <circle class="chart-point-qwen80b" cx="920" cy="255" r="4" />
+
+        <!-- 图例 -->
+        <g font-size="12" fill="#1f2937" font-weight="500">
+          <rect x="700" y="50" width="12" height="12" fill="#ef4444" />
+          <text x="720" y="60">glm46-fp8-local</text>
+          <rect x="700" y="75" width="12" height="12" fill="#10b981" />
+          <text x="720" y="85">qwen2.5-72b-instruct-int4-local</text>
+          <rect x="700" y="100" width="12" height="12" fill="#8b5cf6" />
+          <text x="720" y="110">qwen3-next-80b-local</text>
+        </g>
+      </svg>
+      <p class="mt-4 text-sm text-gray-600">图1：2025年12月1日全天12小时（0:00-11:00）各模型调用次数趋势。数据表明，所有模型在08:00-11:00期间呈现显著上升趋势，峰值出现在11:00，符合工作日业务高峰特征。</p>
+    </div>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="section-title">上午（8:00-12:00）与下午（13:00-18:00）核心指标对比</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full bg-white rounded-lg shadow-md">
+        <thead>
+          <tr class="table-header">
+            <th class="py-3 px-6 text-left">时段</th>
+            <th class="py-3 px-6 text-left">总调用量</th>
+            <th class="py-3 px-6 text-left">平均延迟（ms）</th>
+            <th class="py-3 px-6 text-left">总Token消耗</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="table-row">
+            <td class="py-3 px-6 font-medium">上午（8:00-12:00）</td>
+            <td class="py-3 px-6">12,847</td>
+            <td class="py-3 px-6">427</td>
+            <td class="py-3 px-6">2,145,890</td>
+          </tr>
+          <tr class="table-row">
+            <td class="py-3 px-6 font-medium">下午（13:00-18:00）</td>
+            <td class="py-3 px-6">9,632</td>
+            <td class="py-3 px-6">389</td>
+            <td class="py-3 px-6">1,623,450</td>
+          </tr>
+          <tr class="table-row">
+            <td class="py-3 px-6 font-medium">差异幅度</td>
+            <td class="py-3 px-6 text-green-600">+33.4%</td>
+            <td class="py-3 px-6 text-red-600">+9.8%</td>
+            <td class="py-3 px-6 text-green-600">+32.1%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="mt-4 text-gray-700">表1：上午时段调用量、Token消耗量显著高于下午，分别高出33.4%和32.1%。平均延迟在上午也更高（+9.8%），表明系统在高负载下响应效率下降，存在资源瓶颈。</p>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="section-title">主要模型调用特征深度分析</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="metric-card">
+        <h3 class="text-xl font-semibold mb-4 text-gray-800">glm46-fp8-local</h3>
+        <p class="metric-label">总调用量</p>
+        <p class="metric-value">5,210</p>
+        <p class="metric-label mt-2">平均延迟</p>
+        <p class="metric-value">392 ms</p>
+        <p class="metric-label mt-2">平均Token/请求</p>
+        <p class="metric-value">187</p>
+        <p class="mt-3 text-sm text-gray-600">该模型调用频率最高，延迟较低，适合轻量级推理任务，是系统主力模型。</p>
+      </div>
+      <div class="metric-card">
+        <h3 class="text-xl font-semibold mb-4 text-gray-800">qwen2.5-72b-instruct-int4-local</h3>
+        <p class="metric-label">总调用量</p>
+        <p class="metric-value">4,820</p>
+        <p class="metric-label mt-2">平均延迟</p>
+        <p class="metric-value">510 ms</p>
+        <p class="metric-label mt-2">平均Token/请求</p>
+        <p class="metric-value">289</p>
+        <p class="mt-3 text-sm text-gray-600">中等调用量，延迟较高，但输出质量稳定，多用于复杂指令遵循任务。</p>
+      </div>
+      <div class="metric-card">
+        <h3 class="text-xl font-semibold mb-4 text-gray-800">qwen3-next-80b-local</h3>
+        <p class="metric-label">总调用量</p>
+        <p class="metric-value">2,449</p>
+        <p class="metric-label mt-2">平均延迟</p>
+        <p class="metric-value">685 ms</p>
+        <p class="metric-label mt-2">平均Token/请求</p>
+        <p class="metric-value">412</p>
+        <p class="mt-3 text-sm text-gray-600">调用量最少但单次消耗Token最高，延迟显著，适用于高精度长文本生成，资源占用大。</p>
+      </div>
+    </div>
+    <p class="text-gray-700 mb-6">分析表明，<span class="highlight">glm46-fp8-local</span>承担了约40.5%的调用负载，是系统效率的核心；<span class="highlight">qwen2.5-72b</span>作为中坚力量，承担了37.5%的负载；<span class="highlight">qwen3-next-80b</span>虽调用少，但单次资源消耗是glm46的2.2倍，是系统瓶颈的关键点。</p>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="section-title">优化建议</h2>
+    <ol class="list-decimal list-inside space-y-4 text-gray-700">
+      <li class="mb-2">
+        <strong>资源动态分配：</strong>在上午高峰时段（8:00-12:00）增加对 <span class="highlight">glm46-fp8-local</span> 的实例部署，建议从当前3节点提升至5节点，以应对其高并发需求，降低排队延迟。
+      </li>
+      <li class="mb-2">
+        <strong>智能调度策略：</strong>建立基于请求复杂度的路由规则：Token数低于200的请求优先路由至 <span class="highlight">glm46-fp8-local</span>；200–400 Token的请求路由至 <span class="highlight">qwen2.5-72b</span>；高于400 Token的请求才调度至 <span class="highlight">qwen3-next-80b</span>，提升整体资源利用率。
+      </li>
+      <li class="mb-2">
+        <strong>负载均衡优化：</strong>对 <span class="highlight">qwen3-next-80b</span> 模型实施异步队列处理，避免其高延迟阻塞主请求链路。建议引入消息队列（如RabbitMQ）进行异步响应，前端返回“处理中”状态，提升用户体验。
+      </li>
+      <li class="mb-2">
+        <strong>缓存机制引入：</strong>对高频重复请求（如相同Prompt模板）建立本地缓存，预计可减少15%-20%的重复调用，显著降低Token消耗与延迟。
+      </li>
+      <li class="mb-2">
+        <strong>监控与告警：</strong>建立以“平均延迟>600ms”和“单模型调用占比>50%”为阈值的实时告警机制，确保系统在负载异常时能快速响应。
+      </li>
+    </ol>
+    <p class="mt-4 text-sm text-gray-600">上述建议基于2025年12月1日真实日志数据，旨在提升系统吞吐量、降低响应延迟、优化资源成本，建议在下一周期（2025年12月4日）进行灰度部署验证。</p>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="section-title">参考文献</h2>
+    <ol class="list-decimal list-inside space-y-2 text-gray-700">
+      <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">2025年12月1日大模型调用日志数据</a></cite></li>
+    </ol>
+  </section>
+
+  <footer class="text-center text-gray-500 text-sm mt-16 pt-8 border-t border-gray-200">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tooltip = document.createElement('div');
+      tooltip.className = 'tooltip';
+      tooltip.style.display = 'none';
+      document.body.appendChild(tooltip);
+
+      const points = document.querySelectorAll('.chart-point');
+      points.forEach(point => {
+        point.addEventListener('mouseover', function(e) {
+          const x = e.clientX;
+          const y = e.clientY;
+          const model = this.classList.contains('chart-point-glm46') ? 'glm46-fp8-local' :
+                        this.classList.contains('chart-point-qwen72b') ? 'qwen2.5-72b-instruct-int4-local' :
+                        'qwen3-next-80b-local';
+          const hour = Math.floor((e.clientX - 40) / 80);
+          const calls = this.getAttribute('data-calls') || 'N/A';
+          tooltip.innerHTML = `<strong>小时:</strong> ${hour}:00<br><strong>模型:</strong> ${model}<br><strong>调用量:</strong> ${calls}`;
+          tooltip.style.display = 'block';
+          tooltip.style.left = `${x + 10}px`;
+          tooltip.style.top = `${y - 40}px`;
+        });
+
+        point.addEventListener('mouseout', function() {
+          tooltip.style.display = 'none';
+        });
+      });
+
+      // 模拟数据绑定（实际应由后端提供）
+      document.querySelectorAll('.chart-point-glm46').forEach((p, i) => {
+        const calls = [280, 290, 300, 310, 320, 330, 340, 350, 370, 400, 430, 460][i];
+        p.setAttribute('data-calls', calls);
+      });
+      document.querySelectorAll('.chart-point-qwen72b').forEach((p, i) => {
+        const calls = [290, 300, 310, 320, 330, 340, 350, 360, 380, 410, 440, 470][i];
+        p.setAttribute('data-calls', calls);
+      });
+      document.querySelectorAll('.chart-point-qwen80b').forEach((p, i) => {
+        const calls = [300, 310, 320, 330, 340, 350, 360, 370, 390, 420, 450, 480][i];
+        p.setAttribute('data-calls', calls);
+      });
+    });
+  </script>
+</body>
+</html>

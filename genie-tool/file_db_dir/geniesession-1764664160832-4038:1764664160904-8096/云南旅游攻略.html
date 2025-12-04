@@ -1,0 +1,288 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云南深度旅游攻略：自然、美食与文化的完美交融</title>
+    <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css">
+    <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .section-header {
+            border-bottom: 3px solid #2563eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 80px;
+            height: 3px;
+            background-color: #10b981;
+        }
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        .highlight-box {
+            background-color: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .timeline-item {
+            position: relative;
+            padding-left: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+        }
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            left: 3.5px;
+            top: 1.3rem;
+            width: 2px;
+            height: calc(100% - 1.5rem);
+            background-color: #e0e0e0;
+        }
+        .timeline-item:last-child::after {
+            display: none;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.875rem;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+        .badge-primary {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-bottom: 2px solid transparent;
+            border-radius: 0;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            border-bottom: 2px solid #10b981;
+            color: #10b981;
+        }
+        footer {
+            margin-top: 4rem;
+            padding: 2rem 0;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        @media (max-width: 640px) {
+            .section-header {
+                padding-bottom: 0.75rem;
+            }
+            .timeline-item {
+                padding-left: 1.5rem;
+            }
+            .timeline-item::before {
+                left: 0.5rem;
+            }
+            .timeline-item::after {
+                left: 2px;
+            }
+        }
+    </style>
+</head>
+<body class="max-w-5xl mx-auto px-4 py-8">
+    <header class="text-center mb-12">
+        <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">云南深度旅游攻略：自然、美食与文化的完美交融</h1>
+        <p class="text-lg text-gray-600 max-w-3xl mx-auto">探索彩云之南的壮丽山河、独特风味与多元民族风情，规划一场难忘的旅程</p>
+    </header>
+
+    <section class="mb-12">
+        <h2 class="section-header text-3xl font-bold">推荐景点</h2>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="card p-6 bg-white">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">丽江古城</h3>
+                <p class="text-gray-700 mb-4">世界文化遗产，保存完好的纳西族古城，青石板路、小桥流水、古宅深巷，夜晚灯火阑珊，充满浪漫气息。</p>
+                <p class="text-sm text-gray-500">纳西族文化核心区域，东巴文字与音乐的发源地</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">大理洱海</h3>
+                <p class="text-gray-700 mb-4">高原淡水湖，形如人耳，湖水清澈，四周苍山环绕，骑行环湖是体验风花雪月的最佳方式。</p>
+                <p class="text-sm text-gray-500">白族文化聚集地，双廊、喜洲古镇散落湖畔</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">香格里拉</h3>
+                <p class="text-gray-700 mb-4">藏语意为“心中的日月”，高原草甸、经幡飘扬、松赞林寺金顶辉煌，是藏传佛教圣地。</p>
+                <p class="text-sm text-gray-500">海拔约3300米，感受纯净的高原信仰与自然</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">玉龙雪山</h3>
+                <p class="text-gray-700 mb-4">北半球最南的大雪山，13座雪峰连绵不绝，冰川公园可近距离接触现代冰川，蓝月谷如翡翠镶嵌山间。</p>
+                <p class="text-sm text-gray-500">纳西族神山，海拔最高点5596米，需注意高原反应</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">西双版纳</h3>
+                <p class="text-gray-700 mb-4">热带雨林王国，动植物资源极其丰富，傣族风情浓郁，泼水节盛况空前，野象谷可观察亚洲象。</p>
+                <p class="text-sm text-gray-500">全年温暖湿润，是避寒与生态旅游的理想之地</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-header text-3xl font-bold">特色美食</h2>
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="card p-6 bg-white">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">过桥米线</h3>
+                <p class="text-gray-700 mb-4">源于蒙自，汤底用老母鸡、筒骨等熬制数小时，滚烫的高汤上浮油保温，将生肉片、蔬菜、米线依次放入，瞬间烫熟，鲜香四溢。</p>
+                <p class="text-sm text-gray-500">传统吃法讲究“一烫二涮三吃”，是云南最具代表性的早餐</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">汽锅鸡</h3>
+                <p class="text-gray-700 mb-4">使用特制汽锅蒸制，蒸汽在锅内凝结成汤，鸡肉原汁原味，汤清味醇，营养丰富，被誉为“天下第一汤”。</p>
+                <p class="text-sm text-gray-500">文山、建水等地尤为著名，常配以三七、虫草等药材</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">野生菌火锅</h3>
+                <p class="text-gray-700 mb-4">云南盛产松茸、牛肝菌、鸡枞等数百种野生菌，秋季是品尝旺季，菌汤鲜美无比，搭配各类蔬菜与肉类，是大自然的馈赠。</p>
+                <p class="text-sm text-gray-500">食用前务必确认菌类可食用，避免误食毒菌</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">鲜花饼</h3>
+                <p class="text-gray-700 mb-4">以食用玫瑰花瓣为馅，外皮酥软，花香清雅，甜而不腻，是昆明及大理的代表性伴手礼。</p>
+                <p class="text-sm text-gray-500">每年3-5月玫瑰盛开季为最佳品尝期</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-2xl font-bold text-gray-800 mb-3">饵块</h3>
+                <p class="text-gray-700 mb-4">用大米蒸熟后舂制而成的米制品，可烤、煮、炒，搭配酱料、蔬菜、肉类，是云南人日常主食之一。</p>
+                <p class="text-sm text-gray-500">在大理、保山等地，饵块常作为早餐或小吃，口感软糯有嚼劲</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-header text-3xl font-bold">最佳旅游季节与气候特点</h2>
+        <div class="bg-white p-8 rounded-xl shadow-sm">
+            <div class="flex flex-col md:flex-row gap-8 mb-8">
+                <div class="flex-1">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">春季（3月-5月）</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span class="text-gray-700">气温温和，15°C-25°C，适合户外活动</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span class="text-gray-700">百花盛开，香格里拉杜鹃花海、大理樱花、昆明滇池海鸥</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span class="text-gray-700">降雨适中，空气清新，能见度高，适合摄影</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span class="text-gray-700">玉龙雪山积雪未融，景色壮丽</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">秋季（9月-11月）</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span class="text-gray-700">气候凉爽，14°C-24°C，昼夜温差大</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span class="text-gray-700">雨季结束，天空湛蓝，是全年能见度最佳时期</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span class="text-gray-700">野生菌大量上市，美食体验达到高峰</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-3"></i>
+                            <span class="text-gray-700">香格里拉草原金黄，色彩斑斓，摄影黄金期</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="highlight-box">
+                <p class="text-gray-800 font-medium">云南气候多样，立体气候显著：低海拔地区（如西双版纳）全年温暖，高海拔地区（如香格里拉、玉龙雪山）早晚寒冷，需备防寒衣物。日温差可达15°C以上，建议采用“洋葱式”穿衣法。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-header text-3xl font-bold">旅行小贴士</h2>
+        <div class="bg-white p-8 rounded-xl shadow-sm">
+            <div class="space-y-8">
+                <div class="timeline-item">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">高原反应预防</h3>
+                    <p class="text-gray-700 mb-3">香格里拉、玉龙雪山等地海拔超过3000米，建议抵达后24小时内避免剧烈运动，多喝水，保证充足睡眠。可提前服用红景天，或携带氧气瓶备用。如出现头痛、恶心、呼吸困难，应立即下撤至低海拔地区。</p>
+                    <span class="badge badge-primary">重要</span>
+                </div>
+                <div class="timeline-item">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">交通建议</h3>
+                    <p class="text-gray-700 mb-3">云南省内城市间距离较远，建议选择飞机或高铁（昆明-大理、昆明-丽江）节省时间。古城内禁止机动车通行，建议步行或租用电动车。前往偏远景区（如虎跳峡、雨崩）需包车或参加当地一日游团。</p>
+                    <span class="badge badge-primary">实用</span>
+                </div>
+                <div class="timeline-item">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">文化尊重</h3>
+                    <p class="text-gray-700 mb-3">云南是25个少数民族聚居地，进入寺庙请勿踩踏门槛，勿随意触摸佛像与经幡。拍摄少数民族同胞前请先征得同意。在纳西族、藏族地区，忌讳用手指指佛像或经筒，顺时针转经筒是正确礼仪。</p>
+                    <span class="badge badge-success">文化</span>
+                </div>
+                <div class="timeline-item">
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">其他建议</h3>
+                    <p class="text-gray-700 mb-3">防晒至关重要，高原紫外线强烈，需备高倍数防晒霜、墨镜、帽子。随身携带常用药品，如肠胃药、晕车药。云南水质较硬，建议饮用瓶装水。购物时注意辨别野生菌与民族工艺品真伪，避免上当。</p>
+                    <span class="badge badge-primary">实用</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>

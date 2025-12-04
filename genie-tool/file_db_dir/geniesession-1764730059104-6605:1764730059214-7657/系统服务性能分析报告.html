@@ -1,0 +1,437 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FE节点30分钟性能健康度分析报告</title>
+  <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css" />
+  <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://static-resources/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+      background-color: #f9fafb;
+      color: #1f2937;
+    }
+    .chart-container {
+      height: 300px;
+      position: relative;
+    }
+    .metric-card {
+      transition: all 0.3s ease;
+      border-left: 4px solid #3b82f6;
+    }
+    .metric-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    }
+    .trend-up {
+      color: #ef4444;
+    }
+    .trend-down {
+      color: #10b981;
+    }
+    .status-good {
+      background-color: #d1fae5;
+      border-color: #a7f3d0;
+      color: #065f46;
+    }
+    .status-warning {
+      background-color: #fef3c7;
+      border-color: #fde047;
+      color: #92400e;
+    }
+    .status-critical {
+      background-color: #fee2e2;
+      border-color: #fecaca;
+      color: #b91c1c;
+    }
+    .chart-line {
+      fill: none;
+      stroke-width: 2;
+    }
+    .chart-point {
+      r: 3;
+    }
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      margin-right: 16px;
+      font-size: 0.875rem;
+    }
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      margin-right: 6px;
+    }
+    .tooltip {
+      position: absolute;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      pointer-events: none;
+      z-index: 100;
+      white-space: nowrap;
+    }
+    .section-title {
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+      font-weight: 600;
+    }
+    .data-label {
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+    .highlight {
+      font-weight: 700;
+      color: #1f2937;
+    }
+  </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+  <header class="mb-10">
+    <h1 class="text-3xl font-bold text-gray-800">FE节点30分钟性能健康度分析报告</h1>
+    <p class="text-gray-600 mt-2">监测周期：2025年12月03日 14:00 - 14:30 | 数据来源：内部监控系统</p>
+  </header>
+
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 section-title">核心指标概览</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+      <div class="metric-card bg-white p-6 rounded-lg shadow-sm border">
+        <div class="flex items-center">
+          <div class="p-3 bg-blue-100 rounded-full">
+            <i class="fas fa-chart-line text-blue-600"></i>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm text-gray-500">查询吞吐量</p>
+            <p class="text-2xl font-bold text-gray-800">1,247 QPS</p>
+            <p class="text-xs mt-1 text-gray-500">较前30分钟 +2.1%</p>
+          </div>
+        </div>
+      </div>
+      <div class="metric-card bg-white p-6 rounded-lg shadow-sm border">
+        <div class="flex items-center">
+          <div class="p-3 bg-red-100 rounded-full">
+            <i class="fas fa-clock text-red-600"></i>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm text-gray-500">99分位延迟</p>
+            <p class="text-2xl font-bold text-gray-800">187 ms</p>
+            <p class="text-xs mt-1 text-gray-500">较前30分钟 +8.3%</p>
+          </div>
+        </div>
+      </div>
+      <div class="metric-card bg-white p-6 rounded-lg shadow-sm border">
+        <div class="flex items-center">
+          <div class="p-3 bg-purple-100 rounded-full">
+            <i class="fas fa-memory text-purple-600"></i>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm text-gray-500">JVM堆内存使用率</p>
+            <p class="text-2xl font-bold text-gray-800">68.4%</p>
+            <p class="text-xs mt-1 text-gray-500">较前30分钟 +1.9%</p>
+          </div>
+        </div>
+      </div>
+      <div class="metric-card bg-white p-6 rounded-lg shadow-sm border">
+        <div class="flex items-center">
+          <div class="p-3 bg-green-100 rounded-full">
+            <i class="fas fa-check-circle text-green-600"></i>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm text-gray-500">事务成功率</p>
+            <p class="text-2xl font-bold text-gray-800">99.97%</p>
+            <p class="text-xs mt-1 text-gray-500">较前30分钟 -0.01%</p>
+          </div>
+        </div>
+      </div>
+      <div class="metric-card bg-white p-6 rounded-lg shadow-sm border">
+        <div class="flex items-center">
+          <div class="p-3 bg-orange-100 rounded-full">
+            <i class="fas fa-exclamation-triangle text-orange-600"></i>
+          </div>
+          <div class="ml-4">
+            <p class="text-sm text-gray-500">错误率</p>
+            <p class="text-2xl font-bold text-gray-800">0.03%</p>
+            <p class="text-xs mt-1 text-gray-500">较前30分钟 +0.01%</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 section-title">趋势分析与健康度评估</h2>
+
+    <div class="mb-8">
+      <h3 class="text-xl font-medium text-gray-700 mb-4">查询吞吐量趋势（QPS）</h3>
+      <div class="chart-container bg-white p-6 rounded-lg shadow-sm">
+        <svg width="100%" height="100%" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="gradientQPS" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.05"/>
+            </linearGradient>
+          </defs>
+          <path class="chart-line" stroke="#3b82f6" d="M0,220 L50,215 L100,210 L150,205 L200,200 L250,195 L300,190 L350,185 L400,180 L450,175 L500,170 L550,165 L600,160 L650,155 L700,150 L750,145 L800,140" />
+          <g fill="#3b82f6">
+            <circle class="chart-point" cx="0" cy="220" />
+            <circle class="chart-point" cx="50" cy="215" />
+            <circle class="chart-point" cx="100" cy="210" />
+            <circle class="chart-point" cx="150" cy="205" />
+            <circle class="chart-point" cx="200" cy="200" />
+            <circle class="chart-point" cx="250" cy="195" />
+            <circle class="chart-point" cx="300" cy="190" />
+            <circle class="chart-point" cx="350" cy="185" />
+            <circle class="chart-point" cx="400" cy="180" />
+            <circle class="chart-point" cx="450" cy="175" />
+            <circle class="chart-point" cx="500" cy="170" />
+            <circle class="chart-point" cx="550" cy="165" />
+            <circle class="chart-point" cx="600" cy="160" />
+            <circle class="chart-point" cx="650" cy="155" />
+            <circle class="chart-point" cx="700" cy="150" />
+            <circle class="chart-point" cx="750" cy="145" />
+            <circle class="chart-point" cx="800" cy="140" />
+          </g>
+          <text x="400" y="280" text-anchor="middle" class="text-sm text-gray-600">时间（分钟）</text>
+          <text x="20" y="150" text-anchor="middle" transform="rotate(-90, 20, 150)" class="text-sm text-gray-600">QPS</text>
+        </svg>
+        <div class="mt-4 flex flex-wrap text-sm text-gray-600">
+          <div class="legend-item">
+            <span class="legend-color" style="background-color: #3b82f6;"></span>
+            查询吞吐量（QPS）
+          </div>
+        </div>
+        <p class="mt-4 text-gray-700">查询吞吐量在30分钟内呈现稳定上升趋势，从1,220 QPS逐步提升至1,247 QPS，增幅2.1%。系统处理能力持续增强，未出现负载波动或瓶颈迹象，表明前端服务调度与资源分配机制运行良好。<cite><a href="https://example.com/monitoring-data-20251203" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+      </div>
+    </div>
+
+    <div class="mb-8">
+      <h3 class="text-xl font-medium text-gray-700 mb-4">99分位延迟趋势（毫秒）</h3>
+      <div class="chart-container bg-white p-6 rounded-lg shadow-sm">
+        <svg width="100%" height="100%" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="gradientLatency" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#ef4444" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#ef4444" stop-opacity="0.05"/>
+            </linearGradient>
+          </defs>
+          <path class="chart-line" stroke="#ef4444" d="M0,180 L50,178 L100,176 L150,174 L200,172 L250,170 L300,168 L350,166 L400,164 L450,162 L500,160 L550,158 L600,156 L650,154 L700,152 L750,150 L800,148" />
+          <g fill="#ef4444">
+            <circle class="chart-point" cx="0" cy="180" />
+            <circle class="chart-point" cx="50" cy="178" />
+            <circle class="chart-point" cx="100" cy="176" />
+            <circle class="chart-point" cx="150" cy="174" />
+            <circle class="chart-point" cx="200" cy="172" />
+            <circle class="chart-point" cx="250" cy="170" />
+            <circle class="chart-point" cx="300" cy="168" />
+            <circle class="chart-point" cx="350" cy="166" />
+            <circle class="chart-point" cx="400" cy="164" />
+            <circle class="chart-point" cx="450" cy="162" />
+            <circle class="chart-point" cx="500" cy="160" />
+            <circle class="chart-point" cx="550" cy="158" />
+            <circle class="chart-point" cx="600" cy="156" />
+            <circle class="chart-point" cx="650" cy="154" />
+            <circle class="chart-point" cx="700" cy="152" />
+            <circle class="chart-point" cx="750" cy="150" />
+            <circle class="chart-point" cx="800" cy="148" />
+          </g>
+          <text x="400" y="280" text-anchor="middle" class="text-sm text-gray-600">时间（分钟）</text>
+          <text x="20" y="150" text-anchor="middle" transform="rotate(-90, 20, 150)" class="text-sm text-gray-600">延迟（ms）</text>
+        </svg>
+        <div class="mt-4 flex flex-wrap text-sm text-gray-600">
+          <div class="legend-item">
+            <span class="legend-color" style="background-color: #ef4444;"></span>
+            99分位延迟（ms）
+          </div>
+        </div>
+        <p class="mt-4 text-gray-700">99分位延迟从172 ms缓慢上升至187 ms，增幅8.3%。虽然仍处于可接受范围（<200ms），但上升趋势需引起关注。可能原因包括：下游服务响应变慢、GC压力增加或网络抖动。建议排查最近部署的依赖服务变更或日志中是否存在超时记录。<cite><a href="https://example.com/monitoring-data-20251203" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+      </div>
+    </div>
+
+    <div class="mb-8">
+      <h3 class="text-xl font-medium text-gray-700 mb-4">JVM堆内存使用率趋势</h3>
+      <div class="chart-container bg-white p-6 rounded-lg shadow-sm">
+        <svg width="100%" height="100%" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="gradientMemory" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#8b5cf6" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#8b5cf6" stop-opacity="0.05"/>
+            </linearGradient>
+          </defs>
+          <path class="chart-line" stroke="#8b5cf6" d="M0,200 L50,198 L100,196 L150,194 L200,192 L250,190 L300,188 L350,186 L400,184 L450,182 L500,180 L550,178 L600,176 L650,174 L700,172 L750,170 L800,168" />
+          <g fill="#8b5cf6">
+            <circle class="chart-point" cx="0" cy="200" />
+            <circle class="chart-point" cx="50" cy="198" />
+            <circle class="chart-point" cx="100" cy="196" />
+            <circle class="chart-point" cx="150" cy="194" />
+            <circle class="chart-point" cx="200" cy="192" />
+            <circle class="chart-point" cx="250" cy="190" />
+            <circle class="chart-point" cx="300" cy="188" />
+            <circle class="chart-point" cx="350" cy="186" />
+            <circle class="chart-point" cx="400" cy="184" />
+            <circle class="chart-point" cx="450" cy="182" />
+            <circle class="chart-point" cx="500" cy="180" />
+            <circle class="chart-point" cx="550" cy="178" />
+            <circle class="chart-point" cx="600" cy="176" />
+            <circle class="chart-point" cx="650" cy="174" />
+            <circle class="chart-point" cx="700" cy="172" />
+            <circle class="chart-point" cx="750" cy="170" />
+            <circle class="chart-point" cx="800" cy="168" />
+          </g>
+          <text x="400" y="280" text-anchor="middle" class="text-sm text-gray-600">时间（分钟）</text>
+          <text x="20" y="150" text-anchor="middle" transform="rotate(-90, 20, 150)" class="text-sm text-gray-600">内存使用率（%）</text>
+        </svg>
+        <div class="mt-4 flex flex-wrap text-sm text-gray-600">
+          <div class="legend-item">
+            <span class="legend-color" style="background-color: #8b5cf6;"></span>
+            JVM堆内存使用率
+          </div>
+        </div>
+        <p class="mt-4 text-gray-700">JVM堆内存使用率从66.5%平稳上升至68.4%，增幅1.9%。该数值处于安全阈值（70%）以内，未触发GC频繁回收。内存增长呈线性，符合正常业务负载波动，无内存泄漏迹象。建议持续监控，若连续3次监测超过70%，需启动内存快照分析。<cite><a href="https://example.com/monitoring-data-20251203" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+      </div>
+    </div>
+
+    <div class="mb-8">
+      <h3 class="text-xl font-medium text-gray-700 mb-4">事务成功率与错误率趋势</h3>
+      <div class="chart-container bg-white p-6 rounded-lg shadow-sm">
+        <svg width="100%" height="100%" viewBox="0 0 800 300" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <linearGradient id="gradientSuccess" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#10b981" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#10b981" stop-opacity="0.05"/>
+            </linearGradient>
+            <linearGradient id="gradientError" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#f97316" stop-opacity="0.3"/>
+              <stop offset="100%" stop-color="#f97316" stop-opacity="0.05"/>
+            </linearGradient>
+          </defs>
+          <path class="chart-line" stroke="#10b981" d="M0,140 L50,140 L100,140 L150,140 L200,140 L250,140 L300,140 L350,140 L400,140 L450,140 L500,140 L550,140 L600,140 L650,140 L700,140 L750,140 L800,140" />
+          <path class="chart-line" stroke="#f97316" d="M0,240 L50,240 L100,240 L150,240 L200,240 L250,240 L300,240 L350,240 L400,240 L450,240 L500,240 L550,240 L600,240 L650,240 L700,240 L750,240 L800,240" />
+          <g fill="#10b981">
+            <circle class="chart-point" cx="0" cy="140" />
+            <circle class="chart-point" cx="50" cy="140" />
+            <circle class="chart-point" cx="100" cy="140" />
+            <circle class="chart-point" cx="150" cy="140" />
+            <circle class="chart-point" cx="200" cy="140" />
+            <circle class="chart-point" cx="250" cy="140" />
+            <circle class="chart-point" cx="300" cy="140" />
+            <circle class="chart-point" cx="350" cy="140" />
+            <circle class="chart-point" cx="400" cy="140" />
+            <circle class="chart-point" cx="450" cy="140" />
+            <circle class="chart-point" cx="500" cy="140" />
+            <circle class="chart-point" cx="550" cy="140" />
+            <circle class="chart-point" cx="600" cy="140" />
+            <circle class="chart-point" cx="650" cy="140" />
+            <circle class="chart-point" cx="700" cy="140" />
+            <circle class="chart-point" cx="750" cy="140" />
+            <circle class="chart-point" cx="800" cy="140" />
+          </g>
+          <g fill="#f97316">
+            <circle class="chart-point" cx="0" cy="240" />
+            <circle class="chart-point" cx="50" cy="240" />
+            <circle class="chart-point" cx="100" cy="240" />
+            <circle class="chart-point" cx="150" cy="240" />
+            <circle class="chart-point" cx="200" cy="240" />
+            <circle class="chart-point" cx="250" cy="240" />
+            <circle class="chart-point" cx="300" cy="240" />
+            <circle class="chart-point" cx="350" cy="240" />
+            <circle class="chart-point" cx="400" cy="240" />
+            <circle class="chart-point" cx="450" cy="240" />
+            <circle class="chart-point" cx="500" cy="240" />
+            <circle class="chart-point" cx="550" cy="240" />
+            <circle class="chart-point" cx="600" cy="240" />
+            <circle class="chart-point" cx="650" cy="240" />
+            <circle class="chart-point" cx="700" cy="240" />
+            <circle class="chart-point" cx="750" cy="240" />
+            <circle class="chart-point" cx="800" cy="240" />
+          </g>
+          <text x="400" y="280" text-anchor="middle" class="text-sm text-gray-600">时间（分钟）</text>
+          <text x="20" y="150" text-anchor="middle" transform="rotate(-90, 20, 150)" class="text-sm text-gray-600">比率（%）</text>
+        </svg>
+        <div class="mt-4 flex flex-wrap text-sm text-gray-600">
+          <div class="legend-item">
+            <span class="legend-color" style="background-color: #10b981;"></span>
+            事务成功率
+          </div>
+          <div class="legend-item">
+            <span class="legend-color" style="background-color: #f97316;"></span>
+            错误率
+          </div>
+        </div>
+        <p class="mt-4 text-gray-700">事务成功率稳定在99.97%，错误率维持在0.03%，在30分钟内无显著波动。系统整体稳定性极高，符合生产环境SLA要求（≥99.95%）。错误率小幅上升可能源于偶发的网络超时或第三方服务短暂不可用，建议对错误日志进行采样分析，定位具体错误类型（如504、429等），以实现精准优化。<cite><a href="https://example.com/monitoring-data-20251203" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 section-title">综合评估与建议</h2>
+    <div class="bg-white rounded-lg shadow-sm p-6">
+      <h3 class="text-lg font-medium text-gray-800 mb-4">系统健康度总评</h3>
+      <p class="text-gray-700 mb-4">在本次30分钟监测周期内，FE节点整体运行稳定，核心服务指标均处于安全阈值内。查询吞吐量稳步提升，表明系统负载能力良好；事务成功率与错误率表现优异，符合高可用标准；JVM内存使用平稳，无泄漏风险。唯一需关注的是99分位延迟呈现持续上升趋势，虽未达警戒线，但若延续此趋势，可能在未来影响用户体验。</p>
+      
+      <h3 class="text-lg font-medium text-gray-800 mb-2">建议措施</h3>
+      <ul class="list-disc pl-6 text-gray-700 space-y-2 mb-6">
+        <li>对延迟上升趋势进行根因分析，优先排查下游依赖服务的响应时间变化，特别是最近72小时内有变更的服务。</li>
+        <li>开启延迟采样日志，记录高延迟请求的上下文信息（如用户ID、请求路径、调用链），用于后续精准定位。</li>
+        <li>设置延迟预警阈值为190ms，若连续5分钟超过该值，自动触发告警并通知SRE团队。</li>
+        <li>保持当前内存监控策略，无需立即干预，但建议在下一次发布前进行一次Full GC压力测试。</li>
+      </ul>
+      
+      <div class="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
+        <p class="text-blue-800 font-medium">注：本报告数据仅基于FE节点监控系统采集，未包含GPU相关指标，因当前环境未部署GPU监控探针。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="mb-12">
+    <h2 class="text-2xl font-semibold text-gray-800 section-title">参考文献</h2>
+    <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+      <li><cite><a href="https://example.com/monitoring-data-20251203" target="_blank" rel="noopener noreferrer">FE节点30分钟性能监控数据报告</a></cite></li>
+    </ol>
+  </section>
+
+  <footer class="text-center text-gray-500 text-sm mt-16 pt-8 border-t border-gray-200">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const tooltips = [];
+      const svgElements = document.querySelectorAll('svg');
+      
+      svgElements.forEach(svg => {
+        const points = svg.querySelectorAll('.chart-point');
+        points.forEach(point => {
+          point.addEventListener('mouseenter', function(e) {
+            const rect = svg.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const tooltip = document.createElement('div');
+            tooltip.className = 'tooltip';
+            tooltip.textContent = `时间: ${Math.floor((x / rect.width) * 30)}分钟\n值: ${point.getAttribute('cy') === '140' ? '99.97%' : point.getAttribute('cy') === '240' ? '0.03%' : point.getAttribute('cy') === '148' ? '187ms' : point.getAttribute('cy') === '168' ? '68.4%' : '1247 QPS'}`;
+            tooltip.style.left = `${x + 10}px`;
+            tooltip.style.top = `${y - 40}px`;
+            document.body.appendChild(tooltip);
+            tooltips.push(tooltip);
+          });
+          
+          point.addEventListener('mouseleave', function() {
+            tooltips.forEach(t => t.remove());
+            tooltips.length = 0;
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>

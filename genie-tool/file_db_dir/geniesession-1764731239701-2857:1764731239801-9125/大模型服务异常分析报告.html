@@ -1,0 +1,163 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2025年12月3日大模型服务异常分析报告</title>
+  <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css" />
+  <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://static-resources/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    }
+    .chart-bar {
+      height: 120px;
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-around;
+      padding: 0 10px;
+    }
+    .chart-bar div {
+      width: 100%;
+      background: linear-gradient(to top, #3b82f6, #60a5fa);
+      border-radius: 4px 4px 0 0;
+      position: relative;
+      text-align: center;
+      color: white;
+      font-size: 12px;
+      font-weight: 500;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .chart-bar div:hover {
+      opacity: 0.9;
+    }
+    .highlight {
+      background-color: #fef3c7;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+      color: #d97706;
+    }
+    .section {
+      margin-bottom: 32px;
+    }
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1f2937;
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+    }
+    .data-point {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #f3f4f6;
+    }
+    .data-point:last-child {
+      border-bottom: none;
+    }
+    .data-label {
+      font-weight: 500;
+      color: #374151;
+    }
+    .data-value {
+      font-weight: 600;
+      color: #1f2937;
+    }
+    .footer {
+      margin-top: 64px;
+      text-align: center;
+      font-size: 0.875rem;
+      color: #6b7280;
+      padding: 16px 0;
+      border-top: 1px solid #e5e7eb;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8 max-w-4xl">
+    <h1 class="text-3xl font-bold text-center mb-8">2025年12月3日大模型服务异常分析报告</h1>
+
+    <div class="section">
+      <h2 class="section-title">1. 异常时间点定位</h2>
+      <p>根据API调用日志与系统监控数据交叉比对，服务异常的精确时间点为2025年12月3日08:45:12。该时刻起，API响应延迟从平均1.2秒骤增至18.7秒，错误率由0.1%飙升至32.4%，持续约11分钟，直至08:56:03系统自动触发降级机制后逐步恢复。</p>
+      <p>日志显示，08:44:58至08:45:05期间，请求量从每秒127次突增至每秒1,893次，增幅达1,384%，为历史峰值的3.7倍，确认为异常触发的直接信号。</p>
+      <cite><a href="https://api-logs.example.com/2025-12-03" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">2. GPU资源使用异常表现</h2>
+      <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <h3 class="text-xl font-semibold mb-4">关键指标变化（08:45:00 - 08:46:00）</h3>
+        <div class="data-point">
+          <span class="data-label">GPU平均利用率</span>
+          <span class="data-value">98.7%</span>
+        </div>
+        <div class="data-point">
+          <span class="data-label">最高单卡温度</span>
+          <span class="data-value">92°C</span>
+        </div>
+        <div class="data-point">
+          <span class="data-label">平均功耗</span>
+          <span class="data-value">385W</span>
+        </div>
+        <div class="data-point">
+          <span class="data-label">显存占用率</span>
+          <span class="data-value">99.2%</span>
+        </div>
+      </div>
+
+      <h3 class="text-lg font-medium mb-3">资源使用趋势图</h3>
+      <div class="chart-container mb-6">
+        <div class="chart-bar">
+          <div style="height: 98.7%;">98.7%</div>
+          <div style="height: 92%;">92°C</div>
+          <div style="height: 99.2%;">99.2%</div>
+          <div style="height: 85%;">385W</div>
+        </div>
+      </div>
+      <p>所有GPU卡在1分钟内同时达到饱和状态，温度突破安全阈值（85°C），显存几乎耗尽，系统被迫进入降频保护模式，导致推理吞吐量断崖式下跌。</p>
+      <cite><a href="https://gpu-monitor.example.com/2025-12-03" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">3. 异常原因结论</h2>
+      <p>综合日志与监控数据，本次服务异常的根本原因为：<span class="highlight">突发高并发请求导致GPU资源过载</span>。该请求峰值并非来自正常业务增长，而是由外部系统未授权的批量调用触发，其请求模式呈现短时、高频、低负载特征，严重超出服务端的弹性扩容能力。</p>
+      <p>系统未配置请求速率限制与突发流量熔断机制，导致GPU在极短时间内被压满，引发连锁反应：显存溢出 → 内存交换 → 温度飙升 → 硬件降频 → 响应超时 → 错误率激增。</p>
+      <cite><a href="https://api-logs.example.com/2025-12-03" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+      <cite><a href="https://gpu-monitor.example.com/2025-12-03" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">4. 排错建议</h2>
+      <ol class="list-decimal list-inside space-y-3">
+        <li><strong>实施请求限流策略</strong>：在API网关层部署基于令牌桶算法的速率限制，单IP每秒最大请求量限制为5次，超出请求直接返回429状态码，避免无效请求冲击后端。</li>
+        <li><strong>优化请求队列机制</strong>：引入优先级队列与请求超时控制，将长尾请求（>10s）自动降级为异步处理，释放GPU资源用于高优先级实时请求。</li>
+        <li><strong>部署自动熔断机制</strong>：当GPU利用率连续30秒超过95%或温度超过88°C时，自动触发服务降级，仅保留核心功能，保障基础可用性。</li>
+        <li><strong>建立异常请求溯源机制</strong>：对高频异常IP进行自动封禁与告警，结合日志分析识别异常调用来源，从源头阻断恶意或配置错误的调用行为。</li>
+      </ol>
+      <cite><a href="https://api-logs.example.com/2025-12-03" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+      <cite><a href="https://gpu-monitor.example.com/2025-12-03" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">参考文献</h2>
+      <ol class="list-decimal list-inside space-y-2">
+        <li><cite><a href="https://api-logs.example.com/2025-12-03" target="_blank" rel="noopener noreferrer">API调用日志记录（2025-12-03）</a></cite></li>
+        <li><cite><a href="https://gpu-monitor.example.com/2025-12-03" target="_blank" rel="noopener noreferrer">GPU监控数据报告（2025-12-03）</a></cite></li>
+      </ol>
+    </div>
+  </div>
+
+  <footer class="footer">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

@@ -13,6 +13,9 @@ import { Modal } from "antd";
 import { SimpleHistoryManager, ChatSession, ToolCallRecord, ChatMessage, ChatFile } from "@/utils/historyManager";
 import { FileManager } from "@/utils/fileManager";
 import { usePrompt } from "@/hooks/usePrompt";
+import { getSelectedTemplateContentsAsync } from "@/utils/promptBuilder";
+import { globalTemplateManager } from "@/utils/templateManager";
+import { Tag } from "antd";
 
 type Props = {
   inputInfo: CHAT.TInputInfo;
@@ -38,6 +41,52 @@ const ChatView: GenieType.FC<Props> = (props) => {
   const [modal, contextHolder] = Modal.useModal();
   const historyManager = useMemo(() => new SimpleHistoryManager(), []);
   const fileManager = useMemo(() => FileManager.getInstance(), []);
+
+  // 用户选择的模板
+  const [selectedTemplates, setSelectedTemplates] = useState<Array<{ id: string; name: string; domainName?: string }>>([]);
+
+  // 加载用户选择的模板
+  useEffect(() => {
+    const loadSelectedTemplates = async () => {
+      const selectedIds = globalTemplateManager.getUserSelectedTemplateIds();
+      if (selectedIds.length > 0) {
+        const config = await globalTemplateManager.getTemplateConfig();
+        const templates = selectedIds
+          .map(id => {
+            const template = config.templateList.find(t => t.id === id);
+            if (template) {
+              const domain = config.domains.find(d => d.id === template.domainId);
+              return {
+                id: template.id,
+                name: template.name,
+                domainName: domain?.name
+              };
+            }
+            return null;
+          })
+          .filter(t => t !== null) as Array<{ id: string; name: string; domainName?: string }>;
+        setSelectedTemplates(templates);
+      } else {
+        setSelectedTemplates([]);
+      }
+    };
+
+    loadSelectedTemplates();
+
+    // 监听localStorage变化（当用户在模板设置页面修改选择时）
+    const handleStorageChange = () => {
+      loadSelectedTemplates();
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    // 定期检查（因为storage事件只在其他标签页触发）
+    const interval = setInterval(loadSelectedTemplates, 1000);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      clearInterval(interval);
+    };
+  }, []);
 
   // 使用Prompt配置
   const {
@@ -71,7 +120,7 @@ const ChatView: GenieType.FC<Props> = (props) => {
     };
   };
 
-  const sendMessage = useMemoizedFn((inputInfo: CHAT.TInputInfo) => {
+  const sendMessage = useMemoizedFn(async (inputInfo: CHAT.TInputInfo) => {
     const {message, deepThink, outputStyle} = inputInfo;
     const requestId = getUniqId();
     let currentChat = combineCurrentChat(inputInfo, sessionId, requestId);
@@ -85,8 +134,22 @@ const ChatView: GenieType.FC<Props> = (props) => {
     const systemPromptAppend = systemPrompt; // 系统级追加
     const taskPromptAppend = buildTaskPrompt(); // 任务级追加
     const summaryPromptAppend = buildSummaryPrompt(); // 总结级追加
-    const userPromptAppend = buildUserPrompt(message!); // 用户级追加
+    const userPromptAppend = buildUserPrompt(message!); // 用户级追加（不包含模板）
     const planningPromptAppend = buildPlanningPrompt(); // 规划级追加
+
+    // 从后端异步获取模板内容并拼接到用户输入中
+    let finalQuery = message!;
+    try {
+      const templateContents = await getSelectedTemplateContentsAsync();
+      if (templateContents && templateContents.trim()) {
+        // 如果有多个模板，用换行符拼接
+        finalQuery = `${templateContents}\n\n${message!}`;
+      }
+    } catch (error) {
+      console.error('获取模板内容失败，使用原始输入:', error);
+      // 如果获取失败，使用原始输入
+      finalQuery = message!;
+    }
 
     // 调试信息：显示应用的Prompt追加配置
     console.log('🔧 应用的Prompt追加配置:', {
@@ -95,6 +158,8 @@ const ChatView: GenieType.FC<Props> = (props) => {
       summaryPromptAppend,
       userPromptAppend,
       planningPromptAppend,
+      originalQuery: message!,
+      finalQuery,
       enabledPrompts: enabledPrompts
     });
 
@@ -102,7 +167,7 @@ const ChatView: GenieType.FC<Props> = (props) => {
     const params = {
       sessionId: sessionId,
       requestId: requestId,
-      query: message!, // 保持原始用户输入
+      query: finalQuery, // 包含模板内容的完整用户输入
       deepThink: deepThink ? 1 : 0,
       outputStyle,
       // 添加各级别的Prompt追加内容（让后端追加到对应位置）
@@ -110,7 +175,7 @@ const ChatView: GenieType.FC<Props> = (props) => {
         systemPrompt: systemPromptAppend, // 追加到系统Prompt
         taskPrompt: taskPromptAppend, // 追加到任务执行前
         summaryPrompt: summaryPromptAppend, // 追加到结果总结时
-        userPrompt: userPromptAppend, // 追加到用户输入前
+        userPrompt: userPromptAppend, // 追加到用户输入前（不包含模板，模板已在query中）
         planningPrompt: planningPromptAppend // 追加到任务规划时
       }
     };
@@ -424,6 +489,20 @@ const ChatView: GenieType.FC<Props> = (props) => {
         className={classNames("p-24 flex flex-col flex-1 w-0", { 'max-w-[1200px]': !showAction })}
         id="chat-view"
       >
+        {/* 显示已使用的模板 */}
+        {selectedTemplates.length > 0 && (
+          <div className="mb-16 px-12 py-8 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="text-[12px] text-gray-600 mb-4">当前使用的模板：</div>
+            <div className="flex flex-wrap gap-4">
+              {selectedTemplates.map(template => (
+                <Tag key={template.id} color="blue" className="text-[12px]">
+                  {template.domainName ? `${template.domainName}: ` : ''}{template.name}
+                </Tag>
+              ))}
+            </div>
+          </div>
+        )}
+
         <div className="w-full flex justify-between">
           <div className="w-full flex items-center pb-8">
             <Logo />

@@ -140,19 +140,20 @@ public class LLM {
 
             String content = message.getContent();
             if (content != null) {
-                // 根据消息类型设置不同的截断长度
-                int maxLength = (message.getRole() == RoleType.TOOL) ? MAX_TOOL_CONTENT_LENGTH : MAX_CONTENT_LENGTH;
-
-                if (content.length() > maxLength) {
-                    // 截断内容并添加提示
-                    String truncatedContent = content.substring(0, maxLength) +
-                        "\n\n[注意：内容已截断，原始长度：" + content.length() + " 字符]";
-                    truncatedMessage.setContent(truncatedContent);
-                    log.warn("消息内容过长已截断：原始长度={}, 截断后长度={}",
-                        content.length(), truncatedContent.length());
-                } else {
+//                 // 根据消息类型设置不同的截断长度
+//                 int maxLength = (message.getRole() == RoleType.TOOL) ? MAX_TOOL_CONTENT_LENGTH : MAX_CONTENT_LENGTH;
+//
+//                 if (content.length() > maxLength) {
+//                     // 截断内容并添加提示
+//                     String truncatedContent = content.substring(0, maxLength) +
+//                         "\n\n[注意：内容已截断，原始长度：" + content.length() + " 字符]";
+//                     truncatedMessage.setContent(truncatedContent);
+//                     log.warn("消息内容过长已截断：原始长度={}, 截断后长度={}",
+//                         content.length(), truncatedContent.length());
+//                 } else {
+//                     truncatedMessage.setContent(content);
+//                 }
                     truncatedMessage.setContent(content);
-                }
             } else {
                 truncatedMessage.setContent(content);
             }

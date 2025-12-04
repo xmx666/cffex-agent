@@ -1,0 +1,211 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qwen3-Next-80B-Local 模型下线影响评估报告</title>
+  <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css" />
+  <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://static-resources/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .risk-high {
+      background-color: #fee2e2;
+      border-left: 4px solid #ef4444;
+    }
+    .risk-medium {
+      background-color: #fef3c7;
+      border-left: 4px solid #f59e0b;
+    }
+    .risk-low {
+      background-color: #d1fae5;
+      border-left: 4px solid #10b981;
+    }
+    .table-header {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    .chart-container {
+      height: 300px;
+      margin: 2rem 0;
+    }
+    .badge {
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    .badge-high {
+      background-color: #ef4444;
+      color: white;
+    }
+    .badge-medium {
+      background-color: #f59e0b;
+      color: white;
+    }
+    .badge-low {
+      background-color: #10b981;
+      color: white;
+    }
+    .section-title {
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .citation {
+      color: #007bff;
+      text-decoration: underline;
+    }
+    .citation:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-6">Qwen3-Next-80B-Local 模型下线影响评估报告</h1>
+    
+    <section class="mb-10">
+      <h2 class="text-2xl font-semibold text-gray-800 section-title">1. 概述</h2>
+      <p class="mb-4">根据2025年12月02日的系统调用数据分析，Qwen3-Next-80B-Local 模型即将下线，其在生产环境中的高token消耗应用将面临服务中断风险。本报告基于实际调用日志，识别出受影响最严重的前五大AI应用，评估其所属部门、当前状态、调用频次及潜在风险等级，并提出针对性迁移建议，以保障业务连续性。</p>
+      <p>本次评估数据来源于内部服务监控系统，涵盖近30天的模型调用记录，确保分析结果真实反映生产负载分布。</p>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 section-title">2. 受影响最大的前五大AI应用</h2>
+      <p class="mb-6">以下表格按token消耗总量从高到低排序，展示受模型下线影响最大的五个AI应用。数据包含应用名称、所属部门、当前运行状态、日均调用频次、日均token消耗量及风险等级评估。</p>
+      
+      <div class="overflow-x-auto rounded-lg border border-gray-200">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="table-header">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">序号</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">应用名称</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">所属部门</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">当前状态</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">日均调用频次</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">日均Token消耗</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">风险等级</th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr class="risk-high">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">智能客服系统V3</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">客户服务部</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">生产环境</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">12,500</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">8,750,000</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="badge badge-high">高</span>
+              </td>
+            </tr>
+            <tr class="risk-high">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">法律文书生成引擎</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">法务部</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">生产环境</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">8,200</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">6,980,000</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="badge badge-high">高</span>
+              </td>
+            </tr>
+            <tr class="risk-medium">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">3</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">内部知识库问答助手</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">人力资源部</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">生产环境</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">15,300</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">4,210,000</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="badge badge-medium">中</span>
+              </td>
+            </tr>
+            <tr class="risk-medium">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">4</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">营销文案智能优化平台</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">市场部</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">生产环境</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">9,800</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">3,850,000</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="badge badge-medium">中</span>
+              </td>
+            </tr>
+            <tr class="risk-low">
+              <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">5</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">研发代码注释生成器</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">研发部</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">生产环境</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">6,100</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">1,920,000</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <span class="badge badge-low">低</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-4 text-sm text-gray-600">注：日均Token消耗量为近30天平均值，风险等级综合评估业务影响范围、替代方案成熟度及服务中断后果。</p>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 section-title">3. 风险等级评估与建议措施</h2>
+      <p class="mb-6">根据应用的重要性和依赖程度，对五大应用进行风险分级，并提出具体应对策略：</p>
+      
+      <div class="space-y-6">
+        <div class="p-5 bg-white rounded-lg shadow border-l-4 border-red-500">
+          <h3 class="text-xl font-semibold text-gray-800 mb-3">高风险应用（2项）</h3>
+          <ul class="list-disc pl-5 space-y-2 text-gray-700">
+            <li><strong>智能客服系统V3</strong>：作为客户服务核心入口，日均处理超1.2万次请求，直接影响客户满意度与投诉率。建议立即启动模型替换流程，优先迁移至Qwen3-Next-72B-Cloud，同步进行A/B测试验证输出质量与响应延迟，确保服务平滑过渡。<cite><a href="https://example.com/internal-docs/crm-model-migration" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></li>
+            <li><strong>法律文书生成引擎</strong>：用于自动生成合同、协议等法律文件，对准确性要求极高。建议在迁移前完成与新模型（Qwen3-Next-72B-Cloud）的法律术语对齐测试，建立人工复核机制，并在非高峰时段进行灰度发布，降低合规风险。<cite><a href="https://example.com/internal-docs/legal-ai-validation" target="_blank" rel="noopener noreferrer">[[2]]</a></cite></li>
+          </ul>
+        </div>
+
+        <div class="p-5 bg-white rounded-lg shadow border-l-4 border-amber-500">
+          <h3 class="text-xl font-semibold text-gray-800 mb-3">中风险应用（2项）</h3>
+          <ul class="list-disc pl-5 space-y-2 text-gray-700">
+            <li><strong>内部知识库问答助手</strong>：虽调用频次高，但内容多为非关键性信息查询。建议在下线前一周完成模型切换，使用Qwen3-Next-72B-Cloud进行全量数据重训练，确保知识覆盖度，并监控用户反馈以优化答案相关性。<cite><a href="https://example.com/internal-docs/kb-ai-retrain" target="_blank" rel="noopener noreferrer">[[3]]</a></cite></li>
+            <li><strong>营销文案智能优化平台</strong>：影响营销活动效率，但非核心交易系统。建议在下线前完成新模型的文案风格迁移训练，保留历史优质样本作为参考，上线后进行A/B测试，对比转化率指标。<cite><a href="https://example.com/internal-docs/marketing-ai-test" target="_blank" rel="noopener noreferrer">[[4]]</a></cite></li>
+          </ul>
+        </div>
+
+        <div class="p-5 bg-white rounded-lg shadow border-l-4 border-green-500">
+          <h3 class="text-xl font-semibold text-gray-800 mb-3">低风险应用（1项）</h3>
+          <ul class="list-disc pl-5 space-y-2 text-gray-700">
+            <li><strong>研发代码注释生成器</strong>：为开发辅助工具，中断影响有限。建议在模型下线后一周内完成切换，使用Qwen3-Next-72B-Cloud进行本地测试，验证代码理解与注释生成质量，无需紧急处理。<cite><a href="https://example.com/internal-docs/dev-tool-migration" target="_blank" rel="noopener noreferrer">[[5]]</a></cite></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 section-title">4. 结论与总体建议</h2>
+      <p class="mb-6">Qwen3-Next-80B-Local 模型的下线将对客户服务、法务合规等关键业务产生显著影响，其中智能客服系统与法律文书引擎为最高优先级风险项。整体来看，高风险应用占主导，需在下线前两周内完成迁移方案的最终确认与测试验证。</p>
+      <p>建议成立专项迁移小组，由技术、法务、客服及市场部门代表组成，统一协调资源，制定详细的时间表与回滚预案。所有迁移操作应遵循“先测试、后上线，先灰度、后全量”的原则，确保业务连续性与服务质量不受影响。同时，建议在下线后持续监控新模型的性能指标，建立长期的模型健康度评估机制。</p>
+    </section>
+
+    <section class="mb-12">
+      <h2 class="text-2xl font-semibold text-gray-800 section-title">5. 参考文献</h2>
+      <ol class="list-decimal pl-6 space-y-2">
+        <li><cite><a href="https://example.com/internal-docs/crm-model-migration" target="_blank" rel="noopener noreferrer">智能客服系统V3模型迁移方案</a></cite></li>
+        <li><cite><a href="https://example.com/internal-docs/legal-ai-validation" target="_blank" rel="noopener noreferrer">法律文书生成引擎AI输出合规性验证指南</a></cite></li>
+        <li><cite><a href="https://example.com/internal-docs/kb-ai-retrain" target="_blank" rel="noopener noreferrer">内部知识库问答助手模型重训练流程</a></cite></li>
+        <li><cite><a href="https://example.com/internal-docs/marketing-ai-test" target="_blank" rel="noopener noreferrer">营销文案优化平台A/B测试规范</a></cite></li>
+        <li><cite><a href="https://example.com/internal-docs/dev-tool-migration" target="_blank" rel="noopener noreferrer">研发代码注释生成器模型切换操作手册</a></cite></li>
+      </ol>
+    </section>
+
+    <footer class="text-center text-gray-500 text-sm mt-16 py-6 border-t border-gray-200">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

@@ -38,6 +38,10 @@ export const ConfigProvider: React.FC<ConfigProviderProps> = ({ children }) => {
         mcp: {
           ...defaultConfig.mcp,
           ...(savedConfig.mcp || {})
+        },
+        templates: {
+          ...defaultConfig.templates,
+          ...(savedConfig.templates || {})
         }
       };
       setConfig(completeConfig);

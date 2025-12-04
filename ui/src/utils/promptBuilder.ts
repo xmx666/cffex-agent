@@ -4,6 +4,7 @@
  */
 
 import { AppConfig } from './configManager';
+import { globalTemplateManager } from './templateManager';
 
 export interface PromptConfig {
   systemPrompt: string;
@@ -18,7 +19,7 @@ export interface PromptConfig {
  */
 export function buildPromptConfig(config: AppConfig): PromptConfig {
   const { prompts } = config;
-  
+
   // 安全检查，确保prompts对象存在
   if (!prompts) {
     return {
@@ -146,24 +147,68 @@ export function buildSummaryPrompt(config: AppConfig, baseSummaryPrompt?: string
   return summaryPrompts.join('\n\n');
 }
 
+// 缓存模板配置，避免频繁请求
+let cachedTemplateConfig: { config: any; timestamp: number } | null = null;
+const CACHE_DURATION = 5000; // 缓存5秒
+
+/**
+ * 获取已选择的模板内容（用户级别）
+ * 模板内容应该直接拼接到用户输入中，作为用户输入的一部分
+ * 使用用户级别的模板选择
+ */
+export async function getSelectedTemplateContentsAsync(): Promise<string> {
+  try {
+    return await globalTemplateManager.getUserSelectedTemplateContents();
+  } catch (error) {
+    console.error('获取模板内容失败:', error);
+    return '';
+  }
+}
+
+/**
+ * 同步版本（使用缓存）
+ */
+export function getSelectedTemplateContents(config?: AppConfig): string {
+  // 如果缓存有效，直接返回
+  if (cachedTemplateConfig && Date.now() - cachedTemplateConfig.timestamp < CACHE_DURATION) {
+    const templateConfig = cachedTemplateConfig.config;
+    if (templateConfig.selectedTemplateIds && templateConfig.templateList) {
+      const selectedTemplates = templateConfig.selectedTemplateIds
+        .map((id: string) => templateConfig.templateList.find((t: any) => t.id === id))
+        .filter((t: any) => t && t.enabled) as Array<{ content: string }>;
+
+      const templateContents = selectedTemplates.map(t => t.content);
+      return templateContents.join('\n\n');
+    }
+  }
+
+  // 异步更新缓存（不阻塞）
+  globalTemplateManager.getTemplateConfig().then(config => {
+    cachedTemplateConfig = { config, timestamp: Date.now() };
+  }).catch(error => {
+    console.error('更新模板配置缓存失败:', error);
+  });
+
+  return '';
+}
+
 /**
  * 构建用户输入前的Prompt
- * 只返回用户级自定义Prompt，让后端追加到用户输入前
+ * 只返回用户级自定义Prompt，不包含模板内容（模板内容应该直接拼接到用户输入中）
  */
 export function buildUserPrompt(config: AppConfig, userInput: string): string {
   const { prompts } = config;
 
-  // 安全检查
+  // 只返回用户级自定义Prompt，不包含模板内容
   if (!prompts || !prompts.customPrompts) {
     return '';
   }
 
-  // 只返回用户级自定义Prompt
-  const userPrompts = prompts.customPrompts
+  const customUserPrompts = prompts.customPrompts
     .filter(p => p.category === 'custom' && p.enabled)
     .map(p => p.content);
 
-  return userPrompts.join('\n\n');
+  return customUserPrompts.join('\n\n');
 }
 
 /**

@@ -66,6 +66,29 @@ export interface AppConfig {
       tags: string[];
     }>;
   };
+
+  // 模板设置配置
+  templates: {
+    // 模板领域列表
+    domains: Array<{
+      id: string;
+      name: string;
+      description?: string;
+    }>;
+    // 模板列表
+    templateList: Array<{
+      id: string;
+      name: string;
+      description?: string;
+      content: string;
+      domainId: string;
+      enabled: boolean;
+      createdAt: number;
+      updatedAt: number;
+    }>;
+    // 当前已选择的模板ID列表
+    selectedTemplateIds: string[];
+  };
 }
 
 // 默认配置
@@ -124,6 +147,17 @@ export const defaultConfig: AppConfig = {
     systemPrompt: '',
     customPrompts: [],
     solutionTemplates: []
+  },
+  templates: {
+    domains: [
+      { id: 'default', name: '通用' },
+      { id: 'data-analysis', name: '数据分析' },
+      { id: 'content-creation', name: '内容创作' },
+      { id: 'code-optimization', name: '代码优化' },
+      { id: 'problem-solving', name: '问题解决' }
+    ],
+    templateList: [],
+    selectedTemplateIds: []
   }
 };
 

@@ -1,0 +1,128 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GPU监控数据异常分析报告</title>
+  <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css" />
+  <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://static-resources/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+      background-color: #f9fafb;
+      color: #1f2937;
+    }
+    .section-header {
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .alert-box {
+      border-left: 4px solid #ef4444;
+      background-color: #fef2f2;
+      padding: 1rem;
+      margin: 1.5rem 0;
+    }
+    .data-point {
+      background-color: #f3f4f6;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      margin: 0.5rem 0;
+    }
+    .timeline-marker {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      background-color: #ef4444;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+    }
+    .reference-list {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e5e7eb;
+    }
+    .reference-link {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .reference-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="max-w-4xl mx-auto p-6">
+  <header class="text-center mb-8">
+    <h1 class="text-3xl font-bold text-gray-800">GPU监控数据异常分析报告</h1>
+    <p class="text-gray-600 mt-2">基于2025年12月04日数据状态的专项分析</p>
+  </header>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-semibold text-gray-800">1. 问题概述</h2>
+  </section>
+  <p>根据系统监控日志核查，<code>ods_monitor.cai_gpu_monitor</code> 表在近两小时内（2025年12月04日 10:00 至 12:00）未采集到任何有效监控数据。该表本应持续记录GPU服务器的显存占用率、核心温度、功耗、风扇转速等关键性能指标。当前数据缺失导致无法对GPU集群的运行状态进行异常检测与趋势分析，存在潜在的硬件风险未被识别。</p>
+  <div class="alert-box mt-4">
+    <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
+    <strong>严重性：</strong>数据采集链路中断，影响运维决策与资源调度能力。
+  </div>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-semibold text-gray-800">2. 数据缺失详情</h2>
+  </section>
+  <div class="data-point">
+    <strong>监控表名：</strong> ods_monitor.cai_gpu_monitor
+  </div>
+  <div class="data-point">
+    <strong>缺失时段：</strong> 2025-12-04 10:00 至 2025-12-04 12:00（UTC+8）
+  </div>
+  <div class="data-point">
+    <strong>缺失指标：</strong> 显存占用率、GPU核心温度、板级功耗、风扇转速、设备状态码
+  </div>
+  <div class="data-point">
+    <strong>影响范围：</strong> 所有依赖该表的告警规则、资源调度策略、性能基线模型均失效
+  </div>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-semibold text-gray-800">3. 潜在原因分析</h2>
+  </section>
+  <p>基于现有系统架构，数据缺失可能由以下任一或多个环节故障导致：</p>
+  <ul class="list-disc pl-6 mb-6 space-y-2">
+    <li>数据采集代理（Agent）服务异常终止或未启动</li>
+    <li>采集脚本权限变更或依赖库缺失导致执行失败</li>
+    <li>数据库写入连接池耗尽或网络中断，导致数据无法写入 <code>ods_monitor.cai_gpu_monitor</code></li>
+    <li>监控目标GPU服务器离线或驱动异常，无法返回采集指标</li>
+    <li>定时任务调度器（如Cron、Airflow）任务未触发或配置错误</li>
+  </ul>
+  <p>由于缺乏近两小时的监控数据，无法通过历史趋势判断是偶发性抖动还是持续性故障，需立即进行链路排查。</p>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-semibold text-gray-800">4. 建议处置措施</h2>
+  </section>
+  <ol class="list-decimal pl-6 mb-6 space-y-2">
+    <li>检查采集服务状态：登录采集节点，确认 <code>cai_gpu_monitor_agent</code> 或对应采集进程是否运行，查看日志文件是否存在错误堆栈。</li>
+    <li>验证数据库连接：使用数据库客户端测试能否正常连接至 <code>ods_monitor</code> 数据库，并执行简单写入测试。</li>
+    <li>核查调度任务：确认定时任务配置（如Cron表达式）是否仍有效，任务是否被意外禁用或资源超限。</li>
+    <li>检查网络连通性：确认采集节点与GPU服务器、数据库服务器之间的网络策略未被修改，端口（如SSH、Prometheus端口）是否开放。</li>
+    <li>恢复数据采集：在定位并修复故障后，建议手动触发一次全量采集，确保数据流恢复正常，并验证历史数据补录机制是否生效。</li>
+  </ol>
+
+  <section class="section-header">
+    <h2 class="text-2xl font-semibold text-gray-800">5. 风险提示</h2>
+  </section>
+  <p>在数据缺失期间，若GPU服务器出现显存泄漏、温度过高或功耗异常飙升等状况，系统将无法触发任何告警，可能导致硬件损坏、任务失败或服务中断。建议在数据恢复前，人工巡检关键GPU节点的物理状态与运行日志，避免不可逆损失。</p>
+
+  <section class="reference-list">
+    <h2 class="text-2xl font-semibold text-gray-800 mb-4">参考文献</h2>
+    <p class="mb-2">[[1]]、<cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer" class="reference-link">ods_monitor.cai_gpu_monitor表结构与采集规范</a></cite></p>
+  </section>
+
+  <footer class="mt-12 text-center text-gray-500 text-sm border-t pt-4">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

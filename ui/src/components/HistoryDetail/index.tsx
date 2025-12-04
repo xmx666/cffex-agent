@@ -280,9 +280,9 @@ const HistoryDetail: React.FC<HistoryDetailProps> = ({
                                 </div>
                                 <div className="space-y-8">
                                   {message.toolCalls.map((toolCall, index) => (
-                                    <Card key={index} size="small" className="bg-gray-50">
+                                    <Card key={index} size="small" className="bg-white border border-gray-200">
                                       <div className="flex items-center space-x-8 mb-4">
-                                        <Tag color="blue" className="text-[10px]">
+                                        <Tag color="blue" className="text-[11px] font-medium">
                                           {toolCall.toolName}
                                         </Tag>
                                         <span className="text-[10px] text-gray-500">
@@ -291,19 +291,23 @@ const HistoryDetail: React.FC<HistoryDetailProps> = ({
                                       </div>
                                       {Object.keys(toolCall.toolParam).length > 0 && (
                                         <div className="mb-4">
-                                          <span className="text-[10px] text-gray-500">参数:</span>
-                                          <pre className="text-[10px] text-gray-600 bg-white p-4 rounded mt-2 overflow-x-auto">
-                                            {JSON.stringify(toolCall.toolParam, null, 2)}
-                                          </pre>
+                                          <div className="text-[11px] font-medium text-blue-600 mb-2">参数:</div>
+                                          <div className="bg-gray-50 p-3 rounded border border-gray-100">
+                                            <pre className="text-[11px] text-gray-800 whitespace-pre-wrap break-words overflow-x-auto font-mono">
+                                              {JSON.stringify(toolCall.toolParam, null, 2)}
+                                            </pre>
+                                          </div>
                                         </div>
                                       )}
                                       <div>
-                                        <span className="text-[10px] text-gray-500">结果:</span>
-                                        <div className="text-[11px] text-gray-700 mt-2 bg-white p-4 rounded max-h-100 overflow-y-auto">
-                                          {toolCall.toolResult.length > 500
-                                            ? toolCall.toolResult.substring(0, 500) + '...'
-                                            : toolCall.toolResult
-                                          }
+                                        <div className="text-[11px] font-medium text-green-600 mb-2">结果:</div>
+                                        <div className="bg-gray-50 p-3 rounded border border-gray-100 max-h-100 overflow-y-auto">
+                                          <pre className="text-[11px] text-gray-800 whitespace-pre-wrap break-words overflow-x-auto">
+                                            {toolCall.toolResult.length > 500
+                                              ? toolCall.toolResult.substring(0, 500) + '...'
+                                              : toolCall.toolResult
+                                            }
+                                          </pre>
                                         </div>
                                       </div>
                                     </Card>

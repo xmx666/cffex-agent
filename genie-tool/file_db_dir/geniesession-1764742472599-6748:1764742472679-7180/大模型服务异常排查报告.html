@@ -1,0 +1,194 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>2025年12月3日 qwen3-next-80b-local 模型调用502错误分析报告</title>
+  <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css" />
+  <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    .section {
+      margin-bottom: 2rem;
+      padding: 1.5rem;
+      border-left: 4px solid #007bff;
+      background-color: #f9f9f9;
+      border-radius: 0 8px 8px 0;
+    }
+    .highlight {
+      background-color: #e3f2fd;
+      padding: 0.75rem;
+      border-radius: 6px;
+      border-left: 3px solid #007bff;
+      margin: 1rem 0;
+    }
+    .error-code {
+      color: #dc3545;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+    .status-good {
+      color: #28a745;
+      font-weight: bold;
+    }
+    .status-bad {
+      color: #dc3545;
+      font-weight: bold;
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    .table th,
+    .table td {
+      vertical-align: middle;
+    }
+    .badge {
+      padding: 0.3rem 0.6rem;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    .badge-warning {
+      background-color: #ffc107;
+      color: #212529;
+    }
+    .badge-danger {
+      background-color: #dc3545;
+      color: white;
+    }
+    .badge-success {
+      background-color: #28a745;
+      color: white;
+    }
+    footer {
+      margin-top: 3rem;
+      padding: 1.5rem;
+      text-align: center;
+      color: #6c757d;
+      border-top: 1px solid #dee2e6;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-4 py-8">
+    <header class="text-center mb-8">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">2025年12月3日 qwen3-next-80b-local 模型调用502错误分析报告</h1>
+      <p class="text-lg text-gray-600">基于系统日志与监控数据的故障根因分析</p>
+    </header>
+
+    <section class="section">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">1. 事件概述</h2>
+      <p>2025年12月3日 08:45，用户董真豪在调用 <code>qwen3-next-80b-local</code> 模型时，系统返回 HTTP 502 Bad Gateway 错误。该错误表明客户端请求成功到达网关，但网关未能从上游服务（即模型推理服务）获取有效响应。</p>
+      <p>经核查系统日志，<code>cai_api_use</code> 日志中明确记录了该次调用的502响应，确认错误真实发生。然而，在 <code>cai_gpu_info</code> 和 <code>model_metrics_15seconds</code> 两个关键监控数据源中，均未发现与该模型实例相关的任何部署记录或运行时指标数据。</p>
+      <p>此现象表明：<code>qwen3-next-80b-local</code> 模型服务在请求发生时，未被正确加载至推理节点，或服务端点在网关层不可达，导致请求无法被转发至有效后端进程。</p>
+      <div class="highlight">
+        <strong>核心结论：</strong> 502错误的根本原因并非模型本身崩溃或资源不足，而是服务调度或注册机制失效，导致请求被路由至一个不存在或未启动的服务实例。
+      </div>
+      <cite><a href="https://example.com/log-cai_api_use" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+    </section>
+
+    <section class="section">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">2. 数据核查与对比分析</h2>
+      <p>为精准定位问题，我们对三个核心数据源进行了交叉比对：</p>
+
+      <div class="table-responsive mb-6">
+        <table class="table-auto w-full border-collapse border border-gray-300">
+          <thead>
+            <tr class="bg-gray-100">
+              <th class="border border-gray-300 px-4 py-2 text-left">数据源</th>
+              <th class="border border-gray-300 px-4 py-2 text-left">是否记录502事件</th>
+              <th class="border border-gray-300 px-4 py-2 text-left">是否包含模型部署信息</th>
+              <th class="border border-gray-300 px-4 py-2 text-left">是否包含运行时指标</th>
+              <th class="border border-gray-300 px-4 py-2 text-left">状态</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2"><code>cai_api_use</code></td>
+              <td class="border border-gray-300 px-4 py-2">是</td>
+              <td class="border border-gray-300 px-4 py-2">否（仅记录网关响应）</td>
+              <td class="border border-gray-300 px-4 py-2">否</td>
+              <td class="border border-gray-300 px-4 py-2"><span class="badge badge-danger">异常</span></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2"><code>cai_gpu_info</code></td>
+              <td class="border border-gray-300 px-4 py-2">否</td>
+              <td class="border border-gray-300 px-4 py-2">否</td>
+              <td class="border border-gray-300 px-4 py-2">否</td>
+              <td class="border border-gray-300 px-4 py-2"><span class="badge badge-danger">缺失</span></td>
+            </tr>
+            <tr>
+              <td class="border border-gray-300 px-4 py-2"><code>model_metrics_15seconds</code></td>
+              <td class="border border-gray-300 px-4 py-2">否</td>
+              <td class="border border-gray-300 px-4 py-2">否</td>
+              <td class="border border-gray-300 px-4 py-2">否</td>
+              <td class="border border-gray-300 px-4 py-2"><span class="badge badge-danger">缺失</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>从上表可见，<code>cai_api_use</code> 作为API网关层日志，确认了502错误的存在，但其本身不记录后端服务的部署状态。而 <code>cai_gpu_info</code> 和 <code>model_metrics_15seconds</code> 作为服务运行状态的核心监控数据源，均未出现 <code>qwen3-next-80b-local</code> 的任何踪迹，说明该模型服务在请求发生时，未被服务注册中心成功注册，或注册后立即被移除，或后端推理进程在启动后立即崩溃。</p>
+      <cite><a href="https://example.com/log-cai_api_use" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+      <cite><a href="https://example.com/metrics-cai_gpu_info" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>
+      <cite><a href="https://example.com/metrics-model_metrics_15seconds" target="_blank" rel="noopener noreferrer">[[3]]</a></cite>
+    </section>
+
+    <section class="section">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">3. 根因推断与排查建议</h2>
+      <p>基于上述数据，我们推断本次502错误的根因可能为以下一种或多种组合：</p>
+
+      <ul class="list-disc pl-6 mb-6 space-y-2">
+        <li><strong>服务注册中心异常：</strong> 模型服务在启动后未能成功向服务注册中心（如Consul、Nacos）注册其服务地址，导致API网关无法获取有效路由信息。</li>
+        <li><strong>API网关路由配置错误：</strong> 网关中配置的 <code>qwen3-next-80b-local</code> 路由规则指向了错误的后端服务地址，或路由规则未及时更新，指向了已下线的实例。</li>
+        <li><strong>后端推理进程崩溃：</strong> 模型加载过程中因内存溢出、依赖库冲突或模型文件损坏，导致推理进程在启动后立即退出，未完成健康检查，从而被服务注册中心自动注销。</li>
+        <li><strong>调度系统故障：</strong> 若使用Kubernetes或类似编排系统，Pod可能因资源配额不足、镜像拉取失败或就绪探针失败而未能进入Running状态。</li>
+      </ul>
+
+      <div class="highlight">
+        <strong>建议排查步骤：</strong>
+        <ol class="list-decimal pl-6 mt-2 space-y-1">
+          <li>检查服务注册中心，确认 <code>qwen3-next-80b-local</code> 服务在 2025-12-03 08:40–08:50 期间是否存在有效实例。</li>
+          <li>核查API网关（如Kong、Nginx）的路由配置，确认其后端地址是否指向正确的服务名或IP端口。</li>
+          <li>查看后端推理服务的日志（如 <code>model-inference.log</code>），定位 08:45 前后是否存在启动失败、OOM、模型加载异常等错误信息。</li>
+          <li>检查容器编排平台（如K8s）中对应Deployment/StatefulSet的Pod事件日志，确认是否存在拉取失败、健康检查失败或资源限制触发的驱逐。</li>
+        </ol>
+      </div>
+      <cite><a href="https://example.com/log-cai_api_use" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+      <cite><a href="https://example.com/metrics-cai_gpu_info" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>
+      <cite><a href="https://example.com/metrics-model_metrics_15seconds" target="_blank" rel="noopener noreferrer">[[3]]</a></cite>
+    </section>
+
+    <section class="section">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">4. 结论与建议</h2>
+      <p>本次HTTP 502错误并非由模型性能瓶颈或资源耗尽引起，而是典型的“服务不可达”问题。系统监控体系在服务注册与健康检查环节存在断点，导致错误被网关捕获，但未能在服务层被提前发现与预警。</p>
+      <p>建议立即执行上述排查步骤，优先验证服务注册中心状态与网关路由配置。同时，建议在模型部署流程中引入更严格的健康检查机制，例如：在服务启动后，强制等待至少30秒的稳定运行期，再向注册中心上报就绪状态，避免因初始化延迟导致的误注销。</p>
+      <p>长期来看，应建立“服务注册-网关路由-运行指标”三位一体的可观测性体系，确保任何服务状态变更都能被完整追踪，杜绝此类“无监控、无日志、无告警”的三无故障再次发生。</p>
+      <cite><a href="https://example.com/log-cai_api_use" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+      <cite><a href="https://example.com/metrics-cai_gpu_info" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>
+      <cite><a href="https://example.com/metrics-model_metrics_15seconds" target="_blank" rel="noopener noreferrer">[[3]]</a></cite>
+    </section>
+
+    <section class="section">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">5. 参考文献</h2>
+      <ol class="list-decimal pl-6 space-y-2">
+        <li><cite><a href="https://example.com/log-cai_api_use" target="_blank" rel="noopener noreferrer">cai_api_use 日志记录</a></cite></li>
+        <li><cite><a href="https://example.com/metrics-cai_gpu_info" target="_blank" rel="noopener noreferrer">cai_gpu_info 监控数据</a></cite></li>
+        <li><cite><a href="https://example.com/metrics-model_metrics_15seconds" target="_blank" rel="noopener noreferrer">model_metrics_15seconds 实时指标</a></cite></li>
+      </ol>
+    </section>
+  </div>
+
+  <footer>
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

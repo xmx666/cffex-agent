@@ -70,11 +70,47 @@ const ActionPanel: GenieType.FC<ActionPanelProps> = React.memo((props) => {
       }
 
       if (useJSON) {
+        // 自定义主题：白底黑字，不同部分使用不同颜色
+        const customTheme = {
+          main: '#fff',
+          error: '#ef4444',
+          key: '#2563eb',
+          string: '#059669',
+          value: '#1e293b',
+          boolean: '#dc2626',
+          number: '#7c3aed',
+        };
+
         return (
-          <ReactJsonPretty
-            data={JSON.parse(toolResult?.toolResult || '{}')}
-            style={{ backgroundColor: '#000' }}
-          />
+          <div className="json-viewer-container bg-white p-16 rounded-lg border border-gray-200 overflow-auto">
+            <style>{`
+              .json-viewer-container .react-json-pretty {
+                background-color: #fff !important;
+                color: #1e293b !important;
+                font-size: 13px;
+                line-height: 1.6;
+                word-break: break-word;
+                white-space: pre-wrap;
+                overflow-wrap: break-word;
+              }
+              .json-viewer-container .react-json-pretty .react-json-pretty-key {
+                color: #2563eb !important;
+              }
+              .json-viewer-container .react-json-pretty .react-json-pretty-string {
+                color: #059669 !important;
+              }
+              .json-viewer-container .react-json-pretty .react-json-pretty-boolean {
+                color: #dc2626 !important;
+              }
+              .json-viewer-container .react-json-pretty .react-json-pretty-number {
+                color: #7c3aed !important;
+              }
+            `}</style>
+            <ReactJsonPretty
+              data={JSON.parse(toolResult?.toolResult || '{}')}
+              theme={customTheme}
+            />
+          </div>
         );
       }
 

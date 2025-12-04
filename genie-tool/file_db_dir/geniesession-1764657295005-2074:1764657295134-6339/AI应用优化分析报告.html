@@ -1,0 +1,228 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI应用调用数据优化建议报告</title>
+  <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css" />
+  <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://static-resources/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      color: #333;
+    }
+    .section-title {
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 8px;
+      margin-top: 32px;
+      margin-bottom: 20px;
+      color: #007bff;
+    }
+    .card {
+      border-left: 4px solid #007bff;
+      padding: 16px;
+      margin-bottom: 20px;
+      background-color: #f9f9f9;
+      border-radius: 0 4px 4px 0;
+    }
+    .table-responsive {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #007bff;
+      color: white;
+      font-weight: 600;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    tr:hover {
+      background-color: #e8f4fd;
+    }
+    .highlight {
+      background-color: #fff3cd;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 500;
+    }
+    .badge {
+      display: inline-block;
+      padding: 4px 8px;
+      font-size: 0.8rem;
+      border-radius: 12px;
+      color: white;
+      font-weight: 500;
+    }
+    .badge-high-cost {
+      background-color: #dc3545;
+    }
+    .badge-similar {
+      background-color: #28a745;
+    }
+    .footer {
+      margin-top: 60px;
+      padding: 20px;
+      text-align: center;
+      color: #666;
+      font-size: 0.9rem;
+      border-top: 1px solid #eee;
+    }
+    .chart-container {
+      height: 300px;
+      margin: 20px 0;
+    }
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 200px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 8px;
+      position: absolute;
+      z-index: 1;
+      bottom: 125%;
+      left: 50%;
+      margin-left: -100px;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 0.85rem;
+    }
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+  </style>
+</head>
+<body class="bg-gray-50">
+  <div class="container mx-auto px-6 py-8">
+    <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">AI应用调用数据优化建议报告</h1>
+    <p class="text-lg text-center text-gray-600 mb-12">基于2025年12月02日前7天大模型调用数据分析，提出资源优化与成本控制建议</p>
+
+    <section>
+      <h2 class="section-title">1. 调用次数最高的前3个应用及资源分配建议</h2>
+      <div class="card">
+        <p>根据调用频次统计，调用次数最高的三个应用分别为：</p>
+        <ul class="list-disc pl-6 mt-2 mb-4">
+          <li><strong>中金所头条</strong>：5802次（模型：qwen2.5-72b）</li>
+          <li><strong>巡检机器人</strong>：4514次（模型：glm46-fp8）</li>
+          <li><strong>单测智能体+OneDot问答</strong>：4438次（模型：qwen2.5-72b）</li>
+        </ul>
+        <p>上述三个应用合计调用次数达14754次，占总调用量的绝大部分，是系统核心负载来源。</p>
+        <p class="mt-4"><strong>资源分配建议：</strong>建议为这三个高调用应用分配优先级最高的模型实例资源，确保响应延迟稳定。其中，<span class="highlight">巡检机器人</span>使用高成本模型 <span class="highlight">glm46-fp8</span>，需评估其必要性，若业务逻辑允许，可尝试迁移至性能相近但成本更低的 <span class="highlight">qwen2.5-72b</span> 模型，以降低单位调用成本。同时，建议为这三个应用配置独立的模型实例池，避免与其他低频应用共享资源导致的性能抖动。</p>
+        <p class="mt-4">此外，建议建立动态扩缩容机制，根据调用峰值自动扩展实例数量，保障服务稳定性。</p>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">2. 低频应用列表及高成本模型使用情况</h2>
+      <div class="card">
+        <p>调用次数低于50次的低频应用如下：</p>
+        <div class="table-responsive mt-4">
+          <table>
+            <thead>
+              <tr>
+                <th>应用名称</th>
+                <th>调用次数</th>
+                <th>使用模型</th>
+                <th>是否使用高成本模型</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>办公知识库</td>
+                <td>114</td>
+                <td>未明确</td>
+                <td>否</td>
+              </tr>
+              <tr>
+                <td>小金同学</td>
+                <td>55</td>
+                <td>未明确</td>
+                <td>否</td>
+              </tr>
+              <tr>
+                <td>会员通舆情</td>
+                <td>10</td>
+                <td>qwen3-next-80b</td>
+                <td><span class="badge badge-high-cost">是</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="mt-4">其中，<span class="highlight">会员通舆情</span>应用虽调用仅10次，却使用了高成本模型 <span class="highlight">qwen3-next-80b</span>，存在显著的成本浪费风险。</p>
+        <p class="mt-4"><strong>优化建议：</strong>对所有低频应用（调用<50次）进行模型使用审计，强制要求使用轻量级模型（如qwen2.5-7b或更小版本）。对于<span class="highlight">会员通舆情</span>，建议立即迁移至低成本模型，并评估是否可通过规则引擎或关键词匹配替代AI调用，进一步降低资源消耗。</p>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">3. Prompt/Completion Token相近应用对分析与合并建议</h2>
+      <div class="card">
+        <p>根据Token使用数据，发现以下应用对在prompt_token或completion_token上存在高度相似性（相差在500或150以内），具备合并潜力：</p>
+        <p class="mt-4">注：当前数据中，<span class="highlight">IDE-小金灵码</span>存在多版本，其avg_prompt_token分别为1195与1272，差异仅77，属于高度相似版本；<span class="highlight">单测智能体</span>的avg_prompt_token为319，与IDE-小金灵码版本差异较大（876），暂不建议合并。</p>
+        <p class="mt-4"><strong>合并建议：</strong>建议将<span class="highlight">IDE-小金灵码</span>的多个版本（avg_prompt_token≈1200）进行功能整合，统一为单一版本，避免因版本碎片化导致的模型部署冗余、缓存失效、监控复杂等问题。合并后可统一模型调用入口，降低运维成本，并便于统一优化Prompt模板与推理策略。</p>
+        <p class="mt-4">此外，建议建立Token使用监控看板，自动识别Token分布相似的应用对（如prompt_token差值<500，completion_token差值<150），并推送合并建议，实现智能化资源管理。</p>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">4. 总结与优化方向</h2>
+      <div class="card">
+        <p>基于以上分析，提出以下四大优化方向：</p>
+        <ol class="list-decimal pl-6 mt-2 mb-6">
+          <li><strong>资源聚焦</strong>：将主要算力资源集中于调用频次最高的三大应用（中金所头条、巡检机器人、单测智能体+OneDot问答），保障核心业务稳定性。</li>
+          <li><strong>成本控制</strong>：全面排查低频应用中使用高成本模型（如qwen3-next-80b、glm46-fp8）的情况，强制迁移至轻量模型，杜绝“大炮打蚊子”式资源浪费。</li>
+          <li><strong>功能整合</strong>：推动功能重复、Token特征相似的应用（如IDE-小金灵码多版本）进行合并，减少模型部署实例数量，提升运维效率。</li>
+          <li><strong>智能监控</strong>：构建AI应用调用与Token使用动态监控系统，自动识别高成本低频应用、Token分布相似应用对，实现自动化优化建议推送与告警。</li>
+        </ol>
+        <p>通过上述措施，预计可显著降低模型调用总成本，提升资源利用率，并为未来AI应用的规模化部署奠定高效、可持续的技术基础。</p>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">参考文献</h2>
+      <div class="card">
+        <ol>
+          <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">中金所头条</a></cite></li>
+          <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">巡检机器人</a></cite></li>
+          <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">单测智能体+OneDot问答</a></cite></li>
+          <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">IDE-小金灵码</a></cite></li>
+          <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">AIOps平台</a></cite></li>
+          <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">智能代码审查</a></cite></li>
+          <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">办公知识库</a></cite></li>
+          <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">小金同学</a></cite></li>
+          <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">会员通舆情</a></cite></li>
+        </ol>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+
+  <script>
+    // 无交互图表需求，不添加任何图表脚本
+    // 所有数据均来自输入，无图表生成必要
+  </script>
+</body>
+</html>

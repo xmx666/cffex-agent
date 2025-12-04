@@ -1,0 +1,97 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>数据库性能分析报告 - 2025年11月27日</title>
+  <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css" />
+  <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://static-resources/googleapis-fonts/css2.css" />
+  <style>
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    cite a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    cite a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+  <header class="bg-blue-600 text-white p-4 shadow-md">
+    <div class="container mx-auto flex justify-between items-center">
+      <h1 class="text-2xl font-bold">数据库性能分析报告</h1>
+      <p class="text-sm">2025年11月27日</p>
+    </div>
+  </header>
+
+  <main class="container mx-auto p-6">
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">1. 慢查询分析结论</h2>
+      <p class="mb-4">
+        根据 <code>analyze_slow_queries_topn</code> 工具的分析结果，在过去7天和3天的监控周期内，未发现任何慢查询。所有查询的执行时间均低于设定的阈值（7天周期为1000ms，3天周期为500ms），表明数据库整体运行良好，查询性能稳定。
+      </p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">2. 分析周期与阈值设置</h2>
+      <p class="mb-4">
+        本次分析覆盖了两个时间周期：
+      </p>
+      <ul class="list-disc pl-6 mb-4">
+        <li>7天周期：慢查询阈值为1000ms</li>
+        <li>3天周期：慢查询阈值为500ms</li>
+      </ul>
+      <p>
+        通过设置不同的阈值，可以更细致地识别潜在的性能瓶颈。3天周期的阈值更严格，用于检测近期可能影响用户体验的短时性能问题。
+      </p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">3. 关键监控指标</h2>
+      <p class="mb-4">
+        在分析周期内，数据库的关键性能指标表现如下：
+      </p>
+      <ul class="list-disc pl-6 mb-4">
+        <li>查询延迟99分位：34ms</li>
+        <li>错误率：极低，未发现异常错误</li>
+      </ul>
+      <p>
+        查询延迟99分位为34ms，表明绝大多数查询响应时间非常短，系统具备良好的响应能力。错误率极低，说明数据库运行稳定，未出现异常情况。
+      </p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">4. 数据来源说明</h2>
+      <p class="mb-4">
+        本报告的数据来源于以下工具的分析结果：
+      </p>
+      <ul class="list-disc pl-6 mb-4">
+        <li><code>analyze_slow_queries_topn</code>：用于识别慢查询</li>
+        <li><code>get_monitoring_metrics</code>：用于获取数据库的监控指标</li>
+      </ul>
+      <p>
+        上述工具提供了详尽的数据库性能数据，为本次分析提供了坚实的数据基础。
+      </p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-2xl font-semibold mb-4">5. 结论与建议</h2>
+      <p class="mb-4">
+        综合分析结果表明，数据库在当前的运行周期内表现良好，未发现慢查询，查询延迟低，错误率极低。建议继续保持当前的数据库配置和监控策略，同时定期进行性能评估，以确保系统长期稳定运行。
+      </p>
+    </section>
+  </main>
+
+  <footer class="bg-gray-200 text-center p-4 mt-12">
+    <p class="text-sm text-gray-600">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </p>
+  </footer>
+</body>
+</html>
