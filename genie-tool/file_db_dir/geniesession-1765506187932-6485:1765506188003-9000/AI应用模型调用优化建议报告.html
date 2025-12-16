@@ -1,0 +1,520 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI服务调用性能优化建议报告（2025年12月）</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .section-header {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background-color: #007bff;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background-color: white;
+        }
+        .data-point {
+            font-weight: 600;
+            color: #007bff;
+        }
+        .highlight {
+            background-color: #e3f2fd;
+            padding: 0.5rem 1rem;
+            border-radius: 0.25rem;
+            border-left: 4px solid #007bff;
+            margin: 1rem 0;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 1.5rem 0;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .nav-link {
+            cursor: pointer;
+            padding: 0.75rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-bottom: none;
+            border-radius: 0.5rem 0.5rem 0 0;
+            margin-right: 0.5rem;
+            background-color: #f8f9fa;
+        }
+        .nav-link.active {
+            background-color: white;
+            border-bottom: 1px solid white;
+            font-weight: 600;
+        }
+        .badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+        }
+        .badge-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .badge-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .badge-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .accordion-button {
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            padding: 1rem;
+            cursor: pointer;
+        }
+        .accordion-button:hover {
+            background-color: #e9ecef;
+        }
+        .accordion-content {
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+            background-color: white;
+        }
+        footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            color: #666;
+            font-size: 0.9rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        .model-para {
+            font-weight: 600;
+            color: #28a745;
+        }
+        .latency-high {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        .latency-low {
+            color: #28a745;
+            font-weight: 600;
+        }
+        .call-count {
+            font-weight: 600;
+            color: #17a2b8;
+        }
+        .status-online {
+            color: #28a745;
+            font-weight: 600;
+        }
+        .status-offline {
+            color: #dc3545;
+            font-weight: 600;
+        }
+        .progress-bar {
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .progress-bar-bg {
+            background-color: #e9ecef;
+            height: 100%;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 6px;
+        }
+        .progress-bar-fill.low {
+            background-color: #28a745;
+        }
+        .progress-bar-fill.medium {
+            background-color: #ffc107;
+        }
+        .progress-bar-fill.high {
+            background-color: #dc3545;
+        }
+        .tab-content {
+            animation: fadeIn 0.3s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">AI服务调用性能优化建议报告</h1>
+        <p class="text-xl text-gray-600">基于2025年12月5日至12月12日七天调用数据分析</p>
+    </header>
+
+    <div class="flex flex-wrap justify-center mb-8">
+        <div class="nav-link active" onclick="switchTab('overview')">概览</div>
+        <div class="nav-link" onclick="switchTab('top-apps')">Top5应用分析</div>
+        <div class="nav-link" onclick="switchTab('models')">模型性能对比</div>
+        <div class="nav-link" onclick="switchTab('recommendations')">优化建议</div>
+        <div class="nav-link" onclick="switchTab('references')">参考文献</div>
+    </div>
+
+    <div id="overview" class="tab-content active">
+        <div class="card">
+            <h2 class="text-2xl font-bold section-header">报告概览</h2>
+            <p class="mb-4">本报告基于最近7天（2025年12月5日至12月12日）的AI服务调用数据，对核心应用的性能表现、模型使用情况及资源负载进行深度分析。数据来源于<code>ods_telemetry.cai_api_use</code>与<code>ods_telemetry.cai_app_info</code>表，涵盖14个活跃应用的调用指标。</p>
+            <p class="mb-4">分析发现，<span class="data-point">舆情通算法服务</span>以9,602次调用成为最高频应用，而<span class="data-point">IDE-小金灵码</span>和<span class="data-point">小金同学</span>虽调用量中等，但平均延迟显著高于平均水平，存在明显性能瓶颈。主要模型如<span class="model-para">glm46-fp8-local</span>（300B参数）和<span class="model-para">qwen3-next-80b-local</span>（80B参数）被广泛使用，但负载分布不均。</p>
+            <p class="mb-4">本报告提出针对性优化建议，包括模型分级调度、负载均衡、缓存机制与资源扩展，旨在提升系统响应效率，降低运维成本，保障关键业务稳定运行。</p>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mt-8">
+                <div class="bg-blue-50 p-6 rounded-lg text-center">
+                    <h3 class="text-lg font-semibold text-blue-800 mb-2">总应用数</h3>
+                    <p class="text-3xl font-bold text-blue-600">14</p>
+                    <p class="text-sm text-blue-700">活跃AI应用</p>
+                </div>
+                <div class="bg-green-50 p-6 rounded-lg text-center">
+                    <h3 class="text-lg font-semibold text-green-800 mb-2">总调用量</h3>
+                    <p class="text-3xl font-bold text-green-600">25,858</p>
+                    <p class="text-sm text-green-700">7天累计调用</p>
+                </div>
+                <div class="bg-yellow-50 p-6 rounded-lg text-center">
+                    <h3 class="text-lg font-semibold text-yellow-800 mb-2">平均延迟</h3>
+                    <p class="text-3xl font-bold text-yellow-600">8.9s</p>
+                    <p class="text-sm text-yellow-700">全系统平均</p>
+                </div>
+                <div class="bg-red-50 p-6 rounded-lg text-center">
+                    <h3 class="text-lg font-semibold text-red-800 mb-2">高延迟应用</h3>
+                    <p class="text-3xl font-bold text-red-600">3</p>
+                    <p class="text-sm text-red-700">延迟 > 15s</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="top-apps" class="tab-content">
+        <div class="card">
+            <h2 class="text-2xl font-bold section-header">调用量Top5应用及其平均延迟分析</h2>
+            <p class="mb-6">根据7天调用数据，以下为调用量排名前五的应用，其性能表现与业务重要性高度相关。数据来源于<code>ods_telemetry.cai_api_use</code>与<code>ods_telemetry.cai_app_info</code>表的关联查询。</p>
+            
+            <div class="table-container">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">应用名称</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">调用量</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">平均延迟</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">主要模型</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">应用状态</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="font-medium">舆情通算法服务</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap call-count">9,602</td>
+                            <td class="px-6 py-4 whitespace-nowrap latency-low">2.23s</td>
+                            <td class="px-6 py-4 whitespace-nowrap">qwen2.5-72b-instruct-int4-local</td>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="badge badge-success">开发中</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="font-medium">ClaudeCode+GLM</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap call-count">4,738</td>
+                            <td class="px-6 py-4 whitespace-nowrap latency-high">7.50s</td>
+                            <td class="px-6 py-4 whitespace-nowrap">glm46-fp8-local</td>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="badge badge-warning">评估中</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="font-medium">巡检机器人</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap call-count">3,957</td>
+                            <td class="px-6 py-4 whitespace-nowrap latency-low">9.18s</td>
+                            <td class="px-6 py-4 whitespace-nowrap">glm46-fp8-local</td>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="font-medium">中金所头条</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap call-count">3,277</td>
+                            <td class="px-6 py-4 whitespace-nowrap latency-low">1.62s</td>
+                            <td class="px-6 py-4 whitespace-nowrap">qwen2.5-72b-instruct-int4-local</td>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="font-medium">IDE-小金灵码</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap call-count">2,265</td>
+                            <td class="px-6 py-4 whitespace-nowrap latency-high">21.55s</td>
+                            <td class="px-6 py-4 whitespace-nowrap">qwen3-next-80b-local / qwen2.5-72b-instruct-int4-local</td>
+                            <td class="px-6 py-4 whitespace-nowrap"><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-8">
+                <h3 class="text-xl font-semibold mb-4">关键洞察</h3>
+                <ul class="list-disc list-inside space-y-2 mb-6">
+                    <li><span class="call-count">舆情通算法服务</span>以9,602次调用位居榜首，但平均延迟仅为2.23秒，表现优异，是系统效率标杆。</li>
+                    <li><span class="call-count">IDE-小金灵码</span>总调用量达2,265次，但其平均延迟高达21.55秒（由两个模型组合贡献），是系统中最严重的性能瓶颈，严重影响用户体验。</li>
+                    <li><span class="call-count">ClaudeCode+GLM</span>和<span class="call-count">巡检机器人</span>均使用<span class="model-para">glm46-fp8-local</span>模型，但延迟差异显著（7.50s vs 9.18s），暗示部署环境或资源分配存在不均衡。</li>
+                    <li>Top5应用中，<span class="call-count">中金所头条</span>延迟最低（1.62s），其模型为<span class="model-para">qwen2.5-72b-instruct-int4-local</span>，表明该模型在特定场景下具有极佳性能。</li>
+                </ul>
+                <div class="highlight">
+                    <strong>结论：</strong>调用量与延迟无直接正相关。高调用量应用（如舆情通）可保持低延迟，而中调用量应用（如IDE-小金灵码）因模型选择或资源不足导致高延迟，应优先优化。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="models" class="tab-content">
+        <div class="card">
+            <h2 class="text-2xl font-bold section-header">主要使用的模型参数量与性能对比</h2>
+            <p class="mb-6">本节分析系统中使用最频繁的5个大语言模型的参数规模、资源限制与实际调用表现，数据来源于<code>ods_telemetry.cai_model_info</code>表与调用日志的关联分析。</p>
+            
+            <div class="table-container">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">模型名称</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">参数量 (B)</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">TPM限制</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">QPM限制</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">状态</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">主要调用应用</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="font-medium">glm46-fp8-local</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap model-para">300</td>
+                            <td class="px-6 py-4 whitespace-nowrap">1,000,000</td>
+                            <td class="px-6 py-4 whitespace-nowrap">100,000</td>
+                            <td class="px-6 py-4 whitespace-nowrap status-online">online</td>
+                            <td class="px-6 py-4 whitespace-nowrap">ClaudeCode+GLM, 巡检机器人, 合规问答, 开发助手</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="font-medium">qwen3-next-80b-local</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap model-para">80</td>
+                            <td class="px-6 py-4 whitespace-nowrap">1,000,000</td>
+                            <td class="px-6 py-4 whitespace-nowrap">100,000</td>
+                            <td class="px-6 py-4 whitespace-nowrap status-online">online</td>
+                            <td class="px-6 py-4 whitespace-nowrap">IDE-小金灵码, AIOps智能运维平台, 智能代码审查, 单测智能体+OneDot问答</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="font-medium">qwen2.5-72b-instruct-int4-local</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap model-para">72</td>
+                            <td class="px-6 py-4 whitespace-nowrap">1,000,000</td>
+                            <td class="px-6 py-4 whitespace-nowrap">100,000</td>
+                            <td class="px-6 py-4 whitespace-nowrap status-online">online</td>
+                            <td class="px-6 py-4 whitespace-nowrap">舆情通算法服务, 中金所头条, 小金通-小金灵码, 小金同学</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="font-medium">qwen3-next-80b-thinking-local</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap model-para">80</td>
+                            <td class="px-6 py-4 whitespace-nowrap">1,000,000</td>
+                            <td class="px-6 py-4 whitespace-nowrap">100,000</td>
+                            <td class="px-6 py-4 whitespace-nowrap status-online">online</td>
+                            <td class="px-6 py-4 whitespace-nowrap">小金同学, 自动化测试用例智能生成</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="font-medium">qwen3-32b-local</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap model-para">32</td>
+                            <td class="px-6 py-4 whitespace-nowrap">1,000,000</td>
+                            <td class="px-6 py-4 whitespace-nowrap">100,000</td>
+                            <td class="px-6 py-4 whitespace-nowrap status-online">online</td>
+                            <td class="px-6 py-4 whitespace-nowrap">办公知识库管理平台-测试</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="mt-8">
+                <h3 class="text-xl font-semibold mb-4">关键洞察</h3>
+                <ul class="list-disc list-inside space-y-2 mb-6">
+                    <li>所有模型均配置相同的TPM（每分钟令牌数）和QPM（每分钟请求数）上限（1M/100K），但实际负载差异巨大。例如，<span class="model-para">glm46-fp8-local</span>（300B）被4个应用调用，而<span class="model-para">qwen3-32b-local</span>（32B）仅被1个应用使用。</li>
+                    <li>在相同QPM限制下，<span class="model-para">glm46-fp8-local</span>（300B）的平均延迟（7.50s）显著高于<span class="model-para">qwen2.5-72b-instruct-int4-local</span>（72B，平均延迟1.93s），表明大模型在高并发下资源消耗剧增，响应变慢。</li>
+                    <li>模型<span class="model-para">qwen3-next-80b-local</span>（80B）被用于<span class="call-count">IDE-小金灵码</span>（平均延迟29.97s）和<span class="call-count">AIOps智能运维平台</span>（平均延迟6.65s），同一模型在不同应用中表现悬殊，说明应用层逻辑或请求复杂度是延迟主因。</li>
+                    <li>模型<span class="model-para">qwen3-next-80b-thinking-local</span>（80B）专用于高复杂度任务（如小金同学的思考模式），其调用延迟普遍较高（23.08s），符合预期，但需监控其资源占用。</li>
+                </ul>
+                <div class="highlight">
+                    <strong>结论：</strong>模型性能不仅取决于参数量，更取决于其部署环境、请求复杂度和调度策略。300B模型虽强大，但资源消耗过高，应避免用于高频、低复杂度请求。80B模型是平衡性能与成本的黄金选择。
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="recommendations" class="tab-content">
+        <div class="card">
+            <h2 class="text-2xl font-bold section-header">优化建议与实施路径</h2>
+            <p class="mb-6">基于上述分析，本节提出系统性优化建议，旨在提升AI服务整体性能、降低运维成本并保障关键业务稳定。</p>
+
+            <div class="accordion">
+                <button class="accordion-button" onclick="toggleAccordion(this)">
+                    <i class="fas fa-lightbulb mr-2"></i> 1. 针对高延迟应用（IDE-小金灵码、小金同学）的模型分级调度建议
+                </button>
+                <div class="accordion-content">
+                    <p class="mb-4">当前，<span class="call-count">IDE-小金灵码</span>和<span class="call-count">小金同学</span>因使用高参数量模型（80B/300B）处理大量简单请求，导致系统延迟飙升。</p>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><strong>分级策略：</strong>建立请求复杂度评估机制。对于简单问答、代码补全等低复杂度请求，强制路由至<span class="model-para">qwen2.5-72b-instruct-int4-local</span>（72B）或<span class="model-para">qwen3-32b-local</span>（32B）模型。</li>
+                        <li><strong>智能路由：</strong>为<span class="call-count">IDE-小金灵码</span>开发“轻量模式”开关，用户可选择“快速响应”（使用72B模型）或“深度分析”（使用80B模型），降低默认延迟。</li>
+                        <li><strong>模型替换：</strong>将<span class="call-count">小金同学</span>中非思考模式的调用（如常规问答）从<span class="model-para">qwen3-next-80b-thinking-local</span>迁移至<span class="model-para">qwen2.5-72b-instruct-int4-local</span>，预计可降低其平均延迟50%以上。</li>
+                    </ul>
+                    <div class="highlight">
+                        <strong>预期收益：</strong>预计可将<span class="call-count">IDE-小金灵码</span>平均延迟从21.55s降至8s以下，将<span class="call-count">小金同学</span>平均延迟从22.28s降至10s以下，显著提升用户体验。
+                    </div>
+                </div>
+
+                <button class="accordion-button" onclick="toggleAccordion(this)">
+                    <i class="fas fa-balance-scale mr-2"></i> 2. 对glm46-fp8-local模型的负载均衡优化建议
+                </button>
+                <div class="accordion-content">
+                    <p class="mb-4"><span class="model-para">glm46-fp8-local</span>（300B）是系统中负载最重的模型，被<span class="call-count">ClaudeCode+GLM</span>、<span class="call-count">巡检机器人</span>、<span class="call-count">合规问答</span>和<span class="call-count">开发助手</span>四个应用共享，导致其平均延迟高达7.50s。</p>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><strong>资源隔离：</strong>为<span class="call-count">ClaudeCode+GLM</span>和<span class="call-count">巡检机器人</span>这两个高调用量应用，分配独立的<span class="model-para">glm46-fp8-local</span>模型实例，避免相互争抢资源。</li>
+                        <li><strong>动态扩缩容：</strong>部署模型实例的自动扩缩容机制。当检测到<span class="model-para">glm46-fp8-local</span>的QPM利用率超过70%时，自动启动备用实例；当利用率低于30%时，自动关闭冗余实例。</li>
+                        <li><strong>缓存机制：</strong>对<span class="call-count">合规问答</span>和<span class="call-count">开发助手</span>的高频重复问题（如API文档查询）启用结果缓存，减少对模型的直接调用。</li>
+                    </ul>
+                    <div class="highlight">
+                        <strong>预期收益：</strong>预计可将<span class="model-para">glm46-fp8-local</span>的平均延迟从7.50s降至4s以下，提升其整体吞吐量30%以上。
+                    </div>
+                </div>
+
+                <button class="accordion-button" onclick="toggleAccordion(this)">
+                    <i class="fas fa-server mr-2"></i> 3. 资源扩展与缓存机制建议
+                </button>
+                <div class="accordion-content">
+                    <p class="mb-4">系统整体资源利用率不均衡，部分模型（如32B）资源闲置，而大模型（如300B）资源紧张。</p>
+                    <ul class="list-disc list-inside space-y-2 mb-4">
+                        <li><strong>GPU资源扩展：</strong>优先为<span class="model-para">glm46-fp8-local</span>和<span class="model-para">qwen3-next-80b-local</span>模型增加GPU节点，确保其有足够的计算资源应对峰值负载。</li>
+                        <li><strong>Redis缓存部署：</strong>在API网关层部署Redis缓存，缓存最近1小时内的高频请求-响应对（如“如何配置API密钥？”、“IDE-小金灵码支持哪些语言？”）。预计可减少20%-30%的模型调用。</li>
+                        <li><strong>异步处理：</strong>对于<span class="call-count">舆情通算法服务</span>等非实时性要求高的应用，引入异步队列（如RabbitMQ），将请求放入队列，由后台任务处理，避免阻塞前端响应。</li>
+                        <li><strong>监控告警：</strong>建立实时监控看板，对延迟超过10s的请求、模型QPM利用率超过85%、GPU显存占用率超过90%等指标设置告警，实现主动运维。</li>
+                    </ul>
+                    <div class="highlight">
+                        <strong>预期收益：</strong>通过缓存与异步处理，预计可降低系统整体模型调用量25%，减少GPU资源采购成本，并提升系统整体稳定性。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="references" class="tab-content">
+        <div class="card">
+            <h2 class="text-2xl font-bold section-header">参考文献</h2>
+            <ol class="list-decimal list-inside space-y-3 mt-4">
+                <li><cite><a href="#" target="_blank" rel="noopener noreferrer">AI服务调用性能优化建议报告（2025年12月）</a></cite></li>
+            </ol>
+            <p class="mt-8 text-gray-600">本报告所有数据均来源于内部系统<code>ods_telemetry.cai_api_use</code>、<code>ods_telemetry.cai_app_info</code>和<code>ods_telemetry.cai_model_info</code>表的查询结果，未引用外部公开文献。</p>
+        </div>
+    </div>
+
+    <footer>
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function toggleAccordion(button) {
+            const content = button.nextElementSibling;
+            const icon = button.querySelector('i');
+            if (content.style.display === 'block') {
+                content.style.display = 'none';
+                icon.classList.remove('fa-minus');
+                icon.classList.add('fa-lightbulb');
+            } else {
+                content.style.display = 'block';
+                icon.classList.remove('fa-lightbulb');
+                icon.classList.add('fa-minus');
+            }
+        }
+
+        // 初始化时展开第一个accordion
+        document.addEventListener('DOMContentLoaded', function() {
+            const firstAccordion = document.querySelector('.accordion-button');
+            if (firstAccordion) {
+                toggleAccordion(firstAccordion);
+            }
+        });
+    </script>
+</body>
+</html>

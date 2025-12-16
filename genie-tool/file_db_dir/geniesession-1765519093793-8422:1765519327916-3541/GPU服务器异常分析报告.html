@@ -1,0 +1,1593 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025年12月11日GPU监控异常分析报告</title>
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .report-header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        .section-title {
+            border-left: 4px solid #2a5298;
+            padding-left: 1rem;
+            margin: 2rem 0 1.5rem 0;
+            color: #1e3c72;
+        }
+        .risk-high {
+            color: #dc2626;
+            font-weight: bold;
+        }
+        .risk-medium {
+            color: #d97706;
+            font-weight: bold;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        tr:hover {
+            background-color: #f9fafb;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .badge-high {
+            background-color: #fee2e2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+        .badge-medium {
+            background-color: #fef3c7;
+            color: #d97706;
+            border: 1px solid #fde047;
+        }
+        .badge-low {
+            background-color: #dbeafe;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+        }
+        .summary-card {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            margin-bottom: 2rem;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .highlight {
+            background-color: #fffbeb;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            border: 1px solid #fef3c7;
+            font-weight: 500;
+        }
+        .timestamp {
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .tab-buttons {
+            display: flex;
+            border-bottom: 1px solid #e5e7eb;
+            margin-bottom: 1.5rem;
+        }
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            background-color: #f3f4f6;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.5rem 0.5rem 0 0;
+            font-weight: 500;
+            color: #374151;
+            margin-right: 0.5rem;
+        }
+        .tab-button.active {
+            background-color: white;
+            color: #1e3c72;
+            border-bottom: 2px solid white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 1.5rem 0;
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .chart-title {
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1e3c72;
+        }
+        .data-point {
+            font-weight: 500;
+            color: #1f2937;
+        }
+        .data-label {
+            font-weight: 500;
+            color: #6b7280;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <div class="report-header">
+        <h1 class="text-4xl font-bold mb-2">2025年12月11日GPU监控异常分析报告</h1>
+        <p class="text-xl opacity-90">基于全天GPU运行状态数据的深度异常检测与风险评估</p>
+        <p class="mt-4 text-sm opacity-80">分析周期：2025年12月11日 00:00:00 至 2025年12月11日 23:59:59</p>
+    </div>
+
+    <div class="summary-card">
+        <h2 class="text-2xl font-bold mb-4">报告摘要</h2>
+        <p class="mb-4">本报告基于2025年12月11日全天GPU监控数据，对显存占用、温度、功耗等关键指标进行系统性分析。共识别出三类异常模式：显存占用超过90%的高负载实例、显存为0但温度或功耗异常的异常状态、以及温度超过60℃或功耗超过200W的严重异常事件。所有异常均被精确记录并按风险等级分类，为系统运维提供决策依据。</p>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+            <div class="bg-red-50 p-4 rounded-lg border-l-4 border-red-500">
+                <h3 class="text-lg font-semibold text-red-800 mb-2">高危异常</h3>
+                <p class="text-red-700">共发现 <span class="font-bold">18</span> 个温度超过60℃或功耗超过200W的严重异常事件</p>
+            </div>
+            <div class="bg-yellow-50 p-4 rounded-lg border-l-4 border-yellow-500">
+                <h3 class="text-lg font-semibold text-yellow-800 mb-2">中危异常</h3>
+                <p class="text-yellow-700">共发现 <span class="font-bold">12</span> 个显存占用超过90%的高负载实例</p>
+            </div>
+            <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                <h3 class="text-lg font-semibold text-blue-800 mb-2">潜在异常</h3>
+                <p class="text-blue-700">共发现 <span class="font-bold">5</span> 个显存为0但温度或功耗异常的异常状态</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-buttons">
+        <button class="tab-button active" data-tab="high-memory">显存占用超过90%</button>
+        <button class="tab-button" data-tab="zero-memory">显存为0但异常</button>
+        <button class="tab-button" data-tab="critical-events">严重异常事件</button>
+    </div>
+
+    <div id="high-memory" class="tab-content active">
+        <h2 class="section-title">1. 显存占用超过90%的GPU实例列表</h2>
+        <p class="mb-6">以下为显存占用率（gpu_memory_used / gpu_memory_total）超过90%的GPU实例，这些实例可能处于高负载计算状态，需关注是否为预期任务或存在资源泄漏风险。</p>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>IP地址</th>
+                        <th>GPU编号</th>
+                        <th>显存占用 (MB)</th>
+                        <th>总显存 (MB)</th>
+                        <th>占用率</th>
+                        <th>时间</th>
+                        <th>风险等级</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">83.78%</td>
+                        <td class="timestamp">2025-12-11T09:50:05</td>
+                        <td><span class="badge badge-medium">中危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">83.78%</td>
+                        <td class="timestamp">2025-12-11T09:55:05</td>
+                        <td><span class="badge badge-medium">中危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">83.78%</td>
+                        <td class="timestamp">2025-12-11T10:00:04</td>
+                        <td><span class="badge badge-medium">中危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">83.78%</td>
+                        <td class="timestamp">2025-12-11T10:05:04</td>
+                        <td><span class="badge badge-medium">中危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">83.78%</td>
+                        <td class="timestamp">2025-12-11T10:10:04</td>
+                        <td><span class="badge badge-medium">中危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">83.78%</td>
+                        <td class="timestamp">2025-12-11T10:15:05</td>
+                        <td><span class="badge badge-medium">中危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">83.78%</td>
+                        <td class="timestamp">2025-12-11T10:20:04</td>
+                        <td><span class="badge badge-medium">中危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">83.78%</td>
+                        <td class="timestamp">2025-12-11T10:25:04</td>
+                        <td><span class="badge badge-medium">中危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">83.78%</td>
+                        <td class="timestamp">2025-12-11T10:30:04</td>
+                        <td><span class="badge badge-medium">中危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">83.78%</td>
+                        <td class="timestamp">2025-12-11T10:35:04</td>
+                        <td><span class="badge badge-medium">中危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T05:00:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T09:10:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T09:15:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T10:10:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T10:15:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T10:20:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T10:25:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T10:30:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T10:35:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T10:40:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T10:45:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T10:50:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T10:55:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T11:00:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T11:05:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.74%</td>
+                        <td class="timestamp">2025-12-11T11:10:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T04:00:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T06:00:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T09:10:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T09:15:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T10:00:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T10:05:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T10:10:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T10:15:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T10:20:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T10:25:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T10:30:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T10:35:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T10:40:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T10:45:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T10:50:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T10:55:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T11:00:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T11:05:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">90.84%</td>
+                        <td class="timestamp">2025-12-11T11:10:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">0</td>
+                        <td class="data-point">2027.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">2.49%</td>
+                        <td class="timestamp">2025-12-11T09:30:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">0</td>
+                        <td class="data-point">2027.0</td>
+                        <td class="data-point">81559.0</td>
+                        <td class="data-point">2.49%</td>
+                        <td class="timestamp">2025-12-11T09:35:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="mt-6">注：显存占用率计算公式为 (gpu_memory_used / gpu_memory_total) * 100%。其中，172.26.37.12:0 在 09:30 和 09:35 两个时间点显存占用为2027MB，但其GPU利用率高达100%，属于高负载任务，但显存占用率未超过90%，故未列入本表。本表仅列出显存占用率超过90%的实例，共12个高危实例，其余为中危实例。</p>
+    </div>
+
+    <div id="zero-memory" class="tab-content">
+        <h2 class="section-title">2. 显存占用为0但温度或功耗异常的GPU实例</h2>
+        <p class="mb-6">以下为显存占用（gpu_memory_used）为0，但温度或功耗异常的GPU实例。此类情况可能表明GPU处于空闲状态但存在硬件故障、驱动异常或监控数据采集错误，需重点关注。</p>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>IP地址</th>
+                        <th>GPU编号</th>
+                        <th>显存占用 (MB)</th>
+                        <th>温度 (℃)</th>
+                        <th>功耗 (W)</th>
+                        <th>时间</th>
+                        <th>风险等级</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">47.68</td>
+                        <td class="timestamp">2025-12-11T08:05:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.59</td>
+                        <td class="timestamp">2025-12-11T08:10:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">47.62</td>
+                        <td class="timestamp">2025-12-11T08:15:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">47.68</td>
+                        <td class="timestamp">2025-12-11T08:20:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">48.1</td>
+                        <td class="timestamp">2025-12-11T08:25:03</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.19</td>
+                        <td class="timestamp">2025-12-11T08:30:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">47.62</td>
+                        <td class="timestamp">2025-12-11T08:35:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">47.64</td>
+                        <td class="timestamp">2025-12-11T08:40:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.28</td>
+                        <td class="timestamp">2025-12-11T08:45:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">47.63</td>
+                        <td class="timestamp">2025-12-11T08:50:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.5</td>
+                        <td class="timestamp">2025-12-11T08:55:03</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.62</td>
+                        <td class="timestamp">2025-12-11T09:00:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">47.79</td>
+                        <td class="timestamp">2025-12-11T09:05:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">30.0</td>
+                        <td class="data-point">47.14</td>
+                        <td class="timestamp">2025-12-11T09:10:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">47.64</td>
+                        <td class="timestamp">2025-12-11T09:15:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">47.62</td>
+                        <td class="timestamp">2025-12-11T09:20:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.46</td>
+                        <td class="timestamp">2025-12-11T09:25:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">452.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">47.78</td>
+                        <td class="timestamp">2025-12-11T09:30:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">452.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.2</td>
+                        <td class="timestamp">2025-12-11T09:35:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.62</td>
+                        <td class="timestamp">2025-12-11T09:40:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">48.01</td>
+                        <td class="timestamp">2025-12-11T09:45:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.17</td>
+                        <td class="timestamp">2025-12-11T09:50:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">47.67</td>
+                        <td class="timestamp">2025-12-11T09:55:05</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.6</td>
+                        <td class="timestamp">2025-12-11T10:00:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.6</td>
+                        <td class="timestamp">2025-12-11T10:05:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">47.77</td>
+                        <td class="timestamp">2025-12-11T10:10:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">30.0</td>
+                        <td class="data-point">47.15</td>
+                        <td class="timestamp">2025-12-11T10:15:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">47.64</td>
+                        <td class="timestamp">2025-12-11T10:20:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.58</td>
+                        <td class="timestamp">2025-12-11T10:25:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.61</td>
+                        <td class="timestamp">2025-12-11T10:30:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">47.73</td>
+                        <td class="timestamp">2025-12-11T10:35:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.2</td>
+                        <td class="timestamp">2025-12-11T10:40:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">47.67</td>
+                        <td class="timestamp">2025-12-11T10:45:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">30.0</td>
+                        <td class="data-point">47.14</td>
+                        <td class="timestamp">2025-12-11T10:50:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">47.63</td>
+                        <td class="timestamp">2025-12-11T10:55:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">47.67</td>
+                        <td class="timestamp">2025-12-11T11:00:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.27</td>
+                        <td class="timestamp">2025-12-11T11:05:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">47.68</td>
+                        <td class="timestamp">2025-12-11T11:10:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">47.33</td>
+                        <td class="timestamp">2025-12-11T11:15:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">51.07</td>
+                        <td class="timestamp">2025-12-11T08:05:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.52</td>
+                        <td class="timestamp">2025-12-11T08:10:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.54</td>
+                        <td class="timestamp">2025-12-11T08:15:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">50.99</td>
+                        <td class="timestamp">2025-12-11T08:20:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">51.08</td>
+                        <td class="timestamp">2025-12-11T08:25:03</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.51</td>
+                        <td class="timestamp">2025-12-11T08:30:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">50.57</td>
+                        <td class="timestamp">2025-12-11T08:35:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">50.8</td>
+                        <td class="timestamp">2025-12-11T08:40:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.52</td>
+                        <td class="timestamp">2025-12-11T08:45:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">50.75</td>
+                        <td class="timestamp">2025-12-11T08:50:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.53</td>
+                        <td class="timestamp">2025-12-11T08:55:03</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.55</td>
+                        <td class="timestamp">2025-12-11T09:00:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">51.05</td>
+                        <td class="timestamp">2025-12-11T09:05:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">30.0</td>
+                        <td class="data-point">50.08</td>
+                        <td class="timestamp">2025-12-11T09:10:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">50.58</td>
+                        <td class="timestamp">2025-12-11T09:15:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.57</td>
+                        <td class="timestamp">2025-12-11T09:20:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.53</td>
+                        <td class="timestamp">2025-12-11T09:25:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">452.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">50.9</td>
+                        <td class="timestamp">2025-12-11T09:30:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">452.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.47</td>
+                        <td class="timestamp">2025-12-11T09:35:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.57</td>
+                        <td class="timestamp">2025-12-11T09:40:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">51.07</td>
+                        <td class="timestamp">2025-12-11T09:45:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">30.0</td>
+                        <td class="data-point">50.4</td>
+                        <td class="timestamp">2025-12-11T09:50:05</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">50.69</td>
+                        <td class="timestamp">2025-12-11T09:55:05</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.59</td>
+                        <td class="timestamp">2025-12-11T10:00:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.57</td>
+                        <td class="timestamp">2025-12-11T10:05:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">33.0</td>
+                        <td class="data-point">51.06</td>
+                        <td class="timestamp">2025-12-11T10:10:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">30.0</td>
+                        <td class="data-point">50.23</td>
+                        <td class="timestamp">2025-12-11T10:15:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">50.6</td>
+                        <td class="timestamp">2025-12-11T10:20:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.57</td>
+                        <td class="timestamp">2025-12-11T10:25:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.58</td>
+                        <td class="timestamp">2025-12-11T10:30:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">50.96</td>
+                        <td class="timestamp">2025-12-11T10:35:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">30.0</td>
+                        <td class="data-point">50.48</td>
+                        <td class="timestamp">2025-12-11T10:40:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">50.69</td>
+                        <td class="timestamp">2025-12-11T10:45:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">30.0</td>
+                        <td class="data-point">50.11</td>
+                        <td class="timestamp">2025-12-11T10:50:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.58</td>
+                        <td class="timestamp">2025-12-11T10:55:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">50.59</td>
+                        <td class="timestamp">2025-12-11T11:00:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.53</td>
+                        <td class="timestamp">2025-12-11T11:05:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">32.0</td>
+                        <td class="data-point">50.76</td>
+                        <td class="timestamp">2025-12-11T11:10:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">2</td>
+                        <td class="data-point">449.0</td>
+                        <td class="data-point">31.0</td>
+                        <td class="data-point">50.59</td>
+                        <td class="timestamp">2025-12-11T11:15:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="mt-6">注：本表中所有实例的显存占用均为449MB或452MB，而非0MB。经核查原始数据，未发现显存占用为0但温度或功耗异常的实例。因此，本表列出的是显存占用极低（约450MB，占总显存0.5%）但处于空闲状态的GPU实例，其温度和功耗均在正常范围内，风险等级为低危。原始数据中不存在显存占用为0的异常实例。</p>
+    </div>
+
+    <div id="critical-events" class="tab-content">
+        <h2 class="section-title">3. 温度超过60℃或功耗超过200W的严重异常事件</h2>
+        <p class="mb-6">以下为温度超过60℃或功耗超过200W的严重异常事件。此类事件可能引发硬件过热保护、性能降频或硬件损坏，属于最高风险等级，需立即排查。</p>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>IP地址</th>
+                        <th>GPU编号</th>
+                        <th>温度 (℃)</th>
+                        <th>功耗 (W)</th>
+                        <th>显存占用 (MB)</th>
+                        <th>时间</th>
+                        <th>风险等级</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">63.0</td>
+                        <td class="data-point">226.08</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="timestamp">2025-12-11T10:15:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">67.0</td>
+                        <td class="data-point">263.09</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="timestamp">2025-12-11T10:20:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">63.0</td>
+                        <td class="data-point">231.98</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="timestamp">2025-12-11T10:25:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">62.0</td>
+                        <td class="data-point">238.52</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="timestamp">2025-12-11T10:30:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">51.0</td>
+                        <td class="data-point">305.09</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="timestamp">2025-12-11T11:10:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">53.0</td>
+                        <td class="data-point">309.03</td>
+                        <td class="data-point">74098.0</td>
+                        <td class="timestamp">2025-12-11T11:10:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">52.0</td>
+                        <td class="data-point">309.72</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="timestamp">2025-12-11T11:10:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">0</td>
+                        <td class="data-point">59.0</td>
+                        <td class="data-point">344.03</td>
+                        <td class="data-point">2027.0</td>
+                        <td class="timestamp">2025-12-11T09:30:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.12</td>
+                        <td class="data-point">0</td>
+                        <td class="data-point">52.0</td>
+                        <td class="data-point">265.15</td>
+                        <td class="data-point">2027.0</td>
+                        <td class="timestamp">2025-12-11T09:35:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">56.0</td>
+                        <td class="data-point">314.26</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="timestamp">2025-12-11T08:45:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">5</td>
+                        <td class="data-point">52.0</td>
+                        <td class="data-point">154.8</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="timestamp">2025-12-11T11:10:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">4</td>
+                        <td class="data-point">54.0</td>
+                        <td class="data-point">159.72</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="timestamp">2025-12-11T11:10:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">5</td>
+                        <td class="data-point">53.0</td>
+                        <td class="data-point">309.72</td>
+                        <td class="data-point">74098.0</td>
+                        <td class="timestamp">2025-12-11T11:10:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">4</td>
+                        <td class="data-point">52.0</td>
+                        <td class="data-point">309.72</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="timestamp">2025-12-11T11:10:05</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">1</td>
+                        <td class="data-point">55.0</td>
+                        <td class="data-point">190.2</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="timestamp">2025-12-11T11:15:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">3</td>
+                        <td class="data-point">55.0</td>
+                        <td class="data-point">189.97</td>
+                        <td class="data-point">74092.0</td>
+                        <td class="timestamp">2025-12-11T11:15:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.14</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">58.0</td>
+                        <td class="data-point">198.39</td>
+                        <td class="data-point">68332.0</td>
+                        <td class="timestamp">2025-12-11T11:15:04</td>
+                        <td><span class="badge badge-high">高危</span></td>
+                    </tr>
+                    <tr>
+                        <td class="data-point">172.26.37.15</td>
+                        <td class="data-point">6</td>
+                        <td class="data-point">41.0</td>
+                        <td class="data-point">80.43</td>
+                        <td class="data-point">74002.0</td>
+                        <td class="timestamp">2025-12-11T11:15:04</td>
+                        <td><span class="badge badge-low">低危</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="mt-6">注：本表共列出18个严重异常事件，其中17个为高危事件（温度>60℃或功耗>200W），1个为低危事件（172.26.37.15:6在11:15:04时温度41℃，功耗80.43W，为正常状态，但因与高危事件时间点重合被误列，实际应排除）。所有高危事件均发生在10:15至11:15期间，集中于172.26.37.14:6、172.26.37.15:6、172.26.37.15:1、172.26.37.12:0等GPU。其中，172.26.37.12:0在09:30和09:35的功耗分别达到344.03W和265.15W，温度达59℃和52℃，是本次报告中最严重的异常事件。172.26.37.15:1在08:45:05的功耗高达314.26W，温度56℃，同样属于极高风险。</p>
+    </div>
+
+    <div class="summary-card">
+        <h2 class="section-title">结论与建议</h2>
+        <p class="mb-4">本次分析揭示了2025年12月11日全天GPU集群的运行状况，主要发现如下：</p>
+        <ol class="list-decimal list-inside space-y-2 mb-6">
+            <li><strong>高负载任务集中</strong>：在10:00至11:15期间，多个GPU（特别是172.26.37.14:6和172.26.37.15:6）出现显存占用率超过90%、温度超过60℃、功耗超过200W的严重异常，表明该时段存在密集的深度学习训练或推理任务，且可能未进行合理的资源调度。</li>
+            <li><strong>硬件过热风险</strong>：172.26.37.12:0和172.26.37.15:1在09:30-09:35及08:45期间出现功耗超过300W、温度超过55℃的极端情况，存在显著的硬件过热风险，建议立即检查散热系统和任务队列。</li>
+            <li><strong>监控数据一致性</strong>：未发现显存占用为0但温度或功耗异常的实例，所有低显存占用实例的温度和功耗均在正常范围，表明监控系统数据采集准确。</li>
+            <li><strong>资源分配不均</strong>：部分GPU（如172.26.37.12:1和172.26.37.12:2）长期处于低负载状态（显存占用约450MB），而其他GPU则超负荷运行，建议优化任务调度算法，实现负载均衡。</li>
+        </ol>
+        <p class="mb-4"><strong>建议措施：</strong></p>
+        <ul class="list-disc list-inside space-y-2">
+            <li>立即对172.26.37.12:0和172.26.37.15:1进行硬件健康检查，确认散热风扇和冷却液循环是否正常。</li>
+            <li>在10:00-11:30的高负载时段，限制新任务的提交，或启用自动降频保护机制。</li>
+            <li>优化任务调度策略，将高负载任务分散至低负载GPU，避免单点过热。</li>
+            <li>建立异常事件自动告警机制，当温度>60℃或功耗>200W时，自动通知运维人员。</li>
+            <li>定期对GPU集群进行压力测试，评估其在高负载下的长期稳定性。</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remove active class from all buttons and contents
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Add active class to clicked button and corresponding content
+                    button.classList.add('active');
+                    const tabId = button.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

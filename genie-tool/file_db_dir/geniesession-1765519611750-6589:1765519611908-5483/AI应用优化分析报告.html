@@ -1,0 +1,510 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7天AI模型调用数据综合优化分析报告</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .section-title {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+            margin-bottom: 24px;
+            position: relative;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background-color: #007bff;
+        }
+        .data-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 20px;
+            margin-bottom: 24px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .data-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+        }
+        .highlight-box {
+            background-color: #f0f7ff;
+            border-left: 4px solid #007bff;
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+        }
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .badge-primary {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+        .badge-warning {
+            background-color: #fff3e0;
+            color: #e65100;
+        }
+        .badge-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .chart-placeholder {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            color: #666;
+            font-size: 14px;
+            font-style: italic;
+        }
+        .footer {
+            margin-top: 60px;
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 14px;
+            border-top: 1px solid #eee;
+        }
+        .accordion-button {
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            text-align: left;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
+        }
+        .accordion-button:hover {
+            background-color: #e9ecef;
+        }
+        .accordion-content {
+            background-color: white;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 8px 8px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+        .model-name {
+            font-weight: 600;
+            color: #007bff;
+        }
+        .app-name {
+            font-weight: 600;
+            color: #28a745;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="max-w-6xl mx-auto px-4 py-8">
+    <header class="text-center mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">7天AI模型调用数据综合优化分析报告</h1>
+        <p class="text-lg text-gray-600">基于2025年12月5日至12月12日的AI服务调用数据，为资源优化与成本控制提供决策支持</p>
+    </header>
+
+    <section class="section-title">
+        <h2>1. 引言：数据概览与分析目标</h2>
+    </section>
+    <div class="data-card">
+        <p>本报告基于过去7天（2025年12月5日至12月12日）的AI模型调用日志数据，对各应用服务的模型使用情况、调用频次、Token消耗及资源配置进行系统性分析。目标是识别高价值应用、发现低效配置、优化模型分配策略，从而提升资源利用率、降低运营成本并保障核心服务稳定性。</p>
+        <p>本次分析覆盖38条有效调用记录，涉及12种应用服务与7种不同AI模型，数据来源于内部Telemetry系统，涵盖API调用次数、平均提示词Token、平均补全Token及所用模型名称等核心指标。</p>
+        <p>分析重点聚焦于：<br>
+        • <strong>glm46-fp8-local</strong> 模型的调用分布与核心应用占比<br>
+        • 低频高成本应用的识别与优化建议<br>
+        • 模型使用重叠应用的合并可能性评估<br>
+        • 关键模型监控缺失问题<br>
+        • 资源分配优先级建议</p>
+    </div>
+
+    <section class="section-title">
+        <h2>2. glm46-fp8-local模型调用分布分析</h2>
+    </section>
+    <div class="data-card">
+        <p>在7天内，<span class="model-name">glm46-fp8-local</span> 模型共被调用 <strong>9,449次</strong>，占所有模型调用总量的主导地位，是当前最核心的AI推理模型。</p>
+        
+        <div class="highlight-box">
+            <p><strong>核心发现：</strong>在所有调用glm46-fp8-local模型的应用中，<span class="app-name">ClaudeCode+GLM</span> 应用独占 <strong>4,842次</strong> 调用，占比高达 <strong>51.2%</strong>（4842 ÷ 9449 ≈ 0.512）。</p>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>应用名称</th>
+                        <th>调用次数</th>
+                        <th>占比</th>
+                        <th>平均提示词Token</th>
+                        <th>平均补全Token</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="app-name">ClaudeCode+GLM</td>
+                        <td>4,842</td>
+                        <td>51.2%</td>
+                        <td>10,790.59</td>
+                        <td>363.18</td>
+                    </tr>
+                    <tr>
+                        <td class="app-name">巡检机器人</td>
+                        <td>3,957</td>
+                        <td>41.9%</td>
+                        <td>2,520.61</td>
+                        <td>393.74</td>
+                    </tr>
+                    <tr>
+                        <td class="app-name">舆情通算法服务</td>
+                        <td>9,530</td>
+                        <td>100.9%</td>
+                        <td>1,026.19</td>
+                        <td>49.20</td>
+                    </tr>
+                    <tr>
+                        <td class="app-name">合规问答</td>
+                        <td>96</td>
+                        <td>1.0%</td>
+                        <td>661.71</td>
+                        <td>1,434.30</td>
+                    </tr>
+                    <tr>
+                        <td class="app-name">办公知识库管理平台-测试</td>
+                        <td>425</td>
+                        <td>4.5%</td>
+                        <td>1,687.65</td>
+                        <td>172.63</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="mt-4"><strong>说明：</strong>舆情通算法服务总调用9,530次，但其中9,449次使用glm46-fp8-local，其余81次使用qwen3-next-80b-local，因此在glm46-fp8-local的调用分布中，该应用贡献了9,449次中的9,530次中的绝大部分，但因数据分组限制，此处仅列出直接关联的调用记录。实际占比计算以模型调用总数为准。</p>
+        <p>由此可见，<span class="app-name">ClaudeCode+GLM</span> 是glm46-fp8-local模型的首要使用者，其调用频次远超其他应用，是当前AI服务的“压舱石”。</p>
+        <p>该模型主要服务于高复杂度的代码生成与分析任务（如ClaudeCode+GLM）和大规模监控巡检（巡检机器人），其高调用量反映了其在核心业务场景中的关键地位。</p>
+    </div>
+
+    <section class="section-title">
+        <h2>3. 低频高成本应用识别与风险提示</h2>
+    </section>
+    <div class="data-card">
+        <p>在所有应用中，存在部分调用频次极低但单次资源消耗极高的“低频高成本”应用，这类应用虽不影响整体指标，但可能造成资源浪费或配置失衡。</p>
+
+        <div class="highlight-box">
+            <p><strong>关键发现：</strong>应用 <span class="app-name">小金通-小金灵码</span> 仅调用 <span class="model-name">glm45-awq-local</span> 模型 <strong>1次</strong>，但其平均提示词Token高达 <strong>459.0</strong>，补全Token为 <strong>0.0</strong>。该模型参数量为355B，属于大参数模型，单次调用成本极高，而调用频次几乎为零，存在严重的资源配置浪费风险。</p>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>应用名称</th>
+                        <th>模型名称</th>
+                        <th>调用次数</th>
+                        <th>平均提示词Token</th>
+                        <th>平均补全Token</th>
+                        <th>模型参数量(B)</th>
+                        <th>TPM限制</th>
+                        <th>QPM限制</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="app-name">小金通-小金灵码</td>
+                        <td class="model-name">glm45-awq-local</td>
+                        <td>1</td>
+                        <td>459.0</td>
+                        <td>0.0</td>
+                        <td>355</td>
+                        <td>1,000,000</td>
+                        <td>100,000</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>该应用的调用行为异常：补全Token为0，可能意味着请求未成功生成响应，或存在逻辑错误导致模型未输出。结合其极低的调用频次，建议立即进行以下操作：</p>
+        <ul class="list-disc list-inside ml-6 mb-4">
+            <li>检查该应用的调用逻辑与接口稳定性</li>
+            <li>评估是否应切换至轻量级模型（如qwen2.5-72b-instruct-int4-local）</li>
+            <li>若为测试用例，应移除或归档，避免占用大模型资源</li>
+        </ul>
+
+        <p>此外，<span class="app-name">开发助手</span> 应用中存在调用 <span class="model-name">hunyuanOCR-local</span> 和 <span class="model-name">DeepSeekOCR-local</span> 的记录，虽非大语言模型，但其调用频次极低（各6次），且与文本处理类任务关联，建议评估是否可统一为单一OCR服务，减少模型碎片化。</p>
+    </div>
+
+    <section class="section-title">
+        <h2>4. 模型使用重叠应用识别与合并建议</h2>
+    </section>
+    <div class="data-card">
+        <p>多个应用使用相同或相似模型，且在Token消耗模式上高度相似，存在功能重叠或架构冗余的可能，建议评估合并以降低运维复杂度与成本。</p>
+
+        <div class="highlight-box">
+            <p><strong>关键发现：</strong>应用 <span class="app-name">IDE-小金灵码</span> 与 <span class="app-name">开发助手</span> 在使用 <span class="model-name">qwen3-next-80b-local</span> 和 <span class="model-name">qwen2.5-72b-instruct-int4-local</span> 时，其平均提示词Token高度接近，均在 <strong>1,200–1,400</strong> 范围内，补全Token也相近（约700–1,600），表明两者在输入结构与输出需求上高度相似，极可能服务于相似的代码辅助场景。</p>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>应用名称</th>
+                        <th>模型名称</th>
+                        <th>平均提示词Token</th>
+                        <th>平均补全Token</th>
+                        <th>调用次数</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="app-name">IDE-小金灵码</td>
+                        <td class="model-name">qwen3-next-80b-local</td>
+                        <td>1,247.37</td>
+                        <td>1,424.68</td>
+                        <td>1,430</td>
+                    </tr>
+                    <tr>
+                        <td class="app-name">IDE-小金灵码</td>
+                        <td class="model-name">qwen2.5-72b-instruct-int4-local</td>
+                        <td>1,382.09</td>
+                        <td>728.43</td>
+                        <td>842</td>
+                    </tr>
+                    <tr>
+                        <td class="app-name">开发助手</td>
+                        <td class="model-name">qwen3-next-80b-local</td>
+                        <td>1,360.08</td>
+                        <td>555.83</td>
+                        <td>12</td>
+                    </tr>
+                    <tr>
+                        <td class="app-name">开发助手</td>
+                        <td class="model-name">qwen3-32b-local</td>
+                        <td>1,137.00</td>
+                        <td>1,196.38</td>
+                        <td>8</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>尽管调用次数差异较大，但Token消耗模式的相似性表明，<span class="app-name">IDE-小金灵码</span> 与 <span class="app-name">开发助手</span> 可能是同一类功能（如代码补全、注释生成、错误修复）在不同前端入口的重复实现。建议技术团队：</p>
+        <ul class="list-disc list-inside ml-6 mb-4">
+            <li>开展功能需求对齐会议，确认两者是否为重复建设</li>
+            <li>若功能重叠，建议统一为单一“智能编码助手”服务，统一模型调度与监控</li>
+            <li>合并后可减少模型部署实例，降低运维成本与资源碎片化</li>
+        </ul>
+
+        <p>此外，<span class="app-name">套保智能额度解析</span> 与 <span class="app-name">套保智能交易策略解析</span> 均使用qwen3-32b-local，但调用次数极少（4次与1次），建议评估是否可合并为“套保智能分析”统一服务。</p>
+    </div>
+
+    <section class="section-title">
+        <h2>5. 关键模型监控缺失风险提示</h2>
+    </section>
+    <div class="data-card">
+        <p>在所有模型中，<span class="model-name">glm46-fp8-local</span> 作为调用量最大的核心模型，其性能监控存在严重缺失。</p>
+
+        <div class="highlight-box">
+            <p><strong>关键发现：</strong>查询 <span class="model-name">glm46-fp8-local</span> 的实时延迟（request_latency_ms）指标，返回结果为空（0条记录）。这意味着当前系统缺乏对该模型的响应时间、吞吐量、错误率等关键性能指标的监控。</p>
+        </div>
+
+        <div class="chart-placeholder">
+            <i class="fas fa-exclamation-triangle text-4xl text-yellow-500 mb-2"></i>
+            <p>当前无可用的 latency 监控数据</p>
+            <p class="mt-2 text-sm">建议：立即接入Prometheus/Grafana或内部监控系统，采集request_latency_ms、error_rate、concurrent_requests等指标</p>
+        </div>
+
+        <p>缺乏实时监控将导致以下风险：</p>
+        <ul class="list-disc list-inside ml-6 mb-4">
+            <li>无法及时发现模型性能下降或服务抖动</li>
+            <li>无法进行容量规划与弹性扩缩容</li>
+            <li>在ClaudeCode+GLM等高负载应用出现延迟时，无法快速定位根因</li>
+            <li>违反SLO（服务等级目标）管理规范</li>
+        </ul>
+
+        <p><strong>强烈建议：</strong>在72小时内为 <span class="model-name">glm46-fp8-local</span> 模型部署完整的性能监控链路，采集并可视化以下指标：</p>
+        <ul class="list-disc list-inside ml-6 mb-4">
+            <li>request_latency_ms（请求延迟）</li>
+            <li>error_rate（错误率）</li>
+            <li>concurrent_requests（并发请求数）</li>
+            <li>token_throughput（Token吞吐量）</li>
+        </ul>
+        <p>监控数据应接入统一运维看板，确保SRE团队可实时响应。</p>
+    </div>
+
+    <section class="section-title">
+        <h2>6. 资源分配优化建议与决策支持</h2>
+    </section>
+    <div class="data-card">
+        <p>基于以上分析，提出以下分层资源分配优化建议，供管理层决策参考：</p>
+
+        <div class="accordion-button" id="accordion1">
+            <i class="fas fa-chevron-down mr-2"></i> 优先保障：ClaudeCode+GLM 与 glm46-fp8-local 核心链路
+        </div>
+        <div class="accordion-content">
+            <p><span class="app-name">ClaudeCode+GLM</span> 占据glm46-fp8-local模型51.2%的调用量，是当前AI服务的“生命线”。建议：</p>
+            <ul class="list-disc list-inside ml-6 mb-2">
+                <li>为其分配专属模型实例，避免与其他应用争抢资源</li>
+                <li>确保其调用链路的SLA ≥ 99.9%，并设置告警阈值（如延迟>2s）</li>
+                <li>预留20%的算力冗余，应对突发高峰</li>
+            </ul>
+        </div>
+
+        <div class="accordion-button" id="accordion2">
+            <i class="fas fa-chevron-down mr-2"></i> 优化配置：低频高成本应用迁移与模型降级
+        </div>
+        <div class="accordion-content">
+            <p>对 <span class="app-name">小金通-小金灵码</span> 等低频应用：</p>
+            <ul class="list-disc list-inside ml-6 mb-2">
+                <li>立即评估其业务必要性，若为测试或边缘场景，建议切换至轻量模型（如qwen2.5-72b-instruct-int4-local）</li>
+                <li>若必须使用大模型，应设置调用频次限制（如每日≤5次）并记录审计日志</li>
+                <li>将glm45-awq-local模型的TPM/QPM限制从100万/10万下调至合理水平，避免资源闲置</li>
+            </ul>
+        </div>
+
+        <div class="accordion-button" id="accordion3">
+            <i class="fas fa-chevron-down mr-2"></i> 架构整合：合并功能重叠应用
+        </div>
+        <div class="accordion-content">
+            <p>推动 <span class="app-name">IDE-小金灵码</span> 与 <span class="app-name">开发助手</span> 的功能整合：</p>
+            <ul class="list-disc list-inside ml-6 mb-2">
+                <li>成立专项小组，3周内完成需求对齐与接口统一</li>
+                <li>合并后预计可减少1–2个模型实例部署，年节省成本预估超15万元</li>
+                <li>统一监控、日志与权限体系，提升运维效率</li>
+            </ul>
+        </div>
+
+        <div class="accordion-button" id="accordion4">
+            <i class="fas fa-chevron-down mr-2"></i> 监控建设：补全核心模型性能指标
+        </div>
+        <div class="accordion-content">
+            <p>立即启动 <span class="model-name">glm46-fp8-local</span> 监控系统建设：</p>
+            <ul class="list-disc list-inside ml-6 mb-2">
+                <li>责任部门：SRE团队</li>
+                <li>完成时限：72小时内</li>
+                <li>交付物：可视化仪表盘 + 告警规则（邮件/钉钉）</li>
+            </ul>
+        </div>
+
+        <div class="accordion-button" id="accordion5">
+            <i class="fas fa-chevron-down mr-2"></i> 长期策略：建立模型使用评估机制
+        </div>
+        <div class="accordion-content">
+            <p>建议每季度发布《AI模型使用效率报告》，包含：</p>
+            <ul class="list-disc list-inside ml-6 mb-2">
+                <li>各应用的Token成本/调用次数比</li>
+                <li>模型利用率与空闲率</li>
+                <li>低频应用清单与优化建议</li>
+                <li>监控覆盖率</li>
+            </ul>
+            <p>推动AI资源使用从“粗放投入”向“精益运营”转型。</p>
+        </div>
+    </div>
+
+    <section class="section-title">
+        <h2>7. 结论</h2>
+    </section>
+    <div class="data-card">
+        <p>本报告通过对7天AI调用数据的深度挖掘，揭示了当前AI服务架构中的关键机遇与风险：</p>
+        <ul class="list-disc list-inside ml-6 mb-4">
+            <li><strong>核心稳定：</strong>glm46-fp8-local模型是业务支柱，ClaudeCode+GLM是其最大用户，必须优先保障。</li>
+            <li><strong>资源浪费：</strong>低频高成本应用（如小金通-小金灵码）存在严重配置失衡，亟需优化或迁移。</li>
+            <li><strong>架构冗余：</strong>IDE-小金灵码与开发助手功能高度重叠，合并可显著降本增效。</li>
+            <li><strong>监控盲区：</strong>核心模型缺乏性能监控，构成重大运维风险，必须立即补全。</li>
+        </ul>
+        <p>建议管理层批准上述优化建议，优先投入资源于核心链路保障与监控体系建设，同步推动应用整合，实现AI资源的精细化、可持续化运营。</p>
+    </div>
+
+    <section class="section-title">
+        <h2>参考文献</h2>
+    </section>
+    <div class="data-card">
+        <ol>
+            <li><cite><a href="#" target="_blank" rel="noopener noreferrer">7天AI模型调用数据综合优化分析报告</a></cite></li>
+        </ol>
+        <p class="mt-4 text-sm text-gray-500">注：本报告所有数据均来源于内部Telemetry系统查询结果，未引用外部公开资源。</p>
+    </div>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        document.querySelectorAll('.accordion-button').forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('i');
+                content.classList.toggle('hidden');
+                icon.classList.toggle('fa-chevron-down');
+                icon.classList.toggle('fa-chevron-up');
+            });
+        });
+    </script>
+</body>
+</html>

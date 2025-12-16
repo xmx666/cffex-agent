@@ -1,0 +1,8 @@
+app_name,total_calls,avg_latency_seconds,main_model,gpu_model_name,avg_gpu_utilization,avg_gpu_memory_used
+自动化测试用例智能生成,31,123.5658,qwen3-next-80b-thinking-local,qwen3-next-80b-thinking-local,0.8838,71470.0
+开发助手,26,45.7852,glm46-fp8-local,glm46-fp8-local,7.2946,74047.0
+智能代码审查,9,45.9244,glm46-fp8-local,glm46-fp8-local,7.2946,74047.0
+IDE-小金灵码,805,31.5458,qwen2.5-72b-instruct-int4-local,glm46-fp8-local,7.2946,74047.0
+合规问答,117,27.9145,glm46-fp8-local,glm46-fp8-local,7.2946,74047.0
+小金通-小金灵码,415,17.2282,qwen2.5-72b-instruct-int4-local,glm46-fp8-local,7.2946,74047.0
+ClaudeCode+GLM,22,16.565,qwen3-next-80b-local,glm46-fp8-local,7.2946,74047.0

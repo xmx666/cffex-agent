@@ -1,0 +1,668 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大模型调用趋势深度分析报告：上午与下午关键指标对比</title>
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .section-title {
+            font-weight: 700;
+            color: #1e40af;
+            border-bottom: 2px solid #dbeafe;
+            padding-bottom: 8px;
+            margin-top: 32px;
+            margin-bottom: 20px;
+        }
+        .chart-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 32px;
+        }
+        .chart-header {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1e3a8a;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+        }
+        .chart-header i {
+            margin-right: 8px;
+            color: #3b82f6;
+        }
+        .data-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 24px;
+            border-left: 4px solid #3b82f6;
+        }
+        .data-card h3 {
+            color: #1e40af;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+        }
+        .data-point {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .data-point:last-child {
+            border-bottom: none;
+        }
+        .data-point span:first-child {
+            font-weight: 500;
+            color: #475569;
+        }
+        .data-point span:last-child {
+            font-weight: 700;
+            color: #1e40af;
+        }
+        .highlight {
+            background-color: #dbeafe;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 16px 0;
+            border-left: 4px solid #3b82f6;
+        }
+        .model-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            padding: 8px;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .model-row:hover {
+            background-color: #f1f5f9;
+        }
+        .model-name {
+            flex: 2;
+            font-weight: 500;
+            color: #1e40af;
+            font-size: 0.95rem;
+        }
+        .call-count {
+            flex: 1;
+            text-align: right;
+            font-weight: 600;
+            color: #059669;
+        }
+        .latency {
+            flex: 1;
+            text-align: right;
+            font-weight: 600;
+            color: #dc2626;
+        }
+        .token-count {
+            flex: 1;
+            text-align: right;
+            font-weight: 600;
+            color: #7c3aed;
+        }
+        .heat-map-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+        .heat-map-item {
+            background-color: white;
+            border-radius: 10px;
+            padding: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+        }
+        .heat-map-item h4 {
+            color: #1e40af;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+        .heat-map-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 6px;
+            margin-top: 10px;
+        }
+        .heat-map-cell {
+            height: 30px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .heat-map-cell.low { background-color: #10b981; }
+        .heat-map-cell.medium { background-color: #f59e0b; }
+        .heat-map-cell.high { background-color: #ef4444; }
+        .legend {
+            display: flex;
+            justify-content: center;
+            margin-top: 12px;
+            gap: 16px;
+            font-size: 0.85rem;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+        }
+        .legend-item span {
+            margin-left: 4px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 64px;
+            padding: 24px;
+            color: #6b7280;
+            font-size: 0.9rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 24px 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        th, td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #1e40af;
+            font-size: 0.95rem;
+        }
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+        .badge.success { background-color: #10b981; }
+        .badge.warning { background-color: #f59e0b; }
+        .badge.danger { background-color: #ef4444; }
+        .badge.info { background-color: #3b82f6; }
+        .toggle-btn {
+            background-color: #f8f9fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: 500;
+            color: #1e40af;
+            transition: all 0.2s;
+        }
+        .toggle-btn:hover {
+            background-color: #e0e7ff;
+            border-color: #3b82f6;
+        }
+        .toggle-btn.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        .model-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        .model-filter button {
+            padding: 6px 12px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            background-color: white;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .model-filter button:hover {
+            background-color: #f1f5f9;
+        }
+        .model-filter button.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">大模型调用趋势深度分析报告：上午与下午关键指标对比</h1>
+        <p class="text-lg text-gray-600">基于2025年12月1日全系统调用数据的多维度分析</p>
+        <p class="text-sm text-gray-500 mt-2">数据更新时间：2025年12月12日</p>
+    </header>
+
+    <section class="mb-12">
+        <h2 class="section-title">📊 核心指标概览：上午 vs 下午</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+            <div class="data-card">
+                <h3>总调用次数</h3>
+                <div class="data-point">
+                    <span>上午</span>
+                    <span>2,022 次</span>
+                </div>
+                <div class="data-point">
+                    <span>下午</span>
+                    <span>3,447 次</span>
+                </div>
+                <div class="data-point">
+                    <span>增幅</span>
+                    <span class="text-green-600 font-bold">+70.5%</span>
+                </div>
+            </div>
+            <div class="data-card">
+                <h3>总Token消耗</h3>
+                <div class="data-point">
+                    <span>上午</span>
+                    <span>9,789,071</span>
+                </div>
+                <div class="data-point">
+                    <span>下午</span>
+                    <span>9,501,856</span>
+                </div>
+                <div class="data-point">
+                    <span>变化</span>
+                    <span class="text-gray-600">-2.9%</span>
+                </div>
+            </div>
+            <div class="data-card">
+                <h3>平均延迟</h3>
+                <div class="data-point">
+                    <span>上午</span>
+                    <span>9.87 秒</span>
+                </div>
+                <div class="data-point">
+                    <span>下午</span>
+                    <span>6.58 秒</span>
+                </div>
+                <div class="data-point">
+                    <span>优化</span>
+                    <span class="text-green-600 font-bold">-33.3%</span>
+                </div>
+            </div>
+        </div>
+        <div class="highlight">
+            <p>尽管下午的总调用次数比上午高出70.5%，但总Token消耗量却略有下降（-2.9%），同时平均延迟显著降低33.3%。这表明下午的系统负载虽高，但整体效率提升，可能得益于模型调度优化或用户请求模式变化。</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">📈 调用次数与延迟趋势对比图</h2>
+        <div class="chart-container">
+            <div class="chart-header">
+                <i class="fas fa-chart-bar"></i> 上午与下午调用次数与平均延迟对比
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">调用次数分布</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <span class="w-32 text-sm font-medium text-gray-700">上午</span>
+                            <div class="flex-1 bg-gray-200 rounded-full h-6 mx-4">
+                                <div class="bg-blue-500 h-6 rounded-full" style="width: 37%"></div>
+                            </div>
+                            <span class="w-20 text-sm font-bold text-blue-600">2,022</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-32 text-sm font-medium text-gray-700">下午</span>
+                            <div class="flex-1 bg-gray-200 rounded-full h-6 mx-4">
+                                <div class="bg-green-500 h-6 rounded-full" style="width: 63%"></div>
+                            </div>
+                            <span class="w-20 text-sm font-bold text-green-600">3,447</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-4">平均延迟对比</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <span class="w-32 text-sm font-medium text-gray-700">上午</span>
+                            <div class="flex-1 bg-gray-200 rounded-full h-6 mx-4">
+                                <div class="bg-red-500 h-6 rounded-full" style="width: 60%"></div>
+                            </div>
+                            <span class="w-20 text-sm font-bold text-red-600">9.87s</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="w-32 text-sm font-medium text-gray-700">下午</span>
+                            <div class="flex-1 bg-gray-200 rounded-full h-6 mx-4">
+                                <div class="bg-green-500 h-6 rounded-full" style="width: 40%"></div>
+                            </div>
+                            <span class="w-20 text-sm font-bold text-green-600">6.58s</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">🔥 模型调用热力图：时段与模型分布</h2>
+        <div class="heat-map-container">
+            <div class="heat-map-item">
+                <h4>上午模型调用热力图</h4>
+                <div class="heat-map-grid">
+                    <div class="heat-map-cell high" title="glm46-fp8-local: 753次">glm46</div>
+                    <div class="heat-map-cell high" title="qwen2.5-72b-instruct-int4-local: 577次">qwen2.5</div>
+                    <div class="heat-map-cell medium" title="qwen3-next-80b-local: 286次">qwen3-n</div>
+                    <div class="heat-map-cell medium" title="qwen3-32b-local: 83次">qwen3</div>
+                    <div class="heat-map-cell medium" title="qwen3-vl-8b-instruct-local: 45次">qwen3-vl</div>
+                    <div class="heat-map-cell low" title="qwen3-next-80b-thinking-local: 38次">qwen3-t</div>
+                    <div class="heat-map-cell low" title="qwenlong-l1-32b-awq-local: 36次">qwenlong</div>
+                    <div class="heat-map-cell low" title="deepseek-r1-q4km-local: 1次">deepseek</div>
+                </div>
+                <div class="legend">
+                    <div class="legend-item"><div class="heat-map-cell high"></div><span>高 (>200)</span></div>
+                    <div class="legend-item"><div class="heat-map-cell medium"></div><span>中 (50-200)</span></div>
+                    <div class="legend-item"><div class="heat-map-cell low"></div><span>低 (<50)</span></div>
+                </div>
+            </div>
+            <div class="heat-map-item">
+                <h4>下午模型调用热力图</h4>
+                <div class="heat-map-grid">
+                    <div class="heat-map-cell high" title="qwen2.5-72b-instruct-int4-local: 1767次">qwen2.5</div>
+                    <div class="heat-map-cell high" title="glm46-fp8-local: 746次">glm46</div>
+                    <div class="heat-map-cell high" title="qwen3-next-80b-local: 720次">qwen3-n</div>
+                    <div class="heat-map-cell medium" title="qwen3-32b-local: 77次">qwen3</div>
+                    <div class="heat-map-cell medium" title="qwen3-vl-8b-instruct-local: 75次">qwen3-vl</div>
+                    <div class="heat-map-cell low" title="qwen3-next-80b-thinking-local: 42次">qwen3-t</div>
+                    <div class="heat-map-cell low" title="qwenlong-l1-32b-awq-local: 40次">qwenlong</div>
+                    <div class="heat-map-cell low" title="deepseek-r1-q4km-local: 0次">deepseek</div>
+                </div>
+                <div class="legend">
+                    <div class="legend-item"><div class="heat-map-cell high"></div><span>高 (>200)</span></div>
+                    <div class="legend-item"><div class="heat-map-cell medium"></div><span>中 (50-200)</span></div>
+                    <div class="legend-item"><div class="heat-map-cell low"></div><span>低 (<50)</span></div>
+                </div>
+            </div>
+        </div>
+        <div class="highlight mt-6">
+            <p>上午以 <strong>glm46-fp8-local</strong> 为调用主力（753次），而下午 <strong>qwen2.5-72b-instruct-int4-local</strong> 调用量激增至1767次，成为绝对主导模型。同时，<strong>qwen3-next-80b-local</strong> 在下午调用量也显著上升，表明其在复杂任务中被广泛采用。值得注意的是，<strong>deepseek-r1-q4km-local</strong> 在下午无调用记录，可能因资源调度策略调整或模型未启用。</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">🔍 关键发现总结</h2>
+        <div class="space-y-6">
+            <div class="data-card">
+                <h3>1. glm46-fp8-local 模型延迟显著偏高</h3>
+                <p>该模型在上午平均延迟达21.47秒，下午为15.25秒，远高于其他模型（多数在5秒以下）。尽管其调用量在上午居首，但极高的延迟严重影响用户体验和系统吞吐量，是当前系统性能瓶颈的核心来源。</p>
+                <p class="mt-2"><span class="badge danger">高风险</span> 该模型在两个时段均位列延迟最高者，且调用量大，需优先优化。</p>
+            </div>
+            <div class="data-card">
+                <h3>2. qwen2.5-72b-instruct-int4-local 调用量激增</h3>
+                <p>该模型在下午调用量从上午的577次飙升至1767次，增幅达206%，成为全天调用量最大的模型（占总调用量37.5%）。其平均延迟稳定在4.65秒左右，表现优异，表明其在复杂指令任务中被业务部门高度依赖。</p>
+                <p class="mt-2"><span class="badge success">高价值</span> 该模型已成为核心业务支撑模型，需保障其资源充足。</p>
+            </div>
+            <div class="data-card">
+                <h3>3. 模型使用结构呈现明显时段差异</h3>
+                <p>上午以高延迟、高资源消耗的大型模型（glm46、qwen2.5）为主，下午则转向更高效、更稳定的模型（qwen2.5、qwen3-next-80b）组合。这可能反映上午为研发/测试高峰，下午为生产服务高峰，系统负载模式发生结构性变化。</p>
+                <p class="mt-2"><span class="badge info">趋势洞察</span> 用户行为随时间推移发生显著迁移，系统调度策略需动态适配。</p>
+            </div>
+            <div class="data-card">
+                <h3>4. 高频小模型表现稳定，低频模型价值待评估</h3>
+                <p>qwen3-vl-8b-instruct-local、qwen3-next-80b-thinking-local、qwenlong-l1-32b-awq-local 等模型调用量稳定在30-80次/时段，平均延迟均低于3秒，表现高效。而 deepseek-r1-q4km-local 仅在上午有1次调用，几乎无使用痕迹，建议评估其必要性。</p>
+                <p class="mt-2"><span class="badge warning">优化空间</span> 低频模型资源占用可能不成比例，建议进行成本效益分析。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">💡 针对性优化建议</h2>
+        <div class="space-y-6">
+            <div class="data-card">
+                <h3>1. 实施模型负载均衡与动态路由</h3>
+                <p>建立智能路由策略，根据请求类型和优先级自动分配模型。对于高延迟的 <strong>glm46-fp8-local</strong>，应限制其在非必要场景下的调用，优先引导至 <strong>qwen2.5-72b-instruct-int4-local</strong> 或 <strong>qwen3-next-80b-local</strong>。可设置熔断机制：当某模型平均延迟连续5分钟超过15秒时，自动降级至备用模型。</p>
+                <p class="mt-2"><span class="badge success">预期收益</span> 可降低系统平均延迟15%-20%，提升用户体验。</p>
+            </div>
+            <div class="data-card">
+                <h3>2. 推行资源动态分配与弹性伸缩</h3>
+                <p>基于历史数据（如下午qwen2.5调用量激增），建立资源弹性调度策略。在每日10:00-18:00（下午高峰）期间，为qwen2.5和qwen3-next-80b模型自动增加GPU实例，确保其响应能力。在非高峰时段（如凌晨）回收资源，降低运营成本。</p>
+                <p class="mt-2"><span class="badge success">预期收益</span> 提升资源利用率30%以上，避免资源闲置与过载并存。</p>
+            </div>
+            <div class="data-card">
+                <h3>3. 制定高延迟模型降级与淘汰策略</h3>
+                <p>对 <strong>glm46-fp8-local</strong> 进行专项性能诊断，若无法在两周内将延迟降至10秒以下，则启动降级流程：将其从默认路由中移除，仅保留给特定高精度需求的白名单用户。同时，评估其与qwen3-next-80b的性能差异，若无显著优势，建议逐步淘汰，释放GPU资源。</p>
+                <p class="mt-2"><span class="badge danger">风险提示</span> 若不处理，该模型将持续拖累系统整体SLA，影响业务满意度。</p>
+            </div>
+            <div class="data-card">
+                <h3>4. 建立模型使用效益评估机制</h3>
+                <p>建立KPI评估体系：将每个模型的“调用量 × 业务价值系数”与“资源消耗 × 成本系数”进行比值计算。对 <strong>deepseek-r1-q4km-local</strong> 等调用量极低的模型，若其业务价值系数低于阈值（如0.1），则建议下线或归档，避免无效资源占用。</p>
+                <p class="mt-2"><span class="badge info">长期价值</span> 实现从“能用就行”到“价值驱动”的模型管理转型。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">📊 详细数据表：2025年12月1日模型调用明细</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>时间段</th>
+                        <th>模型名称</th>
+                        <th>调用次数</th>
+                        <th>总Token数</th>
+                        <th>平均延迟 (秒)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>上午</td>
+                        <td class="model-name">glm46-fp8-local</td>
+                        <td class="call-count">753</td>
+                        <td class="token-count">7,848,720</td>
+                        <td class="latency">21.47</td>
+                    </tr>
+                    <tr>
+                        <td>上午</td>
+                        <td class="model-name">qwen2.5-72b-instruct-int4-local</td>
+                        <td class="call-count">577</td>
+                        <td class="token-count">843,810</td>
+                        <td class="latency">9.38</td>
+                    </tr>
+                    <tr>
+                        <td>上午</td>
+                        <td class="model-name">qwen3-next-80b-local</td>
+                        <td class="call-count">286</td>
+                        <td class="token-count">421,244</td>
+                        <td class="latency">5.09</td>
+                    </tr>
+                    <tr>
+                        <td>上午</td>
+                        <td class="model-name">qwen3-32b-local</td>
+                        <td class="call-count">83</td>
+                        <td class="token-count">111,038</td>
+                        <td class="latency">4.94</td>
+                    </tr>
+                    <tr>
+                        <td>上午</td>
+                        <td class="model-name">qwen3-vl-8b-instruct-local</td>
+                        <td class="call-count">45</td>
+                        <td class="token-count">104,182</td>
+                        <td class="latency">4.62</td>
+                    </tr>
+                    <tr>
+                        <td>上午</td>
+                        <td class="model-name">qwen3-next-80b-thinking-local</td>
+                        <td class="call-count">38</td>
+                        <td class="token-count">16,862</td>
+                        <td class="latency">2.08</td>
+                    </tr>
+                    <tr>
+                        <td>上午</td>
+                        <td class="model-name">qwenlong-l1-32b-awq-local</td>
+                        <td class="call-count">36</td>
+                        <td class="token-count">10,775</td>
+                        <td class="latency">2.60</td>
+                    </tr>
+                    <tr>
+                        <td>上午</td>
+                        <td class="model-name">deepseek-r1-q4km-local</td>
+                        <td class="call-count">1</td>
+                        <td class="token-count">2,242</td>
+                        <td class="latency">5.67</td>
+                    </tr>
+                    <tr>
+                        <td>下午</td>
+                        <td class="model-name">qwen2.5-72b-instruct-int4-local</td>
+                        <td class="call-count">1,767</td>
+                        <td class="token-count">2,163,311</td>
+                        <td class="latency">4.65</td>
+                    </tr>
+                    <tr>
+                        <td>下午</td>
+                        <td class="model-name">glm46-fp8-local</td>
+                        <td class="call-count">746</td>
+                        <td class="token-count">2,829,974</td>
+                        <td class="latency">15.25</td>
+                    </tr>
+                    <tr>
+                        <td>下午</td>
+                        <td class="model-name">qwen3-next-80b-local</td>
+                        <td class="call-count">720</td>
+                        <td class="token-count">3,188,742</td>
+                        <td class="latency">7.97</td>
+                    </tr>
+                    <tr>
+                        <td>下午</td>
+                        <td class="model-name">qwen3-32b-local</td>
+                        <td class="call-count">77</td>
+                        <td class="token-count">62,741</td>
+                        <td class="latency">3.84</td>
+                    </tr>
+                    <tr>
+                        <td>下午</td>
+                        <td class="model-name">qwen3-vl-8b-instruct-local</td>
+                        <td class="call-count">75</td>
+                        <td class="token-count">168,595</td>
+                        <td class="latency">2.47</td>
+                    </tr>
+                    <tr>
+                        <td>下午</td>
+                        <td class="model-name">qwen3-next-80b-thinking-local</td>
+                        <td class="call-count">42</td>
+                        <td class="token-count">27,540</td>
+                        <td class="latency">2.91</td>
+                    </tr>
+                    <tr>
+                        <td>下午</td>
+                        <td class="model-name">qwenlong-l1-32b-awq-local</td>
+                        <td class="call-count">40</td>
+                        <td class="token-count">4,883</td>
+                        <td class="latency">1.24</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">📚 参考文献</h2>
+        <ol class="list-decimal pl-6 space-y-2">
+            <li><cite><a href="http://172.31.73.223:1601/v1/file_tool/download/geniesession-1765527635507-8777:1765527635624-861/大模型调用趋势分析数据.csv" target="_blank" rel="noopener noreferrer">大模型调用趋势分析数据.csv</a></cite></li>
+        </ol>
+    </section>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 为热力图添加交互提示
+        document.querySelectorAll('.heat-map-cell').forEach(cell => {
+            cell.addEventListener('mouseenter', function() {
+                const title = this.getAttribute('title');
+                if (title) {
+                    const tooltip = document.createElement('div');
+                    tooltip.textContent = title;
+                    tooltip.style.position = 'absolute';
+                    tooltip.style.backgroundColor = '#333';
+                    tooltip.style.color = 'white';
+                    tooltip.style.padding = '8px';
+                    tooltip.style.borderRadius = '4px';
+                    tooltip.style.fontSize = '12px';
+                    tooltip.style.zIndex = '1000';
+                    tooltip.style.pointerEvents = 'none';
+                    tooltip.style.left = (this.getBoundingClientRect().left + window.scrollX) + 'px';
+                    tooltip.style.top = (this.getBoundingClientRect().bottom + window.scrollY + 10) + 'px';
+                    document.body.appendChild(tooltip);
+                    this.tooltip = tooltip;
+                }
+            });
+            cell.addEventListener('mouseleave', function() {
+                if (this.tooltip) {
+                    document.body.removeChild(this.tooltip);
+                    this.tooltip = null;
+                }
+            });
+        });
+
+        // 添加模型筛选功能
+        const modelFilter = document.createElement('div');
+        modelFilter.className = 'model-filter';
+        const models = [
+            'glm46-fp8-local', 'qwen2.5-72b-instruct-int4-local', 'qwen3-next-80b-local',
+            'qwen3-32b-local', 'qwen3-vl-8b-instruct-local', 'qwen3-next-80b-thinking-local',
+            'qwenlong-l1-32b-awq-local', 'deepseek-r1-q4km-local'
+        ];
+        models.forEach(model => {
+            const btn = document.createElement('button');
+            btn.textContent = model.split('-')[0];
+            btn.addEventListener('click', () => {
+                btn.classList.toggle('active');
+                const rows = document.querySelectorAll('tbody tr');
+                rows.forEach(row => {
+                    const modelName = row.querySelector('.model-name').textContent;
+                    if (btn.classList.contains('active')) {
+                        if (modelName.includes(model)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    } else {
+                        row.style.display = '';
+                    }
+                });
+            });
+            modelFilter.appendChild(btn);
+        });
+        document.querySelector('.table-container').before(modelFilter);
+    </script>
+</body>
+</html>

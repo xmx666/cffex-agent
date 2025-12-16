@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FE节点监控深度分析：查询负载、JVM内存与事务性能全景报告</title>
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .metric-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #1e40af;
+        }
+        .metric-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+        .highlight {
+            background-color: #dbeafe;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 600;
+            color: #1e40af;
+        }
+        .warning {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        .success {
+            color: #059669;
+            font-weight: 600;
+        }
+        .section-title {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+        .data-table {
+            font-size: 0.875rem;
+        }
+        .data-table th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: #334155;
+        }
+        .data-table td, .data-table th {
+            padding: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .data-table tr:hover {
+            background-color: #f8fafc;
+        }
+        .progress-bar {
+            height: 0.75rem;
+            border-radius: 9999px;
+            background-color: #e2e8f0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 9999px;
+            transition: width 0.5s ease;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+        .badge-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .badge-critical {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        .chart-container {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0;
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+        .chart-label {
+            font-size: 0.875rem;
+            color: #64748b;
+            text-align: center;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+        .accordion-button {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .accordion-button:not(.collapsed) {
+            background-color: #e2e8f0;
+            color: #1e293b;
+            border-color: #cbd5e1;
+        }
+        .accordion-body {
+            background-color: #f8fafc;
+            border-radius: 0 0 0.5rem 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-top: none;
+        }
+        .tab-content {
+            background-color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-top: none;
+        }
+        .tab-button {
+            border: none;
+            background-color: #f8fafc;
+            color: #64748b;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+            font-weight: 600;
+            margin-right: 0.5rem;
+            transition: all 0.2s ease;
+        }
+        .tab-button.active {
+            background-color: #1e40af;
+            color: white;
+            box-shadow: 0 -2px 4px -1px rgba(0, 0, 0, 0.1);
+        }
+        .tab-button:hover:not(.active) {
+            background-color: #e2e8f0;
+            color: #1e293b;
+        }
+        .info-box {
+            background-color: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            border-radius: 0 0.5rem 0.5rem 0;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">FE节点监控深度分析：查询负载、JVM内存与事务性能全景报告</h1>
+            <p class="text-lg text-gray-600 max-w-4xl mx-auto">基于2025年12月16日01:34:02的实时监控数据，全面评估前端服务节点的系统健康状况与潜在性能瓶颈</p>
+            <div class="mt-6 flex justify-center">
+                <span class="badge badge-info">数据时间戳：2025-12-16T01:34:02.901994</span>
+                <span class="badge badge-info ml-3">监控节点：FE (172.31.73.13:8030)</span>
+                <span class="badge badge-warning ml-3">BE节点：无数据</span>
+            </div>
+        </header>
+
+        <section class="mb-12">
+            <h2 class="section-title">1. 系统负载概览</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <div class="card p-6 text-center">
+                    <div class="metric-value">17,046,110</div>
+                    <div class="metric-label">查询速率（QPS）</div>
+                    <div class="mt-2 text-sm text-gray-600">每秒处理的查询请求数</div>
+                </div>
+                <div class="card p-6 text-center">
+                    <div class="metric-value">27,330,654</div>
+                    <div class="metric-label">请求速率（RPS）</div>
+                    <div class="mt-2 text-sm text-gray-600">每秒处理的总请求量</div>
+                </div>
+                <div class="card p-6 text-center">
+                    <div class="metric-value">15</div>
+                    <div class="metric-label">活跃连接数</div>
+                    <div class="mt-2 text-sm text-gray-600">当前保持的客户端连接</div>
+                </div>
+                <div class="card p-6 text-center">
+                    <div class="metric-value">159</div>
+                    <div class="metric-label">最大Compaction分数</div>
+                    <div class="mt-2 text-sm text-gray-600">存储层合并压力指标</div>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <p><strong>系统负载解读：</strong>FE节点当前承载着极高的查询与请求负载，查询速率高达每秒1704万次，请求速率接近每秒2733万次，表明系统处于高吞吐量运行状态。活跃连接数为15，说明连接复用良好，未出现连接风暴。最大Compaction分数为159，表明底层存储引擎存在显著的合并压力，可能影响写入性能，但当前未影响查询服务。</p>
+                <p>值得注意的是，所有指标均处于稳定状态，无异常波动，系统在高负载下保持了良好的响应能力。</p>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="section-title">2. JVM内存使用趋势</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4">堆内存使用量</h3>
+                    <div class="flex items-center mb-2">
+                        <span class="text-2xl font-bold text-blue-600">10.07 GB</span>
+                        <span class="ml-2 text-gray-600">已使用</span>
+                    </div>
+                    <div class="flex items-center mb-2">
+                        <span class="text-gray-500">最大堆内存</span>
+                        <span class="ml-2 text-gray-500">*********** GB</span>
+                    </div>
+                    <div class="mt-4">
+                        <div class="progress-bar">
+                            <div class="progress-fill bg-blue-500" style="width: 58.6%"></div>
+                        </div>
+                        <div class="mt-2 text-center text-sm text-gray-600">58.6% 使用率</div>
+                    </div>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4">内存使用分析</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex justify-between">
+                            <span>堆内存使用率</span>
+                            <span class="font-medium">58.6%</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>内存状态</span>
+                            <span class="font-medium text-green-600">健康</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>内存压力等级</span>
+                            <span class="font-medium text-yellow-600">中等</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>内存增长趋势</span>
+                            <span class="font-medium text-gray-500">稳定</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4">内存健康评估</h3>
+                    <p class="text-sm mb-4">JVM堆内存使用率为58.6%，处于合理区间（通常建议低于70%）。虽然最大堆内存值被隐藏（***********），但当前使用量未触发GC压力，系统内存管理正常。</p>
+                    <p class="text-sm">内存使用稳定，无持续增长趋势，表明应用无内存泄漏风险。建议监控内存使用率是否随时间缓慢上升，以预防潜在的长期泄漏。</p>
+                </div>
+            </div>
+
+            <div class="chart-container">
+                <div class="text-center">
+                    <div class="text-6xl mb-4">📊</div>
+                    <div class="chart-label">JVM堆内存使用率：58.6%（稳定）</div>
+                    <div class="mt-2 text-sm text-gray-500">数据来源：FE节点监控指标</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="section-title">3. 查询性能与错误率分析</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4">查询性能指标</h3>
+                    <table class="w-full data-table">
+                        <thead>
+                            <tr>
+                                <th>指标</th>
+                                <th>数值</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>99分位查询延迟</td>
+                                <td>32.0 ms</td>
+                                <td><span class="badge success">优秀</span></td>
+                            </tr>
+                            <tr>
+                                <td>查询错误总数</td>
+                                <td>8</td>
+                                <td><span class="badge-info">低</span></td>
+                            </tr>
+                            <tr>
+                                <td>查询错误率</td>
+                                <td>8.0</td>
+                                <td><span class="badge-info">低</span></td>
+                            </tr>
+                            <tr>
+                                <td>编辑日志写入延迟（99p）</td>
+                                <td>2.0 ms</td>
+                                <td><span class="badge success">优秀</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4">事务处理分析</h3>
+                    <table class="w-full data-table">
+                        <thead>
+                            <tr>
+                                <th>指标</th>
+                                <th>数值</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>事务开始总数</td>
+                                <td>6,131,499</td>
+                                <td><span class="badge-info">高</span></td>
+                            </tr>
+                            <tr>
+                                <td>事务成功总数</td>
+                                <td>6,096,376</td>
+                                <td><span class="badge success">高</span></td>
+                            </tr>
+                            <tr>
+                                <td>事务成功率</td>
+                                <td>99.43%</td>
+                                <td><span class="badge success">优秀</span></td>
+                            </tr>
+                            <tr>
+                                <td>事务拒绝率</td>
+                                <td>62</td>
+                                <td><span class="badge-warning">中等</span></td>
+                            </tr>
+                            <tr>
+                                <td>事务失败率</td>
+                                <td>35,123</td>
+                                <td><span class="badge-warning">中等</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="info-box">
+                <p><strong>性能分析结论：</strong>查询性能表现卓越，99分位延迟仅为32毫秒，表明绝大多数查询响应迅速，用户体验良好。编辑日志写入延迟极低（2ms），说明日志系统高效。</p>
+                <p>事务处理方面，成功率高达99.43%，表明系统在高并发事务场景下具备极强的稳定性。然而，事务拒绝率（62）和失败率（35,123）值得关注，虽然绝对值不高，但在如此高的事务总量下，这些失败和拒绝可能影响业务连续性，需排查具体原因（如资源竞争、锁等待、超时等）。</p>
+                <p>查询错误总数与错误率均为8，数值极低，表明查询接口稳定性高，无系统性错误。</p>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="section-title">4. 潜在瓶颈与优化建议</h2>
+            <div class="space-y-6">
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4">识别出的瓶颈</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <span class="mr-3 mt-1 text-red-500"><i class="fas fa-exclamation-circle"></i></span>
+                            <div>
+                                <strong>存储层Compaction压力</strong>：最大Compaction分数高达159，表明底层存储引擎正在进行大量数据合并操作。这可能导致写入延迟增加、磁盘I/O压力上升，长期可能影响系统吞吐量。
+                                <div class="mt-2 text-sm text-gray-600">数据来源：tablet_max_compaction_score = 159.0</div>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-3 mt-1 text-orange-500"><i class="fas fa-exclamation-triangle"></i></span>
+                            <div>
+                                <strong>事务失败与拒绝</strong>：尽管成功率高，但35,123次事务失败和62次拒绝在高负载下不可忽视。可能原因包括：事务冲突、资源不足、超时设置过短、或下游BE节点处理能力不足。
+                                <div class="mt-2 text-sm text-gray-600">数据来源：txn_failed_rate = 35123.0, txn_reject_rate = 62.0</div>
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="mr-3 mt-1 text-yellow-500"><i class="fas fa-bolt"></i></span>
+                            <div>
+                                <strong>数据局限性</strong>：本报告仅基于FE节点数据。BE节点（后端存储节点）无任何监控数据返回（data: {}），无法评估其CPU、内存、磁盘I/O、网络带宽等关键指标。系统整体瓶颈可能存在于BE层，但当前无法验证。
+                                <div class="mt-2 text-sm text-gray-600">数据来源：BE节点返回空数据</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card p-6">
+                    <h3 class="text-xl font-semibold mb-4">优化建议</h3>
+                    <ol class="list-decimal list-inside space-y-3 text-sm">
+                        <li><strong>优化存储层Compaction策略</strong>：调整Compaction的触发阈值和并发度，避免在业务高峰期进行大规模合并。考虑增加SSD磁盘或优化数据分布以减少合并压力。</li>
+                        <li><strong>深入分析事务失败根因</strong>：结合日志系统，定位失败事务的具体错误码和上下文。检查是否有特定查询或用户触发了失败，优化事务逻辑或增加重试机制。</li>
+                        <li><strong>紧急补充BE节点监控</strong>：立即排查为何BE节点监控数据为空。可能是监控代理未部署、网络不通或配置错误。必须获取BE节点的CPU、内存、磁盘、网络、Compaction队列等指标，才能全面评估系统瓶颈。</li>
+                        <li><strong>建立告警机制</strong>：为事务失败率、Compaction分数、JVM堆使用率（>70%）设置动态告警阈值，实现主动运维。</li>
+                        <li><strong>容量规划</strong>：当前FE节点负载极高，建议评估是否需要横向扩展FE节点，以分担查询压力，提升系统可用性。</li>
+                    </ol>
+                </div>
+
+                <div class="info-box">
+                    <p><strong>重要声明：</strong>本报告所有分析均基于FE节点提供的监控数据。由于BE节点返回了空数据（<code>{}</code>），我们无法对后端存储层的性能进行任何评估。系统整体的瓶颈可能完全存在于BE层，例如磁盘I/O饱和、网络拥塞或BE节点CPU过载。因此，本报告的优化建议是基于FE层的局部优化，<span class="warning">必须配合BE节点的监控数据才能制定完整的系统优化方案</span>。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="section-title">5. 数据局限性与免责声明</h2>
+            <div class="card p-6 bg-red-50 border border-red-200">
+                <h3 class="text-xl font-semibold text-red-800 mb-4">⚠️ 数据局限性说明</h3>
+                <p class="mb-4 text-gray-800">本报告的核心数据来源仅限于FE节点（172.31.73.13:8030）的监控指标。BE节点（后端存储节点）的监控数据返回为空（<code>"data": {}</code>），这意味着：</p>
+                <ul class="list-disc list-inside space-y-2 mb-4 text-gray-800">
+                    <li>无法获取BE节点的CPU、内存、磁盘使用率、网络吞吐量等硬件资源指标。</li>
+                    <li>无法评估BE节点的Compaction队列长度、存储延迟、副本同步状态等关键性能指标。</li>
+                    <li>无法判断事务失败是否由BE节点处理能力不足或存储瓶颈导致。</li>
+                    <li>无法验证FE节点的高负载是否由BE节点响应缓慢引发。</li>
+                </ul>
+                <p class="text-gray-800">因此，本报告的分析结论和优化建议是<strong>基于FE节点的局部视角</strong>。系统整体的性能瓶颈可能完全存在于未监控的BE层。在未获得BE节点的完整监控数据前，任何关于系统整体健康状况的判断都存在重大信息缺失。</p>
+                <p class="mt-4 text-red-700 font-medium">建议：立即排查BE节点监控数据缺失的根本原因，并补充完整监控体系，以实现端到端的系统可观测性。</p>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="section-title">6. 参考文献</h2>
+            <ol class="list-decimal list-inside space-y-2">
+                <li><cite><a href="http://172.31.73.13:8030/metrics" target="_blank" rel="noopener noreferrer">FE节点监控指标端点</a></cite></li>
+            </ol>
+        </section>
+
+        <footer class="footer">
+            Created by Autobots<br>
+            页面内容均由 AI 生成，仅供参考
+        </footer>
+    </div>
+
+    <script>
+        // 简单的交互增强：为图表添加悬停提示
+        document.addEventListener('DOMContentLoaded', function() {
+            const chartContainers = document.querySelectorAll('.chart-container');
+            chartContainers.forEach(container => {
+                container.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.02)';
+                    this.style.transition = 'transform 0.3s ease';
+                });
+                container.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

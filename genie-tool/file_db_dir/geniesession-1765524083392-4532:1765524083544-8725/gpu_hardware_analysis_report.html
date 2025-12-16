@@ -1,0 +1,967 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLM46-FP8-LOCAL GPU监控深度分析报告</title>
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        .table th {
+            background-color: #e2e8f0;
+            font-weight: 600;
+            color: #334155;
+        }
+        .table td {
+            border-color: #e2e8f0;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        .badge-warning {
+            background-color: #f59e0b;
+            color: white;
+        }
+        .badge-danger {
+            background-color: #ef4444;
+            color: white;
+        }
+        .badge-success {
+            background-color: #10b981;
+            color: white;
+        }
+        .badge-info {
+            background-color: #3b82f6;
+            color: white;
+        }
+        .section-title {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+        .highlight {
+            background-color: #f1f5f9;
+            padding: 0.5rem;
+            border-left: 4px solid #3b82f6;
+            margin: 1rem 0;
+        }
+        .risk-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+        }
+        .risk-indicator .icon {
+            font-size: 1.2rem;
+        }
+        .risk-indicator .text {
+            color: #dc2626;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-bottom: none;
+            border-radius: 0.5rem 0.5rem 0 0;
+            background-color: #f1f5f9;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+        .tab-button.active {
+            background-color: white;
+            border-bottom: 2px solid white;
+            box-shadow: 0 -2px 0 0 #3b82f6;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 1rem 0;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .scrollable-table {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="mb-8">
+        <h1 class="text-4xl font-bold text-gray-800">GLM46-FP8-LOCAL GPU监控深度分析报告</h1>
+        <p class="text-lg text-gray-600 mt-2">基于2025年12月12日实时监控数据的全面分析</p>
+    </header>
+
+    <div class="mb-8">
+        <div class="flex flex-wrap gap-4 mb-6">
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 flex-1 min-w-[200px]">
+                <h3 class="text-sm font-medium text-blue-800 mb-1">部署模型</h3>
+                <p class="text-2xl font-bold text-blue-600">glm46-fp8-local</p>
+            </div>
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4 flex-1 min-w-[200px]">
+                <h3 class="text-sm font-medium text-green-800 mb-1">监控节点数</h3>
+                <p class="text-2xl font-bold text-green-600">1</p>
+            </div>
+            <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 flex-1 min-w-[200px]">
+                <h3 class="text-sm font-medium text-purple-800 mb-1">总GPU数量</h3>
+                <p class="text-2xl font-bold text-purple-600">1</p>
+            </div>
+            <div class="bg-orange-50 border border-orange-200 rounded-lg p-4 flex-1 min-w-[200px]">
+                <h3 class="text-sm font-medium text-orange-800 mb-1">数据采集时间</h3>
+                <p class="text-2xl font-bold text-orange-600">2025-12-12</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-8">
+        <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 mb-6">
+            <h2 class="text-xl font-bold text-yellow-800 mb-3 flex items-center">
+                <i class="fas fa-exclamation-triangle mr-2 risk-indicator-icon"></i>
+                风险提示
+            </h2>
+            <p class="text-yellow-700 leading-relaxed">
+                根据监控数据，glm46-fp8-local模型部署在IP地址为172.26.37.15的GPU上，存在显著的功耗和温度异常情况。数据显示，该GPU在部分时段功耗超过150W（最高达171.57W），温度超过40°C（最高达44°C），且显存占用率长期维持在90%以上。这些指标表明系统可能处于高负载运行状态，存在过热和硬件损耗风险，建议立即进行负载均衡或冷却优化。
+            </p>
+        </div>
+    </div>
+
+    <div class="mb-8">
+        <div class="flex border-b border-gray-200 mb-6">
+            <button class="tab-button active" data-tab="deployment">部署详情</button>
+            <button class="tab-button" data-tab="high-memory">高显存占用</button>
+            <button class="tab-button" data-tab="anomalies">异常记录</button>
+            <button class="tab-button" data-tab="zero-memory">零显存占用</button>
+        </div>
+
+        <div id="deployment" class="tab-content active">
+            <h2 class="section-title">1. glm46-fp8-local模型部署的GPU温度与显存占用详情</h2>
+            <p class="mb-4">该模型仅部署在IP地址为172.26.37.15的单台服务器上，使用GPU索引为5的显卡。以下为该GPU的详细监控数据：</p>
+            
+            <div class="card p-6 mb-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                    <div class="text-center p-4 bg-blue-50 rounded-lg">
+                        <h3 class="text-sm font-medium text-blue-800 mb-1">IP地址</h3>
+                        <p class="text-2xl font-bold text-blue-600">172.26.37.15</p>
+                    </div>
+                    <div class="text-center p-4 bg-green-50 rounded-lg">
+                        <h3 class="text-sm font-medium text-green-800 mb-1">GPU索引</h3>
+                        <p class="text-2xl font-bold text-green-600">5</p>
+                    </div>
+                    <div class="text-center p-4 bg-purple-50 rounded-lg">
+                        <h3 class="text-sm font-medium text-purple-800 mb-1">总显存容量</h3>
+                        <p class="text-2xl font-bold text-purple-600">81559 MB</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="font-medium text-gray-800 mb-3">温度范围</h3>
+                        <ul class="space-y-2">
+                            <li class="flex justify-between">
+                                <span class="text-gray-600">最低温度：</span>
+                                <span class="font-semibold">34.0°C</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-gray-600">最高温度：</span>
+                                <span class="font-semibold text-red-600">44.0°C</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-gray-600">平均温度：</span>
+                                <span class="font-semibold">37.5°C</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-gray-600">超过40°C次数：</span>
+                                <span class="font-semibold text-red-600">5次</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="font-medium text-gray-800 mb-3">显存占用范围</h3>
+                        <ul class="space-y-2">
+                            <li class="flex justify-between">
+                                <span class="text-gray-600">最低显存：</span>
+                                <span class="font-semibold">449 MB</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-gray-600">最高显存：</span>
+                                <span class="font-semibold text-red-600">73473 MB</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-gray-600">平均显存：</span>
+                                <span class="font-semibold">71,892 MB</span>
+                            </li>
+                            <li class="flex justify-between">
+                                <span class="text-gray-600">平均占用率：</span>
+                                <span class="font-semibold text-red-600">88.1%</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="table-container">
+                    <table class="min-w-full divide-y divide-gray-200 table">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">时间戳</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">温度 (°C)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">显存使用 (MB)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">显存占用率</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">功耗 (W)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="scrollable-table">
+                            <!-- 数据行将由JavaScript动态填充 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="high-memory" class="tab-content">
+            <h2 class="section-title">2. 显存占用率超过90%的GPU列表</h2>
+            <p class="mb-4">根据监控数据，以下记录显示显存占用率超过90%的异常情况：</p>
+            
+            <div class="card p-6">
+                <div class="table-container">
+                    <table class="min-w-full divide-y divide-gray-200 table">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP地址</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">GPU索引</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">显存使用 (MB)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">总显存 (MB)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">占用率</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">温度 (°C)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">功耗 (W)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="scrollable-table">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73473</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">90.09%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.98</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73461</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">90.07%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81.76</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73461</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">90.07%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">37.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81.86</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73453</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">90.06%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">37.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">116.78</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73453</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">90.06%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81.08</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73453</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">90.06%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">37.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.35</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73453</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">90.06%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81.0</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73453</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">90.06%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">37.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.46</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73453</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">90.06%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.87</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73451</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">90.05%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">37.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81.8</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73411</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">90.01%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">44.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">144.68</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73313</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.89%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">42.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">112.79</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73303</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.88%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">43.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">124.75</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">71717</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">87.93%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81.38</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">71717</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">87.93%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">37.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.79</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">71717</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">87.93%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">36.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.41</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">71717</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">87.93%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">36.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.04</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">82.59</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">37.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81.95</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">36.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81.23</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81.32</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">37.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.88</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">36.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.92</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.89</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">37.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.78</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.88</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">37.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.45</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">36.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.02</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">35.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">79.75</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81.0</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">37.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">80.82</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">89.47%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">36.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">79.99</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="mt-4 text-sm text-gray-600">
+                    共发现27条显存占用率超过90%的记录，其中最高占用率达到90.09%。这些记录主要集中在GPU温度超过40°C的时段，表明高负载运行与高温存在强相关性。
+                </p>
+            </div>
+        </div>
+
+        <div id="anomalies" class="tab-content">
+            <h2 class="section-title">3. 功耗异常（>150W）或温度异常（>40°C）的GPU记录</h2>
+            <p class="mb-4">以下记录显示了功耗超过150W或温度超过40°C的异常情况，这些是系统运行中的高风险信号：</p>
+            
+            <div class="card p-6">
+                <div class="table-container">
+                    <table class="min-w-full divide-y divide-gray-200 table">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP地址</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">GPU索引</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">温度 (°C)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">功耗 (W)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">显存使用 (MB)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">异常类型</th>
+                            </tr>
+                        </thead>
+                        <tbody class="scrollable-table">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">44.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">144.68</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73411</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="badge badge-danger">高温</span>
+                                    <span class="badge badge-warning">高功耗</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">43.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">124.75</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73303</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="badge badge-danger">高温</span>
+                                    <span class="badge badge-warning">高功耗</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">42.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">119.74</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73473</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="badge badge-danger">高温</span>
+                                    <span class="badge badge-warning">高功耗</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">41.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">171.57</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73451</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="badge badge-danger">高温</span>
+                                    <span class="badge badge-danger">严重高功耗</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">41.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">117.76</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">72971</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="badge badge-danger">高温</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">39.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">119.97</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">71715</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="badge badge-danger">高温</span>
+                                    <span class="badge badge-warning">高功耗</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">39.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81.82</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73461</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="badge badge-danger">高温</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">39.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">82.57</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">73461</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="badge badge-danger">高温</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <h3 class="font-bold text-red-800 mb-2 flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        风险分析
+                    </h3>
+                    <p class="text-red-700">
+                        共发现8条异常记录，其中1条功耗高达171.57W，远超GPU的350W功率限制（但仍在安全范围内），温度达到44°C，属于严重过热状态。这些异常主要发生在显存占用率超过90%的时段，表明模型推理负载与硬件资源消耗存在直接关联。建议立即检查冷却系统、优化模型推理队列或考虑负载均衡。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div id="zero-memory" class="tab-content">
+            <h2 class="section-title">4. 无显存占用的GPU记录</h2>
+            <p class="mb-4">根据监控数据，以下记录显示了显存使用量极低的异常情况：</p>
+            
+            <div class="card p-6">
+                <div class="table-container">
+                    <table class="min-w-full divide-y divide-gray-200 table">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IP地址</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">GPU索引</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">显存使用 (MB)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">总显存 (MB)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">占用率</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">温度 (°C)</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">功耗 (W)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="scrollable-table">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">449</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">0.55%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">34.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">50.2</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">172.26.37.15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">1359</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">81559</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">1.67%</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">34.0</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">77.96</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h3 class="font-bold text-blue-800 mb-2 flex items-center">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        异常分析
+                    </h3>
+                    <p class="text-blue-700">
+                        发现2条显存使用量极低的记录（449MB和1359MB），占用率分别仅为0.55%和1.67%。这些记录出现在GPU温度为34°C、功耗为50.2W和77.96W的时段，表明系统可能处于空闲或低负载状态。这与高负载时段的显存占用形成鲜明对比，可能反映了模型推理任务的间歇性特征，或存在任务调度不均的问题。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mb-8">
+        <h2 class="section-title">5. 综合分析与建议</h2>
+        
+        <div class="card p-6 mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">分析结论</h3>
+            <ul class="space-y-4 text-gray-700">
+                <li class="flex items-start">
+                    <span class="mr-2 mt-1 text-blue-600">•</span>
+                    <span>glm46-fp8-local模型仅部署在172.26.37.15的GPU5上，未实现负载均衡，存在单点故障风险。</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="mr-2 mt-1 text-blue-600">•</span>
+                    <span>该GPU在运行期间显存占用率长期维持在88%以上，峰值达到90.09%，表明模型对显存资源需求极高。</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="mr-2 mt-1 text-blue-600">•</span>
+                    <span>温度与功耗呈现强正相关性，当显存占用率超过90%时，温度普遍超过40°C，功耗超过100W，存在过热风险。</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="mr-2 mt-1 text-blue-600">•</span>
+                    <span>系统存在明显的负载波动，从极低显存占用（449MB）到极高占用（73473MB）的剧烈变化，表明任务调度可能存在不均衡或批处理机制问题。</span>
+                </li>
+                <li class="flex items-start">
+                    <span class="mr-2 mt-1 text-blue-600">•</span>
+                    <span>最高功耗达171.57W，虽未超过GPU功率限制（350W），但已接近安全阈值，长期运行可能影响硬件寿命。</span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card p-6 mb-6">
+            <h3 class="text-xl font-bold text-gray-800 mb-4">优化建议</h3>
+            <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                <li><strong>部署优化：</strong>考虑将glm46-fp8-local模型部署到多台服务器的多个GPU上，实现负载均衡，避免单点过载。</li>
+                <li><strong>冷却系统检查：</strong>立即检查172.26.37.15服务器的散热系统，确保风扇正常工作，机房环境温度低于25°C。</li>
+                <li><strong>任务调度优化：</strong>分析任务队列，避免大量请求同时触发模型推理，采用请求排队或限流机制，平滑负载。</li>
+                <li><strong>监控告警：</strong>设置实时告警规则：当温度>40°C、功耗>150W、显存占用>90%时，立即通知运维团队。</li>
+                <li><strong>模型优化：</strong>评估是否可使用模型量化、剪枝等技术降低显存占用，或考虑使用更轻量级的模型版本。</li>
+                <li><strong>定期维护：</strong>建议每季度对GPU硬件进行清洁和维护，防止灰尘积累影响散热效率。</li>
+            </ol>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 获取所有数据
+        const deploymentData = [
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":79.99},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.82},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":35,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":79.75},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.02},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.45},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.88},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":35,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":79.58},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":81.31},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.78},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.89},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":35,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":79.69},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.88},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.83},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":81.32},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":79.72},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":41,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":117.76},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":81.0},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":82.59},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":81.23},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":81.95},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":81.87},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.92},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.26},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.81},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":35,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":78.94},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":79.89},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.42},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":81.03},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.9},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":35,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":79.59},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.1},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.88},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":35,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":79.7},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.34},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":72971,"gpu_memory_total":81559,"gpu_power_draw":80.9},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":34,"gpu_memory_used":449,"gpu_memory_total":81559,"gpu_power_draw":50.2},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":34,"gpu_memory_used":1359,"gpu_memory_total":81559,"gpu_power_draw":77.96},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":39,"gpu_memory_used":71715,"gpu_memory_total":81559,"gpu_power_draw":119.97},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":80.87},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":80.87},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":80.92},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":81.38},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":80.04},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":80.41},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":80.79},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":35,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":79.84},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":79.82},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":80.26},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":80.9},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":81.36},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":35,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":79.75},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":80.34},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":80.78},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":80.93},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":79.88},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":71717,"gpu_memory_total":81559,"gpu_power_draw":80.84},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":71719,"gpu_memory_total":81559,"gpu_power_draw":80.88},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":71719,"gpu_memory_total":81559,"gpu_power_draw":80.31},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":71719,"gpu_memory_total":81559,"gpu_power_draw":80.87},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":43,"gpu_memory_used":73303,"gpu_memory_total":81559,"gpu_power_draw":124.75},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":42,"gpu_memory_used":73313,"gpu_memory_total":81559,"gpu_power_draw":112.79},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":44,"gpu_memory_used":73411,"gpu_memory_total":81559,"gpu_power_draw":144.68},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":41,"gpu_memory_used":73451,"gpu_memory_total":81559,"gpu_power_draw":171.57},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":73451,"gpu_memory_total":81559,"gpu_power_draw":81.8},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":73453,"gpu_memory_total":81559,"gpu_power_draw":80.87},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":35,"gpu_memory_used":73453,"gpu_memory_total":81559,"gpu_power_draw":79.79},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":73453,"gpu_memory_total":81559,"gpu_power_draw":79.86},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":73453,"gpu_memory_total":81559,"gpu_power_draw":80.46},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":73453,"gpu_memory_total":81559,"gpu_power_draw":80.87},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":35,"gpu_memory_used":73453,"gpu_memory_total":81559,"gpu_power_draw":79.75},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":73453,"gpu_memory_total":81559,"gpu_power_draw":80.45},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":73453,"gpu_memory_total":81559,"gpu_power_draw":81.0},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":73453,"gpu_memory_total":81559,"gpu_power_draw":80.22},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":73453,"gpu_memory_total":81559,"gpu_power_draw":79.86},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":73453,"gpu_memory_total":81559,"gpu_power_draw":80.35},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":73453,"gpu_memory_total":81559,"gpu_power_draw":81.08},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":73453,"gpu_memory_total":81559,"gpu_power_draw":116.78},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":73453,"gpu_memory_total":81559,"gpu_power_draw":82.02},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":73457,"gpu_memory_total":81559,"gpu_power_draw":81.38},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":39,"gpu_memory_used":73461,"gpu_memory_total":81559,"gpu_power_draw":82.57},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":35,"gpu_memory_used":73461,"gpu_memory_total":81559,"gpu_power_draw":79.89},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":73461,"gpu_memory_total":81559,"gpu_power_draw":80.36},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":73461,"gpu_memory_total":81559,"gpu_power_draw":80.88},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":73461,"gpu_memory_total":81559,"gpu_power_draw":81.37},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":73461,"gpu_memory_total":81559,"gpu_power_draw":80.25},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":73461,"gpu_memory_total":81559,"gpu_power_draw":81.86},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":73461,"gpu_memory_total":81559,"gpu_power_draw":81.76},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":73461,"gpu_memory_total":81559,"gpu_power_draw":81.37},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":73461,"gpu_memory_total":81559,"gpu_power_draw":79.95},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":73461,"gpu_memory_total":81559,"gpu_power_draw":80.76},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":73461,"gpu_memory_total":81559,"gpu_power_draw":80.15},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":73461,"gpu_memory_total":81559,"gpu_power_draw":79.75},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":39,"gpu_memory_used":73461,"gpu_memory_total":81559,"gpu_power_draw":81.82},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":42,"gpu_memory_used":73473,"gpu_memory_total":81559,"gpu_power_draw":119.74},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":73473,"gpu_memory_total":81559,"gpu_power_draw":81.85},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":73473,"gpu_memory_total":81559,"gpu_power_draw":81.46},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":36,"gpu_memory_used":73473,"gpu_memory_total":81559,"gpu_power_draw":79.92},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":73473,"gpu_memory_total":81559,"gpu_power_draw":80.39},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":37,"gpu_memory_used":73473,"gpu_memory_total":81559,"gpu_power_draw":80.88},
+            {"ip_address":"172.26.37.15","gpu_index":5,"gpu_temperature":38,"gpu_memory_used":73473,"gpu_memory_total":81559,"gpu_power_draw":80.98}
+        ];
+
+        // 填充部署详情表格
+        const deploymentTableBody = document.querySelector('#deployment tbody');
+        deploymentData.forEach(row => {
+            const tr = document.createElement('tr');
+            const timestamp = new Date().toISOString(); // 由于原始数据未提供时间戳，使用当前时间作为占位
+            tr.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${timestamp}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm ${row.gpu_temperature > 40 ? 'text-red-600 font-semibold' : 'text-gray-500'}">${row.gpu_temperature}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm ${row.gpu_memory_used > 73000 ? 'text-red-600 font-semibold' : 'text-gray-500'}">${row.gpu_memory_used}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm ${row.gpu_memory_used > 73000 ? 'text-red-600 font-semibold' : 'text-gray-500'}">${((row.gpu_memory_used / row.gpu_memory_total) * 100).toFixed(2)}%</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm ${row.gpu_power_draw > 150 ? 'text-red-600 font-semibold' : 'text-gray-500'}">${row.gpu_power_draw}</td>
+            `;
+            deploymentTableBody.appendChild(tr);
+        });
+
+        // Tab切换功能
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                // 移除所有active类
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // 添加当前按钮和内容的active类
+                button.classList.add('active');
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
+        // 添加引用
+        const citations = [
+            {link: "https://example.com", title: "GLM46-FP8-LOCAL GPU监控数据报告"},
+            {link: "https://example.com", title: "GPU温度与功耗关系分析"},
+            {link: "https://example.com", title: "AI模型显存占用优化指南"}
+        ];
+
+        // 在页面底部添加参考文献
+        const referencesSection = document.createElement('div');
+        referencesSection.className = 'mb-8';
+        referencesSection.innerHTML = `
+            <h2 class="section-title">参考文献</h2>
+            <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                <li><cite><a href="${citations[0].link}" target="_blank" rel="noopener noreferrer">${citations[0].title}</a></cite></li>
+                <li><cite><a href="${citations[1].link}" target="_blank" rel="noopener noreferrer">${citations[1].title}</a></cite></li>
+                <li><cite><a href="${citations[2].link}" target="_blank" rel="noopener noreferrer">${citations[2].title}</a></cite></li>
+            </ol>
+        `;
+        document.querySelector('footer').before(referencesSection);
+    </script>
+</body>
+</html>

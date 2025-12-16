@@ -1,0 +1,2 @@
+ip_address,gpu_index,model_name,call_count,avg_latency,avg_gpu_util,avg_gpu_memory_used
+172.26.37.12,0,qwen3-vl-8b-instruct-local,37210,51.075,0.968,49315.5406

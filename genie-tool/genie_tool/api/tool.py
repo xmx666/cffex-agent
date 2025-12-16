@@ -11,6 +11,7 @@ import time
 
 from fastapi import APIRouter
 from sse_starlette import ServerSentEvent, EventSourceResponse
+from loguru import logger
 
 from genie_tool.model.code import ActionOutput, CodeOuput
 from genie_tool.model.protocal import CIRequest, ReportRequest, DeepSearchRequest
@@ -25,9 +26,9 @@ router = APIRouter(route_class=RequestHandlerRoute)
 
 @router.post("/code_interpreter")
 async def post_code_interpreter(
-    body: CIRequest,
+        body: CIRequest,
 ):
-     # 处理文件路径
+    # 处理文件路径
     if body.file_names:
         for idx, f_name in enumerate(body.file_names):
             if not f_name.startswith("/") and not f_name.startswith("http"):
@@ -38,12 +39,11 @@ async def post_code_interpreter(
         acc_token = 0
         acc_time = time.time()
         async for chunk in code_interpreter_agent(
-            task=body.task,
-            file_names=body.file_names,
-            request_id=body.request_id,
-            stream=True,
+                task=body.task,
+                file_names=body.file_names,
+                request_id=body.request_id,
+                stream=True,
         ):
-
 
             if isinstance(chunk, CodeOuput):
                 yield ServerSentEvent(
@@ -119,7 +119,6 @@ async def post_code_interpreter(
                             ensure_ascii=False,
                         )
                     )
-            
 
     if body.stream:
         return EventSourceResponse(
@@ -130,9 +129,9 @@ async def post_code_interpreter(
     else:
         content = ""
         async for chunk in code_interpreter_agent(
-            task=body.task,
-            file_names=body.file_names,
-            stream=body.stream,
+                task=body.task,
+                file_names=body.file_names,
+                stream=body.stream,
         ):
             content += chunk
         file_info = [
@@ -153,21 +152,28 @@ async def post_code_interpreter(
 
 @router.post("/report")
 async def post_report(
-    body: ReportRequest,
+        body: ReportRequest,
 ):
     # 处理文件路径
     if body.file_names:
         for idx, f_name in enumerate(body.file_names):
             if not f_name.startswith("/") and not f_name.startswith("http"):
                 body.file_names[idx] = f"{os.getenv('FILE_SERVER_URL')}/preview/{body.request_id}/{f_name}"
-    
+
     def _parser_html_content(content: str):
+        """
+        移除markdown代码块标记，保留原始HTML格式
+        大模型返回的HTML代码本身是正确的，不需要修复空格
+        """
         if content.startswith("```\nhtml"):
-            content = content[len("```\nhtml"): ]
+            content = content[len("```\nhtml"):]
         if content.startswith("```html"):
-            content = content[len("```html"): ]
+            content = content[len("```html"):]
         if content.endswith("```"):
             content = content[: -3]
+
+        # 只移除markdown代码块标记，不修改HTML内容本身
+        # 大模型返回的HTML代码格式是正确的，应该原样保留
         return content
 
     async def _stream():
@@ -175,10 +181,17 @@ async def post_report(
         acc_content = ""
         acc_token = 0
         acc_time = time.time()
+        # 调试：检查 tool_results 是否接收
+        tool_results = getattr(body, 'tool_results', None)
+        logger.info(
+            f"post_report 接收到 tool_results: {tool_results is not None}, 数量: {len(tool_results) if tool_results else 0}")
+        if tool_results:
+            logger.info(f"post_report tool_results 第一个结果长度: {len(tool_results[0]) if tool_results[0] else 0}")
         async for chunk in report(
-            task=body.task,
-            file_names=body.file_names,
-            file_type=body.file_type,
+                task=body.task,
+                file_names=body.file_names,
+                file_type=body.file_type,
+                tool_results=tool_results,
         ):
             content += chunk
             acc_content += chunk
@@ -225,7 +238,7 @@ async def post_report(
         if body.file_type in ["ppt", "html"]:
             content = _parser_html_content(content)
         file_info = [await upload_file(content=content, file_name=body.file_name, request_id=body.request_id,
-                                 file_type="html" if body.file_type == "ppt" else body.file_type)]
+                                       file_type="html" if body.file_type == "ppt" else body.file_type)]
         yield ServerSentEvent(data=json.dumps(
             {"requestId": body.request_id, "data": content, "fileInfo": file_info,
              "isFinal": True}, ensure_ascii=False))
@@ -240,24 +253,26 @@ async def post_report(
     else:
         content = ""
         async for chunk in report(
-            task=body.task,
-            file_names=body.file_names,
-            file_type=body.file_type,
+                task=body.task,
+                file_names=body.file_names,
+                file_type=body.file_type,
+                tool_results=getattr(body, 'tool_results', None),
         ):
             content += chunk
         if body.file_type in ["ppt", "html"]:
             content = _parser_html_content(content)
         file_info = [await upload_file(content=content, file_name=body.file_name, request_id=body.request_id,
-                                 file_type="html" if body.file_type == "ppt" else body.file_type)]
+                                       file_type="html" if body.file_type == "ppt" else body.file_type)]
         return {"code": 200, "data": content, "fileInfo": file_info, "requestId": body.request_id}
 
 
 @router.post("/deepsearch")
 async def post_deepsearch(
-    body: DeepSearchRequest,
+        body: DeepSearchRequest,
 ):
     """深度搜索端点"""
     deepsearch = DeepSearch(engines=body.search_engines)
+
     async def _stream():
         async for chunk in deepsearch.run(
                 query=body.query,

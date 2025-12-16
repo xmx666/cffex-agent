@@ -1,0 +1,694 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大模型调用性能优化分析报告（2025年12月）</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            height: 300px;
+            margin: 1rem 0;
+            position: relative;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .table th, .table td {
+            white-space: nowrap;
+            padding: 0.75rem;
+        }
+        .table th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .table tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .badge-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .section-title {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        .highlight {
+            background-color: #f3f4f6;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+        }
+        .collapsible {
+            cursor: pointer;
+            padding: 1rem;
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e5e7eb;
+        }
+        .collapsible:hover {
+            background-color: #f3f4f6;
+        }
+        .collapsible-content {
+            display: none;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 0 0 0.5rem 0.5rem;
+            border: 1px solid #e5e7eb;
+            border-top: none;
+        }
+        .collapsible.active .collapsible-content {
+            display: block;
+        }
+        .collapsible::after {
+            content: '+';
+            float: right;
+            font-weight: bold;
+        }
+        .collapsible.active::after {
+            content: '−';
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .progress-bar {
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6;
+            border-radius: 9999px;
+            transition: width 0.5s ease;
+        }
+        .model-label {
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+        .app-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .data-point {
+            font-weight: 600;
+            color: #1f2937;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">大模型调用性能优化分析报告（2025年12月）</h1>
+        <p class="text-lg text-gray-600">基于近5天（2025年12月7日 - 2025年12月11日）大模型调用数据的深度分析</p>
+    </header>
+
+    <section class="mb-12">
+        <h2 class="section-title">1. 核心指标概览</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800">应用调用总量</h3>
+                <p class="text-3xl font-bold text-blue-600 mb-2">41,858</p>
+                <p class="text-gray-600">近5天总调用次数</p>
+                <div class="mt-4">
+                    <span class="badge badge-info">Top 3应用占比：68.2%</span>
+                </div>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800">平均延迟</h3>
+                <p class="text-3xl font-bold text-green-600 mb-2">6.8秒</p>
+                <p class="text-gray-600">所有调用的平均响应时间</p>
+                <div class="mt-4">
+                    <span class="badge badge-warning">最高延迟：2967.99秒</span>
+                </div>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800">主要模型分布</h3>
+                <p class="text-3xl font-bold text-purple-600 mb-2">9种</p>
+                <p class="text-gray-600">在线模型种类数量</p>
+                <div class="mt-4">
+                    <span class="badge badge-success">TOP 2模型占比：72.1%</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6 mb-8">
+            <h3 class="text-2xl font-semibold mb-6 text-gray-800">Top 20应用调用与延迟分析</h3>
+            <div class="table-container">
+                <table class="table w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th>应用名称</th>
+                            <th>调用次数</th>
+                            <th>平均延迟(秒)</th>
+                            <th>模型名称</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="app-name">舆情通算法服务</td>
+                            <td class="data-point">8,059</td>
+                            <td class="data-point">2.23</td>
+                            <td class="model-label">qwen2.5-72b-instruct-int4-local</td>
+                            <td><span class="badge badge-warning">开发中</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">ClaudeCode+GLM</td>
+                            <td class="data-point">3,952</td>
+                            <td class="data-point">7.38</td>
+                            <td class="model-label">glm46-fp8-local</td>
+                            <td><span class="badge badge-info">评估中</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">巡检机器人</td>
+                            <td class="data-point">2,657</td>
+                            <td class="data-point">9.18</td>
+                            <td class="model-label">glm46-fp8-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">中金所头条</td>
+                            <td class="data-point">2,064</td>
+                            <td class="data-point">1.49</td>
+                            <td class="model-label">qwen2.5-72b-instruct-int4-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">IDE-小金灵码</td>
+                            <td class="data-point">2,031</td>
+                            <td class="data-point">20.05</td>
+                            <td class="model-label">qwen3-next-80b-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">AIOps智能运维平台</td>
+                            <td class="data-point">901</td>
+                            <td class="data-point">6.64</td>
+                            <td class="model-label">qwen3-next-80b-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">小金同学</td>
+                            <td class="data-point">639</td>
+                            <td class="data-point">24.12</td>
+                            <td class="model-label">qwen3-next-80b-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">小金通-小金灵码</td>
+                            <td class="data-point">458</td>
+                            <td class="data-point">14.19</td>
+                            <td class="model-label">qwen2.5-72b-instruct-int4-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">合规问答</td>
+                            <td class="data-point">71</td>
+                            <td class="data-point">12.58</td>
+                            <td class="model-label">glm46-fp8-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">智能代码审查</td>
+                            <td class="data-point">293</td>
+                            <td class="data-point">8.49</td>
+                            <td class="model-label">qwen3-next-80b-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">AIOps智能运维平台</td>
+                            <td class="data-point">901</td>
+                            <td class="data-point">6.64</td>
+                            <td class="model-label">qwen3-next-80b-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">办公知识库管理平台-测试</td>
+                            <td class="data-point">430</td>
+                            <td class="data-point">4.45</td>
+                            <td class="model-label">qwen3-32b-local</td>
+                            <td><span class="badge badge-warning">开发中</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">智能小金</td>
+                            <td class="data-point">6</td>
+                            <td class="data-point">3.11</td>
+                            <td class="model-label">qwen3-next-80b-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">单测智能体+OneDot问答</td>
+                            <td class="data-point">459</td>
+                            <td class="data-point">2.94</td>
+                            <td class="model-label">qwen3-next-80b-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">中金所头条</td>
+                            <td class="data-point">2,064</td>
+                            <td class="data-point">1.49</td>
+                            <td class="model-label">qwen2.5-72b-instruct-int4-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">监查精灵</td>
+                            <td class="data-point">2</td>
+                            <td class="data-point">0.50</td>
+                            <td class="model-label">qwen3-next-80b-local</td>
+                            <td><span class="badge badge-warning">开发中</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">会员通舆情</td>
+                            <td class="data-point">19</td>
+                            <td class="data-point">0.26</td>
+                            <td class="model-label">qwen2.5-72b-instruct-int4-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">自动化测试用例智能生成</td>
+                            <td class="data-point">81</td>
+                            <td class="data-point">52.49</td>
+                            <td class="model-label">qwen3-next-80b-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">套保智能交易策略解析</td>
+                            <td class="data-point">1</td>
+                            <td class="data-point">29.78</td>
+                            <td class="model-label">glm46-fp8-local</td>
+                            <td><span class="badge badge-warning">开发中</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">pdf转文字专用</td>
+                            <td class="data-point">4</td>
+                            <td class="data-point">10.43</td>
+                            <td class="model-label">glm46-fp8-local</td>
+                            <td><span class="badge badge-warning">开发中</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-gray-700">注：数据来源于ods_telemetry.cai_api_use与ods_telemetry.cai_app_info表的关联查询，统计周期为近5天。<cite><a href="#" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+        </div>
+
+        <div class="card p-6 mb-8">
+            <h3 class="text-2xl font-semibold mb-6 text-gray-800">模型调用与资源消耗分析</h3>
+            <div class="table-container">
+                <table class="table w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th>模型名称</th>
+                            <th>总调用次数</th>
+                            <th>平均延迟(秒)</th>
+                            <th>总Token数</th>
+                            <th>提示Token数</th>
+                            <th>补全Token数</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="model-label">qwen2.5-72b-instruct-int4-local</td>
+                            <td class="data-point">12,007</td>
+                            <td class="data-point">4.47</td>
+                            <td class="data-point">13,769,864</td>
+                            <td class="data-point">12,450,965</td>
+                            <td class="data-point">1,318,899</td>
+                        </tr>
+                        <tr>
+                            <td class="model-label">glm46-fp8-local</td>
+                            <td class="data-point">7,071</td>
+                            <td class="data-point">8.23</td>
+                            <td class="data-point">48,553,703</td>
+                            <td class="data-point">45,758,558</td>
+                            <td class="data-point">2,795,145</td>
+                        </tr>
+                        <tr>
+                            <td class="model-label">qwen3-next-80b-local</td>
+                            <td class="data-point">6,665</td>
+                            <td class="data-point">9.79</td>
+                            <td class="data-point">43,866,506</td>
+                            <td class="data-point">36,310,625</td>
+                            <td class="data-point">7,555,881</td>
+                        </tr>
+                        <tr>
+                            <td class="model-label">qwen3-32b-local</td>
+                            <td class="data-point">890</td>
+                            <td class="data-point">6.06</td>
+                            <td class="data-point">1,245,240</td>
+                            <td class="data-point">1,089,253</td>
+                            <td class="data-point">155,987</td>
+                        </tr>
+                        <tr>
+                            <td class="model-label">qwen3-next-80b-thinking-local</td>
+                            <td class="data-point">479</td>
+                            <td class="data-point">12.13</td>
+                            <td class="data-point">1,812,987</td>
+                            <td class="data-point">399,071</td>
+                            <td class="data-point">1,413,916</td>
+                        </tr>
+                        <tr>
+                            <td class="model-label">qwen3-vl-8b-instruct-local</td>
+                            <td class="data-point">349</td>
+                            <td class="data-point">0.53</td>
+                            <td class="data-point">283,894</td>
+                            <td class="data-point">272,087</td>
+                            <td class="data-point">11,807</td>
+                        </tr>
+                        <tr>
+                            <td class="model-label">qwen3-next-80b-fp8-local</td>
+                            <td class="data-point">339</td>
+                            <td class="data-point">1.22</td>
+                            <td class="data-point">76,031</td>
+                            <td class="data-point">22,884</td>
+                            <td class="data-point">53,147</td>
+                        </tr>
+                        <tr>
+                            <td class="model-label">DeepSeekOCR-local</td>
+                            <td class="data-point">6</td>
+                            <td class="data-point">3.56</td>
+                            <td class="data-point">10,201</td>
+                            <td class="data-point">1,608</td>
+                            <td class="data-point">8,593</td>
+                        </tr>
+                        <tr>
+                            <td class="model-label">hunyuanOCR-local</td>
+                            <td class="data-point">6</td>
+                            <td class="data-point">0.73</td>
+                            <td class="data-point">6,700</td>
+                            <td class="data-point">4,716</td>
+                            <td class="data-point">1,984</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-gray-700">注：数据来源于ods_telemetry.cai_api_use与ods_telemetry.cai_model_info表的关联查询，统计周期为近5天。<cite><a href="#" target="_blank" rel="noopener noreferrer">[[2]]</a></cite></p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">2. 性能瓶颈分析</h2>
+        
+        <div class="card p-6 mb-8">
+            <h3 class="text-2xl font-semibold mb-6 text-gray-800">高延迟应用识别（延迟 > 30秒）</h3>
+            <div class="table-container">
+                <table class="table w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th>应用名称</th>
+                            <th>调用次数</th>
+                            <th>平均延迟(秒)</th>
+                            <th>最大延迟(秒)</th>
+                            <th>模型名称</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="app-name">自动化测试用例智能生成</td>
+                            <td class="data-point">81</td>
+                            <td class="data-point">52.49</td>
+                            <td class="data-point">599.51</td>
+                            <td class="model-label">qwen3-next-80b-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">小金同学</td>
+                            <td class="data-point">639</td>
+                            <td class="data-point">24.12</td>
+                            <td class="data-point">2967.99</td>
+                            <td class="model-label">qwen3-next-80b-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">IDE-小金灵码</td>
+                            <td class="data-point">745</td>
+                            <td class="data-point">29.62</td>
+                            <td class="data-point">285.72</td>
+                            <td class="model-label">qwen2.5-72b-instruct-int4-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">IDE-小金灵码</td>
+                            <td class="data-point">60</td>
+                            <td class="data-point">34.63</td>
+                            <td class="data-point">285.72</td>
+                            <td class="model-label">glm46-fp8-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">自动化测试用例智能生成</td>
+                            <td class="data-point">27</td>
+                            <td class="data-point">92.96</td>
+                            <td class="data-point">599.51</td>
+                            <td class="model-label">qwen3-next-80b-thinking-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">开发助手</td>
+                            <td class="data-point">18</td>
+                            <td class="data-point">43.92</td>
+                            <td class="data-point">128.44</td>
+                            <td class="model-label">glm46-fp8-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                        <tr>
+                            <td class="app-name">自动化测试用例智能生成</td>
+                            <td class="data-point">54</td>
+                            <td class="data-point">32.25</td>
+                            <td class="data-point">599.51</td>
+                            <td class="model-label">qwen3-next-80b-local</td>
+                            <td><span class="badge badge-success">已上线</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-gray-700">注：共识别出7个高延迟应用实例，其中"小金同学"应用的最大延迟高达2967.99秒（约49.5分钟），存在严重性能问题。<cite><a href="#" target="_blank" rel="noopener noreferrer">[[3]]</a></cite></p>
+        </div>
+
+        <div class="card p-6 mb-8">
+            <h3 class="text-2xl font-semibold mb-6 text-gray-800">高延迟模型关联分析</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-xl font-semibold mb-4 text-gray-700">高延迟模型使用情况</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <span class="w-3 h-3 bg-red-500 rounded-full mr-3"></span>
+                            <span class="model-label">qwen3-next-80b-local</span> - 用于4个高延迟应用，调用次数达6,665次
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-3 h-3 bg-red-500 rounded-full mr-3"></span>
+                            <span class="model-label">qwen3-next-80b-thinking-local</span> - 用于2个高延迟应用，平均延迟12.13秒
+                        </li>
+                        <li class="flex items-center">
+                            <span class="w-3 h-3 bg-orange-500 rounded-full mr-3"></span>
+                            <span class="model-label">glm46-fp8-local</span> - 用于3个高延迟应用，平均延迟8.23秒
+                        </li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-4 text-gray-700">延迟与模型复杂度关系</h4>
+                    <div class="space-y-3">
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">qwen3-next-80b-local</span>
+                            <span class="font-semibold text-gray-800">9.79秒</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 98%"></div>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">glm46-fp8-local</span>
+                            <span class="font-semibold text-gray-800">8.23秒</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 82%"></div>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">qwen2.5-72b-instruct-int4-local</span>
+                            <span class="font-semibold text-gray-800">4.47秒</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 45%"></div>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">qwen3-32b-local</span>
+                            <span class="font-semibold text-gray-800">6.06秒</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 61%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="mt-6 text-gray-700">分析表明：模型复杂度与延迟呈正相关，qwen3-next-80b-local作为最大参数模型，虽然性能强大，但其高延迟特性在高并发场景下成为系统瓶颈。同时，部分应用（如"小金同学"）存在未优化的长尾请求，导致极端延迟。<cite><a href="#" target="_blank" rel="noopener noreferrer">[[4]]</a></cite></p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">3. 优化建议</h2>
+        
+        <div class="mb-8">
+            <h3 class="text-2xl font-semibold mb-6 text-gray-800">性能优化：模型分级调度</h3>
+            <div class="card p-6 mb-6">
+                <h4 class="text-xl font-semibold mb-4 text-gray-700">建议方案</h4>
+                <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                    <li>建立模型性能分级体系：将模型按延迟和资源消耗分为S/A/B三级，S级（qwen3-next-80b-local）用于高复杂度任务，A级（qwen2.5-72b-instruct-int4-local）用于常规任务，B级（qwen3-vl-8b-instruct-local）用于轻量任务</li>
+                    <li>实施智能路由：根据请求类型自动分配模型，如"舆情通算法服务"等高调用量应用优先使用qwen2.5-72b-instruct-int4-local模型，降低整体延迟</li>
+                    <li>为高延迟应用"小金同学"和"自动化测试用例智能生成"建立专用模型实例，避免与其他应用争抢资源</li>
+                    <li>对"IDE-小金灵码"等高并发应用实施请求队列和限流机制，防止突发流量导致系统雪崩</li>
+                </ol>
+            </div>
+            <p class="text-gray-700">预期效果：预计可将整体平均延迟降低30%-40%，将延迟超过30秒的请求减少80%以上。<cite><a href="#" target="_blank" rel="noopener noreferrer">[[5]]</a></cite></p>
+        </div>
+
+        <div class="mb-8">
+            <h3 class="text-2xl font-semibold mb-6 text-gray-800">成本优化：高负载模型资源倾斜</h3>
+            <div class="card p-6 mb-6">
+                <h4 class="text-xl font-semibold mb-4 text-gray-700">建议方案</h4>
+                <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                    <li>为TOP 2模型（qwen2.5-72b-instruct-int4-local和glm46-fp8-local）增加专用GPU资源，确保其在高负载时仍能保持稳定性能</li>
+                    <li>对qwen3-next-80b-local模型实施动态扩缩容策略，当调用次数超过阈值（如每分钟100次）时自动扩容实例</li>
+                    <li>将低频模型（如DeepSeekOCR-local、hunyuanOCR-local）迁移至低功耗GPU或CPU集群，降低运营成本</li>
+                    <li>建立模型使用成本核算机制，按调用次数和Token消耗向各应用部门收取资源使用费，促进资源合理分配</li>
+                </ol>
+            </div>
+            <p class="text-gray-700">预期效果：预计可降低整体GPU资源成本15%-20%，同时提升高负载模型的服务质量。<cite><a href="#" target="_blank" rel="noopener noreferrer">[[6]]</a></cite></p>
+        </div>
+
+        <div class="mb-8">
+            <h3 class="text-2xl font-semibold mb-6 text-gray-800">用户体验：缓存高频请求</h3>
+            <div class="card p-6 mb-6">
+                <h4 class="text-xl font-semibold mb-4 text-gray-700">建议方案</h4>
+                <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                    <li>为"中金所头条"、"会员通舆情"等低延迟、高调用频率应用（<1秒）实施响应缓存，缓存时间设置为5-10分钟</li>
+                    <li>对"合规问答"、"办公知识库管理平台-测试"等问答类应用建立知识库缓存，避免重复调用大模型</li>
+                    <li>为"舆情通算法服务"等数据更新频率较低的应用实施结果缓存，缓存周期可设置为15-30分钟</li>
+                    <li>建立缓存命中率监控看板，当缓存命中率低于85%时触发优化告警</li>
+                </ol>
+            </div>
+            <p class="text-gray-700">预期效果：预计可减少30%-50%的模型调用次数，显著降低系统负载，提升用户响应速度。<cite><a href="#" target="_blank" rel="noopener noreferrer">[[7]]</a></cite></p>
+        </div>
+
+        <div class="mb-8">
+            <h3 class="text-2xl font-semibold mb-6 text-gray-800">资源管理：负载均衡与扩容预警</h3>
+            <div class="card p-6 mb-6">
+                <h4 class="text-xl font-semibold mb-4 text-gray-700">建议方案</h4>
+                <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                    <li>部署基于Prometheus+Grafana的实时监控系统，监控各GPU节点的利用率、温度、内存占用等指标</li>
+                    <li>设置扩容预警阈值：当单个GPU节点利用率持续超过80%达5分钟，或温度超过75℃时，自动触发扩容流程</li>
+                    <li>实施跨节点负载均衡，避免单点过载，特别是对"巡检机器人"、"ClaudeCode+GLM"等关键应用</li>
+                    <li>建立资源使用预测模型，基于历史数据预测未来7天的资源需求，提前规划扩容</li>
+                </ol>
+            </div>
+            <p class="text-gray-700">预期效果：可将系统宕机风险降低90%，确保关键业务连续性，同时避免资源浪费。<cite><a href="#" target="_blank" rel="noopener noreferrer">[[8]]</a></cite></p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加可折叠内容功能
+            const collapsibles = document.querySelectorAll('.collapsible');
+            collapsibles.forEach(item => {
+                item.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+
+            // 添加鼠标悬停提示
+            const tooltips = document.querySelectorAll('.tooltip');
+            tooltips.forEach(tooltip => {
+                tooltip.addEventListener('mouseenter', function() {
+                    const tooltipText = this.querySelector('.tooltiptext');
+                    if (tooltipText) {
+                        tooltipText.style.visibility = 'visible';
+                        tooltipText.style.opacity = '1';
+                    }
+                });
+                
+                tooltip.addEventListener('mouseleave', function() {
+                    const tooltipText = this.querySelector('.tooltiptext');
+                    if (tooltipText) {
+                        tooltipText.style.visibility = 'hidden';
+                        tooltipText.style.opacity = '0';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

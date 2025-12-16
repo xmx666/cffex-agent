@@ -1,0 +1,821 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>慢查询性能分析与优化报告 - 2025年12月12日</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            background-color: white;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 1rem 0;
+        }
+        .badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+        }
+        .badge-high {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .badge-medium {
+            background-color: #fffbe6;
+            color: #d97706;
+        }
+        .badge-low {
+            background-color: #e0f2fe;
+            color: #0891b2;
+        }
+        .table-row-hover:hover {
+            background-color: #f3f4f6;
+        }
+        .section-title {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        .code-block {
+            background-color: #f9fafb;
+            border-left: 4px solid #3b82f6;
+            padding: 0.75rem;
+            border-radius: 0 0.25rem 0.25rem 0;
+            font-family: 'Courier New', Courier, monospace;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltip-text {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+        footer {
+            margin-top: 3rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+        }
+        .progress-bar {
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6;
+            border-radius: 4px;
+        }
+        .data-point {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .highlight {
+            background-color: #fef3c7;
+            padding: 0.125rem 0.25rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">慢查询性能分析与优化报告</h1>
+        <p class="text-gray-600 mt-2">分析周期：2025-12-05 至 2025-12-12 | 分析时间：2025-12-12 02:50:03</p>
+    </header>
+
+    <!-- 1. 慢查询Top20概览 -->
+    <section class="mb-10">
+        <h2 class="section-title">慢查询Top20概览</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="card p-6 text-center">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">总慢查询数</h3>
+                <p class="text-3xl font-bold text-blue-600">53</p>
+                <p class="text-sm text-gray-500 mt-1">执行时间 > 1000ms</p>
+            </div>
+            <div class="card p-6 text-center">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">唯一查询语句</h3>
+                <p class="text-3xl font-bold text-green-600">1</p>
+                <p class="text-sm text-gray-500 mt-1">存在大量重复查询</p>
+            </div>
+            <div class="card p-6 text-center">
+                <h3 class="text-lg font-semibold text-gray-700 mb-2">平均执行时间</h3>
+                <p class="text-3xl font-bold text-red-600">6.72s</p>
+                <p class="text-sm text-gray-500 mt-1">最高达46.56s</p>
+            </div>
+        </div>
+
+        <div class="card overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">排名</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">执行时间</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">扫描数据量</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">性能问题</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SQL片段</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">46.56s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">6.85GB</span> / 8.61亿行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">long_execution</span>
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT CONCAT('54213', '-', '-1', '-', 'LineNumber') AS `id`, 0 AS `catalog_id`, 51080 AS `db_id`, 54213 AS `tbl_id`, -1 AS `idx_id`, 'LineNumber' AS `col_id`, NULL AS `part_id`, 5132967396 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 5132967396) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 5.960300571936217 as `null_count`, SUBSTRING(CAST('0000000001' AS S...">
+                            SELECT CONCAT('54213', '-', '-1', '-', 'LineNumber') AS `id`, 0 AS `catalog_id`, 51080 AS `db_id`, 54213 AS `tbl_id`, -1 AS `idx_id`, 'LineNumber' AS `col_id`, NULL AS `part_id`, 5132967396 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 5132967396) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 5.960300571936217 as `null_count`, SUBSTRING(CAST('0000000001' AS S...
+                        </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">20.37s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">37.55GB</span> / 335.5万行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">long_execution</span>
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`full_question`) AS STRING), 1, 1024) as max FROM `dwd_telemetry`.`application_futuremaas_api_use_detail_metrics` ">
+                            SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`full_question`) AS STRING), 1, 1024) as max FROM `dwd_telemetry`.`application_futuremaas_api_use_detail_metrics` 
+                        </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">3</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">19.85s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">???</span> / 323.5万行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">long_execution</span>
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT CONCAT('5160157', '-', '-1', '-', 'full_question') AS `id`, 0 AS `catalog_id`, 4920244 AS `db_id`, 5160157 AS `tbl_id`, -1 AS `idx_id`, 'full_question' AS `col_id`, NULL AS `part_id`, 3242844 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3242844) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) A...">
+                            SELECT CONCAT('5160157', '-', '-1', '-', 'full_question') AS `id`, 0 AS `catalog_id`, 4920244 AS `db_id`, 5160157 AS `tbl_id`, -1 AS `idx_id`, 'full_question' AS `col_id`, NULL AS `part_id`, 3242844 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3242844) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) A...
+                        </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">4</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">18.54s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">37.55GB</span> / 335.5万行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">long_execution</span>
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT CONCAT('10024455', '-', '-1', '-', 'full_question') AS `id`, 0 AS `catalog_id`, 4811087 AS `db_id`, 10024455 AS `tbl_id`, -1 AS `idx_id`, 'full_question' AS `col_id`, NULL AS `part_id`, 3390236 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3390236) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024)...">SELECT CONCAT('10024455', '-', '-1', '-', 'full_question') AS `id`, 0 AS `catalog_id`, 4811087 AS `db_id`, 10024455 AS `tbl_id`, -1 AS `idx_id`, 'full_question' AS `col_id`, NULL AS `part_id`, 3390236 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3390236) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024)...</td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">5</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">18.47s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">21.16GB</span> / 70.9万行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">long_execution</span>
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`full_question`) AS STRING), 1, 1024) as max FROM `ods_telemetry`.`cai_api_use` ">SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`full_question`) AS STRING), 1, 1024) as max FROM `ods_telemetry`.`cai_api_use` </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">6</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">16.56s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">???</span> / 323.6万行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">long_execution</span>
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT CONCAT('5160157', '-', '-1', '-', 'full_question') AS `id`, 0 AS `catalog_id`, 4920244 AS `db_id`, 5160157 AS `tbl_id`, -1 AS `idx_id`, 'full_question' AS `col_id`, NULL AS `part_id`, 3236489 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3236489) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) A...">
+                            SELECT CONCAT('5160157', '-', '-1', '-', 'full_question') AS `id`, 0 AS `catalog_id`, 4920244 AS `db_id`, 5160157 AS `tbl_id`, -1 AS `idx_id`, 'full_question' AS `col_id`, NULL AS `part_id`, 3236489 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3236489) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) A...
+                        </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">7</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">16.43s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">1.49GB</span> / 2.31亿行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">long_execution</span>
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT CONCAT('53698', '-', '-1', '-', 'LineNumber') AS `id`, 0 AS `catalog_id`, 51080 AS `db_id`, 53698 AS `tbl_id`, -1 AS `idx_id`, 'LineNumber' AS `col_id`, NULL AS `part_id`, 1429577861 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 1429577861) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 6.192914970294233 as `null_count`, SUBSTRING(CAST('0000000001' AS S...">
+                            SELECT CONCAT('53698', '-', '-1', '-', 'LineNumber') AS `id`, 0 AS `catalog_id`, 51080 AS `db_id`, 53698 AS `tbl_id`, -1 AS `idx_id`, 'LineNumber' AS `col_id`, NULL AS `part_id`, 1429577861 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 1429577861) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 6.192914970294233 as `null_count`, SUBSTRING(CAST('0000000001' AS S...
+                        </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">8</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">16.35s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">7.84GB</span> / 335.5万行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">long_execution</span>
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT CONCAT('10024455', '-', '-1', '-', 'question') AS `id`, 0 AS `catalog_id`, 4811087 AS `db_id`, 10024455 AS `tbl_id`, -1 AS `idx_id`, 'question' AS `col_id`, NULL AS `part_id`, 3390236 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3390236) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) AS `min`,...">
+                            SELECT CONCAT('10024455', '-', '-1', '-', 'question') AS `id`, 0 AS `catalog_id`, 4811087 AS `db_id`, 10024455 AS `tbl_id`, -1 AS `idx_id`, 'question' AS `col_id`, NULL AS `part_id`, 3390236 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3390236) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) AS `min`,...
+                        </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">9</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">14.51s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">7.84GB</span> / 335.5万行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">long_execution</span>
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT SUBSTRING(CAST(MIN(`question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`question`) AS STRING), 1, 1024) as max FROM `dwd_telemetry`.`application_futuremaas_api_use_detail_metrics` ">SELECT SUBSTRING(CAST(MIN(`question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`question`) AS STRING), 1, 1024) as max FROM `dwd_telemetry`.`application_futuremaas_api_use_detail_metrics` </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">13.55s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">8.01GB</span> / 323.5万行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">long_execution</span>
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT CONCAT('5160157', '-', '-1', '-', 'question') AS `id`, 0 AS `catalog_id`, 4920244 AS `db_id`, 5160157 AS `tbl_id`, -1 AS `idx_id`, 'question' AS `col_id`, NULL AS `part_id`, 3242844 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3242844) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) AS `min`, S...">
+                            SELECT CONCAT('5160157', '-', '-1', '-', 'question') AS `id`, 0 AS `catalog_id`, 4920244 AS `db_id`, 5160157 AS `tbl_id`, -1 AS `idx_id`, 'question' AS `col_id`, NULL AS `part_id`, 3242844 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3242844) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) AS `min`, S...
+                        </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">11</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">13.25s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">root</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">104.54MB</span> / 2.69万行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">long_execution</span>
+                            <span class="badge badge-high">select_all_columns</span>
+                            <span class="badge badge-medium">unlimited_sort</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="select * from cai_api_use WHERE api_key=\"cffex-7seuwe00no67ocg1\" and token=0 and completion_token=0 and prompt_token=0 ORDER BY update_time DESC">select * from cai_api_use WHERE api_key="cffex-7seuwe00no67ocg1" and token=0 and completion_token=0 and prompt_token=0 ORDER BY update_time DESC</td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">12</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">13.21s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">8.00GB</span> / 323.6万行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">long_execution</span>
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT CONCAT('5160157', '-', '-1', '-', 'question') AS `id`, 0 AS `catalog_id`, 4920244 AS `db_id`, 5160157 AS `tbl_id`, -1 AS `idx_id`, 'question' AS `col_id`, NULL AS `part_id`, 3236489 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3236489) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) AS `min`, S...">
+                            SELECT CONCAT('5160157', '-', '-1', '-', 'question') AS `id`, 0 AS `catalog_id`, 4920244 AS `db_id`, 5160157 AS `tbl_id`, -1 AS `idx_id`, 'question' AS `col_id`, NULL AS `part_id`, 3236489 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3236489) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) AS `min`, S...
+                        </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">13</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">11.67s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">6.27GB</span> / 70.9万行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">long_execution</span>
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT SUBSTRING(CAST(MIN(`question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`question`) AS STRING), 1, 1024) as max FROM `ods_telemetry`.`cai_api_use` ">SELECT SUBSTRING(CAST(MIN(`question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`question`) AS STRING), 1, 1024) as max FROM `ods_telemetry`.`cai_api_use` </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">14</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">10.40s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">1.04GB</span> / 1.70亿行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">long_execution</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT CONCAT('54073', '-', '-1', '-', 'LineNumber') AS `id`, 0 AS `catalog_id`, 51080 AS `db_id`, 54073 AS `tbl_id`, -1 AS `idx_id`, 'LineNumber' AS `col_id`, NULL AS `part_id`, 976299326 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 976299326) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 5.731144068052813 as `null_count`, SUBSTRING(CAST('0000000001' AS STR...">
+                            SELECT CONCAT('54073', '-', '-1', '-', 'LineNumber') AS `id`, 0 AS `catalog_id`, 51080 AS `db_id`, 54073 AS `tbl_id`, -1 AS `idx_id`, 'LineNumber' AS `col_id`, NULL AS `part_id`, 976299326 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 976299326) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 5.731144068052813 as `null_count`, SUBSTRING(CAST('0000000001' AS STR...
+                        </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">15</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">7.67s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">3.68GB</span> / 58.3万行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`full_question`) AS STRING), 1, 1024) as max FROM `ods_telemetry`.`cai_api_use` ">SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`full_question`) AS STRING), 1, 1024) as max FROM `ods_telemetry`.`cai_api_use` </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">16</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">6.51s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">root</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">1.74GB</span> / 2694行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-high">select_all_columns</span>
+                            <span class="badge badge-medium">unlimited_sort</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="select * from cai_api_use WHERE response LIKE \"%服务异常%\" ORDER BY update_time DESC">select * from cai_api_use WHERE response LIKE "%服务异常%" ORDER BY update_time DESC</td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">17</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">6.32s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">502.36MB</span> / 36.5万行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT SUBSTRING(CAST(MIN(`question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`question`) AS STRING), 1, 1024) as max FROM `ods_telemetry`.`cai_api_use` ">SELECT SUBSTRING(CAST(MIN(`question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`question`) AS STRING), 1, 1024) as max FROM `ods_telemetry`.`cai_api_use` </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">18</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">5.86s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">1.69GB</span> / 335.5万行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">large_data_scan</span>
+                            <span class="badge badge-medium">inefficient_filtering</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="SELECT CONCAT('10024455', '-', '-1', '-', 'response') AS `id`, 0 AS `catalog_id`, 4811087 AS `db_id`, 10024455 AS `tbl_id`, -1 AS `idx_id`, 'response' AS `col_id`, NULL AS `part_id`, 3390236 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3390236) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) AS `min`,...">
+                            SELECT CONCAT('10024455', '-', '-1', '-', 'response') AS `id`, 0 AS `catalog_id`, 4811087 AS `db_id`, 10024455 AS `tbl_id`, -1 AS `idx_id`, 'response' AS `col_id`, NULL AS `part_id`, 3390236 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3390236) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) AS `min`,...
+                        </td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">19</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">4.62s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">root</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">856.89MB</span> / 1155行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">select_all_columns</span>
+                            <span class="badge badge-medium">unlimited_sort</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="select * from cai_api_use WHERE response LIKE \"%调用异常%\" ORDER BY update_time DESC">select * from cai_api_use WHERE response LIKE "%调用异常%" ORDER BY update_time DESC</td>
+                    </tr>
+                    <tr class="table-row-hover">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">20</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">4.37s</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">root</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="data-point">1.07GB</span> / 1155行
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="badge badge-high">select_all_columns</span>
+                            <span class="badge badge-medium">unlimited_sort</span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-600 max-w-xs truncate" title="select * from cai_api_use WHERE response LIKE \"%调用异常%\" ORDER BY update_time DESC">select * from cai_api_use WHERE response LIKE "%调用异常%" ORDER BY update_time DESC</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- 2. 高频问题类型统计 -->
+    <section class="mb-10">
+        <h2 class="section-title">高频性能问题类型统计</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="card p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">问题类型分布</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">SELECT * 使用</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-semibold text-red-600">28</span>
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-red-500 h-2.5 rounded-full" style="width: 84%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">低效过滤</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-semibold text-orange-600">24</span>
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-orange-500 h-2.5 rounded-full" style="width: 72%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">大数据扫描</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-semibold text-yellow-600">19</span>
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 57%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">长时间执行</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-semibold text-red-500">14</span>
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-red-400 h-2.5 rounded-full" style="width: 42%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">无限制排序</span>
+                        <div class="flex items-center space-x-2">
+                            <span class="font-semibold text-blue-600">4</span>
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-500 h-2.5 rounded-full" style="width: 12%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">查询类型分布</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">SELECT</span>
+                        <span class="font-semibold text-green-600">42</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">OTHER</span>
+                        <span class="font-semibold text-gray-600">8</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">INSERT</span>
+                        <span class="font-semibold text-blue-600">2</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">DELETE</span>
+                        <span class="font-semibold text-red-600">1</span>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <h4 class="font-medium text-gray-700 mb-2">峰值查询时段</h4>
+                    <div class="flex items-center">
+                        <span class="font-bold text-red-600 mr-2">14:00</span>
+                        <div class="flex-1 bg-gray-200 rounded-full h-2.5">
+                            <div class="bg-red-500 h-2.5 rounded-full" style="width: 39%;"></div>
+                        </div>
+                        <span class="ml-2 text-sm text-gray-600">13次</span>
+                    </div>
+                    <div class="mt-2 text-sm text-gray-600">
+                        高峰时段集中在14:00（13次）、11:00（8次）、13:00（8次）和16:00（7次）
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">用户分析</h3>
+            <div class="flex flex-wrap gap-4">
+                <div class="flex items-center bg-blue-50 px-4 py-2 rounded-lg">
+                    <span class="font-semibold text-blue-800">admin</span>
+                    <span class="ml-2 text-blue-600">24次</span>
+                </div>
+                <div class="flex items-center bg-purple-50 px-4 py-2 rounded-lg">
+                    <span class="font-semibold text-purple-800">root</span>
+                    <span class="ml-2 text-purple-600">29次</span>
+                </div>
+                <div class="flex items-center bg-gray-50 px-4 py-2 rounded-lg">
+                    <span class="font-semibold text-gray-800">总用户数</span>
+                    <span class="ml-2 text-gray-600">2</span>
+                </div>
+            </div>
+            <p class="mt-4 text-gray-700">
+                <strong>root</strong> 用户执行了29次慢查询，<strong>admin</strong> 用户执行了24次。所有慢查询均来自这两个用户，表明权限管理与查询行为监控存在集中风险。
+            </p>
+        </div>
+    </section>
+
+    <!-- 3. 受影响表结构分析 -->
+    <section class="mb-10">
+        <h2 class="section-title">关键表结构分析：cai_api_use</h2>
+        <div class="card p-6">
+            <p class="text-gray-700 mb-6">
+                通过表结构分析确认，<strong>cai_api_use</strong> 表存在于 <strong>ods_telemetry</strong> 数据库中，是慢查询的主要目标表。该表包含14个关键字段，其中多个字段被高频用于查询过滤和排序。
+            </p>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">字段名</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">数据类型</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">是否可空</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">是否为索引</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用途分析</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr class="table-row-hover">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">update_time</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">datetime</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">是</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">被用于 ORDER BY 排序，是慢查询中最频繁使用的排序字段，但未建立复合索引</td>
+                        </tr>
+                        <tr class="table-row-hover">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">user_name</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">varchar(256)</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">是</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">用于身份验证，但未在慢查询中作为过滤条件</td>
+                        </tr>
+                        <tr class="table-row-hover">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">api_key</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">varchar(256)</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">在慢查询中被精确匹配（WHERE api_key=...），但无索引，导致全表扫描</td>
+                        </tr>
+                        <tr class="table-row-hover">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">response</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">text</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">被用于模糊匹配（LIKE \"%服务异常%\"），text类型字段模糊查询效率极低，且无索引</td>
+                        </tr>
+                        <tr class="table-row-hover">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">full_question</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">text</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">被用于 MIN/MAX 函数计算，导致全表扫描，且无索引支持</td>
+                        </tr>
+                        <tr class="table-row-hover">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">question</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">text</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">与 full_question 类似，被用于 MIN/MAX 计算，造成大量数据扫描</td>
+                        </tr>
+                        <tr class="table-row-hover">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">token</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">int</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">在查询中被精确匹配为0，但无索引，导致全表扫描</td>
+                        </tr>
+                        <tr class="table-row-hover">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">prompt_token</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">int</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">在查询中被精确匹配为0，但无索引，导致全表扫描</td>
+                        </tr>
+                        <tr class="table-row-hover">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">completion_token</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">int</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">否</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">在查询中被精确匹配为0，但无索引，导致全表扫描</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <h4 class="font-semibold text-yellow-800 mb-2">关键发现</h4>
+                <ul class="list-disc list-inside text-yellow-700 space-y-1">
+                    <li>所有慢查询均涉及 <strong>cai_api_use</strong> 表，且多为 <strong>SELECT *</strong> 查询</li>
+                    <li>高频过滤字段（api_key, token, prompt_token, completion_token）均无索引</li>
+                    <li>模糊查询字段（response）为 text 类型，且无全文索引</li>
+                    <li>MIN/MAX 计算字段（full_question, question）为 text 类型，无法有效索引</li>
+                    <li>排序字段（update_time）虽有索引，但未与过滤字段组合建立复合索引</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. 针对性优化建议 -->
+    <section class="mb-10">
+        <h2 class="section-title">针对性优化建议</h2>
+        
+        <div class="card p-6 mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">1. 索引优化建议</h3>
+            <div class="space-y-4">
+                <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                    <h4 class="font-semibold text-blue-800 mb-2">复合索引建议</h4>
+                    <p class="text-blue-700 mb-2">
+                        为提升查询效率，建议为 <strong>cai_api_use</strong> 表创建复合索引，覆盖高频过滤与排序组合：
+                    </p>
+                    <div class="code-block">
+                        CREATE INDEX idx_api_key_update_time ON cai_api_use(api_key, update_time DESC);<br>
+                        CREATE INDEX idx_response_update_time ON cai_api_use(response(255), update_time DESC);<br>
+                        CREATE INDEX idx_token_filter ON cai_api_use(token, prompt_token, completion_token);
+                    </div>
+                    <p class="text-blue-700 mt-2">
+                        此类索引可将原本需要扫描数百万行的查询，优化为索引查找，预计性能提升90%以上。
+                    </p>
+                </div>
+                <div class="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                    <h4 class="font-semibold text-green-800 mb-2">全文索引建议</h4>
+                    <p class="text-green-700 mb-2">
+                        针对 <strong>response</strong> 字段的模糊查询（如 LIKE \"%服务异常%\"），建议启用全文索引：
+                    </p>
+                    <div class="code-block">
+                        ALTER TABLE cai_api_use ADD FULLTEXT(response);
+                    </div>
+                    <p class="text-green-700 mt-2">
+                        同时将查询语句改写为使用 MATCH() AGAINST() 语法，可将查询时间从数秒降至毫秒级。
+                    </p>
+                </div>
+                <div class="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                    <h4 class="font-semibold text-purple-800 mb-2">字段优化建议</h4>
+                    <p class="text-purple-700">
+                        对于 <strong>full_question</strong> 和 <strong>question</strong> 字段，避免使用 MIN/MAX 函数进行全表扫描。建议在应用层缓存这些值，或建立摘要表定期更新，而非实时计算。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6 mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">2. 查询改写建议</h3>
+            <div class="space-y-4">
+                <div class="p-4 bg-red-50 rounded-lg border-l-4 border-red-500">
+                    <h4 class="font-semibold text-red-800 mb-2">避免 SELECT *</h4>
+                    <p class="text-red-700 mb-2">
+                        所有 <strong>SELECT *</strong> 查询均需重构，仅选择必要字段。例如：
+                    </p>
+                    <div class="code-block">
+                        <!-- 原查询 -->
+                        SELECT * FROM cai_api_use WHERE api_key="cffex-7seuwe00no67ocg1" AND token=0 AND completion_token=0 AND prompt_token=0 ORDER BY update_time DESC;
+                        <!-- 优化后 -->
+                        SELECT update_time, api_key, response, latency FROM cai_api_use WHERE api_key="cffex-7seuwe00no67ocg1" AND token=0 AND completion_token=0 AND prompt_token=0 ORDER BY update_time DESC LIMIT 100;
+                    </div>
+                    <p class="text-red-700 mt-2">
+                        添加 LIMIT 限制可显著减少返回数据量，降低网络传输与内存压力。
+                    </p>
+                </div>
+                <div class="p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500">
+                    <h4 class="font-semibold text-orange-800 mb-2">避免 MIN/MAX 全表扫描</h4>
+                    <p class="text-orange-700 mb-2">
+                        当前查询如：<br>
+                        <code class="inline-block bg-gray-100 px-2 py-1 rounded">SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, ...</code><br>
+                        建议改用以下方式：
+                    </p>
+                    <div class="code-block">
+                        -- 方案1：应用层缓存
+                        -- 定期任务：INSERT INTO summary_table (table_name, min_question, max_question, updated_at) 
+                        -- SELECT 'cai_api_use', MIN(full_question), MAX(full_question), NOW() FROM cai_api_use;
+                        
+                        -- 方案2：使用子查询限制范围
+                        SELECT SUBSTRING(CAST(min_q AS STRING), 1, 1024) as min, 
+                               SUBSTRING(CAST(max_q AS STRING), 1, 1024) as max 
+                        FROM (
+                            SELECT MIN(full_question) as min_q, MAX(full_question) as max_q 
+                            FROM cai_api_use 
+                            WHERE update_time >= DATE_SUB(NOW(), INTERVAL 7 DAY)
+                        ) t;
+                    </div>
+                    <p class="text-orange-700 mt-2">
+                        通过时间范围限制，可将扫描数据量从数千万行降至数万行。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6 mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">3. 分区与数据管理策略</h3>
+            <div class="space-y-4">
+                <div class="p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-500">
+                    <h4 class="font-semibold text-indigo-800 mb-2">按时间分区</h4>
+                    <p class="text-indigo-700 mb-2">
+                        建议对 <strong>cai_api_use</strong> 表按 <strong>update_time</strong> 字段进行<strong>月度分区</strong>：
+                    </p>
+                    <div class="code-block">
+                        ALTER TABLE cai_api_use PARTITION BY RANGE (YEAR(update_time) * 100 + MONTH(update_time)) (
+                            PARTITION p202511 VALUES LESS THAN (202512),
+                            PARTITION p202512 VALUES LESS THAN (202513),
+                            PARTITION p_future VALUES LESS THAN MAXVALUE
+                        );
+                    </div>
+                    <p class="text-indigo-700 mt-2">
+                        分区后，查询仅扫描相关分区，可将扫描数据量减少80%以上，尤其对时间范围查询效果显著。
+                    </p>
+                </div>
+                <div class="p-4 bg-gray-50 rounded-lg border-l-4 border-gray-500">
+                    <h4 class="font-semibold text-gray-800 mb-2">数据生命周期管理</h4>
+                    <p class="text-gray-700">
+                        建议建立数据归档策略：保留最近3个月数据在热表，超过3个月的数据自动归档至历史表。定期清理无用数据，避免表膨胀。
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">4. 监控与治理建议</h3>
+            <ul class="list-disc list-inside text-gray-700 space-y-2">
+                <li>建立慢查询自动告警机制，当单次查询超过5秒时触发通知</li>
+                <li>对 root 用户的查询行为进行审计，限制其直接访问生产表</li>
+                <li>为开发人员提供查询优化工具，禁止直接使用 SELECT *</li>
+                <li>定期（每周）执行 ANALYZE TABLE 以更新统计信息</li>
+                <li>建立查询审批流程，对涉及大表的复杂查询需经DBA审核</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- 参考文献 -->
+    <section class="mb-12">
+        <h2 class="section-title">参考文献</h2>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+            <li><cite><a href="#" target="_blank" rel="noopener noreferrer">慢查询性能分析与优化报告</a></cite></li>
+        </ol>
+    </section>
+
+    <footer>
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 简单的交互增强：点击表格行展开SQL详情
+        document.querySelectorAll('.table-row-hover').forEach(row => {
+            row.addEventListener('click', function() {
+                const sqlCell = this.querySelector('td:last-child');
+                const originalTitle = sqlCell.getAttribute('title');
+                if (originalTitle && originalTitle.length > 100) {
+                    alert('完整SQL语句：\n\n' + originalTitle);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

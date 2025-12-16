@@ -3,6 +3,7 @@ package com.jd.genie.agent.agent;
 import com.jd.genie.agent.dto.File;
 import com.jd.genie.agent.dto.Message;
 import com.jd.genie.agent.dto.TaskSummaryResult;
+import com.jd.genie.agent.enums.RoleType;
 import com.jd.genie.agent.llm.LLM;
 import com.jd.genie.agent.util.SpringContextHolder;
 import com.jd.genie.config.GenieConfig;
@@ -56,7 +57,7 @@ public class SummaryAgent extends BaseAgent {
         }
         log.info("requestId: {} {} product files:{}", requestId, logFlag, files);
         String result = files.stream()
-                .filter(file -> !file.getIsInternalFile()) // 过滤内部文件
+                .filter(file -> !Boolean.TRUE.equals(file.getIsInternalFile())) // 过滤内部文件
                 .map(file -> file.getFileName() + " : " + file.getDescription())
                 .collect(Collectors.joining("\n"));
 
@@ -148,15 +149,25 @@ public class SummaryAgent extends BaseAgent {
             // 2. 构建系统消息（提取为独立方法）
             log.info("requestId: {} summaryTaskResult: messages:{}", requestId, messages.size());
             StringBuilder sb = new StringBuilder();
+            // 只使用TOOL角色的消息content（工具调用结果）进行总结，避免上下文过长
+            int toolMessageCount = 0;
             for (Message message : messages) {
-                String content = message.getContent();
-                if (content != null && content.length() > getMessageSizeLimit()) {
-                    log.info("requestId: {} message truncate,{}", requestId, message);
-                    content = content.substring(0, getMessageSizeLimit());
+                // 只提取TOOL角色的消息
+                if (message.getRole() == RoleType.TOOL) {
+                    String content = message.getContent();
+                    if (content != null && !content.trim().isEmpty()) {
+                        // 不限制工具结果的长度，避免重要信息缺失
+                        sb.append(String.format("工具执行结果 %d:\n%s\n\n", ++toolMessageCount, content));
+                    }
                 }
-                sb.append(String.format("role:%s content:%s\n", message.getRole(), content));
             }
-            String formattedPrompt = formatSystemPrompt(sb.toString(), query);
+            log.info("requestId: {} summaryTaskResult: 提取了 {} 个工具调用结果用于总结", requestId, toolMessageCount);
+            // 如果没有工具调用结果，使用空字符串，LLM会根据query生成总结
+            String taskHistory = sb.toString();
+            if (toolMessageCount == 0) {
+                log.warn("requestId: {} summaryTaskResult: 没有找到工具调用结果，将使用空的任务历史", requestId);
+            }
+            String formattedPrompt = formatSystemPrompt(taskHistory, query);
             Message userMessage = createSystemMessage(formattedPrompt);
 
             // 3. 调用LLM并处理结果

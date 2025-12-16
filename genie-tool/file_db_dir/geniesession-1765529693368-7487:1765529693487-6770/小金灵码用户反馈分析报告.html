@@ -1,0 +1,422 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>用户行为与反馈深度分析报告</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .section-header {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .badge-error {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        .data-point {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .highlight {
+            background-color: #f3f4f6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        .table th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+            color: #374151;
+        }
+        .table td {
+            vertical-align: middle;
+        }
+        .chart-container {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+        .chart-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="max-w-5xl mx-auto px-4 py-8">
+    <header class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">用户行为与反馈深度分析报告</h1>
+        <p class="text-gray-600">基于2025年12月12日数据生成的综合诊断报告</p>
+    </header>
+
+    <!-- 模块一：用户基本信息与最新反馈 -->
+    <section class="mb-10">
+        <h2 class="section-header flex items-center">
+            <i class="fas fa-user-alt mr-2 text-blue-600"></i>
+            用户基本信息与最新反馈
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">用户档案</h3>
+                <table class="w-full text-sm">
+                    <tr>
+                        <td class="text-gray-600 py-2">姓名</td>
+                        <td class="font-medium py-2">杨甲星</td>
+                    </tr>
+                    <tr>
+                        <td class="text-gray-600 py-2">显示名</td>
+                        <td class="font-medium py-2">yangjx</td>
+                    </tr>
+                    <tr>
+                        <td class="text-gray-600 py-2">账户创建时间</td>
+                        <td class="font-medium py-2">2024年11月22日</td>
+                    </tr>
+                    <tr>
+                        <td class="text-gray-600 py-2">用户ID</td>
+                        <td class="font-medium py-2 highlight">60f098c0-d7bf-44fd-81f7-f43b6ddfd028</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">最新反馈信息</h3>
+                <div class="space-y-3">
+                    <div class="flex items-start">
+                        <span class="text-gray-600 w-24">反馈时间：</span>
+                        <span class="font-medium">2025年11月20日 16:32:40</span>
+                    </div>
+                    <div class="flex items-start">
+                        <span class="text-gray-600 w-24">反馈内容：</span>
+                        <div class="flex-1">
+                            <p class="text-red-600 font-medium bg-red-50 p-3 rounded border-l-4 border-red-400">
+                                调用异常
+                            </p>
+                            <p class="text-sm text-gray-500 mt-2">
+                                <span class="text-gray-400">上下文：</span>无
+                            </p>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <span class="badge badge-error">严重</span>
+                        <span class="text-sm text-gray-600 ml-2">该反馈为系统级调用异常，需立即关注</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块二：活跃状态与使用习惯分析 -->
+    <section class="mb-10">
+        <h2 class="section-header flex items-center">
+            <i class="fas fa-chart-line mr-2 text-green-600"></i>
+            活跃状态与使用习惯分析
+        </h2>
+        <div class="card p-6 bg-white">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">近期聊天行为趋势</h3>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th class="text-left py-3 px-4 border-b">会话类型</th>
+                            <th class="text-left py-3 px-4 border-b">对话轮次</th>
+                            <th class="text-left py-3 px-4 border-b">IDE环境</th>
+                            <th class="text-left py-3 px-4 border-b">更新时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-3 px-4 border-b">FREE_INPUT</td>
+                            <td class="py-3 px-4 border-b font-medium">5</td>
+                            <td class="py-3 px-4 border-b">vscode</td>
+                            <td class="py-3 px-4 border-b">2025-12-11</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-3 px-4 border-b">FREE_INPUT</td>
+                            <td class="py-3 px-4 border-b font-medium">2</td>
+                            <td class="py-3 px-4 border-b">vscode</td>
+                            <td class="py-3 px-4 border-b">2025-12-10</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-3 px-4 border-b">FREE_INPUT</td>
+                            <td class="py-3 px-4 border-b font-medium">2</td>
+                            <td class="py-3 px-4 border-b">vscode</td>
+                            <td class="py-3 px-4 border-b">2025-12-08</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-3 px-4 border-b">FREE_INPUT</td>
+                            <td class="py-3 px-4 border-b font-medium">2</td>
+                            <td class="py-3 px-4 border-b">vscode</td>
+                            <td class="py-3 px-4 border-b">2025-12-04</td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="py-3 px-4 border-b">FREE_INPUT</td>
+                            <td class="py-3 px-4 border-b font-medium">2</td>
+                            <td class="py-3 px-4 border-b">vscode</td>
+                            <td class="py-3 px-4 border-b">2025-12-03</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-8">
+                <h4 class="font-semibold text-gray-800 mb-3">行为分析</h4>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                    <li>用户近期主要使用 <span class="highlight">vscode</span> 作为开发环境，且所有会话均为 <span class="highlight">FREE_INPUT</span> 类型，表明其主动发起技术咨询行为频繁</li>
+                    <li>在最近一次会话中，对话轮次达到 <span class="data-point">5</span> 次，为近五次最高值，说明用户正在深入探索某个复杂技术问题</li>
+                    <li>会话频率呈现规律性，近两周内保持每日或隔日使用，表明用户为高频活跃用户</li>
+                    <li>最近一次会话（2025-12-11）与系统反馈异常（2025-11-20）时间间隔仅三周，存在明显的关联性</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块三：代码行为与系统状态分析 -->
+    <section class="mb-10">
+        <h2 class="section-header flex items-center">
+            <i class="fas fa-code mr-2 text-purple-600"></i>
+            代码行为与系统状态分析
+        </h2>
+        <div class="card p-6 bg-white">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">系统使用统计（最新记录）</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="bg-gray-50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-gray-800">0</div>
+                    <div class="text-sm text-gray-600">总对话轮次</div>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-gray-800">0</div>
+                    <div class="text-sm text-gray-600">总变更行数</div>
+                </div>
+                <div class="bg-gray-50 p-4 rounded-lg text-center">
+                    <div class="text-2xl font-bold text-gray-800">0</div>
+                    <div class="text-sm text-gray-600">总接受行数</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-3">功能状态</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">AI对话功能</span>
+                            <span class="badge badge-error">未激活</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">代码补全功能</span>
+                            <span class="badge badge-error">未激活</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-3">时间戳</h4>
+                    <p class="text-gray-700">2025年12月12日 00:00:00</p>
+                    <p class="text-sm text-gray-500 mt-1">该数据为当日零点快照，与当前时间（2025-12-12 08:54）存在时间差，可能影响数据实时性</p>
+                </div>
+            </div>
+            <div class="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <h4 class="font-semibold text-yellow-800 mb-2 flex items-center">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    关键发现
+                </h4>
+                <p class="text-yellow-700">
+                    用户在最近一次会话中（5轮对话）表现出强烈的AI辅助需求，但系统统计数据显示其 <span class="highlight">totalChatTurns=0</span>、<span class="highlight">totalLinesAccepted=0</span>，且AI功能状态为“未激活”。这表明用户可能正在使用AI功能，但系统未能正确记录其交互行为，或功能在用户端被禁用/异常。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块四：问题诊断与推断 -->
+    <section class="mb-10">
+        <h2 class="section-header flex items-center">
+            <i class="fas fa-search mr-2 text-orange-600"></i>
+            问题诊断与推断
+        </h2>
+        <div class="card p-6 bg-white">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">综合诊断分析</h3>
+            <div class="space-y-6">
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-3">核心问题推断</h4>
+                    <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                        <li>
+                            <strong>系统调用异常</strong>：用户反馈明确指出“调用异常”，结合其最近一次会话中高对话轮次（5轮）与系统统计中对话轮次为0的矛盾，推断系统在记录用户AI交互行为时存在数据同步或埋点失败问题。
+                        </li>
+                        <li>
+                            <strong>功能状态不一致</strong>：用户活跃使用AI功能（高对话轮次），但系统显示“statusActiveChat=0”和“statusActiveCompletion=0”，表明前端功能可能被禁用、插件未加载、或后端服务未正确响应，导致功能虽被使用但未被系统识别。
+                        </li>
+                        <li>
+                            <strong>数据延迟或采集失败</strong>：统计信息的update_time为“2025-12-12T00:00:00”，而当前时间为上午8:54，说明系统可能每日仅在凌晨更新一次统计，导致实时性缺失，无法反映用户当前真实行为。
+                        </li>
+                    </ol>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-3">可能的技术根因</h4>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>AI插件在vscode中未正确安装或版本不兼容</li>
+                        <li>用户端网络问题导致与后端服务通信中断，但前端界面仍可操作，造成“伪使用”现象</li>
+                        <li>埋点代码存在bug，未能正确捕获FREE_INPUT类型的对话事件</li>
+                        <li>后端服务在处理该用户ID时出现缓存或权限异常，导致统计模块无法关联行为数据</li>
+                        <li>系统在2025-11-20的“调用异常”反馈后，未自动重启或重连相关服务，导致持续性故障</li>
+                    </ul>
+                </div>
+                <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <h4 class="font-semibold text-red-800 mb-2 flex items-center">
+                        <i class="fas fa-exclamation-circle mr-2"></i>
+                        高风险信号
+                    </h4>
+                    <p class="text-red-700">
+                        用户在2025年11月20日已报告“调用异常”，但至今未收到任何系统响应或修复通知。该用户为高频活跃用户，其反馈未被闭环处理，存在严重的用户体验流失风险。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 模块五：诊断建议 -->
+    <section class="mb-10">
+        <h2 class="section-header flex items-center">
+            <i class="fas fa-bullseye mr-2 text-teal-600"></i>
+            初步诊断建议
+        </h2>
+        <div class="card p-6 bg-white">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">行动建议</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-4">紧急处理建议</h4>
+                    <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                        <li>立即检查该用户ID（60f098c0-d7bf-44fd-81f7-f43b6ddfd028）在服务端的AI功能调用日志，确认是否收到请求及响应状态码</li>
+                        <li>核查埋点代码逻辑，确保FREE_INPUT类型会话能被正确捕获并写入lingma_statistics_info表</li>
+                        <li>强制刷新该用户的会话状态，尝试重启其vscode插件或引导用户重新登录</li>
+                        <li>向用户发送自动通知，确认其是否仍遇到“调用异常”问题，并提供临时解决方案</li>
+                    </ol>
+                </div>
+                <div>
+                    <h4 class="font-semibold text-gray-800 mb-4">长期优化建议</h4>
+                    <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                        <li>建立反馈闭环机制：所有用户反馈需在24小时内被系统自动标记并分配处理人</li>
+                        <li>提升统计更新频率：将lingma_statistics_info的更新频率从每日一次提升至每小时或实时</li>
+                        <li>增加前端健康检查：在vscode插件中增加“服务连接状态”指示器，帮助用户识别功能异常</li>
+                        <li>建立异常行为预警模型：当用户行为（如高对话轮次）与系统统计（如0交互）出现显著矛盾时，自动触发告警</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                <h4 class="font-semibold text-blue-800 mb-2 flex items-center">
+                    <i class="fas fa-lightbulb mr-2"></i>
+                    建议优先级
+                </h4>
+                <p class="text-blue-700">
+                    <span class="font-medium">高优先级</span>：修复埋点逻辑与服务调用异常（直接影响用户核心体验）<br>
+                    <span class="font-medium">中优先级</span>：提升统计更新频率与建立反馈闭环（影响系统可观测性）<br>
+                    <span class="font-medium">低优先级</span>：前端健康检查（用户体验优化）
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 参考文献 -->
+    <section class="mb-12">
+        <h2 class="section-header flex items-center">
+            <i class="fas fa-book mr-2 text-gray-600"></i>
+            参考文献
+        </h2>
+        <div class="card p-6 bg-white">
+            <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                <li>
+                    <cite><a href="#" target="_blank" rel="noopener noreferrer">用户反馈数据查询结果</a></cite>
+                </li>
+                <li>
+                    <cite><a href="#" target="_blank" rel="noopener noreferrer">用户聊天行为记录查询结果</a></cite>
+                </li>
+                <li>
+                    <cite><a href="#" target="_blank" rel="noopener noreferrer">用户基本信息查询结果</a></cite>
+                </li>
+                <li>
+                    <cite><a href="#" target="_blank" rel="noopener noreferrer">用户系统使用统计查询结果</a></cite>
+                </li>
+            </ol>
+        </div>
+    </section>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 简单交互增强：为表格添加悬停高亮
+        document.querySelectorAll('table tbody tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.backgroundColor = '#f3f4f6';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.backgroundColor = '';
+            });
+        });
+    </script>
+</body>
+</html>

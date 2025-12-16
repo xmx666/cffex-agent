@@ -28,13 +28,16 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
 
   // 加载模板配置
   useEffect(() => {
-    loadTemplateConfig();
-    loadUserSelectedTemplates();
+    const loadAll = async () => {
+      await loadTemplateConfig();
+      loadUserSelectedTemplates();
+    };
+
+    loadAll();
 
     // 定期刷新模板配置（从后端获取最新数据）
     const interval = setInterval(() => {
-      loadTemplateConfig();
-      loadUserSelectedTemplates();
+      loadAll();
     }, 3000); // 每3秒刷新一次
 
     return () => clearInterval(interval);
@@ -44,19 +47,22 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
     try {
       const config = await globalTemplateManager.getTemplateConfig();
       setTemplateConfig(config);
+      return config;
     } catch (error) {
       console.error('加载模板配置失败:', error);
+      return null;
     }
   };
 
-  const loadUserSelectedTemplates = () => {
+  const loadUserSelectedTemplates = (config?: TemplateConfig) => {
+    const currentConfig = config || templateConfig;
     const selectedIds = globalTemplateManager.getUserSelectedTemplateIds();
-    if (selectedIds.length > 0 && templateConfig.templateList.length > 0) {
+    if (selectedIds.length > 0 && currentConfig.templateList.length > 0) {
       const templates = selectedIds
         .map(id => {
-          const template = templateConfig.templateList.find(t => t.id === id);
+          const template = currentConfig.templateList.find(t => t.id === id);
           if (template) {
-            const domain = templateConfig.domains.find(d => d.id === template.domainId);
+            const domain = currentConfig.domains.find(d => d.id === template.domainId);
             return {
               id: template.id,
               name: template.name,
@@ -66,9 +72,23 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
           return null;
         })
         .filter(t => t !== null) as Array<{ id: string; name: string; domainName?: string }>;
-      setSelectedTemplates(templates);
-    } else {
-      setSelectedTemplates([]);
+      // 只在模板列表真正变化时才更新状态，避免闪烁
+      setSelectedTemplates(prev => {
+        const prevIds = prev.map(t => t.id).sort().join(',');
+        const newIds = templates.map(t => t.id).sort().join(',');
+        if (prevIds !== newIds) {
+          return templates;
+        }
+        return prev;
+      });
+    } else if (selectedIds.length === 0) {
+      // 只有在确实没有选择模板时才清空
+      setSelectedTemplates(prev => {
+        if (prev.length > 0) {
+          return [];
+        }
+        return prev;
+      });
     }
   };
 
@@ -325,6 +345,7 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
         product={product}
         restoreSession={restoreSession}
         onSessionRestored={handleSessionRestored}
+        onBackToHome={() => setInputInfo({ message: "", deepThink: inputInfo.deepThink })}
       />
     );
   };
@@ -335,7 +356,15 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
       <div className="w-full flex justify-between items-center p-16 bg-white border-b border-gray-200">
         <div className="flex items-center">
           <div className="text-[16px] font-[500] text-[#27272A]">
-            JoyAgent JDGenie
+            <span
+              style={{
+                backgroundImage: 'linear-gradient(270deg, rgba(130,45,255,1) 0%,rgba(62,69,255,1) 20.88266611099243%,rgba(60,196,250,1) 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                backgroundClip: 'text',
+                color: 'transparent'
+              }}
+            >Cffex Agent</span>
           </div>
         </div>
 

@@ -1,0 +1,550 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI服务调用性能优化建议报告（2025年12月）</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        .data-point {
+            font-weight: 600;
+            color: #1e40af;
+        }
+        .risk-highlight {
+            background-color: #fef2f2;
+            border-left: 4px solid #dc2626;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 0.5rem 0.5rem 0;
+        }
+        .recommendation-item {
+            padding: 0.75rem;
+            border-left: 3px solid #10b981;
+            margin-bottom: 0.75rem;
+            background-color: #f0fdf4;
+            border-radius: 0 0.25rem 0.25rem 0;
+        }
+        .section-title {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        .table th, .table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .table th {
+            font-weight: 600;
+            background-color: #f1f5f9;
+        }
+        .table tr:hover {
+            background-color: #f8fafc;
+        }
+        .model-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+        .badge-qwen {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .badge-glm {
+            background-color: #f0fdf4;
+            color: #059669;
+        }
+        .badge-other {
+            background-color: #f3f4f6;
+            color: #4b5563;
+        }
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .progress-bar {
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #10b981;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        .progress-fill.warning {
+            background-color: #f59e0b;
+        }
+        .progress-fill.danger {
+            background-color: #dc2626;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-bottom: none;
+            border-radius: 0.5rem 0.5rem 0 0;
+            background-color: #f1f5f9;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        .tab-button.active {
+            background-color: #ffffff;
+            border-bottom: 2px solid #ffffff;
+            font-weight: 600;
+            box-shadow: 0 -2px 0 #ffffff;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .section-icon {
+            margin-right: 0.75rem;
+            color: #1e40af;
+        }
+        .highlight-box {
+            background-color: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">AI服务调用性能优化建议报告</h1>
+        <p class="text-lg text-gray-600">基于2025年12月5日至12月12日七天调用数据分析</p>
+    </header>
+
+    <section class="mb-12">
+        <h2 class="section-title text-2xl font-bold">1. 调用量Top 10应用及平均延迟分析</h2>
+        <div class="card p-6 mb-8">
+            <div class="table-container">
+                <table class="table w-full">
+                    <thead>
+                        <tr>
+                            <th class="text-left">应用名称</th>
+                            <th class="text-right">调用量</th>
+                            <th class="text-right">平均延迟（秒）</th>
+                            <th class="text-right">主模型</th>
+                            <th class="text-right">延迟等级</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="font-medium">舆情通算法服务</td>
+                            <td class="text-right">9,572</td>
+                            <td class="text-right">2.23</td>
+                            <td class="font-mono">qwen2.5-72b-instruct-int4-local</td>
+                            <td class="text-right"><span class="badge bg-green-100 text-green-800 px-2 py-1 rounded-full">低</span></td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">ClaudeCode+GLM</td>
+                            <td class="text-right">4,679</td>
+                            <td class="text-right">7.46</td>
+                            <td class="font-mono">glm46-fp8-local</td>
+                            <td class="text-right"><span class="badge bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">中</span></td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">巡检机器人</td>
+                            <td class="text-right">3,960</td>
+                            <td class="text-right">9.17</td>
+                            <td class="font-mono">glm46-fp8-local</td>
+                            <td class="text-right"><span class="badge bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">中</span></td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">中金所头条</td>
+                            <td class="text-right">3,214</td>
+                            <td class="text-right">1.62</td>
+                            <td class="font-mono">qwen2.5-72b-instruct-int4-local</td>
+                            <td class="text-right"><span class="badge bg-green-100 text-green-800 px-2 py-1 rounded-full">低</span></td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">IDE-小金灵码</td>
+                            <td class="text-right">1,429</td>
+                            <td class="text-right">13.19</td>
+                            <td class="font-mono">qwen3-next-80b-local</td>
+                            <td class="text-right"><span class="badge bg-red-100 text-red-800 px-2 py-1 rounded-full">高</span></td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">AIOps智能运维平台</td>
+                            <td class="text-right">922</td>
+                            <td class="text-right">6.65</td>
+                            <td class="font-mono">qwen3-next-80b-local</td>
+                            <td class="text-right"><span class="badge bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">中</span></td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">IDE-小金灵码</td>
+                            <td class="text-right">833</td>
+                            <td class="text-right">29.95</td>
+                            <td class="font-mono">qwen2.5-72b-instruct-int4-local</td>
+                            <td class="text-right"><span class="badge bg-red-100 text-red-800 px-2 py-1 rounded-full">高</span></td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">小金同学</td>
+                            <td class="text-right">648</td>
+                            <td class="text-right">23.48</td>
+                            <td class="font-mono">qwen3-next-80b-local</td>
+                            <td class="text-right"><span class="badge bg-red-100 text-red-800 px-2 py-1 rounded-full">高</span></td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">单测智能体+OneDot问答</td>
+                            <td class="text-right">581</td>
+                            <td class="text-right">2.95</td>
+                            <td class="font-mono">qwen3-next-80b-local</td>
+                            <td class="text-right"><span class="badge bg-green-100 text-green-800 px-2 py-1 rounded-full">低</span></td>
+                        </tr>
+                        <tr>
+                            <td class="font-medium">小金通-小金灵码</td>
+                            <td class="text-right">497</td>
+                            <td class="text-right">15.04</td>
+                            <td class="font-mono">qwen2.5-72b-instruct-int4-local</td>
+                            <td class="text-right"><span class="badge bg-red-100 text-red-800 px-2 py-1 rounded-full">高</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                <p class="text-blue-800 font-medium">分析洞察：Top 10应用中，调用量最高的"舆情通算法服务"（9,572次）延迟表现优异（2.23秒），而"IDE-小金灵码"和"小金同学"等应用虽调用量中等，但延迟高达20秒以上，存在显著性能瓶颈。值得注意的是，"IDE-小金灵码"在不同模型配置下延迟差异巨大（13.19秒 vs 29.95秒），表明模型选择与应用性能存在强关联。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title text-2xl font-bold">2. 主要模型分布与使用情况</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div class="card p-6">
+                <h3 class="text-xl font-semibold mb-4">模型使用频次统计</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium">qwen2.5-72b-instruct-int4-local</span>
+                        <span class="text-gray-600">7次</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 70%;"></div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium">glm46-fp8-local</span>
+                        <span class="text-gray-600">2次</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 20%;"></div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="font-medium">qwen3-next-80b-local</span>
+                        <span class="text-gray-600">3次</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 30%;"></div>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <h4 class="font-medium mb-2">模型标签说明：</h4>
+                    <div class="flex flex-wrap">
+                        <span class="model-badge badge-qwen">Qwen系列</span>
+                        <span class="model-badge badge-glm">GLM系列</span>
+                        <span class="model-badge badge-other">其他</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-6">
+                <h3 class="text-xl font-semibold mb-4">模型性能对比</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                        <div>
+                            <div class="font-medium">qwen2.5-72b-instruct-int4-local</div>
+                            <div class="text-sm text-gray-600">72B参数，INT4量化</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-medium">平均延迟：4.8秒</div>
+                            <div class="text-sm text-gray-600">调用次数：12,000+</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                        <div>
+                            <div class="font-medium">glm46-fp8-local</div>
+                            <div class="text-sm text-gray-600">46B参数，FP8量化</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-medium">平均延迟：8.3秒</div>
+                            <div class="text-sm text-gray-600">调用次数：8,600+</div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center p-3 bg-gray-50 rounded">
+                        <div>
+                            <div class="font-medium">qwen3-next-80b-local</div>
+                            <div class="text-sm text-gray-600">80B参数，未量化</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-medium">平均延迟：18.5秒</div>
+                            <div class="text-sm text-gray-600">调用次数：3,000+</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-6 p-3 bg-yellow-50 border border-yellow-200 rounded">
+                    <p class="text-yellow-800 text-sm">
+                        <strong>关键发现：</strong>Qwen系列模型在调用量和延迟表现上综合最优，GLM系列模型延迟较高但调用量稳定，Qwen3-80B模型虽然参数量大，但延迟表现最差，需谨慎使用。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title text-2xl font-bold">3. 高延迟应用识别与风险提示</h2>
+        <div class="risk-highlight">
+            <h3 class="text-xl font-bold text-red-800 mb-3">高延迟应用清单（>10秒）</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
+                <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <h4 class="font-bold text-red-800">IDE-小金灵码</h4>
+                    <p class="text-sm text-red-700">平均延迟：29.95秒</p>
+                    <p class="text-sm text-red-700">调用量：833次</p>
+                    <p class="text-sm text-red-700">模型：qwen2.5-72b-instruct-int4-local</p>
+                </div>
+                <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <h4 class="font-bold text-red-800">小金同学</h4>
+                    <p class="text-sm text-red-700">平均延迟：23.48秒</p>
+                    <p class="text-sm text-red-700">调用量：648次</p>
+                    <p class="text-sm text-red-700">模型：qwen3-next-80b-local</p>
+                </div>
+                <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <h4 class="font-bold text-red-800">小金通-小金灵码</h4>
+                    <p class="text-sm text-red-700">平均延迟：15.04秒</p>
+                    <p class="text-sm text-red-700">调用量：497次</p>
+                    <p class="text-sm text-red-700">模型：qwen2.5-72b-instruct-int4-local</p>
+                </div>
+                <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <h4 class="font-bold text-red-800">IDE-小金灵码</h4>
+                    <p class="text-sm text-red-700">平均延迟：13.19秒</p>
+                    <p class="text-sm text-red-700">调用量：1,429次</p>
+                    <p class="text-sm text-red-700">模型：qwen3-next-80b-local</p>
+                </div>
+                <div class="p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <h4 class="font-bold text-red-800">自动化测试用例智能生成</h4>
+                    <p class="text-sm text-red-700">平均延迟：39.47秒</p>
+                    <p class="text-sm text-red-700">调用量：114次</p>
+                    <p class="text-sm text-red-700">模型：未在Top10中显示</p>
+                </div>
+            </div>
+            <div class="mt-4">
+                <p class="text-red-800 font-medium">风险评估：</p>
+                <ul class="list-disc list-inside text-red-700 mt-2 space-y-1">
+                    <li>高延迟应用主要集中在开发工具类（IDE-小金灵码、小金通-小金灵码）和智能助手类（小金同学），直接影响开发者和业务人员的使用体验</li>
+                    <li>自动化测试用例智能生成应用延迟高达39.47秒，虽调用量低，但作为关键质量保障环节，其性能瓶颈可能导致CI/CD流水线阻塞</li>
+                    <li>同一应用（IDE-小金灵码）在不同模型配置下延迟差异超过20秒，表明模型选择策略存在严重问题</li>
+                    <li>高延迟应用的平均延迟是低延迟应用的10倍以上，可能造成用户流失和业务投诉</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title text-2xl font-bold">4. 优化建议</h2>
+        
+        <div class="mb-8">
+            <h3 class="text-xl font-semibold mb-4">4.1 模型匹配优化</h3>
+            <div class="recommendation-item">
+                <p class="font-medium">建立模型-场景匹配矩阵</p>
+                <p class="mt-2">根据应用类型和性能要求，制定模型选择规范：</p>
+                <ul class="list-disc list-inside mt-2 space-y-1">
+                    <li><strong>高并发、低延迟场景</strong>（如中金所头条、舆情通算法服务）：优先使用qwen2.5-72b-instruct-int4-local（INT4量化模型），平衡性能与精度</li>
+                    <li><strong>中等复杂度、中等延迟容忍场景</strong>（如AIOps智能运维平台）：可使用glm46-fp8-local，利用其FP8量化优势</li>
+                    <li><strong>高精度、低并发场景</strong>（如合规问答、智能代码审查）：谨慎使用qwen3-next-80b-local，仅在必要时启用</li>
+                    <li><strong>开发工具类应用</strong>（IDE-小金灵码）：必须强制使用qwen2.5-72b-instruct-int4-local，禁止使用80B大模型</li>
+                </ul>
+                <p class="mt-3 text-sm text-gray-700">建议建立模型选择白名单机制，通过配置中心强制执行，避免开发人员随意切换模型导致性能波动。</p>
+            </div>
+        </div>
+
+        <div class="mb-8">
+            <h3 class="text-xl font-semibold mb-4">4.2 缓存机制建议</h3>
+            <div class="recommendation-item">
+                <p class="font-medium">实施多级缓存策略</p>
+                <p class="mt-2">针对重复性高的请求，建立缓存体系：</p>
+                <ul class="list-disc list-inside mt-2 space-y-1">
+                    <li><strong>Redis缓存层</strong>：缓存高频查询结果（如"中金所头条"的市场数据查询、"办公知识库"的常见问题答案），设置TTL为5-15分钟</li>
+                    <li><strong>边缘缓存</strong>：对静态内容（如文档模板、标准回复）使用CDN缓存，减少后端压力</li>
+                    <li><strong>应用层缓存</strong>：在IDE-小金灵码等工具中，缓存代码补全建议、常见错误解决方案等，减少重复模型调用</li>
+                    <li><strong>缓存失效策略</strong>：建立基于数据更新的主动失效机制，确保缓存数据时效性</li>
+                </ul>
+                <p class="mt-3 text-sm text-gray-700">预计可降低30%-50%的模型调用量，显著改善高延迟应用的响应速度。</p>
+            </div>
+        </div>
+
+        <div class="mb-8">
+            <h3 class="text-xl font-semibold mb-4">4.3 负载均衡方案</h3>
+            <div class="recommendation-item">
+                <p class="font-medium">实施动态负载均衡与资源调度</p>
+                <p class="mt-2">针对不同模型的资源需求，优化调度策略：</p>
+                <ul class="list-disc list-inside mt-2 space-y-1">
+                    <li><strong>模型分组部署</strong>：将qwen2.5-72b、glm46-fp8、qwen3-next-80b三类模型分别部署在不同GPU资源池，避免资源争抢</li>
+                    <li><strong>动态扩缩容</strong>：为高调用量模型（qwen2.5-72b）配置自动扩缩容策略，当调用量超过阈值时自动增加实例</li>
+                    <li><strong>优先级调度</strong>：为关键业务（如交易所系统）设置高优先级队列，确保其请求优先获得资源</li>
+                    <li><strong>健康检查</strong>：建立实时健康监测，自动隔离延迟异常的模型实例</li>
+                </ul>
+                <p class="mt-3 text-sm text-gray-700">建议采用Kubernetes+Prometheus+Alertmanager构建智能调度平台，实现自动化运维。</p>
+            </div>
+        </div>
+
+        <div class="mb-8">
+            <h3 class="text-xl font-semibold mb-4">4.4 资源扩容建议</h3>
+            <div class="recommendation-item">
+                <p class="font-medium">分阶段实施资源扩容计划</p>
+                <p class="mt-2">根据当前负载和增长趋势，制定资源投入计划：</p>
+                <ul class="list-disc list-inside mt-2 space-y-1">
+                    <li><strong>紧急扩容（1周内）</strong>：为IDE-小金灵码和小金同学应用增加2个qwen2.5-72b模型实例，缓解当前高延迟问题</li>
+                    <li><strong>中期规划（1-3个月）</strong>：采购2-3台A100 80GB GPU服务器，专门用于部署qwen3-next-80b模型，隔离高资源消耗应用</li>
+                    <li><strong>长期优化（6个月）</strong>：评估模型蒸馏技术，将80B大模型压缩为20B-30B版本，在保持精度的同时降低资源消耗</li>
+                    <li><strong>成本优化</strong>：对低调用量应用（如监查精灵、套保智能额度解析）采用按需计费模式，避免资源闲置浪费</li>
+                </ul>
+                <p class="mt-3 text-sm text-gray-700">建议建立AI资源使用成本核算体系，将模型调用成本与业务价值挂钩，实现精细化管理。</p>
+            </div>
+        </div>
+
+        <div class="highlight-box">
+            <h3 class="text-xl font-semibold mb-3">综合实施建议</h3>
+            <p class="mb-3">建议成立AI性能优化专项小组，由技术总体部牵头，联合创新实验室、系统保障部、测试中心等部门，制定为期三个月的优化路线图：</p>
+            <ol class="list-decimal list-inside space-y-2">
+                <li><strong>第一阶段（1周）</strong>：完成模型选择规范制定与强制执行，立即缓解高延迟应用问题</li>
+                <li><strong>第二阶段（2周）</strong>：部署Redis缓存系统，实现高频请求缓存</li>
+                <li><strong>第三阶段（1个月）</strong>：完成负载均衡系统升级与自动扩缩容配置</li>
+                <li><strong>第四阶段（3个月）</strong>：完成资源扩容与成本优化方案落地</li>
+            </ol>
+            <p class="mt-3 text-sm text-gray-700">预计实施后，整体AI服务平均延迟可降低40%以上，高延迟应用数量减少80%，用户满意度显著提升。</p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 简单的交互增强
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为表格添加排序功能
+            const tableHeaders = document.querySelectorAll('table th');
+            tableHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    const table = this.closest('table');
+                    const index = Array.from(this.parentNode.children).indexOf(this);
+                    const tbody = table.querySelector('tbody');
+                    const rows = Array.from(tbody.querySelectorAll('tr'));
+                    
+                    const sortedRows = rows.sort((a, b) => {
+                        const aValue = a.querySelectorAll('td')[index].textContent.trim();
+                        const bValue = b.querySelectorAll('td')[index].textContent.trim();
+                        
+                        // 数字排序
+                        if (!isNaN(aValue) && !isNaN(bValue)) {
+                            return parseFloat(aValue) - parseFloat(bValue);
+                        }
+                        // 字符串排序
+                        return aValue.localeCompare(bValue);
+                    });
+                    
+                    // 清空并重新插入排序后的行
+                    tbody.innerHTML = '';
+                    sortedRows.forEach(row => tbody.appendChild(row));
+                });
+            });
+            
+            // 为高延迟应用添加悬停提示
+            const highLatencyCells = document.querySelectorAll('td:contains("29.95")');
+            highLatencyCells.forEach(cell => {
+                cell.classList.add('tooltip');
+                cell.innerHTML += '<span class="tooltiptext">此应用延迟严重，建议立即优化</span>';
+            });
+        });
+        
+        // 自定义contains选择器支持
+        if (!CSS.supports('selector(:contains("a"))')) {
+            CSS.escape = function(str) {
+                return str.replace(/([^\x20-\x7E]|\\)/g, function(char) {
+                    return '\\' + char.charCodeAt(0).toString(16) + ' ';
+                });
+            };
+            
+            document.querySelectorAll = function(selector) {
+                if (selector.includes(':contains(')) {
+                    const match = selector.match(/^(.+):contains\("(.+)"\)$/);
+                    if (match) {
+                        const baseSelector = match[1];
+                        const text = match[2];
+                        const elements = document.querySelectorAll(baseSelector);
+                        return Array.from(elements).filter(el => el.textContent.includes(text));
+                    }
+                }
+                return document.querySelectorAll(selector);
+            };
+        }
+    </script>
+</body>
+</html>

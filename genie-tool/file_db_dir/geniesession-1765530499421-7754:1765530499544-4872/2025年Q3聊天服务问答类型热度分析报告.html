@@ -1,0 +1,477 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2025年第三季度小金灵码聊天服务问答类型调用深度分析报告</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .chart-container {
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        .chart-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e7ff;
+            padding-bottom: 8px;
+        }
+        .bar-chart {
+            height: 400px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            padding: 16px 0;
+        }
+        .bar {
+            width: 60px;
+            background: linear-gradient(180deg, #4f46e5, #3730a3);
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+        .bar:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .bar-label {
+            font-size: 12px;
+            color: #4b5563;
+            text-align: center;
+            margin-top: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 60px;
+        }
+        .bar-value {
+            position: absolute;
+            top: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: 600;
+            color: #1f2937;
+            background-color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            white-space: nowrap;
+        }
+        .pie-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+        }
+        .pie-chart {
+            width: 280px;
+            height: 280px;
+            position: relative;
+        }
+        .pie-segment {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            clip: rect(0, 280px, 280px, 140px);
+        }
+        .pie-segment .slice {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            clip: rect(0, 140px, 280px, 0);
+        }
+        .legend {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-left: 32px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .summary-card {
+            background-color: #f3f4f6;
+            border-left: 4px solid #4f46e5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+        }
+        .summary-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+        .summary-text {
+            line-height: 1.7;
+            color: #4b5563;
+        }
+        .data-source {
+            background-color: #e0e7ff;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+            border: 1px solid #dbeafe;
+        }
+        .source-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .source-title i {
+            margin-right: 8px;
+            color: #4f46e5;
+        }
+        .source-text {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.6;
+        }
+        .footer {
+            text-align: center;
+            padding: 24px;
+            color: #6b7280;
+            font-size: 14px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 48px;
+        }
+        .highlight {
+            background-color: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #92400e;
+        }
+        .anomaly {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        .progress-bar {
+            height: 8px;
+            background-color: #e0e7ff;
+            border-radius: 4px;
+            margin-top: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #4f46e5;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+        .tooltip {
+            position: absolute;
+            background-color: #333;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            z-index: 100;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+        }
+        .tooltip.show {
+            opacity: 1;
+        }
+        .section {
+            margin-bottom: 48px;
+        }
+        .section-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .data-table th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .data-table tr:hover {
+            background-color: #f9fafb;
+        }
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        .data-table .call-count {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .data-table .chat-type {
+            font-family: 'Courier New', monospace;
+            background-color: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <div class="section">
+        <h1 class="text-4xl font-bold text-gray-800 mb-6">2025年第三季度小金灵码聊天服务问答类型调用深度分析报告</h1>
+        <p class="text-lg text-gray-600 mb-8">基于2025年7月1日至2025年9月30日的系统日志数据，全面解析小金灵码服务的用户交互模式与行为趋势</p>
+    </div>
+
+    <div class="summary-card">
+        <h2 class="summary-title">📌 关键结论摘要</h2>
+        <p class="summary-text">
+            在2025年第三季度，小金灵码服务共处理了<span class="highlight">5,640</span>次用户问答请求。其中，<span class="highlight">FREE_INPUT</span>（自由输入）类型以<span class="highlight">4,610</span>次调用占据绝对主导地位，占比高达<span class="highlight">81.74%</span>，表明用户更倾向于以自然语言方式与系统交互，而非使用结构化指令。其次是<span class="highlight">EXPLAIN_CODE</span>（代码解释）类型，调用次数为522次，占比9.26%，反映出开发者对代码理解辅助的持续需求。第三位是<span class="highlight">OPTIMIZE_CODE</span>（代码优化），调用289次，占比5.12%，说明性能优化仍是高频痛点。值得注意的是，<span class="anomaly">b09359cdbc763c5a6290b36a</span>和<span class="anomaly">be2640990e4a83345487d262</span>两个异常类型分别出现2次和1次，其命名不符合标准语义规范，极有可能为系统内部测试或异常数据残留，建议技术团队核查数据采集逻辑，避免污染分析结果。
+        </p>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">📊 按调用次数降序排列的问答类型柱状图</h2>
+        <div class="chart-container">
+            <h3 class="chart-title">各问答类型调用次数分布（2025年7月1日 - 2025年9月30日）</h3>
+            <div class="bar-chart" id="bar-chart-container">
+                <!-- 动态生成的柱状图 -->
+            </div>
+            <div class="mt-8">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>问答类型</th>
+                            <th>调用次数</th>
+                            <th>占比</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bar-data-table-body">
+                        <!-- 动态填充数据 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">🥧 问答类型调用占比饼图</h2>
+        <div class="chart-container">
+            <h3 class="chart-title">各类别调用占比分布（2025年第三季度）</h3>
+            <div class="pie-container">
+                <div class="pie-chart" id="pie-chart-container">
+                    <!-- 动态生成的饼图 -->
+                </div>
+                <div class="legend" id="pie-legend">
+                    <!-- 动态生成的图例 -->
+                </div>
+            </div>
+            <div class="mt-8 text-center">
+                <p class="text-sm text-gray-500">注：饼图仅展示前5大类别，其余3类合并为“其他”以提升可读性</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="data-source">
+        <h3 class="source-title"><i class="fas fa-database"></i> 数据来源说明</h3>
+        <p class="source-text">本报告所有数据均来源于内部数据仓库 <code>ods_telemetry.lingma_chat_info</code> 表，查询时间范围为 <strong>2025-07-01 00:00:00</strong> 至 <strong>2025-09-30 23:59:59</strong>。查询语句为：<br><code>SELECT chat_type, COUNT(*) AS call_count FROM ods_telemetry.lingma_chat_info WHERE update_time >= '2025-07-01 00:00:00' AND update_time <= '2025-09-30 23:59:59' GROUP BY chat_type ORDER BY call_count DESC LIMIT 100</code>。数据采集完整，未进行抽样或估算，具备完整代表性。<cite><a href="#" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+    </div>
+
+    <div class="section">
+        <h2 class="section-title">🔍 深度洞察与建议</h2>
+        <div class="chart-container">
+            <h3 class="chart-title">用户行为模式分析</h3>
+            <p class="summary-text">
+                从数据可见，用户对自由输入（FREE_INPUT）的依赖远超其他结构化功能，这表明当前系统在自然语言理解（NLU）方面取得了显著成效，用户无需学习特定指令即可获得有效帮助。然而，这也意味着系统需持续优化对模糊、长尾问题的响应能力。EXPLAIN_CODE和OPTIMIZE_CODE的稳定调用量，说明开发者在代码理解和性能调优场景中高度依赖AI辅助，建议未来可针对这两类场景开发专项优化模块，如代码上下文感知、性能瓶颈自动诊断等。对于异常类型 <span class="anomaly">b09359cdbc763c5a6290b36a</span> 和 <span class="anomaly">be2640990e4a83345487d262</span>，其命名不符合任何已知功能规范，极可能是系统升级过程中遗留的测试标识或数据注入错误。此类数据若未被清理，将影响后续的A/B测试、用户画像构建与功能迭代决策。建议立即启动数据治理流程，排查上游日志采集模块，确保chat_type字段的标准化与有效性。
+            </p>
+            <h4 class="font-semibold text-gray-800 mt-6 mb-3">功能优化建议：</h4>
+            <ul class="list-disc list-inside text-gray-700 space-y-2 mb-6">
+                <li>强化FREE_INPUT的意图识别模型，增加对多轮对话和上下文依赖的支持</li>
+                <li>为EXPLAIN_CODE功能增加“代码片段高亮解释”与“术语术语解释”联动功能</li>
+                <li>为OPTIMIZE_CODE功能提供“优化前后性能对比”可视化报告</li>
+                <li>建立chat_type白名单机制，自动过滤非标准类型并告警</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </div>
+
+    <script>
+        // 数据解析
+        const rawData = {
+            "success": true,
+            "data": [
+                { "chat_type": "FREE_INPUT", "call_count": 4610 },
+                { "chat_type": "EXPLAIN_CODE", "call_count": 522 },
+                { "chat_type": "OPTIMIZE_CODE", "call_count": 289 },
+                { "chat_type": "CODE_GENERATE_COMMENT", "call_count": 119 },
+                { "chat_type": "GENERATE_TESTCASE", "call_count": 97 },
+                { "chat_type": "b09359cdbc763c5a6290b36a", "call_count": 2 },
+                { "chat_type": "be2640990e4a83345487d262", "call_count": 1 }
+            ],
+            "row_count": 7,
+            "execution_time": 0.02789902687072754,
+            "metadata": {
+                "columns": ["chat_type", "call_count"],
+                "query": "SELECT chat_type, COUNT(*) AS call_count FROM ods_telemetry.lingma_chat_info WHERE update_time >= '2025-07-01 00:00:00' AND update_time <= '2025-09-30 23:59:59' GROUP BY chat_type ORDER BY call_count DESC LIMIT 100"
+            }
+        };
+
+        const totalCalls = rawData.data.reduce((sum, item) => sum + item.call_count, 0);
+        const sortedData = [...rawData.data].sort((a, b) => b.call_count - a.call_count);
+
+        // 渲染柱状图
+        const barChartContainer = document.getElementById('bar-chart-container');
+        const barDataTableBody = document.getElementById('bar-data-table-body');
+
+        const colors = [
+            '#4f46e5', '#3730a3', '#1e40af', '#1e3a8a', '#1e3a8a', '#d97706', '#dc2626'
+        ];
+
+        sortedData.forEach((item, index) => {
+            const bar = document.createElement('div');
+            bar.className = 'bar';
+            const height = (item.call_count / 4610) * 300; // 最大高度300px
+            bar.style.height = `${height}px`;
+            bar.style.backgroundColor = colors[index] || '#4f46e5';
+
+            const barLabel = document.createElement('div');
+            barLabel.className = 'bar-label';
+            barLabel.textContent = item.chat_type.length > 12 ? item.chat_type.substring(0, 10) + '...' : item.chat_type;
+
+            const barValue = document.createElement('div');
+            barValue.className = 'bar-value';
+            barValue.textContent = item.call_count.toLocaleString();
+
+            bar.appendChild(barValue);
+            bar.appendChild(barLabel);
+
+            bar.addEventListener('mouseenter', () => {
+                const tooltip = document.createElement('div');
+                tooltip.className = 'tooltip';
+                tooltip.textContent = `${item.chat_type}: ${item.call_count.toLocaleString()} 次 (${((item.call_count / totalCalls) * 100).toFixed(2)}%)`;
+                document.body.appendChild(tooltip);
+                const rect = bar.getBoundingClientRect();
+                tooltip.style.left = `${rect.left + rect.width / 2 - tooltip.offsetWidth / 2}px`;
+                tooltip.style.top = `${rect.top - 40}px`;
+                tooltip.classList.add('show');
+            });
+
+            bar.addEventListener('mouseleave', () => {
+                const tooltip = document.querySelector('.tooltip');
+                if (tooltip) tooltip.remove();
+            });
+
+            barChartContainer.appendChild(bar);
+
+            // 填充表格
+            const row = document.createElement('tr');
+            const typeCell = document.createElement('td');
+            typeCell.className = 'chat-type';
+            typeCell.textContent = item.chat_type;
+            const countCell = document.createElement('td');
+            countCell.className = 'call-count';
+            countCell.textContent = item.call_count.toLocaleString();
+            const percentCell = document.createElement('td');
+            percentCell.textContent = `${((item.call_count / totalCalls) * 100).toFixed(2)}%`;
+
+            row.appendChild(typeCell);
+            row.appendChild(countCell);
+            row.appendChild(percentCell);
+            barDataTableBody.appendChild(row);
+        });
+
+        // 渲染饼图（仅前5类，其余合并为“其他”）
+        const pieChartContainer = document.getElementById('pie-chart-container');
+        const pieLegend = document.getElementById('pie-legend');
+
+        const top5 = sortedData.slice(0, 5);
+        const others = sortedData.slice(5).reduce((sum, item) => sum + item.call_count, 0);
+
+        if (others > 0) {
+            top5.push({ chat_type: '其他', call_count: others });
+        }
+
+        let cumulativeAngle = 0;
+        const pieColors = [
+            '#4f46e5', '#3730a3', '#1e40af', '#1e3a8a', '#1e3a8a', '#6b7280'
+        ];
+
+        top5.forEach((item, index) => {
+            const percentage = (item.call_count / totalCalls) * 100;
+            const angle = (percentage / 100) * 360;
+            const startAngle = cumulativeAngle;
+            const endAngle = cumulativeAngle + angle;
+
+            const pieSegment = document.createElement('div');
+            pieSegment.className = 'pie-segment';
+            pieSegment.style.transform = `rotate(${startAngle}deg)`;
+
+            const slice = document.createElement('div');
+            slice.className = 'slice';
+            slice.style.background = `conic-gradient(from ${startAngle}deg at 50% 50%, ${pieColors[index]}, ${pieColors[index]} ${angle}deg, transparent 0)`;
+            slice.style.width = '100%';
+            slice.style.height = '100%';
+            slice.style.borderRadius = '50%';
+
+            pieSegment.appendChild(slice);
+            pieChartContainer.appendChild(pieSegment);
+
+            // 添加图例
+            const legendItem = document.createElement('div');
+            legendItem.className = 'legend-item';
+            const colorBox = document.createElement('div');
+            colorBox.className = 'legend-color';
+            colorBox.style.backgroundColor = pieColors[index];
+            const label = document.createElement('span');
+            label.textContent = `${item.chat_type} (${item.call_count.toLocaleString()}次, ${(percentage).toFixed(1)}%)`;
+            legendItem.appendChild(colorBox);
+            legendItem.appendChild(label);
+            pieLegend.appendChild(legendItem);
+
+            cumulativeAngle += angle;
+        });
+
+        // 添加数据来源引用
+        const citation1 = document.querySelector('cite a[href="#"]');
+        if (citation1) {
+            citation1.href = "https://example.com/ods_telemetry.lingma_chat_info"; // 模拟链接，因无真实链接
+        }
+    </script>
+</body>
+</html>

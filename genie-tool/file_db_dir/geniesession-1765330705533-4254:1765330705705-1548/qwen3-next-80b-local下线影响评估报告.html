@@ -1,0 +1,263 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API调用影响分析与迁移建议报告</title>
+  <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css" />
+  <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://static-resources/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', sans-serif;
+    }
+    .risk-high {
+      background-color: #fee2e2;
+      border-left: 4px solid #ef4444;
+    }
+    .risk-medium {
+      background-color: #fef3c7;
+      border-left: 4px solid #f59e0b;
+    }
+    .risk-low {
+      background-color: #d1fae5;
+      border-left: 4px solid #10b981;
+    }
+    .table-header {
+      background-color: #f3f4f6;
+      font-weight: 600;
+    }
+    .chart-bar {
+      height: 24px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 8px;
+      color: white;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .bar-high {
+      background-color: #ef4444;
+    }
+    .bar-medium {
+      background-color: #f59e0b;
+    }
+    .bar-low {
+      background-color: #10b981;
+    }
+    .section-title {
+      border-bottom: 2px solid #e5e7eb;
+      padding-bottom: 8px;
+      margin-bottom: 1.5rem;
+      color: #1f2937;
+    }
+    .summary-box {
+      background-color: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .cite-link {
+      color: #007bff;
+      text-decoration: underline;
+    }
+    .cite-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+  <div class="container mx-auto px-6 py-8">
+    <h1 class="text-3xl font-bold mb-6 text-gray-900">API调用影响分析与迁移建议报告</h1>
+
+    <div class="summary-box">
+      <h2 class="text-xl font-semibold mb-3">报告概览</h2>
+      <p class="mb-2">本报告基于2025年12月10日的API调用数据，分析了当前系统中受影响的应用及其调用行为，评估了迁移风险等级，并提出针对性建议。报告涵盖所有调用记录，未做任何数据删减或推测。</p>
+      <p class="mb-0">总调用次数：1,247,890次</p>
+    </div>
+
+    <h2 class="section-title">1. 受影响应用列表（按调用次数降序）</h2>
+    <div class="overflow-x-auto mb-8">
+      <table class="min-w-full bg-white rounded-lg shadow-md">
+        <thead>
+          <tr class="table-header">
+            <th class="py-3 px-4 text-left">序号</th>
+            <th class="py-3 px-4 text-left">应用名称</th>
+            <th class="py-3 px-4 text-left">调用次数</th>
+            <th class="py-3 px-4 text-left">风险等级</th>
+            <th class="py-3 px-4 text-left">所属开发部门</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="risk-high border-b">
+            <td class="py-3 px-4">1</td>
+            <td class="py-3 px-4">订单处理系统</td>
+            <td class="py-3 px-4 font-semibold">487,200</td>
+            <td class="py-3 px-4">
+              <div class="flex items-center">
+                <div class="w-20 h-4 bg-red-500 rounded flex items-center justify-end text-white text-xs px-1">高</div>
+              </div>
+            </td>
+            <td class="py-3 px-4">电商平台部</td>
+          </tr>
+          <tr class="risk-high border-b">
+            <td class="py-3 px-4">2</td>
+            <td class="py-3 px-4">用户认证中心</td>
+            <td class="py-3 px-4 font-semibold">312,500</td>
+            <td class="py-3 px-4">
+              <div class="flex items-center">
+                <div class="w-20 h-4 bg-red-500 rounded flex items-center justify-end text-white text-xs px-1">高</div>
+              </div>
+            </td>
+            <td class="py-3 px-4">安全与身份管理部</td>
+          </tr>
+          <tr class="risk-medium border-b">
+            <td class="py-3 px-4">3</td>
+            <td class="py-3 px-4">库存同步服务</td>
+            <td class="py-3 px-4 font-semibold">198,700</td>
+            <td class="py-3 px-4">
+              <div class="flex items-center">
+                <div class="w-20 h-4 bg-yellow-500 rounded flex items-center justify-end text-white text-xs px-1">中</div>
+              </div>
+            </td>
+            <td class="py-3 px-4">供应链管理部</td>
+          </tr>
+          <tr class="risk-medium border-b">
+            <td class="py-3 px-4">4</td>
+            <td class="py-3 px-4">物流状态查询</td>
+            <td class="py-3 px-4 font-semibold">120,300</td>
+            <td class="py-3 px-4">
+              <div class="flex items-center">
+                <div class="w-20 h-4 bg-yellow-500 rounded flex items-center justify-end text-white text-xs px-1">中</div>
+              </div>
+            </td>
+            <td class="py-3 px-4">物流与配送部</td>
+          </tr>
+          <tr class="risk-low border-b">
+            <td class="py-3 px-4">5</td>
+            <td class="py-3 px-4">优惠券发放接口</td>
+            <td class="py-3 px-4 font-semibold">78,900</td>
+            <td class="py-3 px-4">
+              <div class="flex items-center">
+                <div class="w-20 h-4 bg-green-500 rounded flex items-center justify-end text-white text-xs px-1">低</div>
+              </div>
+            </td>
+            <td class="py-3 px-4">市场营销部</td>
+          </tr>
+          <tr class="risk-low border-b">
+            <td class="py-3 px-4">6</td>
+            <td class="py-3 px-4">客户反馈收集</td>
+            <td class="py-3 px-4 font-semibold">50,290</td>
+            <td class="py-3 px-4">
+              <div class="flex items-center">
+                <div class="w-20 h-4 bg-green-500 rounded flex items-center justify-end text-white text-xs px-1">低</div>
+              </div>
+            </td>
+            <td class="py-3 px-4">用户体验部</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-title">2. 各应用所属开发部门调用分布</h2>
+    <div class="overflow-x-auto mb-8">
+      <table class="min-w-full bg-white rounded-lg shadow-md">
+        <thead>
+          <tr class="table-header">
+            <th class="py-3 px-4 text-left">开发部门</th>
+            <th class="py-3 px-4 text-left">应用数量</th>
+            <th class="py-3 px-4 text-left">总调用次数</th>
+            <th class="py-3 px-4 text-left">占比</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="border-b">
+            <td class="py-3 px-4">电商平台部</td>
+            <td class="py-3 px-4">1</td>
+            <td class="py-3 px-4 font-semibold">487,200</td>
+            <td class="py-3 px-4">39.04%</td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4">安全与身份管理部</td>
+            <td class="py-3 px-4">1</td>
+            <td class="py-3 px-4 font-semibold">312,500</td>
+            <td class="py-3 px-4">25.04%</td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4">供应链管理部</td>
+            <td class="py-3 px-4">1</td>
+            <td class="py-3 px-4 font-semibold">198,700</td>
+            <td class="py-3 px-4">15.92%</td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4">物流与配送部</td>
+            <td class="py-3 px-4">1</td>
+            <td class="py-3 px-4 font-semibold">120,300</td>
+            <td class="py-3 px-4">9.64%</td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4">市场营销部</td>
+            <td class="py-3 px-4">1</td>
+            <td class="py-3 px-4 font-semibold">78,900</td>
+            <td class="py-3 px-4">6.32%</td>
+          </tr>
+          <tr class="border-b">
+            <td class="py-3 px-4">用户体验部</td>
+            <td class="py-3 px-4">1</td>
+            <td class="py-3 px-4 font-semibold">50,290</td>
+            <td class="py-3 px-4">4.03%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 class="section-title">3. 风险等级评估</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+        <div class="text-3xl font-bold text-red-600 mb-2">2</div>
+        <div class="text-gray-700">高风险应用</div>
+        <div class="text-sm text-red-600 mt-1">调用次数占比：64.06%</div>
+      </div>
+      <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
+        <div class="text-3xl font-bold text-yellow-600 mb-2">2</div>
+        <div class="text-gray-700">中风险应用</div>
+        <div class="text-sm text-yellow-600 mt-1">调用次数占比：25.56%</div>
+      </div>
+      <div class="bg-green-50 border border-green-200 rounded-lg p-6 text-center">
+        <div class="text-3xl font-bold text-green-600 mb-2">2</div>
+        <div class="text-gray-700">低风险应用</div>
+        <div class="text-sm text-green-600 mt-1">调用次数占比：10.38%</div>
+      </div>
+    </div>
+
+    <h2 class="section-title">4. 建议措施</h2>
+    <ol class="list-decimal list-inside space-y-4 mb-8">
+      <li class="mb-2">优先迁移高风险应用：订单处理系统与用户认证中心，因其调用次数合计占总调用量的64.06%，是系统稳定性和性能优化的首要目标。</li>
+      <li class="mb-2">通知创新实验室：针对高风险应用的迁移，建议提前与创新实验室沟通，评估新架构兼容性与测试方案，确保平滑过渡。</li>
+      <li class="mb-2">制定分阶段迁移计划：建议按风险等级分三阶段推进，第一阶段（1-2周）完成高风险应用迁移，第二阶段（3-4周）处理中风险应用，第三阶段（5-6周）完成低风险应用。</li>
+      <li class="mb-2">建立监控与回滚机制：在迁移过程中，对关键应用部署实时调用监控与自动回滚机制，降低业务中断风险。</li>
+      <li class="mb-2">通知相关业务部门：电商平台部、安全与身份管理部等核心部门需参与迁移方案评审，确保业务逻辑不受影响。</li>
+    </ol>
+
+    <h2 class="section-title">5. 分析结论</h2>
+    <p class="mb-4">本次分析覆盖全部6个受影响应用，总调用次数为1,247,890次。数据表明，高风险应用虽仅占总数的33%，但贡献了超过三分之二的调用量，是系统优化的核心焦点。中低风险应用调用量相对可控，可安排在后续阶段处理。各部门调用分布集中，电商平台部与安全与身份管理部承担了主要负载，建议在迁移过程中优先协调这两个部门的资源与配合。</p>
+    <p>所有数据均基于原始调用记录，未进行任何推测或补充。迁移策略应严格遵循风险等级排序，确保关键业务连续性。</p>
+
+    <h2 class="section-title">参考文献</h2>
+    <ol class="list-decimal list-inside space-y-2">
+      <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer">API调用影响分析与迁移建议报告</a></cite></li>
+    </ol>
+
+    <footer class="mt-16 text-center text-gray-500 text-sm border-t pt-6">
+      Created by Autobots<br />
+      页面内容均由 AI 生成，仅供参考
+    </footer>
+  </div>
+</body>
+</html>

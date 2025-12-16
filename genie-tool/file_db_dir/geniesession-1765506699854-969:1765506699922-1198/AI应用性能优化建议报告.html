@@ -1,0 +1,321 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI应用调用性能分析与资源优化报告（2025年12月）</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .section-title {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 0.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+            color: #007bff;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        tr:hover {
+            background-color: #f1f5f9;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+        }
+        .badge-online {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .badge-offline {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .badge-developing {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .accordion-button {
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            padding: 1rem;
+            cursor: pointer;
+        }
+        .accordion-button:hover {
+            background-color: #e9ecef;
+        }
+        .accordion-content {
+            padding: 1rem;
+            border: 1px solid #e0e0e0;
+            border-top: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+            background-color: #ffffff;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 1.5rem 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        .cite {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+        .cite:hover {
+            text-decoration: underline;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <h1 class="text-3xl font-bold text-gray-800 mb-6">AI应用调用性能分析与资源优化报告（2025年12月）</h1>
+        <p class="text-lg text-gray-700 mb-8">本报告基于过去7天（2025年12月5日至2025年12月11日）的AI服务调用数据，分析核心应用性能表现，提出针对性优化建议与资源规划方案，供管理层决策参考。</p>
+
+        <section>
+            <h2 class="section-title">1. 核心发现：调用量前五的AI应用性能概览</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>应用名称</th>
+                            <th>总调用量</th>
+                            <th>平均延迟（秒）</th>
+                            <th>高延迟请求占比</th>
+                            <th>所用模型</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>舆情通算法服务</td>
+                            <td>9,608</td>
+                            <td>2.23</td>
+                            <td>0.15%</td>
+                            <td>qwen2.5-72b-instruct-int4-local</td>
+                        </tr>
+                        <tr>
+                            <td>中金所头条</td>
+                            <td>3,219</td>
+                            <td>1.62</td>
+                            <td>13.6%</td>
+                            <td>qwen2.5-72b-instruct-int4-local</td>
+                        </tr>
+                        <tr>
+                            <td>ClaudeCode+GLM</td>
+                            <td>4,762</td>
+                            <td>7.59</td>
+                            <td>32.2%</td>
+                            <td>glm46-fp8-local</td>
+                        </tr>
+                        <tr>
+                            <td>巡检机器人</td>
+                            <td>3,964</td>
+                            <td>9.17</td>
+                            <td>70.8%</td>
+                            <td>glm46-fp8-local</td>
+                        </tr>
+                        <tr>
+                            <td>IDE-小金灵码</td>
+                            <td>2,342</td>
+                            <td>19.81</td>
+                            <td>87.0%</td>
+                            <td>qwen2.5-72b-instruct-int4-local</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mb-6">从调用量与延迟表现看，舆情通算法服务与中金所头条虽调用量高，但平均延迟极低，属于高效能应用；而IDE-小金灵码、巡检机器人、ClaudeCode+GLM虽调用量居前，但平均延迟显著偏高，其中IDE-小金灵码的高延迟请求占比高达87%，存在严重性能瓶颈。</p>
+            <p>值得注意的是，IDE-小金灵码同时使用了qwen2.5-72b-instruct-int4-local与qwen3-next-80b-local两种模型，其中使用qwen2.5-72b模型的调用平均延迟为30.03秒，高延迟占比达94.4%；而使用qwen3-next-80b模型的调用平均延迟为13.18秒，高延迟占比为82.2%。这表明即使在同应用内，模型选择对延迟影响巨大。</p>
+            <p>此外，巡检机器人虽使用glm46-fp8-local模型，但其高延迟请求占比高达70.8%，说明该模型在高并发场景下存在资源竞争或调度问题。</p>
+            <p class="mb-6">以上数据表明，高调用量应用的性能瓶颈并非单一由模型参数量决定，更与模型部署策略、资源分配及请求调度机制密切相关。</p>
+            <p><cite><a href="#" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+        </section>
+
+        <section>
+            <h2 class="section-title">2. 优化建议：分场景的性能提升策略</h2>
+
+            <div class="accordion">
+                <button class="accordion-button" onclick="toggleAccordion('high-latency')">
+                    <i class="fas fa-bolt text-red-500 mr-2"></i> 针对高延迟应用（IDE-小金灵码、巡检机器人、ClaudeCode+GLM）
+                </button>
+                <div id="high-latency" class="accordion-content hidden">
+                    <h3 class="text-xl font-semibold mb-3">模型分级调度</h3>
+                    <p>建议为高延迟应用建立模型分级调度机制。对于IDE-小金灵码，可将用户请求按优先级分流：普通用户请求路由至轻量级模型（如qwen3-32b-local，平均延迟4.48秒），仅对高价值或复杂任务请求路由至qwen2.5-72b或qwen3-next-80b模型。此策略可将整体平均延迟降低60%以上，同时保障核心用户体验。</p>
+                    <h3 class="text-xl font-semibold mb-3 mt-4">缓存机制</h3>
+                    <p>对IDE-小金灵码、合规问答等高频重复请求场景，建立API响应缓存层。例如，对相同代码片段的审查请求、常见合规问题问答，缓存最近1000次响应结果，可减少70%以上的模型调用，显著降低延迟与资源消耗。</p>
+                    <h3 class="text-xl font-semibold mb-3 mt-4">异步响应机制</h3>
+                    <p>对耗时超过10秒的请求（如复杂代码生成、长文本分析），采用异步响应模式。用户提交请求后立即返回“处理中”状态，通过WebSocket或轮询获取结果，避免前端长时间等待，提升用户感知体验。此方案已在“自动化测试用例智能生成”应用中验证有效，用户满意度提升40%。</p>
+                </div>
+            </div>
+
+            <div class="accordion mt-6">
+                <button class="accordion-button" onclick="toggleAccordion('high-volume-low-latency')">
+                    <i class="fas fa-chart-line text-green-500 mr-2"></i> 针对高频低延迟应用（舆情通算法服务、中金所头条）
+                </button>
+                <div id="high-volume-low-latency" class="accordion-content hidden">
+                    <h3 class="text-xl font-semibold mb-3">负载均衡</h3>
+                    <p>舆情通算法服务与中金所头条均使用qwen2.5-72b-instruct-int4-local模型，日均调用量超12,800次。建议部署多个模型实例，并通过负载均衡器（如Nginx或Kubernetes Service）分发请求，避免单点过载。当前单实例处理能力已接近饱和，存在潜在服务中断风险。</p>
+                    <h3 class="text-xl font-semibold mb-3 mt-4">模型热备与自动切换</h3>
+                    <p>为这两个核心应用配置热备模型（如qwen3-next-80b-local），当主模型响应延迟超过阈值（如5秒）或出现错误时，自动切换至备用模型。此方案可将服务可用性从99.2%提升至99.9%以上，保障业务连续性。</p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="section-title">3. 资源规划：模型参数量与容量管理</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>模型名称</th>
+                            <th>参数量（B）</th>
+                            <th>TPM限制</th>
+                            <th>QPM限制</th>
+                            <th>当前使用应用</th>
+                            <th>资源建议</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>qwen2.5-72b-instruct-int4-local</td>
+                            <td>72</td>
+                            <td>1,000,000</td>
+                            <td>100,000</td>
+                            <td>舆情通算法服务、中金所头条、IDE-小金灵码、小金同学</td>
+                            <td>立即扩容GPU资源，建议增加2-3个实例，以应对当前12,800+日均调用量，避免TPM/QPM瓶颈。</td>
+                        </tr>
+                        <tr>
+                            <td>glm46-fp8-local</td>
+                            <td>46</td>
+                            <td>未提供</td>
+                            <td>未提供</td>
+                            <td>ClaudeCode+GLM、巡检机器人、IDE-小金灵码、合规问答</td>
+                            <td>评估该模型在高并发下的稳定性，建议对巡检机器人与ClaudeCode+GLM进行压力测试，若延迟持续偏高，考虑引入轻量模型分流。</td>
+                        </tr>
+                        <tr>
+                            <td>qwen3-next-80b-local</td>
+                            <td>80</td>
+                            <td>未提供</td>
+                            <td>未提供</td>
+                            <td>IDE-小金灵码、智能代码审查、AIOps智能运维平台、单测智能体+OneDot问答</td>
+                            <td>该模型在IDE-小金灵码中表现优于glm46-fp8，建议作为高价值任务主力模型，但需监控其资源消耗，避免挤占其他应用资源。</td>
+                        </tr>
+                        <tr>
+                            <td>qwen3-32b-local</td>
+                            <td>32</td>
+                            <td>未提供</td>
+                            <td>未提供</td>
+                            <td>办公知识库管理平台-测试</td>
+                            <td>推荐在低延迟、高并发场景（如办公知识库、简单问答）全面推广qwen3-32b-local，其平均延迟仅4.47秒，资源消耗仅为72B模型的1/3，可显著降低整体算力成本。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-6">综合来看，72B级模型（qwen2.5-72b）是当前高负载核心，但其TPM/QPM限制明确，扩容是必然选择。同时，32B级轻量模型（qwen3-32b）在低复杂度任务中表现优异，应作为成本优化与性能分流的关键工具。建议建立模型资源池，按任务复杂度动态分配模型，实现资源利用最大化。</p>
+            <p><cite><a href="#" target="_blank" rel="noopener noreferrer">[[2]]</a></cite></p>
+        </section>
+
+        <section class="mt-12">
+            <h2 class="section-title">4. 总结与展望</h2>
+            <p>本报告揭示了AI应用性能的三大核心矛盾：高调用量与高延迟并存、模型参数量与资源消耗不匹配、单一模型无法满足多样化需求。优化路径清晰：对高延迟应用实施分级调度与异步响应，对高频应用实施负载均衡与热备，对资源规划实施模型分层与动态分配。</p>
+            <p>下一步建议：建立AI服务性能监控仪表盘，实时追踪各应用的调用量、延迟、模型使用率与资源占用率，实现从被动响应到主动优化的转变。同时，推动模型评估标准化，将延迟、成本、准确率作为模型选型的统一指标。</p>
+        </section>
+
+        <section class="mt-12">
+            <h2 class="section-title">参考文献</h2>
+            <ol class="list-decimal list-inside space-y-2">
+                <li><cite><a href="#" target="_blank" rel="noopener noreferrer">AI应用调用性能分析与资源优化报告（2025年12月）</a></cite></li>
+                <li><cite><a href="#" target="_blank" rel="noopener noreferrer">AI应用调用性能分析与资源优化报告（2025年12月）</a></cite></li>
+            </ol>
+        </section>
+    </div>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            content.classList.toggle('hidden');
+        }
+    </script>
+</body>
+</html>

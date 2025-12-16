@@ -1,0 +1,130 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPU服务器硬件监控分析报告 - 2025年12月09日</title>
+    <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css">
+    <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-left: 4px solid #007bff;
+            background-color: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+        }
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        .section-title i {
+            margin-right: 0.75rem;
+            color: #007bff;
+        }
+        .conclusion-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #ffc107;
+        }
+        .recommendation-box {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            border-left: 4px solid #28a745;
+        }
+        .data-status {
+            background-color: #f1f3f4;
+            border: 1px dashed #adb5bd;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin: 1.5rem 0;
+            text-align: center;
+            font-weight: 500;
+            color: #6c757d;
+        }
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid #e9ecef;
+        }
+        .highlight {
+            font-weight: 600;
+            color: #007bff;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-6 py-8">
+        <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">GPU服务器硬件监控分析报告</h1>
+        
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-clock"></i> 数据采集状态说明</h2>
+            <p>根据最近30分钟的GPU服务器硬件监控数据采集记录，系统未接收到任何有效的监控指标数据。所有GPU节点的显存占用率、温度、功耗及运行状态等关键指标均无上报记录，表明当前监控数据流处于完全空置状态。</p>
+            <div class="data-status">
+                <i class="fas fa-exclamation-circle fa-2x mb-2"></i>
+                <span>当前无可用GPU监控数据</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-search"></i> 分析目标</h2>
+            <p>本次分析旨在识别GPU服务器运行中的潜在异常情况，具体目标包括：</p>
+            <ul class="list-disc pl-6 mb-4">
+                <li>检测显存占用率持续高于90%的GPU设备，以识别潜在的资源过载风险</li>
+                <li>识别显存占用为0%但处于活跃状态的GPU，以排查任务调度异常或空转问题</li>
+                <li>监测GPU温度是否超出安全阈值（通常为85°C以上）或功耗是否异常波动，以评估散热与供电稳定性</li>
+            </ul>
+            <p>上述异常模式是保障AI训练与推理服务稳定运行的关键监控指标，需通过实时数据进行精准识别与预警。</p>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-bullseye"></i> 分析结论</h2>
+            <div class="conclusion-box">
+                <p>由于最近30分钟内<strong class="highlight">未采集到任何GPU硬件监控数据</strong>，系统无法执行对显存占用、温度或功耗的异常检测。所有预设的异常识别逻辑均因缺乏输入数据而无法触发，因此<strong class="highlight">本次分析无法得出任何关于GPU运行状态的结论</strong>。</p>
+                <p>数据缺失本身即构成一种系统性异常，其影响范围覆盖所有依赖该监控数据的运维决策流程。</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title"><i class="fas fa-lightbulb"></i> 建议与行动项</h2>
+            <div class="recommendation-box">
+                <p>为恢复监控数据采集能力，建议立即执行以下排查步骤：</p>
+                <ol class="list-decimal pl-6 mb-4">
+                    <li>检查GPU服务器上的监控代理服务（如NVIDIA DCGM、Prometheus Node Exporter等）是否正常运行，重启异常服务</li>
+                    <li>验证服务器与监控中心之间的网络连接是否通畅，排查防火墙、路由或安全组策略是否阻断了监控数据上报端口</li>
+                    <li>确认监控采集配置文件（如采集频率、目标设备列表、认证凭证）是否正确部署且未被意外修改</li>
+                    <li>检查服务器系统日志（如dmesg、journalctl）是否存在GPU驱动崩溃、PCIe通信错误或硬件故障告警</li>
+                    <li>若使用集中式监控平台（如Grafana + Prometheus），验证其数据接收服务是否在线且无队列积压</li>
+                </ol>
+                <p>建议在完成上述排查后，重新验证数据采集链路，并在2小时内进行复检，以确保监控系统恢复正常。</p>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>

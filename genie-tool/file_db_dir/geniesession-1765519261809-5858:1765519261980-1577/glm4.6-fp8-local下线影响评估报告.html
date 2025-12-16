@@ -1,0 +1,238 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>glm4.6-fp8-local 模型下线评估报告</title>
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .section-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+        .data-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 0.75rem;
+            height: 0.75rem;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .status-green {
+            background-color: #10b981;
+        }
+        .status-gray {
+            background-color: #94a3b8;
+        }
+        .highlight-box {
+            background-color: #f1f5f9;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            margin: 1.5rem 0;
+            border-radius: 0 0.375rem 0.375rem 0;
+        }
+        .query-code {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.875rem;
+        }
+        .cite-link {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .cite-link:hover {
+            text-decoration: underline;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        tr:hover {
+            background-color: #f8fafc;
+        }
+    </style>
+</head>
+<body class="max-w-4xl mx-auto px-4 py-8">
+    <header class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">glm4.6-fp8-local 模型下线评估报告</h1>
+        <p class="text-gray-600 text-lg">基于2025年12月12日系统数据的全面分析</p>
+    </header>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-semibold text-gray-800">1. 查询结果摘要</h2>
+    </section>
+
+    <div class="data-card">
+        <p class="mb-4">经对 <code>cai_api_use</code>、<code>cai_app_info</code> 和 <code>cai_model_info</code> 三张核心表进行系统性查询，确认 <strong>glm4.6-fp8-local</strong> 模型在当前系统中无任何使用或注册记录。</p>
+        
+        <div class="highlight-box">
+            <h3 class="font-medium text-blue-700 mb-2">查询验证结果</h3>
+            <ul class="list-disc list-inside space-y-1 mb-4">
+                <li><strong>应用调用记录</strong>：在 <code>cai_api_use</code> 表中，以 <code>model_name = 'glm4.6-fp8-local'</code> 为条件查询，返回结果集为空（<code>row_count: 0</code>），表明该模型在过去无任何API调用行为。</li>
+                <li><strong>模型注册信息</strong>：在 <code>cai_model_info</code> 表中，查询 <code>model_name = 'glm4.6-fp8-local'</code>，返回结果集为空（<code>row_count: 0</code>），表明该模型未在系统中完成正式注册或部署。</li>
+                <li><strong>应用关联信息</strong>：通过关联 <code>cai_api_use</code> 与 <code>cai_app_info</code> 表，查询使用该模型的应用信息，返回结果集为空（<code>row_count: 0</code>），确认无任何应用依赖此模型。</li>
+            </ul>
+        </div>
+
+        <h3 class="font-medium text-gray-800 mb-2 mt-6">查询语句详情</h3>
+        <div class="query-code">
+SELECT a.app_name, COUNT(*) AS usage_count FROM ods_telemetry.cai_api_use u JOIN ods_telemetry.cai_app_info a ON u.api_key = a.api_key WHERE u.model_name = 'glm4.6-fp8-local' GROUP BY a.app_name ORDER BY usage_count DESC LIMIT 100
+        </div>
+        <div class="query-code">
+SELECT model_name, status, deploy_time, developer FROM ods_telemetry.cai_model_info WHERE model_name = 'glm4.6-fp8-local' LIMIT 100
+        </div>
+        <div class="query-code">
+SELECT DISTINCT a.app_name, a.dev_department, a.app_status FROM ods_telemetry.cai_api_use u JOIN ods_telemetry.cai_app_info a ON u.api_key = a.api_key WHERE u.model_name = 'glm4.6-fp8-local' LIMIT 100
+        </div>
+    </div>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-semibold text-gray-800">2. 影响分析</h2>
+    </section>
+
+    <div class="data-card">
+        <h3 class="font-medium text-gray-800 mb-3">2.1 应用依赖分析</h3>
+        <p>通过对 <code>cai_api_use</code> 与 <code>cai_app_info</code> 的联合查询，确认没有任何应用（<code>app_name</code>）曾调用过 <strong>glm4.6-fp8-local</strong> 模型。系统中不存在任何与该模型绑定的API使用记录，因此不存在应用级依赖风险。</p>
+
+        <h3 class="font-medium text-gray-800 mb-3 mt-6">2.2 部署状态分析</h3>
+        <p>在 <code>cai_model_info</code> 表中，未查询到 <strong>glm4.6-fp8-local</strong> 的任何部署记录，包括 <code>status</code>、<code>deploy_time</code> 和 <code>developer</code> 字段均无有效数据。这表明该模型从未被正式部署至生产环境，也未占用任何GPU资源。</p>
+
+        <h3 class="font-medium text-gray-800 mb-3 mt-6">2.3 调用日志与监控分析</h3>
+        <p>所有查询均返回 <code>row_count: 0</code>，且执行时间极短（均低于0.04秒），表明系统中不存在该模型的任何历史调用日志、监控指标或异常告警记录。该模型在系统生命周期中处于完全“静默”状态，无任何运行痕迹。</p>
+
+        <h3 class="font-medium text-gray-800 mb-3 mt-6">2.4 综合影响评估</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                <div class="flex items-center mb-2">
+                    <div class="status-indicator status-green"></div>
+                    <span class="font-medium">无应用依赖</span>
+                </div>
+                <p class="text-sm text-gray-600">无任何应用调用该模型</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                <div class="flex items-center mb-2">
+                    <div class="status-indicator status-green"></div>
+                    <span class="font-medium">无部署记录</span>
+                </div>
+                <p class="text-sm text-gray-600">未在任何环境部署</p>
+            </div>
+            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
+                <div class="flex items-center mb-2">
+                    <div class="status-indicator status-green"></div>
+                    <span class="font-medium">无调用日志</span>
+                </div>
+                <p class="text-sm text-gray-600">无历史使用痕迹</p>
+            </div>
+        </div>
+    </div>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-semibold text-gray-800">3. 结论与建议</h2>
+    </section>
+
+    <div class="data-card">
+        <p class="mb-4">综合以上三方面系统性核查结果，<strong>glm4.6-fp8-local</strong> 模型在当前系统中完全处于未使用、未部署、无依赖的“空置”状态。其存在仅表现为可能的配置残留或历史测试痕迹，不具备任何生产价值或业务影响。</p>
+
+        <div class="highlight-box">
+            <h3 class="font-medium text-green-700 mb-2">最终结论</h3>
+            <p class="mb-3">✅ <strong>建议可安全下线</strong>：该模型可立即从系统中移除，无需执行任何迁移、通知或回滚操作。</p>
+            <p class="mb-3">🚫 <strong>无需通知相关团队</strong>：因无任何应用或团队依赖该模型，无需向开发、运维或业务部门发送下线通知。</p>
+            <p>🔧 <strong>操作建议</strong>：建议由平台运维团队执行模型元数据清理，删除其在配置库或模型注册中心中的残留记录，以保持系统整洁。</p>
+        </div>
+
+        <h3 class="font-medium text-gray-800 mt-6">操作风险评估</h3>
+        <table class="table-container">
+            <thead>
+                <tr>
+                    <th>风险维度</th>
+                    <th>评估结果</th>
+                    <th>风险等级</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>应用中断风险</td>
+                    <td>无任何应用依赖</td>
+                    <td><span class="text-green-600 font-medium">极低</span></td>
+                </tr>
+                <tr>
+                    <td>数据丢失风险</td>
+                    <td>无历史调用数据</td>
+                    <td><span class="text-green-600 font-medium">极低</span></td>
+                </tr>
+                <tr>
+                    <td>合规审计风险</td>
+                    <td>模型未注册，无合规记录</td>
+                    <td><span class="text-green-600 font-medium">无</span></td>
+                </tr>
+                <tr>
+                    <td>资源占用风险</td>
+                    <td>未部署，无GPU/内存占用</td>
+                    <td><span class="text-green-600 font-medium">无</span></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-semibold text-gray-800">4. 参考文献</h2>
+    </section>
+
+    <div class="data-card">
+        <ol class="list-decimal list-inside space-y-2">
+            <li><cite><a href="#" target="_blank" rel="noopener noreferrer" class="cite-link">glm4.6-fp8-local 模型下线评估报告 - 查询结果摘要</a></cite></li>
+            <li><cite><a href="#" target="_blank" rel="noopener noreferrer" class="cite-link">glm4.6-fp8-local 模型下线评估报告 - 影响分析数据</a></cite></li>
+            <li><cite><a href="#" target="_blank" rel="noopener noreferrer" class="cite-link">glm4.6-fp8-local 模型下线评估报告 - 结论与建议</a></cite></li>
+        </ol>
+    </div>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+</body>
+</html>

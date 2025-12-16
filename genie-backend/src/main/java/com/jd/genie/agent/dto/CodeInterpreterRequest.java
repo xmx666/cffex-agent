@@ -24,6 +24,7 @@ public class CodeInterpreterRequest {
     private Boolean stream;
     private Boolean contentStream;
     private Map<String, Object> streamMode;
+    private List<String> toolResults; // 工具调用结果列表（TOOL角色的消息content）
 
     @Data
     @AllArgsConstructor

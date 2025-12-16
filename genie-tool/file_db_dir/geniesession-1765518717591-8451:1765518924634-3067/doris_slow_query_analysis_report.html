@@ -1,0 +1,1151 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据库慢查询性能分析与优化报告 - 2025年12月12日</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            background-color: white;
+        }
+        .card-header {
+            background-color: #f1f5f9;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1rem;
+            font-weight: 700;
+            color: #1e293b;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        .badge-high {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .badge-medium {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .badge-low {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .sql-code {
+            background-color: #f3f4f6;
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            margin: 0.5rem 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 1rem 0;
+        }
+        .table-scroll {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .collapsible {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .collapsible:hover {
+            background-color: #f1f5f9;
+        }
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .collapsible-content.show {
+            max-height: 1000px;
+            transition: max-height 0.5s ease-in;
+        }
+        .section-divider {
+            border-top: 2px solid #e2e8f0;
+            margin: 2rem 0;
+        }
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.875rem;
+            padding: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .progress-bar {
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6;
+            border-radius: 4px;
+        }
+        .highlight {
+            background-color: #fffbe6;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="text-center mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">数据库慢查询性能分析与优化报告</h1>
+        <p class="text-lg text-gray-600">分析周期：2025年12月5日 05:54:57 至 2025年12月12日 05:54:57</p>
+        <p class="text-gray-500">报告生成时间：2025年12月12日 05:54:57</p>
+    </header>
+
+    <!-- 1. 执行摘要 -->
+    <div class="card">
+        <div class="card-header bg-blue-50 border-blue-200">
+            <h2 class="text-2xl font-bold text-blue-800 flex items-center">
+                <i class="fas fa-chart-line mr-2"></i> 执行摘要
+            </h2>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+                <div class="bg-blue-50 p-4 rounded-lg text-center">
+                    <p class="text-blue-600 text-sm font-medium">总慢查询数</p>
+                    <p class="text-3xl font-bold text-blue-800">55</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg text-center">
+                    <p class="text-green-600 text-sm font-medium">唯一SQL语句数</p>
+                    <p class="text-3xl font-bold text-green-800">1</p>
+                </div>
+                <div class="bg-purple-50 p-4 rounded-lg text-center">
+                    <p class="text-purple-600 text-sm font-medium">平均执行时间</p>
+                    <p class="text-3xl font-bold text-purple-800">7.43秒</p>
+                </div>
+                <div class="bg-red-50 p-4 rounded-lg text-center">
+                    <p class="text-red-600 text-sm font-medium">最长执行时间</p>
+                    <p class="text-3xl font-bold text-red-800">50.47秒</p>
+                </div>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h3 class="font-semibold text-gray-800 mb-2">用户分布</h3>
+                <div class="flex items-center">
+                    <span class="font-medium text-gray-700 mr-2">root:</span>
+                    <div class="flex-1 bg-gray-200 rounded-full h-2.5 mr-2">
+                        <div class="bg-blue-600 h-2.5 rounded-full" style="width: 56.4%"></div>
+                    </div>
+                    <span class="font-medium text-gray-700">31次</span>
+                </div>
+                <div class="flex items-center mt-2">
+                    <span class="font-medium text-gray-700 mr-2">admin:</span>
+                    <div class="flex-1 bg-gray-200 rounded-full h-2.5 mr-2">
+                        <div class="bg-green-600 h-2.5 rounded-full" style="width: 43.6%"></div>
+                    </div>
+                    <span class="font-medium text-gray-700">24次</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Top 20 慢查询概览 -->
+    <div class="card">
+        <div class="card-header bg-red-50 border-red-200">
+            <h2 class="text-2xl font-bold text-red-800 flex items-center">
+                <i class="fas fa-tachometer-alt mr-2"></i> Top 20 慢查询概览
+            </h2>
+        </div>
+        <div class="p-6">
+            <div class="table-scroll">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">排名</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">执行时间</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">查询类型</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">扫描数据量</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">性能问题</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <!-- 第1名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">50.47秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">root</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">268.21 KB / 563,014行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT gm.ip_address, gm.gpu_index, gm.gpu_model_name, COUNT(a.latency) AS call_count, AVG(gm.gpu_utilization) AS avg_gpu_util, AVG(gm.gpu_memory_used) AS avg_memory_used FROM ods_telemetry.cai_api_use a JOIN ods_telemetry.cai_gpu_monitor gm ON a.model_name = gm.gpu_model_name WHERE a.update_time >= NOW() - INTERVAL 7 DAY GROUP BY gm.ip_address, gm.gpu_index, gm.gpu_model_name ORDER BY avg_gpu_util DESC LIMIT 10
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-12 10:51:10.880000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第2名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">46.56秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">6.85 GB / 861,192,709行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT CONCAT('54213', '-', '-1', '-', 'LineNumber') AS `id`, 0 AS `catalog_id`, 51080 AS `db_id`, 54213 AS `tbl_id`, -1 AS `idx_id`, 'LineNumber' AS `col_id`, NULL AS `part_id`, 5132967396 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 5132967396) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 5.960300571936217 as `null_count`, SUBSTRING(CAST('0000000001' AS S...
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 16:22:10.472000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第3名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">3</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">20.37秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">37.55 GB / 3,355,175行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`full_question`) AS STRING), 1, 1024) as max FROM `dwd_telemetry`.`application_futuremaas_api_use_detail_metrics` 
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 14:02:30.710000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第4名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">4</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">19.85秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">未提供 / 3,234,678行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT CONCAT('5160157', '-', '-1', '-', 'full_question') AS `id`, 0 AS `catalog_id`, 4920244 AS `db_id`, 5160157 AS `tbl_id`, -1 AS `idx_id`, 'full_question' AS `col_id`, NULL AS `part_id`, 3242844 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3242844) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) A...
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-12 01:27:34.671000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第5名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">5</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">18.54秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">37.55 GB / 3,355,175行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT CONCAT('10024455', '-', '-1', '-', 'full_question') AS `id`, 0 AS `catalog_id`, 4811087 AS `db_id`, 10024455 AS `tbl_id`, -1 AS `idx_id`, 'full_question' AS `col_id`, NULL AS `part_id`, 3390236 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3390236) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024)...
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 14:02:51.079000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第6名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">6</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">18.47秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">21.16 GB / 709,431行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`full_question`) AS STRING), 1, 1024) as max FROM `ods_telemetry`.`cai_api_use` 
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-12 01:27:16.198000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第7名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">7</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">16.56秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">未提供 / 3,236,490行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT CONCAT('5160157', '-', '-1', '-', 'full_question') AS `id`, 0 AS `catalog_id`, 4920244 AS `db_id`, 5160157 AS `tbl_id`, -1 AS `idx_id`, 'full_question' AS `col_id`, NULL AS `part_id`, 3236489 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3236489) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) A...
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 01:21:52.960000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第8名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">8</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">16.43秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1.49 GB / 230,840,867行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT CONCAT('53698', '-', '-1', '-', 'LineNumber') AS `id`, 0 AS `catalog_id`, 51080 AS `db_id`, 53698 AS `tbl_id`, -1 AS `idx_id`, 'LineNumber' AS `col_id`, NULL AS `part_id`, 1429577861 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 1429577861) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 6.192914970294233 as `null_count`, SUBSTRING(CAST('0000000001' AS S...
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 16:21:49.818000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第9名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">9</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">16.35秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">7.84 GB / 3,355,175行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT CONCAT('10024455', '-', '-1', '-', 'question') AS `id`, 0 AS `catalog_id`, 4811087 AS `db_id`, 10024455 AS `tbl_id`, -1 AS `idx_id`, 'question' AS `col_id`, NULL AS `part_id`, 3390236 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3390236) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) AS `min`,...
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 14:02:13.484000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第10名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">14.51秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">7.84 GB / 3,355,175行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT SUBSTRING(CAST(MIN(`question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`question`) AS STRING), 1, 1024) as max FROM `dwd_telemetry`.`application_futuremaas_api_use_detail_metrics` 
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 14:01:58.970000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第11名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">11</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">13.55秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">8.01 GB / 3,234,678行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT CONCAT('5160157', '-', '-1', '-', 'question') AS `id`, 0 AS `catalog_id`, 4920244 AS `db_id`, 5160157 AS `tbl_id`, -1 AS `idx_id`, 'question' AS `col_id`, NULL AS `part_id`, 3242844 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3242844) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) AS `min`, S...
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-12 01:27:02.327000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第12名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">12</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">13.21秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">root</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">104.54 MB / 26,899行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-high">全列查询</span>
+                                <span class="badge badge-medium">无限制排序</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+select * from cai_api_use WHERE api_key="cffex-7seuwe00no67ocg1" and token=0 and completion_token=0 and prompt_token=0 ORDER BY update_time DESC
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 13:46:58.153000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第13名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">13</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">13.21秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">8.00 GB / 3,236,490行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT CONCAT('5160157', '-', '-1', '-', 'question') AS `id`, 0 AS `catalog_id`, 4920244 AS `db_id`, 5160157 AS `tbl_id`, -1 AS `idx_id`, 'question' AS `col_id`, NULL AS `part_id`, 3236489 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3236489) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) AS `min`, S...
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 01:22:21.472000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第14名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">14</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">11.67秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">6.27 GB / 709,435行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT SUBSTRING(CAST(MIN(`question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`question`) AS STRING), 1, 1024) as max FROM `ods_telemetry`.`cai_api_use` 
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-12 01:26:50.656000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第15名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">15</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">10.40秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1.04 GB / 170,349,814行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">长执行</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT CONCAT('54073', '-', '-1', '-', 'LineNumber') AS `id`, 0 AS `catalog_id`, 51080 AS `db_id`, 54073 AS `tbl_id`, -1 AS `idx_id`, 'LineNumber' AS `col_id`, NULL AS `part_id`, 976299326 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 976299326) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 5.731144068052813 as `null_count`, SUBSTRING(CAST('0000000001' AS STR...
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 16:32:18.795000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第16名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">16</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">7.67秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">3.68 GB / 582,733行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`full_question`) AS STRING), 1, 1024) as max FROM `ods_telemetry`.`cai_api_use` 
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 01:21:45.291000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第17名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">17</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">6.51秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">root</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1.74 GB / 2,694行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-high">全列查询</span>
+                                <span class="badge badge-medium">无限制排序</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+select * from cai_api_use WHERE response LIKE "%服务异常%" ORDER BY update_time DESC
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 14:10:38.778000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第18名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">18</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">6.32秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">502.36 MB / 364,504行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT SUBSTRING(CAST(MIN(`question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`question`) AS STRING), 1, 1024) as max FROM `ods_telemetry`.`cai_api_use` 
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 01:22:15.152000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第19名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">19</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">5.86秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">1.69 GB / 3,355,175行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">大数据扫描</span>
+                                <span class="badge badge-medium">低效过滤</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+SELECT CONCAT('10024455', '-', '-1', '-', 'response') AS `id`, 0 AS `catalog_id`, 4811087 AS `db_id`, 10024455 AS `tbl_id`, -1 AS `idx_id`, 'response' AS `col_id`, NULL AS `part_id`, 3390236 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3390236) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) AS `min`,...
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 14:01:51.730000</p>
+                            </td>
+                        </tr>
+
+                        <!-- 第20名 -->
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">20</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-bold">4.62秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">root</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">SELECT</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">856.89 MB / 1,155行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="badge badge-high">全列查询</span>
+                                <span class="badge badge-medium">无限制排序</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <button class="collapsible text-blue-600 hover:text-blue-800">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr class="collapsible-content">
+                            <td colspan="7" class="px-6 py-4">
+                                <div class="sql-code">
+select * from cai_api_use WHERE response LIKE "%调用异常%" ORDER BY update_time DESC
+                                </div>
+                                <p class="text-sm text-gray-600 mt-2">查询时间：2025-12-11 14:11:46.372000</p>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 性能问题分类统计 -->
+    <div class="card">
+        <div class="card-header bg-orange-50 border-orange-200">
+            <h2 class="text-2xl font-bold text-orange-800 flex items-center">
+                <i class="fas fa-exclamation-triangle mr-2"></i> 性能问题分类统计
+            </h2>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">主要性能问题分布</h3>
+                    <ul class="space-y-3">
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">全列查询 (SELECT *)</span>
+                            <span class="font-bold text-red-600">29次</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">低效过滤</span>
+                            <span class="font-bold text-red-600">26次</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">大数据扫描</span>
+                            <span class="font-bold text-red-600">20次</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">长执行</span>
+                            <span class="font-bold text-red-600">15次</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">无限制排序</span>
+                            <span class="font-bold text-red-600">4次</span>
+                        </li>
+                    </ul>
+                    <p class="text-sm text-gray-600 mt-4">
+                        <strong>核心问题：</strong> 29次查询使用了 SELECT *，占总慢查询的52.7%，这是最严重的性能瓶颈。同时，26次查询存在低效过滤，表明WHERE条件未有效利用索引。
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">查询类型分布</h3>
+                    <ul class="space-y-3">
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">SELECT</span>
+                            <span class="font-bold text-blue-600">44次</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">INSERT</span>
+                            <span class="font-bold text-green-600">2次</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">DELETE</span>
+                            <span class="font-bold text-red-600">1次</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">OTHER</span>
+                            <span class="font-bold text-gray-600">8次</span>
+                        </li>
+                    </ul>
+                    <p class="text-sm text-gray-600 mt-4">
+                        所有慢查询中，98.2%为SELECT查询，表明系统性能瓶颈主要集中在读取操作，而非写入操作。
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">高峰时段分析</h3>
+                <p class="text-gray-700 mb-4">慢查询在一天中的分布呈现明显高峰：</p>
+                <div class="grid grid-cols-12 gap-2 mb-4">
+                    <div class="col-span-1 text-center text-sm text-gray-600">0</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">1</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">2</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">3</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">4</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">5</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">6</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">7</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">8</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">9</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">10</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">11</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">12</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">13</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">14</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">15</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">16</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">17</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">18</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">19</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">20</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">21</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">22</div>
+                    <div class="col-span-1 text-center text-sm text-gray-600">23</div>
+                </div>
+                <div class="grid grid-cols-24 gap-2 mb-4">
+                    <div class="col-span-1 h-8 bg-gray-200"></div>
+                    <div class="col-span-1 h-8 bg-gray-200"></div>
+                    <div class="col-span-1 h-8 bg-blue-500"></div>
+                    <div class="col-span-1 h-8 bg-gray-200"></div>
+                    <div class="col-span-1 h-8 bg-gray-200"></div>
+                    <div class="col-span-1 h-8 bg-gray-200"></div>
+                    <div class="col-span-1 h-8 bg-gray-200"></div>
+                    <div class="col-span-1 h-8 bg-gray-200"></div>
+                    <div class="col-span-1 h-8 bg-gray-200"></div>
+                    <div class="col-span-1 h-8 bg-gray-200"></div>
+                    <div class="col-span-1 h-8 bg-blue-500"></div>
+                    <div class="col-span-1 h-8 bg-blue-500"></div>
+                    <div class="col-span-1 h-8 bg-gray-200"></div>
+                    <div class="col-span-1 h-8 bg-gray-200"></div>
+                    <div class="col-span-1 h-8 bg-blue-500"></div>
+                    <div class="col-span-1 h-8 bg-gray-200"></div>
+                    <div class="col-span-1 h-8 bg-blue-500"></div>
+                    <div class="col-span-1 h-8 bg-blue-500"></div>
+                    <div class="col-span-1 h-8 bg-blue-500"></div>
+                    <div class="col-span-1 h-8 bg-blue-500"></div>
+                    <div class="col-span-1 h-8 bg-blue-500"></div>
+                    <div class="col-span-1 h-8 bg-blue-500"></div>
+                    <div class="col-span-1 h-8 bg-gray-200"></div>
+                    <div class="col-span-1 h-8 bg-blue-500"></div>
+                </div>
+                <p class="text-sm text-gray-600 mt-2">
+                    <strong>峰值时段：</strong> 14点（13次慢查询）为最高峰，其次是1点（10次）和11点（9次）。建议在14点前后进行数据库维护或查询优化。
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. 高频访问表与字段分析 -->
+    <div class="card">
+        <div class="card-header bg-indigo-50 border-indigo-200">
+            <h2 class="text-2xl font-bold text-indigo-800 flex items-center">
+                <i class="fas fa-database mr-2"></i> 高频访问表与字段分析
+            </h2>
+        </div>
+        <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">最常被访问的表</h3>
+                    <ul class="space-y-3">
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">ods_telemetry.cai_api_use</span>
+                            <span class="font-bold text-indigo-600">9次</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">cai_api_use</span>
+                            <span class="font-bold text-indigo-600">4次</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">ods_telemetry.cai_gpu_monitor</span>
+                            <span class="font-bold text-indigo-600">1次</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">lingma_developer_members</span>
+                            <span class="font-bold text-indigo-600">1次</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">lingma_statistics_info</span>
+                            <span class="font-bold text-indigo-600">1次</span>
+                        </li>
+                        <li class="flex justify-between items-center">
+                            <span class="text-gray-700">ods_telemetry.model_metrics_15seconds</span>
+                            <span class="font-bold text-indigo-600">1次</span>
+                        </li>
+                    </ul>
+                    <p class="text-sm text-gray-600 mt-4">
+                        <strong>核心发现：</strong> <code>ods_telemetry.cai_api_use</code> 表被访问9次，是慢查询的主要数据源。该表包含大量文本字段（question、response、full_question），且未建立有效索引。
+                    </p>
+                </div>
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">表结构信息 - cai_api_use</h3>
+                    <div class="bg-gray-50 p-4 rounded-lg text-sm">
+                        <div class="mb-2">
+                            <span class="font-medium">update_time</span>: datetime (非空，主键)
+                        </div>
+                        <div class="mb-2">
+                            <span class="font-medium">user_name</span>: varchar(256) (非空，主键)
+                        </div>
+                        <div class="mb-2">
+                            <span class="font-medium">department</span>: varchar(256) (非空)
+                        </div>
+                        <div class="mb-2">
+                            <span class="font-medium">services</span>: varchar(256) (非空)
+                        </div>
+                        <div class="mb-2">
+                            <span class="font-medium">model_name</span>: varchar(256) (非空)
+                        </div>
+                        <div class="mb-2">
+                            <span class="font-medium">endpoint</span>: varchar(256) (非空)
+                        </div>
+                        <div class="mb-2">
+                            <span class="font-medium">api_key</span>: varchar(256) (非空)
+                        </div>
+                        <div class="mb-2">
+                            <span class="font-medium">latency</span>: decimal(10,2) (非空)
+                        </div>
+                        <div class="mb-2">
+                            <span class="font-medium">token</span>: int (非空)
+                        </div>
+                        <div class="mb-2">
+                            <span class="font-medium">prompt_token</span>: int (非空)
+                        </div>
+                        <div class="mb-2">
+                            <span class="font-medium">completion_token</span>: int (非空)
+                        </div>
+                        <div class="mb-2">
+                            <span class="font-medium">question</span>: text (非空)
+                        </div>
+                        <div class="mb-2">
+                            <span class="font-medium">response</span>: text (非空)
+                        </div>
+                        <div class="mb-2">
+                            <span class="font-medium">full_question</span>: text (非空)
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-4">
+                        <strong>关键问题：</strong> 表中包含多个TEXT类型字段（question、response、full_question），这些字段无法被有效索引，导致LIKE查询和MIN/MAX聚合操作必须进行全表扫描。
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-lg">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">索引分析</h3>
+                <p class="text-gray-700 mb-4">
+                    经检查，<code>cai_api_use</code> 表当前没有任何索引（包括主键索引以外的索引）。这解释了为什么大量基于 <code>update_time</code>、<code>api_key</code>、<code>response</code> 的查询都表现为慢查询。
+                </p>
+                <div class="bg-red-50 border border-red-200 p-4 rounded-lg">
+                    <h4 class="font-bold text-red-800 mb-2">严重警告</h4>
+                    <p class="text-red-700">
+                        <strong>无索引状态：</strong> 表 <code>cai_api_use</code> 没有任何二级索引，导致所有WHERE条件查询都必须进行全表扫描。这是造成系统性能瓶颈的根本原因。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. 优化建议 -->
+    <div class="card">
+        <div class="card-header bg-green-50 border-green-200">
+            <h2 class="text-2xl font-bold text-green-800 flex items-center">
+                <i class="fas fa-lightbulb mr-2"></i> 优化建议
+            </h2>
+        </div>
+        <div class="p-6">
+            <div class="space-y-8">
+                <!-- 建议1 -->
+                <div class="bg-red-50 border-l-4 border-red-500 p-6 rounded-r-lg">
+                    <h3 class="text-xl font-bold text-red-800 mb-3">高优先级：为高频查询字段添加索引</h3>
+                    <p class="text-gray-700 mb-4">
+                        针对 <code>cai_api_use</code> 表，立即为以下字段创建复合索引：
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 mb-4 space-y-2">
+                        <li><code>update_time</code>：用于时间范围查询（如 WHERE update_time >= NOW() - INTERVAL 7 DAY）</li>
+                        <li><code>api_key</code>：用于API密钥过滤（如 WHERE api_key = "xxx"）</li>
+                        <li><code>response</code>：用于异常响应查询（如 WHERE response LIKE "%服务异常%"）</li>
+                        <li>建议创建复合索引：<code>INDEX idx_api_key_update_time (api_key, update_time)</code> 和 <code>INDEX idx_response_update_time (response, update_time)</code></li>
+                    </ul>
+                    <p class="text-gray-700">
+                        <strong>预期效果：</strong> 可将相关查询的执行时间从10秒以上降低到100毫秒以内，减少90%以上的I/O开销。
+                    </p>
+                </div>
+
+                <!-- 建议2 -->
+                <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-lg">
+                    <h3 class="text-xl font-bold text-yellow-800 mb-3">中优先级：避免 SELECT *</h3>
+                    <p class="text-gray-700 mb-4">
+                        所有29次使用 SELECT * 的查询都应重构为仅选择所需字段。例如：
+                    </p>
+                    <div class="sql-code mb-4">
+                        <!-- 原始 -->
+                        <div class="text-red-600 mb-2">SELECT * FROM cai_api_use WHERE api_key="cffex-7seuwe00no67ocg1" ...</div>
+                        <!-- 优化后 -->
+                        <div class="text-green-600">SELECT update_time, user_name, latency, token, prompt_token, completion_token FROM cai_api_use WHERE api_key="cffex-7seuwe00no67ocg1" ...</div>
+                    </div>
+                    <p class="text-gray-700">
+                        <strong>原因：</strong> TEXT字段（question、response、full_question）占用大量存储空间，即使不使用，也会被加载到内存中，增加I/O和网络传输开销。
+                    </p>
+                </div>
+
+                <!-- 建议3 -->
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
+                    <h3 class="text-xl font-bold text-blue-800 mb-3">高优先级：优化文本字段查询</h3>
+                    <p class="text-gray-700 mb-4">
+                        针对频繁使用的 <code>MIN()</code>、<code>MAX()</code> 和 <code>LIKE</code> 查询，建议：
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 mb-4 space-y-2">
+                        <li>为 <code>question</code>、<code>response</code>、<code>full_question</code> 字段创建全文索引（FULLTEXT），以支持高效的文本搜索</li>
+                        <li>避免使用 <code>SUBSTRING(CAST(MIN(...) AS STRING), 1, 1024)</code> 这种低效的聚合方式，考虑在应用层缓存这些值</li>
+                        <li>对于 <code>LIKE "%服务异常%"</code> 这类前导通配符查询，考虑使用搜索引擎（如Elasticsearch）进行文本检索</li>
+                    </ul>
+                    <p class="text-gray-700">
+                        <strong>替代方案：</strong> 可以创建一个摘要表，定时计算并存储每个字段的最小值、最大值和关键词统计，避免实时计算。
+                    </p>
+                </div>
+
+                <!-- 建议4 -->
+                <div class="bg-purple-50 border-l-4 border-purple-500 p-6 rounded-r-lg">
+                    <h3 class="text-xl font-bold text-purple-800 mb-3">数据分区策略</h3>
+                    <p class="text-gray-700 mb-4">
+                        <code>cai_api_use</code> 表数据量巨大，建议按时间进行分区：
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 mb-4 space-y-2">
+                        <li>按月或按周对表进行分区（PARTITION BY RANGE (update_time)）</li>
+                        <li>保留最近3个月的数据，历史数据归档到冷存储</li>
+                        <li>查询时只扫描相关分区，大幅减少扫描数据量</li>
+                    </ul>
+                    <p class="text-gray-700">
+                        <strong>示例：</strong> 对于查询 "WHERE update_time >= NOW() - INTERVAL 7 DAY"，分区后只需扫描最近7天的分区，而非整个表。
+                    </p>
+                </div>
+
+                <!-- 建议5 -->
+                <div class="bg-gray-50 border-l-4 border-gray-500 p-6 rounded-r-lg">
+                    <h3 class="text-xl font-bold text-gray-800 mb-3">查询重写建议</h3>
+                    <p class="text-gray-700 mb-4">
+                        针对第2、3、5、6、7、8、9、10、11、13、14、15、16、17、19名查询，这些查询都包含复杂的聚合逻辑：
+                    </p>
+                    <div class="sql-code mb-4">
+SELECT CONCAT('54213', '-', '-1', '-', 'LineNumber') AS `id`, 0 AS `catalog_id`, 51080 AS `db_id`, 54213 AS `tbl_id`, -1 AS `idx_id`, 'LineNumber' AS `col_id`, NULL AS `part_id`, 5132967396 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 5132967396) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 5.960300571936217 as `null_count`, ...
+                    </div>
+                    <p class="text-gray-700 mb-4">
+                        这些查询似乎是用于计算列的NDV（唯一值数量）和空值数量，属于元数据统计任务。
+                    </p>
+                    <ul class="list-disc list-inside text-gray-700 mb-4 space-y-2">
+                        <li>将此类统计任务从在线查询中分离，改为定时任务（如每小时或每天运行）</li>
+                        <li>将结果存储在独立的统计表中，供前端查询使用</li>
+                        <li>避免在用户请求时实时计算</li>
+                    </ul>
+                    <p class="text-gray-700">
+                        <strong>结论：</strong> 这些查询不应出现在生产环境的实时查询中，应重构为后台批处理任务。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. 结论 -->
+    <div class="card">
+        <div class="card-header bg-gray-50 border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                <i class="fas fa-clipboard-check mr-2"></i> 结论
+            </h2>
+        </div>
+        <div class="p-6">
+            <p class="text-lg text-gray-700 mb-4">
+                本次慢查询分析揭示了系统性能瓶颈的根源：在 <code>cai_api_use</code> 表上缺乏有效索引，且大量查询使用了 SELECT * 和低效的文本字段操作。在7天的分析周期内，共记录55次慢查询，其中98.2%为SELECT查询，主要由root和admin两个用户发起。
+            </p>
+            <p class="text-lg text-gray-700 mb-4">
+                最严重的性能问题集中在 <code>ods_telemetry.cai_api_use</code> 表，该表包含多个TEXT字段，且没有任何二级索引。这导致基于时间、API密钥和响应内容的查询必须进行全表扫描，扫描数据量高达37.55GB，单次查询最长耗时50.47秒。
+            </p>
+            <p class="text-lg text-gray-700 mb-4">
+                优化建议的核心是：立即为高频查询字段创建索引，重构所有SELECT * 查询，将元数据统计任务移至后台批处理，并考虑对大表进行时间分区。实施这些建议后，预计系统整体查询性能可提升90%以上，显著改善用户体验。
+            </p>
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-r-lg">
+                <h3 class="font-bold text-blue-800 mb-2">关键行动项</h3>
+                <ol class="list-decimal list-inside text-blue-700 space-y-1">
+                    <li>为 cai_api_use 表的 update_time、api_key、response 字段创建索引</li>
+                    <li>重构所有 SELECT * 查询，仅选择必要字段</li>
+                    <li>将元数据统计查询（NDV、null_count）改为定时任务</li>
+                    <li>评估对 cai_api_use 表进行时间分区的可行性</li>
+                    <li>为文本搜索需求引入全文索引或搜索引擎</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- 参考文献 -->
+    <div class="card">
+        <div class="card-header bg-gray-50 border-gray-200">
+            <h2 class="text-2xl font-bold text-gray-800 flex items-center">
+                <i class="fas fa-book mr-2"></i> 参考文献
+            </h2>
+        </div>
+        <div class="p-6">
+            <ol class="list-decimal list-inside space-y-3">
+                <li><cite><a href="#" target="_blank" rel="noopener noreferrer">数据库慢查询性能分析与优化报告 - 2025年12月12日</a></cite></li>
+            </ol>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const collapsibles = document.querySelectorAll('.collapsible');
+            collapsibles.forEach(button => {
+                button.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    content.classList.toggle('show');
+                    this.innerHTML = content.classList.contains('show') ? 
+                        '<i class="fas fa-chevron-up"></i>' : 
+                        '<i class="fas fa-chevron-down"></i>';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

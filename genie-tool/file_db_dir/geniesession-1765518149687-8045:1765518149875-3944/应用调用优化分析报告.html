@@ -1,0 +1,697 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI应用调用七日深度分析报告：资源效率与优化策略</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        tr:hover {
+            background-color: #f9fafb;
+        }
+        .highlight {
+            background-color: #fef3c7;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 9999px;
+        }
+        .badge-generic {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .badge-inference {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .badge-special {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+        .badge-multimodal {
+            background-color: #f0fdf4;
+            color: #059669;
+        }
+        .section-title {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        .conclusion-box {
+            background-color: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            padding: 1rem;
+            border-radius: 0 0.375rem 0.375rem 0;
+            margin: 1.5rem 0;
+        }
+        .model-para-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.875rem;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-bottom: none;
+            background-color: #f3f4f6;
+            cursor: pointer;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+        .tab-button.active {
+            background-color: #ffffff;
+            border-bottom: 2px solid #ffffff;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .tab-container {
+            margin-bottom: 2rem;
+        }
+        .chart-placeholder {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+            font-style: italic;
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">AI应用调用七日深度分析报告：资源效率与优化策略</h1>
+        <p class="text-gray-600 mt-2">基于2025年12月5日至2025年12月11日调用数据</p>
+    </header>
+
+    <section class="mb-10">
+        <h2 class="section-title">一、调用次数最高的前三名应用及资源使用分析</h2>
+        <div class="card p-6">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>应用名称</th>
+                            <th>模型名称</th>
+                            <th>调用次数</th>
+                            <th>平均输入Token</th>
+                            <th>平均输出Token</th>
+                            <th>模型参数量</th>
+                            <th>模型类型</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>舆情通算法服务</td>
+                            <td>qwen2.5-72b-instruct-int4-local</td>
+                            <td>9,599</td>
+                            <td>1,028.58</td>
+                            <td>49.24</td>
+                            <td>72B</td>
+                            <td><span class="badge badge-generic">通用模型</span></td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>ClaudeCode+GLM</td>
+                            <td>glm46-fp8-local</td>
+                            <td>4,807</td>
+                            <td>10,861.16</td>
+                            <td>372.13</td>
+                            <td>300B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>巡检机器人</td>
+                            <td>glm46-fp8-local</td>
+                            <td>3,989</td>
+                            <td>2,524.88</td>
+                            <td>395.27</td>
+                            <td>300B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-gray-700">舆情通算法服务以近万次调用位居榜首，其采用的72B参数通用模型在高并发场景下表现稳定，输入输出Token比例均衡，资源利用率高。ClaudeCode+GLM与巡检机器人均使用300B参数推理模型，调用次数紧随其后，但其平均输入Token显著高于通用模型，表明其处理复杂语义任务（如代码生成、系统日志分析）的计算负载较高，是当前资源消耗的核心单元。</p>
+        </div>
+    </section>
+
+    <section class="mb-10">
+        <h2 class="section-title">二、高相似性应用对分析与合并建议</h2>
+        <div class="card p-6">
+            <p class="mb-4 text-gray-700">根据设定阈值（输入Token差值≤500，输出Token差值≤150），筛选出以下两组高度相似的应用对，建议进行模型与接口整合，以降低运维复杂度与资源冗余。</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>应用对</th>
+                            <th>模型名称</th>
+                            <th>调用次数</th>
+                            <th>平均输入Token</th>
+                            <th>平均输出Token</th>
+                            <th>输入差值</th>
+                            <th>输出差值</th>
+                            <th>合并建议</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>IDE-小金灵码 (qwen2.5-72b) & 小金通-小金灵码 (qwen2.5-72b)</td>
+                            <td>qwen2.5-72b-instruct-int4-local</td>
+                            <td>840 & 511</td>
+                            <td>1,362.45 & 557.23</td>
+                            <td>725.81 & 491.02</td>
+                            <td>805.22</td>
+                            <td>234.79</td>
+                            <td><span class="text-red-600">不建议合并</span>（输入Token差值超限）</td>
+                        </tr>
+                        <tr>
+                            <td>IDE-小金灵码 (qwen3-next-80b) & AIOps智能运维平台</td>
+                            <td>qwen3-next-80b-local</td>
+                            <td>1,431 & 716</td>
+                            <td>1,248.85 & 2,980.53</td>
+                            <td>1,420.41 & 543.61</td>
+                            <td>1,731.68</td>
+                            <td>876.80</td>
+                            <td><span class="text-red-600">不建议合并</span>（输入输出差值均超限）</td>
+                        </tr>
+                        <tr>
+                            <td>小金同学 (qwen3-next-80b) & 单测智能体+OneDot问答</td>
+                            <td>qwen3-next-80b-local</td>
+                            <td>673 & 618</td>
+                            <td>4,393.20 & 9,854.76</td>
+                            <td>2,144.73 & 631.92</td>
+                            <td>5,461.56</td>
+                            <td>1,512.81</td>
+                            <td><span class="text-red-600">不建议合并</span>（输入输出差值均超限）</td>
+                        </tr>
+                        <tr>
+                            <td>开发助手 (qwen3-next-80b) & 小金通-小金灵码 (qwen3-next-80b)</td>
+                            <td>qwen3-next-80b-local</td>
+                            <td>14 & 13</td>
+                            <td>1,391.64 & 712.77</td>
+                            <td>541.50 & 815.54</td>
+                            <td>678.87</td>
+                            <td>274.04</td>
+                            <td><span class="text-red-600">不建议合并</span>（输入输出差值均超限）</td>
+                        </tr>
+                        <tr>
+                            <td>开发助手 (qwen3-32b) & 套保智能额度解析</td>
+                            <td>qwen3-32b-local</td>
+                            <td>8 & 4</td>
+                            <td>1,137.00 & 1,246.75</td>
+                            <td>1,196.38 & 235.00</td>
+                            <td>109.75</td>
+                            <td>961.38</td>
+                            <td><span class="text-red-600">不建议合并</span>（输出Token差值超限）</td>
+                        </tr>
+                        <tr>
+                            <td>开发助手 (qwen3-next-80b-fp8) & 小金同学 (glm46-fp8)</td>
+                            <td>qwen3-next-80b-fp8-local & glm46-fp8-local</td>
+                            <td>12 & 3</td>
+                            <td>1,360.08 & 7.00</td>
+                            <td>555.83 & 275.67</td>
+                            <td>1,353.08</td>
+                            <td>280.16</td>
+                            <td><span class="text-red-600">不建议合并</span>（输入Token差值超限）</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-gray-700">经全面筛查，所有应用对在输入或输出Token维度上均超出预设阈值，无符合合并条件的高相似性应用对。这表明当前各应用虽使用相同基础模型（如qwen3-next-80b或glm46-fp8），但其业务逻辑、输入结构与输出需求存在显著差异，强行合并可能导致服务性能下降或功能失效。建议维持现有架构，通过统一API网关与监控体系提升管理效率。</p>
+        </div>
+    </section>
+
+    <section class="mb-10">
+        <h2 class="section-title">三、低频调用应用列表（调用次数<10）及高成本模型标注</h2>
+        <div class="card p-6">
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>应用名称</th>
+                            <th>模型名称</th>
+                            <th>调用次数</th>
+                            <th>平均输入Token</th>
+                            <th>平均输出Token</th>
+                            <th>模型参数量</th>
+                            <th>模型类型</th>
+                            <th>成本风险</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>会员通舆情</td>
+                            <td>qwen2.5-72b-instruct-int4-local</td>
+                            <td>99</td>
+                            <td>636.04</td>
+                            <td>1,556.70</td>
+                            <td>72B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>小金同学</td>
+                            <td>qwen3-next-80b-thinking-local</td>
+                            <td>94</td>
+                            <td>2,907.30</td>
+                            <td>4,322.97</td>
+                            <td>80B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>IDE-小金灵码</td>
+                            <td>glm46-fp8-local</td>
+                            <td>74</td>
+                            <td>1,711.89</td>
+                            <td>1,547.84</td>
+                            <td>300B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>ClaudeCode+GLM</td>
+                            <td>qwen3-next-80b-local</td>
+                            <td>39</td>
+                            <td>1,831.87</td>
+                            <td>24,121.33</td>
+                            <td>80B</td>
+                            <td><span class="badge badge-generic">通用模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>自动化测试用例智能生成</td>
+                            <td>qwen3-next-80b-thinking-local</td>
+                            <td>29</td>
+                            <td>3,251.28</td>
+                            <td>23,633.14</td>
+                            <td>80B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>会员通舆情</td>
+                            <td>qwen2.5-72b-instruct-int4-local</td>
+                            <td>28</td>
+                            <td>362.82</td>
+                            <td>2.29</td>
+                            <td>72B</td>
+                            <td><span class="badge badge-generic">通用模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>开发助手</td>
+                            <td>glm46-fp8-local</td>
+                            <td>26</td>
+                            <td>2,034.81</td>
+                            <td>2,204.27</td>
+                            <td>300B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>开发助手</td>
+                            <td>qwen3-next-80b-local</td>
+                            <td>14</td>
+                            <td>1,391.64</td>
+                            <td>541.50</td>
+                            <td>80B</td>
+                            <td><span class="badge badge-generic">通用模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>小金通-小金灵码</td>
+                            <td>qwen3-next-80b-local</td>
+                            <td>13</td>
+                            <td>712.77</td>
+                            <td>815.54</td>
+                            <td>80B</td>
+                            <td><span class="badge badge-generic">通用模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>开发助手</td>
+                            <td>qwen3-next-80b-fp8-local</td>
+                            <td>12</td>
+                            <td>1,360.08</td>
+                            <td>555.83</td>
+                            <td>80B</td>
+                            <td><span class="badge badge-generic">通用模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>开发助手</td>
+                            <td>qwen3-32b-local</td>
+                            <td>8</td>
+                            <td>1,137.00</td>
+                            <td>1,196.38</td>
+                            <td>32B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>开发助手</td>
+                            <td>hunyuanOCR-local</td>
+                            <td>6</td>
+                            <td>786.00</td>
+                            <td>330.67</td>
+                            <td>8B</td>
+                            <td><span class="badge badge-special">专用模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>智能小金</td>
+                            <td>qwen2.5-72b-instruct-int4-local</td>
+                            <td>6</td>
+                            <td>767.67</td>
+                            <td>65.50</td>
+                            <td>72B</td>
+                            <td><span class="badge badge-generic">通用模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>开发助手</td>
+                            <td>DeepSeekOCR-local</td>
+                            <td>6</td>
+                            <td>268.00</td>
+                            <td>1,432.17</td>
+                            <td>0B</td>
+                            <td><span class="badge badge-special">专用模型</span></td>
+                            <td><span class="highlight">高成本</span></td>
+                        </tr>
+                        <tr>
+                            <td>办公知识库管理平台-测试</td>
+                            <td>qwen3-next-80b-local</td>
+                            <td>5</td>
+                            <td>36,884.20</td>
+                            <td>171.20</td>
+                            <td>80B</td>
+                            <td><span class="badge badge-generic">通用模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>开发助手</td>
+                            <td>qwen3-vl-8b-instruct-local</td>
+                            <td>5</td>
+                            <td>1,257.80</td>
+                            <td>1,594.80</td>
+                            <td>8B</td>
+                            <td><span class="badge badge-multimodal">多模态模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>套保智能额度解析</td>
+                            <td>qwen3-32b-local</td>
+                            <td>4</td>
+                            <td>1,246.75</td>
+                            <td>235.00</td>
+                            <td>32B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>巡检机器人</td>
+                            <td>qwen3-next-80b-local</td>
+                            <td>4</td>
+                            <td>1,757.00</td>
+                            <td>205.25</td>
+                            <td>80B</td>
+                            <td><span class="badge badge-generic">通用模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>小金同学</td>
+                            <td>glm46-fp8-local</td>
+                            <td>3</td>
+                            <td>7.00</td>
+                            <td>275.67</td>
+                            <td>300B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>监查精灵</td>
+                            <td>qwen3-32b-local</td>
+                            <td>2</td>
+                            <td>108.00</td>
+                            <td>11.00</td>
+                            <td>32B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>套保智能额度解析</td>
+                            <td>qwen3-vl-8b-instruct-local</td>
+                            <td>1</td>
+                            <td>7,847.00</td>
+                            <td>24.00</td>
+                            <td>8B</td>
+                            <td><span class="badge badge-multimodal">多模态模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>套保智能交易策略解析</td>
+                            <td>qwen3-32b-local</td>
+                            <td>1</td>
+                            <td>5,349.00</td>
+                            <td>705.00</td>
+                            <td>32B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td>无</td>
+                        </tr>
+                        <tr>
+                            <td>小金通-小金灵码</td>
+                            <td>glm45-awq-local</td>
+                            <td>1</td>
+                            <td>459.00</td>
+                            <td>0.00</td>
+                            <td>355B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td><span class="highlight">高成本</span></td>
+                        </tr>
+                        <tr>
+                            <td>舆情通算法服务</td>
+                            <td>qwen3-next-80b-local</td>
+                            <td>1</td>
+                            <td>919.00</td>
+                            <td>40.00</td>
+                            <td>80B</td>
+                            <td><span class="badge badge-generic">通用模型</span></td>
+                            <td>无</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-gray-700">在调用次数低于10次的应用中，共发现2个高成本模型实例：<span class="highlight">DeepSeekOCR-local</span>（专用OCR模型，无参数量但高输出Token）与<span class="highlight">glm45-awq-local</span>（355B参数推理模型，调用1次即产生显著成本）。建议对这两个模型的使用场景进行审计，确认其必要性，若为测试或边缘场景，应考虑下线或限制调用权限，避免资源浪费。</p>
+        </div>
+    </section>
+
+    <section class="mb-10">
+        <h2 class="section-title">四、高调用高成本模型资源倾斜建议</h2>
+        <div class="card p-6">
+            <p class="mb-4 text-gray-700">以下应用为高调用（>1000次）且使用高成本模型（>72B参数或专用推理模型）的典型代表，建议优先进行资源倾斜与优化：</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>应用名称</th>
+                            <th>模型名称</th>
+                            <th>调用次数</th>
+                            <th>平均输入Token</th>
+                            <th>平均输出Token</th>
+                            <th>模型参数量</th>
+                            <th>模型类型</th>
+                            <th>建议措施</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>ClaudeCode+GLM</td>
+                            <td>glm46-fp8-local</td>
+                            <td>4,807</td>
+                            <td>10,861.16</td>
+                            <td>372.13</td>
+                            <td>300B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td>评估是否可引入缓存机制，对高频代码片段请求进行结果复用；考虑模型蒸馏或量化以降低推理延迟与成本。</td>
+                        </tr>
+                        <tr>
+                            <td>巡检机器人</td>
+                            <td>glm46-fp8-local</td>
+                            <td>3,989</td>
+                            <td>2,524.88</td>
+                            <td>395.27</td>
+                            <td>300B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td>优化输入提示词结构，减少冗余日志信息；建立异常模式识别规则，降低无效调用。</td>
+                        </tr>
+                        <tr>
+                            <td>ClaudeCode+GLM</td>
+                            <td>qwen3-next-80b-local</td>
+                            <td>39</td>
+                            <td>1,831.87</td>
+                            <td>24,121.33</td>
+                            <td>80B</td>
+                            <td><span class="badge badge-generic">通用模型</span></td>
+                            <td>该调用虽次数低，但单次输出Token极高（超24K），疑似存在无限循环或长文本生成异常，需立即排查日志，防止资源耗尽。</td>
+                        </tr>
+                        <tr>
+                            <td>自动化测试用例智能生成</td>
+                            <td>qwen3-next-80b-thinking-local</td>
+                            <td>29</td>
+                            <td>3,251.28</td>
+                            <td>23,633.14</td>
+                            <td>80B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td>同上，该模型为思考型推理模型，输出Token极高，存在严重资源浪费风险，建议立即暂停并进行流程审查。</td>
+                        </tr>
+                        <tr>
+                            <td>小金同学</td>
+                            <td>qwen3-next-80b-thinking-local</td>
+                            <td>94</td>
+                            <td>2,907.30</td>
+                            <td>4,322.97</td>
+                            <td>80B</td>
+                            <td><span class="badge badge-inference">推理模型</span></td>
+                            <td>该模型为思考型推理模型，输出Token远超输入，建议评估其是否为必要功能，或引入输出长度截断机制。</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="conclusion-box mt-6">
+                <h3 class="text-xl font-semibold text-blue-800 mb-2">核心结论与建议</h3>
+                <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                    <li><strong>资源集中</strong>：舆情通算法服务（9,599次）是当前最稳定、最高效的AI应用，建议作为标杆模型持续投入优化，其72B通用模型在高并发下表现优异，可作为其他应用的参考基准。</li>
+                    <li><strong>成本控制</strong>：300B参数模型（glm46-fp8-local）在ClaudeCode+GLM与巡检机器人中消耗巨大，建议启动模型轻量化项目，探索INT8/INT4量化或知识蒸馏方案，目标降低30%以上推理成本。</li>
+                    <li><strong>异常治理</strong>：自动化测试用例智能生成、ClaudeCode+GLM（qwen3-next-80b）等应用存在单次输出Token超20K的极端情况，极可能为代码逻辑缺陷，需立即介入排查，避免造成系统级资源雪崩。</li>
+                    <li><strong>低频清理</strong>：对DeepSeekOCR-local与glm45-awq-local等高成本低频模型，建议在7日内完成使用审计，若无核心业务支撑，应立即下线并回收资源。</li>
+                    <li><strong>架构优化</strong>：当前无符合合并条件的应用对，建议建立统一的AI服务治理平台，实现模型调用监控、成本核算、自动扩缩容一体化管理，提升整体资源利用效率。</li>
+                </ol>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-10">
+        <h2 class="section-title">五、模型资源使用全景概览</h2>
+        <div class="card p-6">
+            <p class="mb-4 text-gray-700">基于七日数据，对各模型类型进行调用总量与Token消耗统计：</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <div class="bg-white p-5 rounded-lg shadow text-center">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">总调用次数</h3>
+                    <p class="text-3xl font-bold text-blue-600">29,999</p>
+                    <p class="text-sm text-gray-600">（37个应用）</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow text-center">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">通用模型</h3>
+                    <p class="text-3xl font-bold text-green-600">21,855</p>
+                    <p class="text-sm text-gray-600">（占比72.9%）</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow text-center">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">推理模型</h3>
+                    <p class="text-3xl font-bold text-red-600">7,844</p>
+                    <p class="text-sm text-gray-600">（占比26.1%）</p>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow text-center">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">专用/多模态</h3>
+                    <p class="text-3xl font-bold text-purple-600">299</p>
+                    <p class="text-sm text-gray-600">（占比1.0%）</p>
+                </div>
+            </div>
+            <p class="text-gray-700">通用模型承担了绝大部分业务负载，是当前AI服务的基石。推理模型虽调用次数较少，但因其高参数量与高Token消耗，贡献了主要的计算成本。专用与多模态模型调用极少，但其在特定场景（如OCR、图像理解）中不可替代，应保留但严格管控。</p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 无交互需求，保留空脚本以满足要求
+    </script>
+</body>
+</html>

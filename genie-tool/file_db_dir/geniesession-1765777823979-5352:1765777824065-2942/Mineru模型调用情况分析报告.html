@@ -1,0 +1,514 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mineru模型调用行为深度分析报告</title>
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background-color: #f9fafb;
+            color: #333;
+        }
+        .section-title {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        .chart-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .data-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .data-card h3 {
+            color: #1f2937;
+            margin-bottom: 1rem;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        tr:hover {
+            background-color: #f9fafb;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .badge-primary {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+        .badge-success {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem 0.375rem 0 0;
+            background-color: #f3f4f6;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        .tab-button.active {
+            background-color: white;
+            border-bottom: none;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid #e5e7eb;
+        }
+        .highlight {
+            background-color: #fffbeb;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+            color: #92400e;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Mineru模型调用行为深度分析报告</h1>
+        <p class="text-gray-600 mt-2">基于2025年11月28日至12月11日调用数据，分析模型使用分布与性能趋势</p>
+        <div class="mt-4 text-sm text-gray-500">
+            报告生成时间：2025年12月15日
+        </div>
+    </header>
+
+    <section class="mb-8">
+        <h2 class="section-title">1. 调用用户分布分析</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <div class="data-card">
+                <h3>部门调用总量</h3>
+                <ul class="space-y-2">
+                    <li class="flex justify-between">
+                        <span>技术公司/办公运营部</span>
+                        <span class="font-semibold">24次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>技术公司/监查系统部</span>
+                        <span class="font-semibold">20次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>技术公司/安全合规部</span>
+                        <span class="font-semibold">4次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>技术公司/创新实验室</span>
+                        <span class="font-semibold">1次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>技术公司/技术总体部</span>
+                        <span class="font-semibold">2次</span>
+                    </li>
+                </ul>
+                <p class="mt-4 text-sm text-gray-600">办公运营部与监查系统部合计占总调用量的89.8%，为主要使用部门。</p>
+            </div>
+            <div class="data-card">
+                <h3>用户调用明细</h3>
+                <ul class="space-y-2">
+                    <li class="flex justify-between">
+                        <span>杨熠（办公运营部）</span>
+                        <span class="font-semibold">18次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>赵则橦（监查系统部）</span>
+                        <span class="font-semibold">15次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>郭雨田（监查系统部）</span>
+                        <span class="font-semibold">4次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>马鸿超（安全合规部）</span>
+                        <span class="font-semibold">4次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>杨林翰（技术总体部）</span>
+                        <span class="font-semibold">2次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>邓鑫瑞（创新实验室）</span>
+                        <span class="font-semibold">1次</span>
+                    </li>
+                </ul>
+                <p class="mt-4 text-sm text-gray-600">前两名用户杨熠与赵则橦合计贡献了33次调用，占总量的67.3%。</p>
+            </div>
+            <div class="data-card">
+                <h3>应用名称分布</h3>
+                <ul class="space-y-2">
+                    <li class="flex justify-between">
+                        <span>智能小金</span>
+                        <span class="font-semibold">18次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>通用查询</span>
+                        <span class="font-semibold">5次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>智能导航</span>
+                        <span class="font-semibold">5次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>text2sql</span>
+                        <span class="font-semibold">5次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>电话妙计</span>
+                        <span class="font-semibold">5次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>报警排查</span>
+                        <span class="font-semibold">5次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>pdf转文字专用</span>
+                        <span class="font-semibold">4次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>技术应急预案智能推送</span>
+                        <span class="font-semibold">4次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>个人测试</span>
+                        <span class="font-semibold">1次</span>
+                    </li>
+                </ul>
+                <p class="mt-4 text-sm text-gray-600">"智能小金"为最常用应用，占总调用量的36.7%。</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="section-title">2. 调用频次与响应延迟趋势</h2>
+        <div class="chart-container">
+            <h3 class="mb-4">响应延迟分布分析</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                    <h4 class="font-semibold mb-3">延迟区间统计</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex justify-between">
+                            <span>≤ 5秒</span>
+                            <span class="font-semibold">18次</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>5.1 - 10秒</span>
+                            <span class="font-semibold">16次</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>10.1 - 15秒</span>
+                            <span class="font-semibold">10次</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>15.1 - 20秒</span>
+                            <span class="font-semibold">4次</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>20秒以上</span>
+                            <span class="font-semibold">1次</span>
+                        </li>
+                    </ul>
+                    <p class="mt-3 text-sm text-gray-600">平均延迟：9.2秒，其中81.6%的请求在10秒内完成。</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-3">延迟与应用关联</h4>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex justify-between">
+                            <span>技术应急预案智能推送</span>
+                            <span class="font-semibold">5.5 - 5.9秒</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>智能小金</span>
+                            <span class="font-semibold">3.3 - 12.1秒</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>通用查询/智能导航/text2sql/电话妙计/报警排查</span>
+                            <span class="font-semibold">8.3 - 12.2秒</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>pdf转文字专用</span>
+                            <span class="font-semibold">2.1 - 17.3秒</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>个人测试</span>
+                            <span class="font-semibold">23.6秒</span>
+                        </li>
+                    </ul>
+                    <p class="mt-3 text-sm text-gray-600">"个人测试"出现最高延迟（23.6秒），可能为非生产环境测试请求。</p>
+                </div>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg">
+                <h4 class="font-semibold mb-2">关键观察</h4>
+                <p class="text-sm">
+                    延迟分布呈现双峰特征：办公提效类应用（如智能小金）延迟普遍较低（3-12秒），而科技监管类应用（如通用查询、报警排查）延迟集中在8-12秒，表明不同业务场景对模型响应要求存在差异。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="section-title">3. 主要应用场景分析</h2>
+        <div class="chart-container">
+            <h3 class="mb-4">应用场景分类统计</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+                    <h4 class="font-semibold text-blue-800 mb-2">办公提效类</h4>
+                    <p class="text-sm mb-1"><strong>调用次数：</strong>18次</p>
+                    <p class="text-sm mb-1"><strong>主要用户：</strong>杨熠</p>
+                    <p class="text-sm mb-1"><strong>典型请求：</strong>文档摘要、条款查询、格式转换</p>
+                    <p class="text-sm">
+                        <span class="badge badge-primary">智能小金</span>
+                        <span class="badge badge-primary">技术总体部-2025年8月刊</span>
+                        <span class="badge badge-primary">银行票据管理规定</span>
+                    </p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg border-l-4 border-green-500">
+                    <h4 class="font-semibold text-green-800 mb-2">科技监管类</h4>
+                    <p class="text-sm mb-1"><strong>调用次数：</strong>24次</p>
+                    <p class="text-sm mb-1"><strong>主要用户：</strong>赵则橦、郭雨田</p>
+                    <p class="text-sm mb-1"><strong>典型请求：</strong>ID查询、数据关联、监管规则匹配</p>
+                    <p class="text-sm">
+                        <span class="badge badge-success">通用查询</span>
+                        <span class="badge badge-success">智能导航</span>
+                        <span class="badge badge-success">text2sql</span>
+                        <span class="badge badge-success">电话妙计</span>
+                        <span class="badge badge-success">报警排查</span>
+                        <span class="badge badge-success">pdf转文字专用</span>
+                    </p>
+                </div>
+                <div class="bg-orange-50 p-4 rounded-lg border-l-4 border-orange-500">
+                    <h4 class="font-semibold text-orange-800 mb-2">安全生产类</h4>
+                    <p class="text-sm mb-1"><strong>调用次数：</strong>4次</p>
+                    <p class="text-sm mb-1"><strong>主要用户：</strong>马鸿超</p>
+                    <p class="text-sm mb-1"><strong>典型请求：</strong>应急预案查询</p>
+                    <p class="text-sm">
+                        <span class="badge badge-warning">技术应急预案智能推送</span>
+                    </p>
+                </div>
+            </div>
+            <div class="table-container">
+                <h4 class="font-semibold mb-3">典型请求样本</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>用户</th>
+                            <th>应用</th>
+                            <th>请求内容</th>
+                            <th>响应长度</th>
+                            <th>延迟</th>
+                            <th>场景类型</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>杨熠</td>
+                            <td>智能小金</td>
+                            <td>上海金融期货信息技术有限公司银行票据管理规定（2022年7月14日第505期行政办公会、第208期党委会审议通过，2022年7月18日发布）</td>
+                            <td>2758</td>
+                            <td>4.91秒</td>
+                            <td><span class="badge badge-primary">办公提效类</span></td>
+                        </tr>
+                        <tr>
+                            <td>赵则橦</td>
+                            <td>通用查询</td>
+                            <td>844656d4-48e4-4938-bb1b-f5b1abc29a73_5</td>
+                            <td>3825</td>
+                            <td>8.30秒</td>
+                            <td><span class="badge badge-success">科技监管类</span></td>
+                        </tr>
+                        <tr>
+                            <td>郭雨田</td>
+                            <td>pdf转文字专用</td>
+                            <td>44c48ec0-0cc3-4524-997c-4dbd11923eb4</td>
+                            <td>6882</td>
+                            <td>17.26秒</td>
+                            <td><span class="badge badge-success">科技监管类</span></td>
+                        </tr>
+                        <tr>
+                            <td>马鸿超</td>
+                            <td>技术应急预案智能推送</td>
+                            <td>a</td>
+                            <td>811</td>
+                            <td>5.61秒</td>
+                            <td><span class="badge badge-warning">安全生产类</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-sm text-gray-600">
+                科技监管类应用调用频次最高，且请求内容多为结构化ID查询，表明模型在监管场景中已深度集成至核心业务流程。办公提效类应用以长文本摘要和文档解析为主，对模型理解能力要求较高。
+            </p>
+        </div>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="section-title">4. GPU资源与区域分布</h2>
+        <div class="chart-container">
+            <h3 class="mb-4">硬件与部署环境分析</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="font-semibold mb-3">GPU类型分布</h4>
+                    <ul class="space-y-2">
+                        <li class="flex justify-between">
+                            <span>NVIDIA H800</span>
+                            <span class="font-semibold">49次</span>
+                        </li>
+                    </ul>
+                    <p class="mt-2 text-sm text-gray-600">所有调用均使用NVIDIA H800 GPU，表明系统已统一采用高性能计算资源。</p>
+                </div>
+                <div>
+                    <h4 class="font-semibold mb-3">部署区域分布</h4>
+                    <ul class="space-y-2">
+                        <li class="flex justify-between">
+                            <span>测试区</span>
+                            <span class="font-semibold">45次</span>
+                        </li>
+                        <li class="flex justify-between">
+                            <span>生产区</span>
+                            <span class="font-semibold">4次</span>
+                        </li>
+                    </ul>
+                    <p class="mt-2 text-sm text-gray-600">91.8%的调用发生在测试区，仅4次为生产环境调用，提示模型在生产环境的部署仍处于初期阶段。</p>
+                </div>
+            </div>
+            <div class="mt-6 p-4 bg-gray-50 rounded-lg">
+                <h4 class="font-semibold mb-2">IP地址与网络环境</h4>
+                <p class="text-sm">
+                    所有调用均来自同一IP地址段：<span class="highlight">172.26.37.12/14/15</span>，表明所有请求通过统一网关或代理服务器接入，具备集中化管理特征。
+                </p>
+            </div>
+            <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                <h4 class="font-semibold mb-2">综合观察</h4>
+                <p class="text-sm">
+                    模型调用完全依赖于NVIDIA H800 GPU，资源使用高度集中。测试区调用占比远超生产区，说明当前模型主要服务于内部开发、测试与验证流程，尚未全面投入生产环境。建议在确保稳定性后，逐步扩大生产环境部署范围。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="section-title">5. 结论与建议</h2>
+        <div class="chart-container">
+            <h3 class="mb-4">核心结论</h3>
+            <ol class="list-decimal list-inside space-y-3 text-sm">
+                <li>模型调用高度集中于<em>办公运营部</em>与<em>监查系统部</em>，其中杨熠与赵则橦为两大核心用户，合计贡献67.3%的调用量。</li>
+                <li>应用场景呈现清晰的三类划分：<em>办公提效类</em>（18次）、<em>科技监管类</em>（24次）、<em>安全生产类</em>（4次），其中科技监管类为最大应用场景。</li>
+                <li>响应延迟整体可控，81.6%请求在10秒内完成，但"pdf转文字专用"与"个人测试"存在异常高延迟，需关注优化。</li>
+                <li>所有调用均使用NVIDIA H800 GPU，资源统一，但91.8%调用发生在测试区，生产环境部署严重不足。</li>
+                <li>模型在监管类业务中已深度集成，支持ID查询、数据关联、文本解析等复杂任务，具备高业务价值。</li>
+            </ol>
+            <h3 class="mt-6 mb-4">管理建议</h3>
+            <ul class="list-disc list-inside space-y-2 text-sm">
+                <li><strong>优先优化生产环境部署：</strong>当前生产调用仅4次，建议制定迁移计划，将测试成熟的功能逐步上线。</li>
+                <li><strong>建立调用监控机制：</strong>对"pdf转文字专用"等高延迟应用进行专项性能分析，优化提示工程或模型参数。</li>
+                <li><strong>推动跨部门协作：</strong>办公提效类应用（智能小金）效果显著，可作为样板推广至其他部门。</li>
+                <li><strong>规范API密钥管理：</strong>部分用户（如邓鑫瑞）使用"个人测试"应用，建议建立统一的测试环境与权限管理体系。</li>
+                <li><strong>探索模型微调方向：</strong>针对科技监管类高频请求（如ID匹配），可考虑构建专用微调模型以提升准确率与响应速度。</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="mb-8">
+        <h2 class="section-title">6. 数据来源说明</h2>
+        <div class="chart-container">
+            <p class="text-sm">
+                本报告所有数据均来源于内部系统表 <code>internal.dwd_telemetry.application_futuremaas_api_use_detail_metrics</code>，查询条件为 <code>model_name LIKE '%Mineru%'</code>，数据采集周期为2025年11月28日至12月11日，共提取有效记录49条。所有分析均基于原始数据，未进行任何外推或估算。
+            </p>
+            <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+                <h4 class="font-semibold mb-2">查询语句</h4>
+                <pre class="bg-gray-900 text-green-400 p-3 rounded text-xs overflow-x-auto"><code>SELECT * FROM internal.dwd_telemetry.application_futuremaas_api_use_detail_metrics WHERE model_name LIKE '%Mineru%' LIMIT 100</code></pre>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 简单的交互增强：标签页切换（虽然本报告无多标签，但保留结构）
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为所有tab按钮添加点击事件（即使当前无实际tab）
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const tabId = this.getAttribute('data-tab');
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

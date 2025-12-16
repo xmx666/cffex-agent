@@ -1,0 +1,924 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>云南7天6晚深度旅游攻略：昆明·大理·丽江·香格里拉全体验</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #0f172a;
+            --accent-color: #f59e0b;
+            --light-bg: #f8fafc;
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            color: #1e293b;
+            background-color: #ffffff;
+        }
+        
+        .section-header {
+            position: relative;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+        
+        .itinerary-card {
+            border-left: 4px solid var(--primary-color);
+            background-color: var(--light-bg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            box-shadow: var(--card-shadow);
+        }
+        
+        .itinerary-day {
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .highlight-box {
+            background-color: #fef3c7;
+            border-left: 4px solid var(--accent-color);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        
+        .price-tag {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-left: 0.5rem;
+        }
+        
+        .icon-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #dbeafe;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid #e2e8f0;
+            background-color: #f1f5f9;
+            border-radius: 6px 6px 0 0;
+            margin-right: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .tab-button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        .travel-tip {
+            display: flex;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #f0fdf4;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+        }
+        
+        .travel-tip i {
+            margin-right: 0.75rem;
+            color: #10b981;
+            font-size: 1.2rem;
+        }
+        
+        .map-container {
+            height: 300px;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+            color: #64748b;
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        
+        .reference-list {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        
+        .reference-item {
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+        
+        .reference-item a {
+            color: #007bff;
+            text-decoration: none;
+            transition: text-decoration 0.3s ease;
+        }
+        
+        .reference-item a:hover {
+            text-decoration: underline;
+        }
+        
+        .accordion {
+            margin-bottom: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .accordion-header {
+            padding: 1rem;
+            background-color: #f8fafc;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .accordion-content {
+            padding: 0 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: white;
+        }
+        
+        .accordion-content.show {
+            max-height: 500px;
+            padding: 1rem;
+        }
+        
+        .accordion-header i {
+            transition: transform 0.3s ease;
+        }
+        
+        .accordion-header.active i {
+            transform: rotate(180deg);
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.75rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #e2e8f0;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px #dbeafe;
+        }
+        
+        .timeline-date {
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 1rem;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            display: flex;
+            justify-content: space-around;
+        }
+        
+        .mobile-nav a {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        
+        .mobile-nav a.active {
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-nav {
+                display: flex;
+            }
+            
+            .section-header {
+                margin-bottom: 1.5rem;
+            }
+            
+            .itinerary-card {
+                border-left: 4px solid var(--primary-color);
+                padding: 1rem;
+            }
+            
+            .itinerary-day {
+                font-size: 1.2rem;
+            }
+            
+            .map-container {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">云南7天6晚深度旅游攻略：昆明·大理·丽江·香格里拉全体验</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">专为家庭与情侣设计的沉浸式云南之旅，涵盖交通、住宿、美食、预算与实用贴士，让每一刻都值得珍藏</p>
+        </header>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 section-header">行程概览</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-3xl font-bold text-blue-600 mb-2">7天6晚</div>
+                    <div class="text-gray-600">全程深度体验</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-3xl font-bold text-orange-600 mb-2">4城</div>
+                    <div class="text-gray-600">昆明→大理→丽江→香格里拉</div>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow-md text-center">
+                    <div class="text-3xl font-bold text-green-600 mb-2">海拔1500-3500m</div>
+                    <div class="text-gray-600">高原适应提示</div>
+                </div>
+            </div>
+            
+            <div class="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-lg border-l-4 border-blue-500">
+                <h3 class="text-xl font-semibold text-gray-800 mb-3">行程亮点</h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li>昆明：春城花海与滇池生态</li>
+                    <li>大理：苍山洱海骑行与白族文化</li>
+                    <li>丽江：古城夜色与纳西东巴文化</li>
+                    <li>香格里拉：松赞林寺晨光与普达措国家公园</li>
+                    <li>全程低强度徒步，适合家庭与情侣</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 section-header">每日详细行程</h2>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-date">Day 1：抵达昆明</div>
+                    <div class="itinerary-card">
+                        <h3 class="text-xl font-semibold mb-3">上午：抵达昆明长水国际机场</h3>
+                        <p>抵达后乘坐机场大巴或预约接机服务前往市区酒店（推荐住翠湖或南屏街附近），办理入住后稍作休息，适应海拔（约1900米）。</p>
+                        
+                        <h3 class="text-xl font-semibold mb-3 mt-6">下午：翠湖公园 & 云南大学</h3>
+                        <p>漫步翠湖公园，欣赏冬季红嘴鸥（11月-次年3月），参观云南大学校园，感受百年学府的宁静氛围。校园内的会泽院和东陆园是拍照打卡点。</p>
+                        
+                        <h3 class="text-xl font-semibold mb-3 mt-6">晚上：南屏街夜市</h3>
+                        <p>品尝地道云南小吃：过桥米线、汽锅鸡、烧饵块、炸乳扇。推荐老字号“桥香园”或“建新园”。</p>
+                        
+                        <div class="highlight-box mt-6">
+                            <strong>住宿建议：</strong>昆明翠湖宾馆或全季酒店（南屏街店），交通便利，周边餐饮丰富，适合家庭入住。
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">Day 2：昆明 → 大理（高铁2小时）</div>
+                    <div class="itinerary-card">
+                        <h3 class="text-xl font-semibold mb-3">上午：昆明市区游览</h3>
+                        <p>参观云南民族村，了解25个少数民族的建筑、服饰与风俗（建议预留3小时）。随后前往昆明南站，乘坐高铁前往大理（建议选择G字头列车，车程约2小时）。</p>
+                        
+                        <h3 class="text-xl font-semibold mb-3 mt-6">下午：抵达大理古城</h3>
+                        <p>入住古城内特色客栈（推荐人民路或洋人街附近），放下行李后步行游览古城，参观五华楼、文献楼，感受白族三坊一照壁建筑风格。</p>
+                        
+                        <h3 class="text-xl font-semibold mb-3 mt-6">晚上：洋人街晚餐</h3>
+                        <p>品尝大理特色菜：酸辣鱼、乳扇、雕梅、凉鸡米线。推荐“大理段公子”或“阿婆腊排骨”。</p>
+                        
+                        <div class="highlight-box mt-6">
+                            <strong>交通提示：</strong>昆明南站至大理站高铁每日多班次，票价约150元/人，建议提前在12306官网购票。
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">Day 3：大理环洱海深度游</div>
+                    <div class="itinerary-card">
+                        <h3 class="text-xl font-semibold mb-3">全天：环洱海骑行（东线）</h3>
+                        <p>租用双人自行车或电动车（约80-120元/天），沿洱海生态廊道骑行，途经：</p>
+                        <ul class="list-disc list-inside ml-6 mb-4">
+                            <li>才村码头：洱海生态廊道起点</li>
+                            <li>喜洲古镇：白族扎染体验、严家大院</li>
+                            <li>双廊古镇：杨丽萍太阳宫、观景台</li>
+                            <li>小普陀：湖中小岛，可乘船登岛</li>
+                        </ul>
+                        <p>沿途可停靠咖啡馆，如“洱海边的咖啡”、“海景茶室”，享受洱海落日。</p>
+                        
+                        <h3 class="text-xl font-semibold mb-3 mt-6">傍晚：返回古城</h3>
+                        <p>在古城内体验白族三道茶表演（迎宾茶、甜茶、回味茶），感受茶道文化。</p>
+                        
+                        <div class="highlight-box mt-6">
+                            <strong>温馨提示：</strong>洱海环线全长约120公里，建议选择东线（约60公里）为当日行程，避免疲劳。防晒、补水、戴墨镜必备。
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">Day 4：大理 → 丽江（车程3.5小时）</div>
+                    <div class="itinerary-card">
+                        <h3 class="text-xl font-semibold mb-3">上午：喜洲古镇深度体验</h3>
+                        <p>参观喜洲白族民居，亲手体验扎染工艺（约60-100元/人），制作专属手帕。品尝喜洲粑粑（甜咸两种口味）。</p>
+                        
+                        <h3 class="text-xl font-semibold mb-3 mt-6">中午：前往丽江</h3>
+                        <p>乘坐大巴或包车前往丽江（约3.5小时，票价约80元/人）。建议选择正规客运站发车，避免黑车。</p>
+                        
+                        <h3 class="text-xl font-semibold mb-3 mt-6">下午：丽江古城游览</h3>
+                        <p>入住古城内纳西风格客栈（推荐四方街附近），漫步古城石板路，参观木府（纳西土司府邸）、万古楼，俯瞰古城全景。</p>
+                        
+                        <h3 class="text-xl font-semibold mb-3 mt-6">晚上：酒吧街夜生活</h3>
+                        <p>在四方街感受古城夜色，可选择安静的民谣酒吧，如“大冰的小屋”或“阿婆的茶”，避免喧闹酒吧。</p>
+                        
+                        <div class="highlight-box mt-6">
+                            <strong>住宿建议：</strong>丽江古城内客栈多为木质结构，隔音一般，建议选择带地暖的房间，冬季保暖。
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">Day 5：丽江 → 香格里拉（车程4小时）</div>
+                    <div class="itinerary-card">
+                        <h3 class="text-xl font-semibold mb-3">上午：玉龙雪山景区</h3>
+                        <p>乘坐景区大巴前往玉龙雪山（海拔4506米），可选择乘坐大索道至冰川公园（海拔4506米），注意预防高原反应，备好氧气瓶（景区内可租用，约50元/瓶）。</p>
+                        
+                        <h3 class="text-xl font-semibold mb-3 mt-6">下午：蓝月谷 & 返回丽江</h3>
+                        <p>游览蓝月谷，湖水呈梦幻蓝色，因富含矿物质。随后乘车前往香格里拉（约4小时，海拔从2400米升至3300米）。</p>
+                        
+                        <h3 class="text-xl font-semibold mb-3 mt-6">傍晚：抵达香格里拉</h3>
+                        <p>入住酒店，立即休息，避免剧烈运动。可饮用红景天茶或服用抗高反药物（如红景天胶囊）。</p>
+                        
+                        <div class="highlight-box mt-6">
+                            <strong>高原反应提示：</strong>香格里拉海拔3300米，建议抵达当日避免洗澡、饮酒、剧烈运动。如出现头痛、恶心，立即吸氧并休息。
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">Day 6：香格里拉深度游</div>
+                    <div class="itinerary-card">
+                        <h3 class="text-xl font-semibold mb-3">上午：松赞林寺</h3>
+                        <p>参观“小布达拉宫”——松赞林寺，了解藏传佛教文化，可请一位当地向导讲解（约100元/团），拍摄金顶与经幡全景。</p>
+                        
+                        <h3 class="text-xl font-semibold mb-3 mt-6">下午：普达措国家公园</h3>
+                        <p>游览中国第一个国家公园，徒步属都湖与碧塔海（全程约6公里，平缓易行），欣赏高原湖泊、原始森林与牦牛群。建议租用防寒外套（约30元/件）。</p>
+                        
+                        <h3 class="text-xl font-semibold mb-3 mt-6">晚上：藏式晚餐</h3>
+                        <p>品尝酥油茶、青稞酒、牦牛肉火锅、糌粑。推荐“藏家宴”或“松赞林寺旁的藏餐吧”。</p>
+                        
+                        <div class="highlight-box mt-6">
+                            <strong>着装建议：</strong>香格里拉昼夜温差大，即使夏季也需携带冲锋衣或羽绒服。防晒霜、墨镜、帽子必备。
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">Day 7：香格里拉 → 返程</div>
+                    <div class="itinerary-card">
+                        <h3 class="text-xl font-semibold mb-3">上午：独克宗古城晨光</h3>
+                        <p>漫步世界最大转经筒（重达46吨），转动经筒祈福。参观龟山公园，俯瞰古城全景。</p>
+                        
+                        <h3 class="text-xl font-semibold mb-3 mt-6">中午：返程</h3>
+                        <p>乘坐大巴或包车前往香格里拉机场（约30分钟），乘机返回昆明或直接返程。建议预留充足时间办理登机手续。</p>
+                        
+                        <h3 class="text-xl font-semibold mb-3 mt-6">温馨提示</h3>
+                        <p>香格里拉机场海拔3300米，部分旅客可能有轻微不适，建议下机后缓慢行走，避免奔跑。</p>
+                        
+                        <div class="highlight-box mt-6">
+                            <strong>返程建议：</strong>如从昆明返程，可选择在昆明停留一晚，购买鲜花饼、普洱茶、云南白药等特产。
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 section-header">交通指南</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4">城市间交通</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <div class="icon-box">
+                                <i class="fas fa-train"></i>
+                            </div>
+                            <div>
+                                <strong>昆明 → 大理</strong><br>
+                                高铁2小时，票价约150元/人，每日10+班次
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="icon-box">
+                                <i class="fas fa-bus"></i>
+                            </div>
+                            <div>
+                                <strong>大理 → 丽江</strong><br>
+                                大巴3.5小时，票价80元/人，客运站发车
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="icon-box">
+                                <i class="fas fa-bus"></i>
+                            </div>
+                            <div>
+                                <strong>丽江 → 香格里拉</strong><br>
+                                大巴4小时，票价100元/人，每日早7:30发车
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="icon-box">
+                                <i class="fas fa-plane"></i>
+                            </div>
+                            <div>
+                                <strong>香格里拉 → 昆明</strong><br>
+                                飞机1.5小时，票价约800元（含税），每日2-3班
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-semibold mb-4">当地交通</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <div class="icon-box">
+                                <i class="fas fa-bicycle"></i>
+                            </div>
+                            <div>
+                                <strong>洱海环线</strong><br>
+                                租电动车80-120元/天，双人自行车60-80元/天
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="icon-box">
+                                <i class="fas fa-taxi"></i>
+                            </div>
+                            <div>
+                                <strong>丽江古城</strong><br>
+                                古城内步行为主，打车起步价10元，夜间加收20%
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="icon-box">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <div>
+                                <strong>包车服务</strong><br>
+                                丽江→香格里拉包车约600-800元/车（5座），适合家庭
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="icon-box">
+                                <i class="fas fa-map-marked-alt"></i>
+                            </div>
+                            <div>
+                                <strong>景区接驳</strong><br>
+                                玉龙雪山、普达措均有景区大巴，票价含门票
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="map-container">
+                云南旅游路线示意图（昆明→大理→丽江→香格里拉）
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 section-header">住宿推荐</h2>
+            
+            <div class="accordion">
+                <div class="accordion-header">
+                    昆明
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <ul class="list-disc list-inside ml-6 mt-2 space-y-2">
+                        <li><strong>翠湖宾馆</strong>：老牌四星，环境安静，距翠湖步行5分钟，适合家庭</li>
+                        <li><strong>全季酒店（南屏街店）</strong>：连锁品牌，干净整洁，地铁直达，性价比高</li>
+                        <li><strong>花间堂·花巷</strong>：精品设计酒店，庭院风格，适合情侣</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-header">
+                    大理
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <ul class="list-disc list-inside ml-6 mt-2 space-y-2">
+                        <li><strong>大理洱海天域度假酒店</strong>：海景房，私密性强，适合情侣</li>
+                        <li><strong>大理古城花间堂</strong>：白族风格庭院，管家服务，文化体验佳</li>
+                        <li><strong>途家民宿（人民路）</strong>：价格实惠，设施齐全，适合家庭</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-header">
+                    丽江
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <ul class="list-disc list-inside ml-6 mt-2 space-y-2">
+                        <li><strong>丽江古城英迪格酒店</strong>：高端纳西风格，地暖齐全，服务专业</li>
+                        <li><strong>花间堂·慢屋</strong>：安静庭院，适合静心休憩</li>
+                        <li><strong>丽江古城青年旅舍</strong>：经济型，社交氛围好，适合年轻情侣</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="accordion">
+                <div class="accordion-header">
+                    香格里拉
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="accordion-content">
+                    <ul class="list-disc list-inside ml-6 mt-2 space-y-2">
+                        <li><strong>松赞林卡酒店</strong>：藏式风格，地暖+供氧，高原适应首选</li>
+                        <li><strong>香格里拉云上四季酒店</strong>：设施新，服务好，含早餐</li>
+                        <li><strong>藏家客栈</strong>：本地家庭经营，体验原生态藏族生活</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 section-header">美食推荐</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4">昆明特色</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <div class="icon-box bg-red-100 text-red-600">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div>
+                                <strong>过桥米线</strong><br>
+                                汤滚肉鲜，配菜丰富，推荐“桥香园”
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="icon-box bg-red-100 text-red-600">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div>
+                                <strong>汽锅鸡</strong><br>
+                                用汽锅蒸制，原汁原味，滋补佳品
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="icon-box bg-red-100 text-red-600">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div>
+                                <strong>烧饵块</strong><br>
+                                糯米饼烤制，夹豆沙或酱料，街头小吃
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="icon-box bg-red-100 text-red-600">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div>
+                                <strong>鲜花饼</strong><br>
+                                用食用玫瑰制作，甜而不腻，伴手礼首选
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4">大理 & 丽江 & 香格里拉特色</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <div class="icon-box bg-blue-100 text-blue-600">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div>
+                                <strong>乳扇</strong><br>
+                                大理特产，奶制品，可炸、烤、生吃
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="icon-box bg-blue-100 text-blue-600">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div>
+                                <strong>酸辣鱼</strong><br>
+                                大理风味，用洱海鱼烹制，酸辣开胃
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="icon-box bg-green-100 text-green-600">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div>
+                                <strong>腊排骨火锅</strong><br>
+                                丽江特色，排骨腌制风干，汤底浓郁
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <div class="icon-box bg-purple-100 text-purple-600">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div>
+                                <strong>酥油茶 & 糌粑</strong><br>
+                                香格里拉藏餐，暖身驱寒，体验藏族生活
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 section-header">最佳旅行时间</h2>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+                <h3 class="text-xl font-semibold mb-4">气候特点</h3>
+                <p class="mb-4">云南气候多样，素有“一山有四季，十里不同天”之说。整体而言，四季如春，但海拔差异大，温差显著。</p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                    <div class="text-center p-4 bg-blue-50 rounded-lg">
+                        <div class="text-2xl font-bold text-blue-600">3-5月</div>
+                        <div class="text-sm text-gray-700">春季</div>
+                        <div class="text-xs text-gray-600 mt-1">花海盛开，气候宜人，最佳旅行季</div>
+                    </div>
+                    <div class="text-center p-4 bg-green-50 rounded-lg">
+                        <div class="text-2xl font-bold text-green-600">6-8月</div>
+                        <div class="text-sm text-gray-700">夏季</div>
+                        <div class="text-xs text-gray-600 mt-1">雨季，但植被茂盛，适合避暑</div>
+                    </div>
+                    <div class="text-center p-4 bg-yellow-50 rounded-lg">
+                        <div class="text-2xl font-bold text-yellow-600">9-11月</div>
+                        <div class="text-sm text-gray-700">秋季</div>
+                        <div class="text-xs text-gray-600 mt-1">天高云淡，景色最佳，游客较多</div>
+                    </div>
+                    <div class="text-center p-4 bg-gray-50 rounded-lg">
+                        <div class="text-2xl font-bold text-gray-600">12-2月</div>
+                        <div class="text-sm text-gray-700">冬季</div>
+                        <div class="text-xs text-gray-600 mt-1">干燥少雨，香格里拉寒冷，但游客少</div>
+                    </div>
+                </div>
+                
+                <div class="highlight-box">
+                    <strong>推荐出行时间：</strong>每年3月至5月、9月至11月为最佳旅行季节，天气稳定，景色优美，适合户外活动。冬季（12月-2月）香格里拉气温可低至-10℃，需做好保暖。
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 section-header">预算建议</h2>
+            
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-xl font-semibold mb-4">人均预算参考（2人家庭）</h3>
+                
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="p-3 border">项目</th>
+                            <th class="p-3 border">费用（元/人）</th>
+                            <th class="p-3 border">备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="p-3 border">往返机票</td>
+                            <td class="p-3 border">2000-3500</td>
+                            <td class="p-3 border">根据出发地浮动，提前预订可优惠</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 border">高铁/大巴</td>
+                            <td class="p-3 border">500</td>
+                            <td class="p-3 border">昆明→大理→丽江→香格里拉</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 border">住宿（6晚）</td>
+                            <td class="p-3 border">1800-3000</td>
+                            <td class="p-3 border">中档酒店/客栈，含早餐</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 border">餐饮</td>
+                            <td class="p-3 border">1200</td>
+                            <td class="p-3 border">每日约200元，含特色餐</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 border">门票</td>
+                            <td class="p-3 border">800</td>
+                            <td class="p-3 border">玉龙雪山、松赞林寺、普达措等</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 border">交通（当地）</td>
+                            <td class="p-3 border">400</td>
+                            <td class="p-3 border">租车、打车、景区接驳</td>
+                        </tr>
+                        <tr>
+                            <td class="p-3 border">购物/纪念品</td>
+                            <td class="p-3 border">500</td>
+                            <td class="p-3 border">鲜花饼、普洱茶、扎染等</td>
+                        </tr>
+                        <tr class="font-bold bg-gray-50">
+                            <td class="p-3 border">总计</td>
+                            <td class="p-3 border">7200-10400</td>
+                            <td class="p-3 border">人均预算范围</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded">
+                    <p class="text-sm text-yellow-800">
+                        <strong>省钱建议：</strong>提前预订机票与高铁票，避开国庆、春节高峰；选择民宿而非酒店；部分景点可购买联票（如玉龙雪山+蓝月谷）。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 section-header">注意事项</h2>
+            
+            <div class="travel-tip">
+                <i class="fas fa-exclamation-circle"></i>
+                <div>
+                    <strong>高原反应预防：</strong>香格里拉海拔3300米，抵达当日避免洗澡、饮酒、剧烈运动。可提前服用红景天胶囊，随身携带氧气瓶（景区内可租）。
+                </div>
+            </div>
+            
+            <div class="travel-tip">
+                <i class="fas fa-sun"></i>
+                <div>
+                    <strong>防晒与保暖：</strong>云南紫外线极强，即使冬季也需涂抹SPF50+防晒霜、戴墨镜、帽子。香格里拉昼夜温差大，需备冲锋衣或羽绒服。
+                </div>
+            </div>
+            
+            <div class="travel-tip">
+                <i class="fas fa-shield-alt"></i>
+                <div>
+                    <strong>尊重民族习俗：</strong>在藏区、白族村落请勿随意拍摄宗教场所与人物，进入寺庙需脱帽、不踩门槛、不指佛像。
+                </div>
+            </div>
+            
+            <div class="travel-tip">
+                <i class="fas fa-water"></i>
+                <div>
+                    <strong>饮水安全：</strong>建议饮用瓶装水，避免直接饮用山泉水，即使清澈也可能含微生物。
+                </div>
+            </div>
+            
+            <div class="travel-tip">
+                <i class="fas fa-clock"></i>
+                <div>
+                    <strong>行程节奏：</strong>本行程为轻度徒步设计，适合家庭与情侣。如携带老人或儿童，建议在丽江或香格里拉增加休息日。
+                </div>
+            </div>
+            
+            <div class="travel-tip">
+                <i class="fas fa-phone"></i>
+                <div>
+                    <strong>通讯与网络：</strong>大部分城镇有4G信号，但香格里拉山区信号较弱，建议下载离线地图（如高德地图）。
+                </div>
+            </div>
+        </section>
+
+        <section class="reference-list">
+            <h2 class="text-3xl font-bold text-gray-800 section-header">参考文献</h2>
+            <div class="reference-item">[[1]]、<cite><a href="https://www.yunnan.gov.cn" target="_blank" rel="noopener noreferrer">云南省人民政府官网</a></cite></div>
+            <div class="reference-item">[[2]]、<cite><a href="https://www.china-transport.gov.cn" target="_blank" rel="noopener noreferrer">中国交通运输部</a></cite></div>
+            <div class="reference-item">[[3]]、<cite><a href="https://www.mct.gov.cn" target="_blank" rel="noopener noreferrer">中华人民共和国文化和旅游部</a></cite></div>
+            <div class="reference-item">[[4]]、<cite><a href="https://www.cntour.com" target="_blank" rel="noopener noreferrer">中国旅游网</a></cite></div>
+            <div class="reference-item">[[5]]、<cite><a href="https://www.12306.cn" target="_blank" rel="noopener noreferrer">铁路12306官网</a></cite></div>
+        </section>
+    </div>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 选项卡切换
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                button.classList.add('active');
+                const target = button.dataset.target;
+                document.getElementById(target).classList.add('active');
+            });
+        });
+
+        // 折叠面板
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                header.classList.toggle('active');
+                const content = header.nextElementSibling;
+                content.classList.toggle('show');
+            });
+        });
+
+        // 滚动平滑
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

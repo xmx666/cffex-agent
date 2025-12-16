@@ -1,0 +1,524 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI应用模型调用性能优化建议报告（2025年12月）</title>
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="/static-resources/googleapis-fonts/css2.css">
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+        .section-title {
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 8px;
+            margin-top: 32px;
+            margin-bottom: 20px;
+            color: #007bff;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            background-color: #fff;
+        }
+        .highlight {
+            background-color: #f0f7ff;
+            border-left: 4px solid #007bff;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 0.25rem 0.25rem 0;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th {
+            font-weight: 600;
+            background-color: #f9fafb;
+            color: #1f2937;
+        }
+        tr:hover {
+            background-color: #f3f4f6;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .badge-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .chart-placeholder {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        .accordion-button {
+            background-color: #f3f4f6;
+            border: none;
+            border-radius: 0.375rem;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+            text-align: left;
+            font-weight: 500;
+        }
+        .accordion-button:hover {
+            background-color: #e5e7eb;
+        }
+        .accordion-content {
+            padding: 1rem;
+            background-color: #f9fafb;
+            border-radius: 0 0 0.375rem 0.375rem;
+            border: 1px solid #e5e7eb;
+            border-top: none;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding: 1.5rem;
+            text-align: center;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.875rem;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .progress-bar {
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #007bff;
+            border-radius: 4px;
+        }
+        .model-label {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .metric-value {
+            font-weight: 700;
+            color: #111827;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">AI应用模型调用性能优化建议报告</h1>
+            <p class="text-xl text-gray-600">基于2025年12月5日至12月12日七日调用数据分析</p>
+            <div class="mt-4 text-sm text-gray-500">
+                数据更新时间：2025年12月12日 02:19:03
+            </div>
+        </header>
+
+        <section class="mb-10">
+            <h2 class="section-title">引言：系统运行全景概览</h2>
+            <p class="mb-4">本报告基于过去七日（2025年12月5日至12月12日）的AI服务调用数据，对20个核心应用的性能表现进行系统性分析。数据来源于<code>ods_telemetry.cai_api_use</code>与<code>ods_telemetry.cai_app_info</code>表的关联查询，涵盖调用量、平均延迟、模型使用、资源消耗等关键指标。</p>
+            <p class="mb-4">分析发现，系统整体呈现“两极分化”特征：部分应用（如舆情通算法服务、中金所头条）运行稳定高效，而另一些应用（如IDE-小金灵码、自动化测试用例生成）存在显著性能瓶颈。本报告将深入剖析问题根源，并提出可落地的优化策略，以提升系统整体稳定性、降低运营成本、优化用户体验。</p>
+            <div class="highlight">
+                <p><strong>核心数据概览：</strong>共分析20个应用，总调用量达48,758次，平均延迟跨度从0.285秒至92.96秒，模型使用涵盖qwen2.5-72b、qwen3-next-80b、glm46-fp8等多类模型。其中，<span class="metric-value">舆情通算法服务</span>以9,594次调用位居榜首，<span class="metric-value">自动化测试用例智能生成</span>以92.96秒平均延迟成为性能瓶颈代表。</p>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="section-title">一、高调用量低延迟应用：稳定运行分析</h2>
+            <p class="mb-4">此类应用具备高并发承载能力与低延迟响应特性，是系统稳定性的基石。其成功经验值得推广。</p>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">典型代表：舆情通算法服务</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                    <div class="text-center p-3 bg-blue-50 rounded-lg">
+                        <div class="text-sm text-gray-600">总调用量</div>
+                        <div class="text-2xl font-bold text-blue-700">9,594</div>
+                    </div>
+                    <div class="text-center p-3 bg-green-50 rounded-lg">
+                        <div class="text-sm text-gray-600">平均延迟</div>
+                        <div class="text-2xl font-bold text-green-700">2.23s</div>
+                    </div>
+                    <div class="text-center p-3 bg-purple-50 rounded-lg">
+                        <div class="text-sm text-gray-600">主模型</div>
+                        <div class="text-lg font-bold text-purple-700">qwen2.5-72b-instruct-int4-local</div>
+                    </div>
+                    <div class="text-center p-3 bg-gray-50 rounded-lg">
+                        <div class="text-sm text-gray-600">总Token消耗</div>
+                        <div class="text-lg font-bold text-gray-700">10.3M</div>
+                    </div>
+                </div>
+                <p>舆情通算法服务作为调用量最高的应用，其平均延迟仅为2.23秒，远低于系统平均值。其成功得益于：1）模型选择合理，qwen2.5-72b模型在推理效率与效果间取得良好平衡；2）请求模式相对稳定，无突发性高负载；3）后端资源调度机制高效。</p>
+            </div>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">典型代表：中金所头条</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                    <div class="text-center p-3 bg-blue-50 rounded-lg">
+                        <div class="text-sm text-gray-600">总调用量</div>
+                        <div class="text-2xl font-bold text-blue-700">3,274</div>
+                    </div>
+                    <div class="text-center p-3 bg-green-50 rounded-lg">
+                        <div class="text-sm text-gray-600">平均延迟</div>
+                        <div class="text-2xl font-bold text-green-700">1.62s</div>
+                    </div>
+                    <div class="text-center p-3 bg-purple-50 rounded-lg">
+                        <div class="text-sm text-gray-600">主模型</div>
+                        <div class="text-lg font-bold text-purple-700">qwen2.5-72b-instruct-int4-local</div>
+                    </div>
+                    <div class="text-center p-3 bg-gray-50 rounded-lg">
+                        <div class="text-sm text-gray-600">总Token消耗</div>
+                        <div class="text-lg font-bold text-gray-700">3.5M</div>
+                    </div>
+                </div>
+                <p>中金所头条应用展现出卓越的响应性能，平均延迟低至1.62秒，是系统中最高效的AI服务之一。其低延迟特性与模型选择（qwen2.5-72b）和业务场景（文本摘要、信息聚合）高度匹配。该应用的成功验证了qwen2.5-72b模型在高并发、低延迟场景下的卓越表现，建议作为未来类似应用的首选模型。</p>
+            </div>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">稳定运行模式总结</h3>
+                <ul class="list-disc list-inside mb-4 space-y-2">
+                    <li><strong>模型选型精准：</strong>均采用qwen2.5-72b-instruct-int4-local模型，该模型在推理速度与效果上表现优异，适合高并发场景。</li>
+                    <li><strong>资源调度合理：</strong>调用量与资源分配匹配度高，未出现资源争抢。</li>
+                    <li><strong>业务逻辑优化：</strong>请求内容相对标准化，预处理与后处理流程高效。</li>
+                    <li><strong>监控机制健全：</strong>延迟波动小，表明系统具备良好的自我调节能力。</li>
+                </ul>
+                <p class="mt-4">建议将“舆情通”与“中金所头条”的架构模式作为标准模板，推广至其他新建AI应用，以确保系统整体的稳定性与效率。</p>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="section-title">二、高延迟应用：性能瓶颈诊断</h2>
+            <p class="mb-4">高延迟应用是系统性能的短板，直接影响用户体验与业务价值。本节将深入分析三大高延迟应用的瓶颈根源。</p>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">典型代表：IDE-小金灵码</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                    <div class="text-center p-3 bg-red-50 rounded-lg">
+                        <div class="text-sm text-gray-600">总调用量</div>
+                        <div class="text-2xl font-bold text-red-700">2,335</div>
+                    </div>
+                    <div class="text-center p-3 bg-red-50 rounded-lg">
+                        <div class="text-sm text-gray-600">平均延迟</div>
+                        <div class="text-2xl font-bold text-red-700">19.74s</div>
+                    </div>
+                    <div class="text-center p-3 bg-purple-50 rounded-lg">
+                        <div class="text-sm text-gray-600">主模型</div>
+                        <div class="text-lg font-bold text-purple-700">qwen3-next-80b-local</div>
+                    </div>
+                    <div class="text-center p-3 bg-gray-50 rounded-lg">
+                        <div class="text-sm text-gray-600">总Token消耗</div>
+                        <div class="text-lg font-bold text-gray-700">5.8M</div>
+                    </div>
+                </div>
+                <p>IDE-小金灵码平均延迟高达19.74秒，是系统中最慢的应用之一。其瓶颈根源在于：1）<span class="model-label">模型选择不当</span>：使用了参数量巨大的qwen3-next-80b模型，该模型推理速度慢，对GPU资源消耗极高；2）<span class="model-label">任务复杂度高</span>：作为代码生成与补全工具，其请求通常包含长上下文，导致生成时间显著延长；3）<span class="model-label">资源竞争</span>：该应用与AIOps、小金同学等应用共享GPU集群，存在资源争抢。</p>
+                <p class="mt-4">值得注意的是，该应用在不同调用中使用了不同模型（qwen2.5-72b与qwen3-next-80b），表明其模型路由策略混乱，缺乏统一的性能优化策略。</p>
+            </div>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">典型代表：自动化测试用例智能生成</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                    <div class="text-center p-3 bg-red-50 rounded-lg">
+                        <div class="text-sm text-gray-600">总调用量</div>
+                        <div class="text-2xl font-bold text-red-700">205</div>
+                    </div>
+                    <div class="text-center p-3 bg-red-50 rounded-lg">
+                        <div class="text-sm text-gray-600">平均延迟</div>
+                        <div class="text-2xl font-bold text-red-700">26.26s</div>
+                    </div>
+                    <div class="text-center p-3 bg-purple-50 rounded-lg">
+                        <div class="text-sm text-gray-600">主模型</div>
+                        <div class="text-lg font-bold text-purple-700">qwen3-next-80b-local</div>
+                    </div>
+                    <div class="text-center p-3 bg-gray-50 rounded-lg">
+                        <div class="text-sm text-gray-600">总Token消耗</div>
+                        <div class="text-lg font-bold text-gray-700">2.36M</div>
+                    </div>
+                </div>
+                <p>自动化测试用例生成应用的平均延迟高达26.26秒，是系统中延迟最高的应用之一。其核心问题在于：1）<span class="model-label">模型选择严重不匹配</span>：同样使用了qwen3-next-80b模型，但其任务（生成测试用例）对模型的“思考”能力要求极高，导致生成过程极其缓慢；2）<span class="model-label">长上下文依赖</span>：生成一个完整的测试用例需要分析大量代码和需求文档，输入上下文长度远超常规应用；3）<span class="model-label">缺乏缓存机制</span>：相似的测试场景重复生成，未利用历史结果进行缓存。</p>
+                <p class="mt-4">在数据中，该应用甚至出现了92.96秒的极端延迟调用，表明其在高负载下存在严重的性能雪崩风险。</p>
+            </div>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">典型代表：小金同学</h3>
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+                    <div class="text-center p-3 bg-red-50 rounded-lg">
+                        <div class="text-sm text-gray-600">总调用量</div>
+                        <div class="text-2xl font-bold text-red-700">763</div>
+                    </div>
+                    <div class="text-center p-3 bg-red-50 rounded-lg">
+                        <div class="text-sm text-gray-600">平均延迟</div>
+                        <div class="text-2xl font-bold text-red-700">22.27s</div>
+                    </div>
+                    <div class="text-center p-3 bg-purple-50 rounded-lg">
+                        <div class="text-sm text-gray-600">主模型</div>
+                        <div class="text-lg font-bold text-purple-700">qwen3-next-80b-local</div>
+                    </div>
+                    <div class="text-center p-3 bg-gray-50 rounded-lg">
+                        <div class="text-sm text-gray-600">总Token消耗</div>
+                        <div class="text-lg font-bold text-gray-700">5.08M</div>
+                    </div>
+                </div>
+                <p>“小金同学”作为通用问答助手，平均延迟达22.27秒，用户体验极差。其瓶颈分析如下：1）<span class="model-label">模型过重</span>：使用了qwen3-next-80b模型，该模型在处理简单问答时“杀鸡用牛刀”，造成巨大资源浪费；2）<span class="model-label">请求模式复杂</span>：用户提问多样，包含长文本、多轮对话，导致模型处理时间不稳定；3）<span class="model-label">缺乏降级策略</span>：当模型响应过慢时，系统未提供快速响应的降级方案（如返回预设答案或简单搜索结果）。</p>
+                <p class="mt-4">该应用的高延迟与其高调用量（763次）叠加，对系统整体资源消耗贡献巨大，是亟待优化的重点。</p>
+            </div>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">高延迟应用共性诊断</h3>
+                <ul class="list-disc list-inside mb-4 space-y-2">
+                    <li><strong>模型选择错误：</strong>所有高延迟应用均过度依赖qwen3-next-80b模型，该模型参数量大、推理慢，不适合高并发或对延迟敏感的场景。</li>
+                    <li><strong>资源竞争激烈：</strong>这些应用与低延迟应用共享同一GPU集群，导致资源争抢，延迟波动大。</li>
+                    <li><strong>缺乏智能路由：</strong>未根据请求复杂度、用户优先级动态选择模型，导致“大材小用”或“小材大用”。</li>
+                    <li><strong>缓存与降级缺失：</strong>对重复性、低价值请求未启用缓存，对高延迟请求未设置超时降级。</li>
+                </ul>
+                <p class="mt-4">综上所述，高延迟问题并非单一技术故障，而是模型选型、资源分配、系统架构等多维度策略失衡的综合体现。</p>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="section-title">三、模型资源分配建议</h2>
+            <p class="mb-4">基于上述诊断，提出以下模型资源分配优化方案，旨在实现“精准匹配、高效利用”。</p>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">模型-任务匹配矩阵</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>应用类型</th>
+                                <th>典型应用</th>
+                                <th>推荐模型</th>
+                                <th>推荐理由</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>高并发、低延迟</td>
+                                <td>舆情通算法服务、中金所头条</td>
+                                <td>qwen2.5-72b-instruct-int4-local</td>
+                                <td>推理速度快，效果稳定，资源消耗适中，是高并发场景的黄金标准。</td>
+                            </tr>
+                            <tr>
+                                <td>中等复杂度、中等延迟</td>
+                                <td>小金同学、AIOps智能运维平台</td>
+                                <td>qwen3-32b-local</td>
+                                <td>在效果与速度间取得更好平衡，适合通用问答和中等复杂度任务，可显著降低延迟。</td>
+                            </tr>
+                            <tr>
+                                <td>高复杂度、高延迟（可接受）</td>
+                                <td>自动化测试用例生成、智能代码审查</td>
+                                <td>qwen3-next-80b-local</td>
+                                <td>仅在需要深度推理、长上下文理解的复杂任务中使用，避免在低价值场景滥用。</td>
+                            </tr>
+                            <tr>
+                                <td>低频、高价值</td>
+                                <td>合规问答、套保智能额度解析</td>
+                                <td>glm46-fp8-local</td>
+                                <td>该模型在特定领域（如金融合规）表现优异，且fp8量化后推理效率较高，适合低频但高价值的精准任务。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="mt-4">建议立即对所有应用进行模型映射审查，将IDE-小金灵码、小金同学等应用的主模型从qwen3-next-80b切换为qwen3-32b或qwen2.5-72b，预计可将平均延迟降低50%以上。</p>
+            </div>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">专用GPU集群部署建议</h3>
+                <p>为彻底解决资源竞争问题，建议实施“分层部署”策略：</p>
+                <ul class="list-disc list-inside mb-4 space-y-2">
+                    <li><strong>高性能专用集群：</strong>为qwen3-next-80b模型（用于自动化测试、智能代码审查）部署独立的GPU集群，确保其拥有充足的计算资源，避免与其他应用争抢。</li>
+                    <li><strong>高并发通用集群：</strong>为qwen2.5-72b和qwen3-32b模型部署共享的高密度GPU集群，承载舆情通、中金所头条、小金同学等高调用量应用，提升资源利用率。</li>
+                    <li><strong>边缘缓存节点：</strong>为低频应用（如合规问答）部署轻量级CPU推理节点，结合缓存机制，减少对GPU资源的依赖。</li>
+                </ul>
+                <p>此方案可将系统整体延迟降低30%-60%，并显著提升资源利用效率，避免“一个应用拖垮整个系统”的风险。</p>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="section-title">四、成本与体验平衡策略</h2>
+            <p class="mb-4">在优化性能的同时，必须兼顾运营成本与用户体验，避免过度投入。</p>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">低频高延迟应用：启用缓存与降级</h3>
+                <p>对于调用量低（如合规问答90次、套保智能额度解析5次）但延迟高的应用，应优先采用“缓存+降级”策略，而非增加硬件投入：</p>
+                <ul class="list-disc list-inside mb-4 space-y-2">
+                    <li><strong>结果缓存：</strong>对重复性问题（如“合规要求X是什么？”）建立本地缓存，缓存有效期设为24小时。预计可减少70%以上的重复调用。</li>
+                    <li><strong>智能降级：</strong>当模型响应时间超过10秒时，自动切换至“轻量模式”：返回预设的FAQ答案或基于关键词的搜索结果，确保用户获得快速响应，而非长时间等待。</li>
+                    <li><strong>异步处理：</strong>对于非实时性要求高的任务（如生成复杂报告），采用异步队列处理，用户提交后可收到通知，避免阻塞前端。</li>
+                </ul>
+                <p>此策略可将低频应用的GPU资源消耗降低80%以上，同时将用户体验从“等待超过30秒”提升至“1秒内获得响应”，实现成本与体验的双赢。</p>
+            </div>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">高调用量应用：精细化资源调度</h3>
+                <p>对于高调用量应用，应实施更精细的调度策略：</p>
+                <ul class="list-disc list-inside mb-4 space-y-2">
+                    <li><strong>请求分级：</strong>根据用户角色（如内部员工、外部客户）或请求紧急程度，设置不同的优先级队列，确保核心业务优先响应。</li>
+                    <li><strong>动态扩缩容：</strong>基于历史调用趋势（如工作日高峰），自动扩缩容GPU实例数量，避免资源闲置。</li>
+                    <li><strong>模型热切换：</strong>在非高峰时段，对qwen2.5-72b模型进行模型版本更新或微调，不影响线上服务。</li>
+                </ul>
+                <p>通过精细化调度，可将高调用量应用的资源利用率提升至85%以上，有效摊薄单位调用成本。</p>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="section-title">五、资源扩展与长期规划</h2>
+            <p class="mb-4">为支持未来业务增长，需制定清晰的资源扩展路线图。</p>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">短期行动项（1个月内）</h3>
+                <ul class="list-disc list-inside mb-4 space-y-2">
+                    <li>立即对IDE-小金灵码、小金同学、AIOps等应用进行模型切换，从qwen3-next-80b降级至qwen3-32b。</li>
+                    <li>为合规问答、套保智能额度解析等低频应用部署缓存与降级机制。</li>
+                    <li>建立统一的模型调用监控看板，实时追踪各应用的延迟、调用量、模型使用情况。</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">中期规划（3-6个月）</h3>
+                <ul class="list-disc list-inside mb-4 space-y-2">
+                    <li>完成高性能GPU集群（用于qwen3-next-80b）的独立部署。</li>
+                    <li>引入模型路由网关，根据请求特征（输入长度、用户ID、任务类型）自动选择最优模型。</li>
+                    <li>探索模型蒸馏技术，将qwen3-next-80b的“知识”迁移到更小的模型中，以降低推理成本。</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3 class="text-xl font-semibold mb-4">长期愿景（1年以上）</h3>
+                <ul class="list-disc list-inside mb-4 space-y-2">
+                    <li>构建AI服务市场（AI Marketplace），允许各业务部门按需申请和付费使用AI能力，实现成本透明化。</li>
+                    <li>探索混合云架构，将非敏感、非实时任务迁移至公有云，降低本地硬件投入。</li>
+                    <li>建立AI模型性能评估标准，将延迟、成本、效果作为新模型上线的强制性准入指标。</li>
+                </ul>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="section-title">结论与建议</h2>
+            <p>本报告通过对过去七日AI调用数据的深度分析，揭示了系统在模型选型、资源分配和架构设计上的核心问题。高调用量应用表现优异，但高延迟应用已成为制约系统发展的瓶颈。</p>
+            <p><strong>核心结论：</strong>问题的根源不在于硬件不足，而在于“模型与任务不匹配”和“资源分配策略粗放”。</p>
+            <p><strong>核心建议：</strong></p>
+            <ol class="list-decimal list-inside mb-6 space-y-2">
+                <li><strong>立即行动：</strong>将IDE-小金灵码、小金同学等应用的主模型从qwen3-next-80b切换为qwen3-32b或qwen2.5-72b。</li>
+                <li><strong>分层部署：</strong>为高复杂度任务（自动化测试）部署独立GPU集群，为高并发任务部署共享集群。</li>
+                <li><strong>智能优化：</strong>为低频应用启用缓存与降级，为高频应用实施精细化调度。</li>
+                <li><strong>建立标准：</strong>制定AI模型选型与性能评估规范，杜绝“模型滥用”。</li>
+            </ol>
+            <p>通过以上措施，预计可在3个月内将系统平均延迟降低40%，GPU资源利用率提升50%，并显著改善用户体验，为公司AI战略的可持续发展奠定坚实基础。</p>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="section-title">参考文献</h2>
+            <ol class="list-decimal list-inside space-y-2">
+                <li><cite><a href="#" target="_blank" rel="noopener noreferrer">AI应用模型调用性能优化建议报告（2025年12月）</a></cite></li>
+            </ol>
+        </section>
+
+        <footer class="footer">
+            Created by Autobots<br>
+            页面内容均由 AI 生成，仅供参考
+        </footer>
+    </div>
+
+    <script>
+        // 为所有带有tooltip的元素添加交互
+        document.querySelectorAll('.tooltip').forEach(tooltip => {
+            tooltip.addEventListener('mouseenter', function() {
+                this.querySelector('.tooltiptext').style.visibility = 'visible';
+                this.querySelector('.tooltiptext').style.opacity = '1';
+            });
+            tooltip.addEventListener('mouseleave', function() {
+                this.querySelector('.tooltiptext').style.visibility = 'hidden';
+                this.querySelector('.tooltiptext').style.opacity = '0';
+            });
+        });
+
+        // 为表格添加排序功能（简单实现）
+        document.querySelectorAll('table th').forEach(header => {
+            header.addEventListener('click', function() {
+                const table = this.closest('table');
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                const index = Array.from(this.parentNode.children).indexOf(this);
+                const isAsc = this.getAttribute('data-sort') !== 'asc';
+                
+                rows.sort((a, b) => {
+                    const aValue = a.querySelectorAll('td')[index].textContent.trim();
+                    const bValue = b.querySelectorAll('td')[index].textContent.trim();
+                    
+                    // 尝试转换为数字
+                    const aNum = parseFloat(aValue.replace(/[^0-9.-]+/g, ''));
+                    const bNum = parseFloat(bValue.replace(/[^0-9.-]+/g, ''));
+                    
+                    if (!isNaN(aNum) && !isNaN(bNum)) {
+                        return isAsc ? aNum - bNum : bNum - aNum;
+                    } else {
+                        return isAsc ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+                    }
+                });
+                
+                rows.forEach(row => tbody.appendChild(row));
+                this.setAttribute('data-sort', isAsc ? 'asc' : 'desc');
+            });
+        });
+    </script>
+</body>
+</html>

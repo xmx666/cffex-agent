@@ -1,0 +1,16 @@
+time_period,model_name,call_count,total_tokens,avg_latency
+上午,glm46-fp8-local,753,7848720,21.4692
+上午,qwen2.5-72b-instruct-int4-local,577,843810,9.3807
+上午,qwen3-next-80b-local,286,421244,5.0918
+上午,qwen3-32b-local,83,111038,4.9363
+上午,qwen3-vl-8b-instruct-local,45,104182,4.6224
+上午,qwen3-next-80b-thinking-local,38,16862,2.0757
+上午,qwenlong-l1-32b-awq-local,36,10775,2.603
+上午,deepseek-r1-q4km-local,1,2242,5.67
+下午,qwen2.5-72b-instruct-int4-local,1767,2163311,4.6466
+下午,glm46-fp8-local,746,2829974,15.2497
+下午,qwen3-next-80b-local,720,3188742,7.9734
+下午,qwen3-32b-local,77,62741,3.841
+下午,qwen3-vl-8b-instruct-local,75,168595,2.473
+下午,qwen3-next-80b-thinking-local,42,27540,2.9061
+下午,qwenlong-l1-32b-awq-local,40,4883,1.2402

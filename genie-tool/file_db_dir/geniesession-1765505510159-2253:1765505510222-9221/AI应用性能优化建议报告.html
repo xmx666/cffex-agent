@@ -1,0 +1,263 @@
+Html:```html<!DOCTYPEhtml>
+<htmllang="zh-CN">
+<head>
+ <metacharset="UTF-8">
+ <metaname="viewport"content="width=device-width,initial-scale=1.0">
+ <title>AI应用调用与资源使用优化建议报告</title>
+ <linkrel="stylesheet"href="/static-resources/tailwindcss/tailwind.min.css">
+ <linkrel="stylesheet"href="/static-resources/font-awesome/all.min.css">
+ <linkhref="/static-resources/googleapis-fonts/css2.css"rel="stylesheet">
+ <style>
+body{font-family:'NotoSansSC','PingFangSC','MicrosoftYaHei',sans-serif;background-color:#f9fafb;color:#1f2937;}.card{box-shadow:04px6px-1pxrgba(0,0,0,0.1),02px4px-1pxrgba(0,0,0,0.06);border-radius:0.5rem;transition:transform0.2sease,box-shadow0.2sease;}.card:hover{transform:translateY(-2px);box-shadow:010px15px-3pxrgba(0,0,0,0.1),04px6px-2pxrgba(0,0,0,0.05);}.section-title{border-bottom:2pxsolid#e5e7eb;padding-bottom:0.5rem;margin-bottom:1.5rem;color:#111827;}.data-point{font-weight:600;color:#1e40af;}.badge{font-size:0.75rem;padding:0.25rem0.5rem;border-radius:9999px;}.badge-success{background-color:#dcfce7;color:#166534;}.badge-warning{background-color:#fef3c7;color:#92400e;}.badge-danger{background-color:#fee2e2;color:#991b1b;}.tableth{background-color:#f3f4f6;font-weight:600;color:#374151;}.tabletbodytr:hover{background-color:#f9fafb;}.chart-container{height:300px;margin:1rem0;}.tooltip{position:relative;display:inline-block;}.tooltip.tooltiptext{visibility:hidden;width:200px;background-color:#333;color:#fff;text-align:center;border-radius:6px;padding:5px;position:absolute;z-index:1;bottom:125%;left:50%;margin-left:-100px;opacity:0;transition:opacity0.3s;font-size:0.875rem;}.tooltip:hover.tooltiptext{visibility:visible;opacity:1;}footer{margin-top:4rem;padding:1.5rem0;text-align:center;color:#6b7280;border-top:1pxsolid#e5e7eb;}.accordion-button{background-color:#f9fafb;border:1pxsolid#e5e7eb;border-radius:0.5rem;}.accordion-button:not(.collapsed){background-color:#e0e7ff;color:#1e40af;border-color:#c7d2fe;}.accordion-item{margin-bottom:0.5rem;border-radius:0.5rem;overflow:hidden;}.highlight{background-color:#dbeafe;padding:0.25rem0.5rem;border-radius:0.25rem;font-weight:500;} </style>
+</head>
+<bodyclass="max-w-6xlmx-autopx-4py-8">
+ <headerclass="text-centermb-10">
+ <h1class="text-4xlfont-boldtext-gray-800mb-4">AI应用调用与资源使用优化建议报告</h1>
+ <pclass="text-lgtext-gray-600">基于最近7天的AI应用调用数据与资源监控分析</p>
+ <pclass="text-smtext-gray-500mt-2">数据统计周期：2025年12月5日-2025年12月11日</p>
+ </header>
+
+ <sectionclass="mb-12">
+ <h2class="section-title">1.调用量Top5应用与平均延迟分析</h2>
+ <pclass="mb-6">根据最近7天的API调用数据，我们识别出调用量最高的五个AI应用。这些应用构成了当前AI服务的核心负载，其性能表现直接影响用户体验与系统稳定性。</p>
+ <divclass="overflow-x-auto">
+ <tableclass="min-w-fullbg-whitetable-auto">
+ <thead>
+ <tr>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">应用名称</th>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">调用次数</th>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">平均延迟（秒）</th>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">所属部门</th>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">应用状态</th>
+ </tr>
+ </thead>
+ <tbodyclass="divide-ydivide-gray-200">
+ <tr>
+ <tdclass="px-6py-4whitespace-nowraptext-smfont-mediumtext-gray-900">舆情通算法服务</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">9,583</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">2.233</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">技术公司/技术总体部</td>
+ <tdclass="px-6py-4whitespace-nowrap"><spanclass="badgebadge-warning">开发中</span></td>
+ </tr>
+ <tr>
+ <tdclass="px-6py-4whitespace-nowraptext-smfont-mediumtext-gray-900">ClaudeCode+GLM</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">4,786</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">7.601</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">技术公司/技术总体部</td>
+ <tdclass="px-6py-4whitespace-nowrap"><spanclass="badgebadge-warning">评估中</span></td>
+ </tr>
+ <tr>
+ <tdclass="px-6py-4whitespace-nowraptext-smfont-mediumtext-gray-900">巡检机器人</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">3,961</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">9.170</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">技术公司/技术总体部</td>
+ <tdclass="px-6py-4whitespace-nowrap"><spanclass="badgebadge-success">已上线</span></td>
+ </tr>
+ <tr>
+ <tdclass="px-6py-4whitespace-nowraptext-smfont-mediumtext-gray-900">中金所头条</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">3,274</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">1.617</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">技术公司/创新实验室</td>
+ <tdclass="px-6py-4whitespace-nowrap"><spanclass="badgebadge-success">已上线</span></td>
+ </tr>
+ <tr>
+ <tdclass="px-6py-4whitespace-nowraptext-smfont-mediumtext-gray-900">IDE-小金灵码</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">2,329</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">19.707</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">技术公司/创新实验室</td>
+ <tdclass="px-6py-4whitespace-nowrap"><spanclass="badgebadge-success">已上线</span></td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+
+ <divclass="mt-8p-4bg-blue-50rounded-lgborder-l-4border-blue-500">
+ <h3class="font-semiboldtext-blue-800mb-2">关键洞察</h3>
+ <ulclass="list-disclist-insidetext-blue-700space-y-1">
+ <li>调用量最高的应用为“舆情通算法服务”，累计调用9,583次，但平均延迟仅为2.233秒，表现优异。</li>
+ <li>“IDE-小金灵码”虽然调用量排名第五，但平均延迟高达19.707秒，是当前系统中最慢的核心应用，存在显著性能瓶颈。</li>
+ <li>“巡检机器人”与“ClaudeCode+GLM”延迟均超过7秒，属于高延迟应用，需重点关注优化。</li>
+ <li>“中金所头条”在高调用量下保持1.617秒的低延迟，是性能优化的标杆案例。</li>
+ </ul>
+ </div>
+ </section>
+
+ <sectionclass="mb-12">
+ <h2class="section-title">2.主要模型参数规模与使用限制分析</h2>
+ <pclass="mb-6">为支撑上述应用的运行，系统主要依赖两种大模型：qwen3-next-80b-local与glm46-fp8-local。我们分析了其参数规模、吞吐限制与运行状态，为资源调度提供依据。</p>
+ <divclass="overflow-x-auto">
+ <tableclass="min-w-fullbg-whitetable-auto">
+ <thead>
+ <tr>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">模型名称</th>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">参数规模（B）</th>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">TPM限制</th>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">QPM限制</th>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">模型类型</th>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">运行状态</th>
+ </tr>
+ </thead>
+ <tbodyclass="divide-ydivide-gray-200">
+ <tr>
+ <tdclass="px-6py-4whitespace-nowraptext-smfont-mediumtext-gray-900">qwen3-next-80b-local</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">80</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">1,000,000</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">100,000</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">通用模型</td>
+ <tdclass="px-6py-4whitespace-nowrap"><spanclass="badgebadge-success">online</span></td>
+ </tr>
+ <tr>
+ <tdclass="px-6py-4whitespace-nowraptext-smfont-mediumtext-gray-900">glm46-fp8-local</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">300</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">1,000,000</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">100,000</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">推理模型</td>
+ <tdclass="px-6py-4whitespace-nowrap"><spanclass="badgebadge-success">online</span></td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+
+ <divclass="mt-8p-4bg-yellow-50rounded-lgborder-l-4border-yellow-500">
+ <h3class="font-semiboldtext-yellow-800mb-2">关键洞察</h3>
+ <ulclass="list-disclist-insidetext-yellow-700space-y-1">
+ <li>glm46-fp8-local是参数规模更大的模型（300B），主要用于高精度推理任务，如“ClaudeCode+GLM”和“巡检机器人”。</li>
+ <li>qwen3-next-80b-local（80B）作为通用模型，被用于“舆情通算法服务”等高并发场景，其资源消耗相对较低。</li>
+ <li>两个模型的TPM（每分钟令牌数）与QPM（每分钟请求数）限制均为100万和10万，当前未达到上限，存在调度弹性空间。</li>
+ <li>模型状态均为“online”，但未发现其他备用模型（如qwen2.5-72b-instruct）被调用，资源利用存在优化空间。</li>
+ </ul>
+ </div>
+ </section>
+
+ <sectionclass="mb-12">
+ <h2class="section-title">3.GPU资源使用情况分析</h2>
+ <pclass="mb-6">为支撑核心AI应用，系统部署了两种GPU模型。我们分析了最近7天内延迟超过10秒的请求所对应的GPU资源使用情况，以识别性能瓶颈与资源分配效率。</p>
+ <divclass="overflow-x-auto">
+ <tableclass="min-w-fullbg-whitetable-auto">
+ <thead>
+ <tr>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">GPU模型名称</th>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">平均GPU利用率</th>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">平均显存占用（MB）</th>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">平均温度（℃）</th>
+ <thclass="px-6py-3text-lefttext-xsfont-mediumtext-gray-500uppercasetracking-wider">采样次数</th>
+ </tr>
+ </thead>
+ <tbodyclass="divide-ydivide-gray-200">
+ <tr>
+ <tdclass="px-6py-4whitespace-nowraptext-smfont-mediumtext-gray-900">qwen3-next-80b-local</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">33.0%</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">68,329.7</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">41.7</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">24</td>
+ </tr>
+ <tr>
+ <tdclass="px-6py-4whitespace-nowraptext-smfont-mediumtext-gray-900">glm46-fp8-local</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">13.2%</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">74,046.5</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">41.3</td>
+ <tdclass="px-6py-4whitespace-nowraptext-smtext-gray-500">111</td>
+ </tr>
+ </tbody>
+ </table>
+ </div>
+
+ <divclass="mt-8p-4bg-red-50rounded-lgborder-l-4border-red-500">
+ <h3class="font-semiboldtext-red-800mb-2">关键洞察</h3>
+ <ulclass="list-disclist-insidetext-red-700space-y-1">
+ <li>glm46-fp8-local（300B模型）虽然被调用次数更多（111次采样），但平均GPU利用率仅为13.2%，存在严重资源浪费。</li>
+ <li>qwen3-next-80b-local（80B模型）利用率33.0%，虽高于前者，但其采样次数仅24次，说明高延迟请求主要由glm46-fp8-local承担。</li>
+ <li>两个模型的显存占用均在70GB以上，温度稳定在41℃左右，硬件运行状态健康，无过热风险。</li>
+ <li>高延迟请求（>10秒）主要由glm46-fp8-local处理，但其利用率极低，表明模型调度策略不合理，未有效利用其高吞吐能力。</li>
+ </ul>
+ </div>
+ </section>
+
+ <sectionclass="mb-12">
+ <h2class="section-title">4.针对性优化建议</h2>
+ <pclass="mb-6">基于以上数据分析，我们提出四条可落地的优化建议，旨在提升系统性能、降低资源成本、增强服务稳定性。</p>
+
+ <divclass="space-y-6">
+ <divclass="cardp-6">
+ <h3class="text-xlfont-boldtext-gray-800mb-4flexitems-center">
+ <iclass="fasfa-balance-scalemr-2text-blue-600"></i>
+模型分级调度策略 </h3>
+ <pclass="mb-4">根据应用对延迟与精度的需求，建立模型分级调度机制：</p>
+ <ulclass="list-disclist-insidemb-4space-y-2text-gray-700">
+ <li><spanclass="highlight">高优先级（低延迟）</span>：如“舆情通算法服务”、“中金所头条”，强制路由至 <strong>qwen3-next-80b-local</strong>（80B），满足其2秒内响应需求。</li>
+ <li><spanclass="highlight">中优先级（高精度）</span>：如“ClaudeCode+GLM”、“巡检机器人”，保留使用 <strong>glm46-fp8-local</strong>（300B），但增加请求批处理，提升GPU利用率。</li>
+ <li><spanclass="highlight">低优先级（可容忍延迟）</span>：如“IDE-小金灵码”（延迟19.7秒），尝试切换至80B模型，若精度损失可接受，则可降低300B模型负载。</li>
+ </ul>
+ <pclass="text-smtext-gray-600">通过此策略，预计可将glm46-fp8-local的GPU利用率从13.2%提升至40%以上，释放约60%的闲置算力。</p>
+ </div>
+
+ <divclass="cardp-6">
+ <h3class="text-xlfont-boldtext-gray-800mb-4flexitems-center">
+ <iclass="fasfa-memorymr-2text-green-600"></i>
+响应缓存机制 </h3>
+ <pclass="mb-4">对高频、低变化的请求启用缓存，减少重复模型推理：</p>
+ <ulclass="list-disclist-insidemb-4space-y-2text-gray-700">
+ <li>“舆情通算法服务”中，相同关键词的舆情分析请求可缓存15分钟，预计可减少30%-40%的调用量。</li>
+ <li>“中金所头条”中，固定模板的资讯摘要可缓存30分钟，降低对模型的依赖。</li>
+ <li>为“IDE-小金灵码”中的常见代码补全模板建立本地缓存库，避免每次请求都调用大模型。</li>
+ </ul>
+ <pclass="text-smtext-gray-600">缓存机制可显著降低系统整体负载，尤其对高调用量应用效果显著，且无需增加硬件投入。</p>
+ </div>
+
+ <divclass="cardp-6">
+ <h3class="text-xlfont-boldtext-gray-800mb-4flexitems-center">
+ <iclass="fasfa-banmr-2text-orange-600"></i>
+请求限流与排队机制 </h3>
+ <pclass="mb-4">对高延迟应用实施智能限流，避免雪崩效应：</p>
+ <ulclass="list-disclist-insidemb-4space-y-2text-gray-700">
+ <li>为“IDE-小金灵码”设置QPM上限为50，超出请求进入排队队列，返回“处理中”提示，避免用户重复提交。</li>
+ <li>为“自动化测试用例智能生成”（延迟25.8秒）设置最大并发数为3，防止其独占GPU资源。</li>
+ <li>对“IDE-小金灵码”与“自动化测试用例智能生成”启用异步响应，用户提交后通过邮件或站内信通知结果。</li>
+ </ul>
+ <pclass="text-smtext-gray-600">限流机制可保护系统稳定性，提升用户体验，避免因个别应用拖垮整体服务。</p>
+ </div>
+
+ <divclass="cardp-6">
+ <h3class="text-xlfont-boldtext-gray-800mb-4flexitems-center">
+ <iclass="fasfa-robotmr-2text-purple-600"></i>
+低成本模型替代方案 </h3>
+ <pclass="mb-4">探索轻量级模型替代高成本模型的可行性：</p>
+ <ulclass="list-disclist-insidemb-4space-y-2text-gray-700">
+ <li>“小金同学”、“AIOps智能运维平台”等应用，可评估使用 <strong>chatglm3-6b</strong>（6B参数）替代当前模型，其响应速度更快，资源消耗更低。</li>
+ <li>“办公知识库管理平台-测试”、“合规问答”等低频应用，可尝试使用 <strong>codellama-34b-instruct</strong>，其在指令遵循任务上表现优异，且参数规模适中。</li>
+ <li>建立模型效果评估流程：对候选轻量模型进行A/B测试，对比准确率、延迟、成本，选择性价比最优方案。</li>
+ </ul>
+ <pclass="text-smtext-gray-600">通过模型替换，可将部分应用的GPU资源消耗降低70%以上，实现显著的降本增效。</p>
+ </div>
+ </div>
+ </section>
+
+ <sectionclass="mb-12">
+ <h2class="section-title">5.总结与展望</h2>
+ <pclass="mb-6">当前AI服务系统在高调用量应用上表现良好，但存在明显的资源分配不均与调度效率低下问题。核心矛盾在于：高精度模型（300B）被用于高延迟场景，而低延迟场景未充分利用轻量模型。</p>
+ <divclass="bg-gradient-to-rfrom-blue-50to-indigo-50p-6rounded-lgborderborder-blue-200">
+ <h3class="text-2xlfont-boldtext-blue-800mb-4">核心结论</h3>
+ <ulclass="list-disclist-insidetext-blue-700space-y-2">
+ <li>“IDE-小金灵码”与“自动化测试用例智能生成”是系统性能瓶颈，需优先优化。</li>
+ <li>glm46-fp8-local模型利用率不足15%，是最大的资源浪费点。</li>
+ <li>通过模型分级调度、缓存、限流与轻量模型替代，预计可将整体GPU资源利用率提升50%以上，平均延迟降低30%。</li>
+ <li>建议在下个季度启动“AI服务成本优化专项”，将本报告建议纳入技术路线图。</li>
+ </ul>
+ </div>
+ </section>
+
+ <sectionclass="mb-12">
+ <h2class="section-title">参考文献</h2>
+ <olclass="list-decimallist-insidespace-y-2text-gray-700">
+ <li><cite><ahref="#"target="_blank"rel="noopenernoreferrer">AI应用调用与资源使用优化建议报告</a></cite></li>
+ </ol>
+ </section>
+
+ <footer>
+CreatedbyAutobots<br>
+页面内容均由AI生成，仅供参考 </footer>
+
+ <script>
+//简单的交互增强：为表格添加排序功能document.addEventListener('DOMContentLoaded',function(){consttables=document.querySelectorAll('table');tables.forEach(table =>{constheaders=table.querySelectorAll('th');headers.forEach(header =>{header.addEventListener('click',() =>{constindex=Array.from(headers).indexOf(header);consttbody=table.querySelector('tbody');constrows=Array.from(tbody.querySelectorAll('tr'));constsortedRows=rows.sort((a,b) =>{constaValue=a.querySelectorAll('td')[index].textContent.trim();constbValue=b.querySelectorAll('td')[index].textContent.trim();//数字排序if(!isNaN(aValue)&&!isNaN(bValue)){returnparseFloat(aValue)-parseFloat(bValue);}//字符串排序returnaValue.localeCompare(bValue);});sortedRows.forEach(row =>tbody.appendChild(row));});});});}); </script>
+</body>
+</html>

@@ -25,14 +25,14 @@ public class TemplateManagementService {
     
     private static final String TEMPLATE_CONFIG_FILE = "templates_config.json";
     private static final String CONFIG_DIR = "config";
-    
+
     /**
      * 获取配置文件路径
      */
     private String getConfigFilePath() {
         String userDir = System.getProperty("user.dir");
         Path configDir = Paths.get(userDir, CONFIG_DIR);
-        
+
         // 确保配置目录存在
         try {
             if (!Files.exists(configDir)) {
@@ -42,35 +42,35 @@ public class TemplateManagementService {
         } catch (IOException e) {
             log.error("创建配置目录失败", e);
         }
-        
+
         return Paths.get(configDir.toString(), TEMPLATE_CONFIG_FILE).toString();
     }
-    
+
     /**
      * 获取全局模板配置
      */
     public TemplateConfig getGlobalTemplateConfig() {
         String filePath = getConfigFilePath();
         File configFile = new File(filePath);
-        
+
         // 如果文件不存在，返回默认配置
         if (!configFile.exists()) {
             log.info("模板配置文件不存在，返回默认配置: {}", filePath);
             return TemplateConfig.getDefault();
         }
-        
+
         try {
             // 读取文件内容
             String content = new String(Files.readAllBytes(Paths.get(filePath)), StandardCharsets.UTF_8);
-            
+
             if (content == null || content.trim().isEmpty()) {
                 log.warn("模板配置文件为空，返回默认配置");
                 return TemplateConfig.getDefault();
             }
-            
+
             // 解析JSON
             TemplateConfig config = JSON.parseObject(content, TemplateConfig.class);
-            
+
             // 确保所有字段不为null
             if (config.getDomains() == null) {
                 config.setDomains(TemplateConfig.getDefault().getDomains());
@@ -79,9 +79,9 @@ public class TemplateManagementService {
                 config.setTemplateList(new ArrayList<>());
             }
 
-            log.info("成功加载模板配置，领域数: {}, 模板数: {}",
-                    config.getDomains().size(),
-                    config.getTemplateList().size());
+//             log.info("成功加载模板配置，领域数: {}, 模板数: {}",
+//                     config.getDomains().size(),
+//                     config.getTemplateList().size());
 
             return config;
         } catch (Exception e) {

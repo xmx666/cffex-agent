@@ -23,6 +23,7 @@ import {
 import { ChatSession, ChatMessage, ChatFile } from '@/utils/historyManager';
 import { SimpleHistoryManager } from '@/utils/historyManager';
 import { iconType } from '@/utils/constants';
+import ReactJsonPretty from 'react-json-pretty';
 
 const { Title, Paragraph } = Typography;
 const { Panel } = Collapse;
@@ -302,12 +303,109 @@ const HistoryDetail: React.FC<HistoryDetailProps> = ({
                                       <div>
                                         <div className="text-[11px] font-medium text-green-600 mb-2">结果:</div>
                                         <div className="bg-gray-50 p-3 rounded border border-gray-100 max-h-100 overflow-y-auto">
-                                          <pre className="text-[11px] text-gray-800 whitespace-pre-wrap break-words overflow-x-auto">
-                                            {toolCall.toolResult.length > 500
-                                              ? toolCall.toolResult.substring(0, 500) + '...'
-                                              : toolCall.toolResult
+                                          {(() => {
+                                            // 检查是否是 JSON 格式
+                                            let isJSON = false;
+                                            let jsonData: any = {};
+                                            try {
+                                              jsonData = JSON.parse(toolCall.toolResult);
+                                              isJSON = true;
+                                            } catch (e) {
+                                              // 不是 JSON，使用普通文本显示
                                             }
-                                          </pre>
+
+                                            // 递归函数：查找并解析所有可能的 JSON 字符串字段
+                                            const parseNestedJsonStrings = (obj: any): any => {
+                                              if (typeof obj === 'string') {
+                                                // 尝试解析字符串是否为 JSON
+                                                try {
+                                                  const parsed = JSON.parse(obj);
+                                                  // 如果解析成功且是对象或数组，返回解析后的结果
+                                                  if (typeof parsed === 'object' && parsed !== null) {
+                                                    return parseNestedJsonStrings(parsed); // 递归处理解析后的对象
+                                                  }
+                                                } catch (e) {
+                                                  // 不是 JSON 字符串，返回原字符串
+                                                }
+                                                return obj;
+                                              }
+
+                                              if (Array.isArray(obj)) {
+                                                return obj.map(item => parseNestedJsonStrings(item));
+                                              }
+
+                                              if (typeof obj === 'object' && obj !== null) {
+                                                const result: any = {};
+                                                for (const key in obj) {
+                                                  if (obj.hasOwnProperty(key)) {
+                                                    result[key] = parseNestedJsonStrings(obj[key]);
+                                                  }
+                                                }
+                                                return result;
+                                              }
+
+                                              return obj;
+                                            };
+
+                                            // 如果是 JSON，处理所有嵌套的 JSON 字符串
+                                            if (isJSON) {
+                                              jsonData = parseNestedJsonStrings(jsonData);
+                                            }
+
+                                            if (isJSON) {
+                                              return (
+                                                <div className="json-result-container">
+                                                  <style>{`
+                                                    .json-result-container .react-json-pretty {
+                                                      background-color: transparent !important;
+                                                      color: #1f2937 !important;
+                                                      font-size: 11px;
+                                                      line-height: 1.5;
+                                                      word-break: break-word;
+                                                      white-space: pre-wrap;
+                                                      overflow-wrap: break-word;
+                                                    }
+                                                    .json-result-container .react-json-pretty .react-json-pretty-key {
+                                                      color: #2563eb !important;
+                                                    }
+                                                    .json-result-container .react-json-pretty .react-json-pretty-string {
+                                                      color: #059669 !important;
+                                                      white-space: pre-wrap !important;
+                                                      word-break: break-word !important;
+                                                    }
+                                                    .json-result-container .react-json-pretty .react-json-pretty-boolean {
+                                                      color: #dc2626 !important;
+                                                    }
+                                                    .json-result-container .react-json-pretty .react-json-pretty-number {
+                                                      color: #7c3aed !important;
+                                                    }
+                                                  `}</style>
+                                                  <ReactJsonPretty
+                                                    data={jsonData}
+                                                    theme={{
+                                                      main: 'transparent',
+                                                      error: '#ef4444',
+                                                      key: '#2563eb',
+                                                      string: '#059669',
+                                                      value: '#1f2937',
+                                                      boolean: '#dc2626',
+                                                      number: '#7c3aed',
+                                                    }}
+                                                  />
+                                                </div>
+                                              );
+                                            }
+
+                                            // 普通文本显示
+                                            return (
+                                              <pre className="text-[11px] text-gray-800 whitespace-pre-wrap break-words overflow-x-auto font-mono">
+                                                {toolCall.toolResult.length > 500
+                                                  ? toolCall.toolResult.substring(0, 500) + '...'
+                                                  : toolCall.toolResult
+                                                }
+                                              </pre>
+                                            );
+                                          })()}
                                         </div>
                                       </div>
                                     </Card>

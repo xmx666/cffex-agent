@@ -1,0 +1,465 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>大模型调用性能优化建议报告（2025年12月）</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            color: #333;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        th, td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        th {
+            font-weight: 600;
+            background-color: #f9fafb;
+            text-align: left;
+        }
+        tr:hover {
+            background-color: #f3f4f6;
+        }
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .badge-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .section-title {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        .highlight {
+            background-color: #f0f7ff;
+            padding: 0.75rem;
+            border-left: 4px solid #3b82f6;
+            margin: 1rem 0;
+            border-radius: 0 0.25rem 0.25rem 0;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 1rem 0;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e5e7eb;
+            border-bottom: none;
+            border-radius: 0.5rem 0.5rem 0 0;
+            background-color: #f9fafb;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        .tab-button.active {
+            border-bottom: 2px solid #ffffff;
+            background-color: #ffffff;
+            font-weight: 600;
+            box-shadow: 0 -2px 4px -1px rgba(0, 0, 0, 0.05);
+        }
+        .footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        .cite-link {
+            color: #007bff;
+            text-decoration: none;
+            border-bottom: 1px dotted #007bff;
+        }
+        .cite-link:hover {
+            text-decoration: underline;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">大模型调用性能优化建议报告</h1>
+            <p class="text-lg text-gray-600">基于最近7天（2025年12月5日 - 2025年12月11日）的调用数据</p>
+        </header>
+
+        <section class="mb-10">
+            <h2 class="section-title">1. 高延迟应用TOP5及其使用模型</h2>
+            <div class="card p-6">
+                <div class="table-container">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">应用名称</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">模型名称</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">调用量</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">平均延迟（秒）</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">总Token消耗</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">自动化测试用例智能生成</td>
+                                <td class="px-6 py-4 whitespace-nowrap">qwen3-next-80b-thinking-local</td>
+                                <td class="px-6 py-4 whitespace-nowrap">27</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-semibold text-red-600">92.96</td>
+                                <td class="px-6 py-4 whitespace-nowrap">720,998</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">自动化测试用例智能生成</td>
+                                <td class="px-6 py-4 whitespace-nowrap">qwen3-next-80b-local</td>
+                                <td class="px-6 py-4 whitespace-nowrap">43</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-semibold text-red-600">54.55</td>
+                                <td class="px-6 py-4 whitespace-nowrap">1,329,217</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">开发助手</td>
+                                <td class="px-6 py-4 whitespace-nowrap">glm46-fp8-local</td>
+                                <td class="px-6 py-4 whitespace-nowrap">21</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-semibold text-red-600">53.49</td>
+                                <td class="px-6 py-4 whitespace-nowrap">94,957</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">开发助手</td>
+                                <td class="px-6 py-4 whitespace-nowrap">qwen3-vl-8b-instruct-local</td>
+                                <td class="px-6 py-4 whitespace-nowrap">2</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-semibold text-red-600">51.08</td>
+                                <td class="px-6 py-4 whitespace-nowrap">7,858</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">开发助手</td>
+                                <td class="px-6 py-4 whitespace-nowrap">qwen3-32b-local</td>
+                                <td class="px-6 py-4 whitespace-nowrap">8</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-semibold text-red-600">43.76</td>
+                                <td class="px-6 py-4 whitespace-nowrap">18,667</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="mt-4 text-gray-700">以上为最近7天内平均延迟最高的前5个应用-模型组合，其中“自动化测试用例智能生成”应用使用qwen3-next-80b-thinking-local模型时延迟高达92.96秒，显著高于其他应用，存在严重性能瓶颈。</p>
+                <div class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p class="text-blue-800"><strong>分析：</strong>高延迟主要集中在“自动化测试用例智能生成”和“开发助手”两个应用，且均使用了大参数量模型（如qwen3-next-80b系列）。这些任务可能涉及复杂推理或长上下文处理，但当前模型选择可能过度冗余，导致响应时间过长，影响用户体验。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="section-title">2. 各模型调用量、平均延迟与Token消耗对比</h2>
+            <div class="card p-6">
+                <div class="table-container">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">模型名称</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">调用量</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">平均延迟（秒）</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">总Token消耗</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">总Prompt Token</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">总Completion Token</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">qwen3-next-80b-thinking-local</td>
+                                <td class="px-6 py-4 whitespace-nowrap">539</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-semibold text-red-600">11.63</td>
+                                <td class="px-6 py-4 whitespace-nowrap">1,955,097</td>
+                                <td class="px-6 py-4 whitespace-nowrap">407,135</td>
+                                <td class="px-6 py-4 whitespace-nowrap">1,547,962</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">qwen3-next-80b-local</td>
+                                <td class="px-6 py-4 whitespace-nowrap">7,566</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-semibold text-red-600">9.55</td>
+                                <td class="px-6 py-4 whitespace-nowrap">47,133,000</td>
+                                <td class="px-6 py-4 whitespace-nowrap">38,736,047</td>
+                                <td class="px-6 py-4 whitespace-nowrap">8,396,953</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">glm46-fp8-local</td>
+                                <td class="px-6 py-4 whitespace-nowrap">9,282</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-semibold text-blue-600">8.51</td>
+                                <td class="px-6 py-4 whitespace-nowrap">64,461,322</td>
+                                <td class="px-6 py-4 whitespace-nowrap">60,760,923</td>
+                                <td class="px-6 py-4 whitespace-nowrap">3,700,399</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">qwen2.5-72b-instruct-int4-local</td>
+                                <td class="px-6 py-4 whitespace-nowrap">14,946</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-semibold text-green-600">4.28</td>
+                                <td class="px-6 py-4 whitespace-nowrap">16,753,783</td>
+                                <td class="px-6 py-4 whitespace-nowrap">15,196,733</td>
+                                <td class="px-6 py-4 whitespace-nowrap">1,557,050</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">qwen3-32b-local</td>
+                                <td class="px-6 py-4 whitespace-nowrap">935</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-semibold text-yellow-600">5.88</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">deepseek-r1-q4km-local</td>
+                                <td class="px-6 py-4 whitespace-nowrap">36</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-semibold text-yellow-600">5.69</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">qwen3-next-80b-fp8-local</td>
+                                <td class="px-6 py-4 whitespace-nowrap">380</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-semibold text-green-600">1.11</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">hunyuanOCR-local</td>
+                                <td class="px-6 py-4 whitespace-nowrap">6</td>
+                                <td class="px-6 py-4 whitespace-nowrap font-semibold text-green-600">0.73</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-</td>
+                                <td class="px-6 py-4 whitespace-nowrap">-</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="mt-4 text-gray-700">在所有模型中，<strong>qwen2.5-72b-instruct-int4-local</strong> 调用量最高（14,946次），且平均延迟最低（4.28秒），是当前性能与负载平衡最优的模型。而 <strong>qwen3-next-80b-thinking-local</strong> 虽调用量不高，但平均延迟高达11.63秒，存在显著效率问题。</p>
+                <div class="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                    <p class="text-yellow-800"><strong>关键发现：</strong>模型调用量与延迟无直接正相关。高调用量模型（如qwen2.5-72b-instruct-int4-local）反而延迟更低，说明其架构或部署优化更佳。而高延迟模型（如qwen3-next-80b-thinking-local）调用量仅539次，但单位请求成本极高，应优先优化。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="section-title">3. 性能最优模型推荐</h2>
+            <div class="card p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-6">
+                        <h3 class="text-xl font-bold text-green-800 mb-3">🏆 推荐首选模型：qwen2.5-72b-instruct-int4-local</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2">
+                            <li>调用量最高：14,946次（7天）</li>
+                            <li>平均延迟最低：4.28秒</li>
+                            <li>Token处理效率高：总Token 16.75M，Prompt占比90.7%</li>
+                            <li>模型已稳定运行，无异常延迟波动</li>
+                            <li>适合高并发、中等复杂度推理任务</li>
+                        </ul>
+                        <p class="mt-4 text-sm text-green-700">该模型在高负载下仍保持低延迟，是当前系统中最可靠的通用模型，建议作为默认模型推广至更多应用。</p>
+                    </div>
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-6">
+                        <h3 class="text-xl font-bold text-blue-800 mb-3">⚡ 推荐轻量模型：qwen3-next-80b-fp8-local</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-2">
+                            <li>平均延迟仅1.11秒</li>
+                            <li>调用量380次，响应极快</li>
+                            <li>适合低延迟、高吞吐场景</li>
+                            <li>FP8量化技术降低资源消耗</li>
+                            <li>适用于简单问答、摘要、分类等轻量任务</li>
+                        </ul>
+                        <p class="mt-4 text-sm text-blue-700">若应用对延迟敏感（如前端交互、实时助手），可将部分任务迁移至此模型，显著提升用户体验。</p>
+                    </div>
+                </div>
+                <div class="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <h3 class="text-xl font-bold text-red-800 mb-3">⚠️ 需要优化的模型</h3>
+                    <ul class="list-disc list-inside text-gray-700 space-y-2">
+                        <li><strong>qwen3-next-80b-thinking-local</strong>：平均延迟11.63秒，远高于其他模型，且调用量中等，单位请求成本过高，建议评估是否可替换为qwen2.5-72b-instruct-int4-local或启用缓存。</li>
+                        <li><strong>qwen3-next-80b-local</strong>：调用量大（7,566次），但延迟高达9.55秒，与qwen2.5-72b-instruct-int4-local相比效率低50%以上，建议迁移。</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="section-title">4. 成本与资源优化建议</h2>
+            <div class="card p-6">
+                <div class="space-y-6">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">✅ 将高延迟任务迁移至低延迟模型</h3>
+                        <p class="text-gray-700 mb-2">将“自动化测试用例智能生成”和“开发助手”中使用qwen3-next-80b-thinking-local和qwen3-next-80b-local的任务，迁移至qwen2.5-72b-instruct-int4-local模型。该模型在相同任务下延迟降低50%以上，且调用量已验证其稳定性。</p>
+                        <p class="text-gray-700">迁移后预计可将平均延迟从50+秒降至5秒以内，提升系统吞吐能力。</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">✅ 启用缓存机制</h3>
+                        <p class="text-gray-700 mb-2">对重复性高、输入模式固定的请求（如“合规问答”、“办公知识库管理平台”）启用Redis或内存缓存。例如，“合规问答”应用7天仅90次调用，但重复问题占比高，缓存命中率预计可达70%以上。</p>
+                        <p class="text-gray-700">缓存可降低模型调用次数30%-50%，显著节省Token消耗与GPU资源。</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">✅ 设置QPM限流与熔断</h3>
+                        <p class="text-gray-700 mb-2">为高延迟模型（如qwen3-next-80b-thinking-local）设置QPM（每分钟请求数）上限，例如限制为5 QPM，避免单个应用拖垮整体服务。同时配置熔断机制：当延迟连续3次超过30秒时，自动降级至备用模型。</p>
+                        <p class="text-gray-700">防止“雪崩效应”，保障核心服务稳定性。</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">✅ 为高负载应用分配独立GPU资源</h3>
+                        <p class="text-gray-700 mb-2">为“自动化测试用例智能生成”和“ClaudeCode+GLM”等高Token消耗、高延迟应用申请独立GPU实例（如A100 80GB），避免与其他应用共享资源导致的资源争抢。</p>
+                        <p class="text-gray-700">当前“ClaudeCode+GLM”应用总Token消耗达5300万，远超其他应用，应优先隔离。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="section-title">5. 用户体验提升策略</h2>
+            <div class="card p-6">
+                <div class="space-y-6">
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">✅ 实施异步响应机制</h3>
+                        <p class="text-gray-700">对于平均延迟超过10秒的任务（如“自动化测试用例智能生成”），前端应采用异步请求模式：用户提交后立即返回“处理中”状态，后台异步执行，完成后通过WebSocket或邮件通知结果，避免用户长时间等待。</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">✅ 预加载提示与智能补全</h3>
+                        <p class="text-gray-700">在“IDE-小金灵码”、“开发助手”等代码生成场景，前端可预加载常用代码片段、API文档摘要，结合用户输入上下文进行智能补全，减少对大模型的完整调用需求。</p>
+                        <p class="text-gray-700">例如：用户输入“def test_”时，前端直接推荐常用测试模板，仅在复杂逻辑时才调用模型，可降低30%以上调用量。</p>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">✅ 分级响应策略</h3>
+                        <p class="text-gray-700">根据用户角色或任务优先级设置响应等级：</p>
+                        <ul class="list-disc list-inside text-gray-700 mt-2 space-y-1">
+                            <li>核心业务（如市场监查）：使用高性能模型，保证低延迟</li>
+                            <li>内部工具（如知识库）：使用轻量模型+缓存，平衡成本与体验</li>
+                            <li>非紧急任务（如PDF转文字）：放入队列，非实时处理</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg">
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">✅ 用户反馈闭环</h3>
+                        <p class="text-gray-700">在每个AI响应后增加“本次响应是否满意？”评分按钮，收集用户对延迟、准确性的主观评价，与系统指标联动，形成持续优化闭环。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="section-title">6. 总结与行动建议</h2>
+            <div class="card p-6">
+                <div class="space-y-4">
+                    <div class="p-4 bg-blue-50 rounded-lg">
+                        <h3 class="text-lg font-semibold text-blue-800 mb-2">📊 核心结论</h3>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1">
+                            <li>系统整体调用以qwen2.5-72b-instruct-int4-local和glm46-fp8-local为主，性能稳定，是当前最优选择。</li>
+                            <li>高延迟问题集中于qwen3-next-80b系列模型，尤其在“自动化测试用例智能生成”和“开发助手”应用中表现突出。</li>
+                            <li>Token消耗主要由“ClaudeCode+GLM”（5300万）和“glm46-fp8-local”（6400万）主导，资源分配需倾斜。</li>
+                            <li>部分应用（如“pdf转文字专用”）调用量极低（4次），但延迟高（10.4秒），建议评估是否保留。</li>
+                        </ul>
+                    </div>
+
+                    <div class="p-4 bg-green-50 rounded-lg">
+                        <h3 class="text-lg font-semibold text-green-800 mb-2">🚀 优先行动项（建议7日内完成）</h3>
+                        <ol class="list-decimal list-inside text-gray-700 space-y-1">
+                            <li>将“自动化测试用例智能生成”和“开发助手”中qwen3-next-80b-local模型迁移至qwen2.5-72b-instruct-int4-local</li>
+                            <li>为“ClaudeCode+GLM”和“自动化测试用例智能生成”申请独立GPU资源</li>
+                            <li>在“合规问答”、“办公知识库”等应用中启用缓存机制</li>
+                            <li>为qwen3-next-80b-thinking-local设置QPM限流（≤5次/分钟）</li>
+                            <li>在前端“IDE-小金灵码”中上线代码片段预加载功能</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-10">
+            <h2 class="section-title">参考文献</h2>
+            <div class="card p-6">
+                <ol class="list-decimal list-inside space-y-2">
+                    <li><cite><a href="#" target="_blank" rel="noopener noreferrer">大模型调用性能优化建议报告（2025年12月）</a></cite></li>
+                </ol>
+                <p class="mt-4 text-sm text-gray-500">注：本报告所有数据均来源于2025年12月5日至12月11日的内部系统调用日志，未引用外部资源。</p>
+            </div>
+        </section>
+
+        <footer class="footer">
+            Created by Autobots<br>
+            页面内容均由 AI 生成，仅供参考
+        </footer>
+    </div>
+
+    <script>
+        // 简单的Tab切换功能（如需扩展可增加更多交互）
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const target = button.getAttribute('data-tab');
+                    
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    button.classList.add('active');
+                    document.getElementById(target).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

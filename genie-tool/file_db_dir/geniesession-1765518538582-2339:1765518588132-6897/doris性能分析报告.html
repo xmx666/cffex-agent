@@ -1,0 +1,527 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DorisDB 性能健康分析报告 - 2025年12月12日</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            background-color: white;
+        }
+        .section-title {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 0.75rem 1rem;
+            margin: 1rem 0;
+        }
+        .metric-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .metric-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            margin-bottom: 0.25rem;
+        }
+        .metric-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .risk-badge {
+            background-color: #fee2e2;
+            color: #b91c1c;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .info-badge {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .table-schema th, .table-schema td {
+            padding: 0.5rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .table-schema th {
+            font-weight: 600;
+            background-color: #f3f4f6;
+        }
+        .table-schema tr:hover {
+            background-color: #f9fafb;
+        }
+        .footer {
+            margin-top: 3rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e0e0e0;
+            border-bottom: none;
+            border-radius: 0.5rem 0.5rem 0 0;
+            background-color: #f3f4f6;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        .tab-button.active {
+            background-color: white;
+            border-bottom: 2px solid white;
+            font-weight: 600;
+        }
+        .code-block {
+            background-color: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9rem;
+        }
+        .progress-bar {
+            height: 0.5rem;
+            background-color: #e0e0e0;
+            border-radius: 9999px;
+            overflow: hidden;
+            margin-top: 0.25rem;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #3b82f6;
+            border-radius: 9999px;
+        }
+        .badge-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .badge-info {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+    </style>
+</head>
+<body class="max-w-6xl mx-auto px-4 py-8">
+    <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">DorisDB 性能健康分析报告</h1>
+        <p class="text-gray-600 mt-2">分析周期：2025年12月12日 | 数据采集时间：05:49:20 - 05:49:33</p>
+    </header>
+
+    <div class="mb-6">
+        <button class="tab-button active" data-tab="overview">概览</button>
+        <button class="tab-button" data-tab="slow-query">慢查询分析</button>
+        <button class="tab-button" data-tab="fe-metrics">FE节点监控</button>
+        <button class="tab-button" data-tab="tablet-compaction">Tablet合并分析</button>
+        <button class="tab-button" data-tab="table-optimization">表结构优化建议</button>
+    </div>
+
+    <div id="overview" class="tab-content active">
+        <div class="card p-6">
+            <h2 class="section-title">系统整体健康状态</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                <div class="metric-card">
+                    <div class="metric-label">FE QPS（每秒查询数）</div>
+                    <div class="metric-value">16,614,522</div>
+                    <div class="mt-2 text-sm text-gray-600">基于FE节点的查询请求总量</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">FE 99分位延迟</div>
+                    <div class="metric-value">13 ms</div>
+                    <div class="mt-2 text-sm text-gray-600">查询响应时间分布</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">FE JVM堆内存使用率</div>
+                    <div class="metric-value">38.52%</div>
+                    <div class="mt-2 text-sm text-gray-600">当前堆内存占用比例</div>
+                    <div class="progress-bar mt-1">
+                        <div class="progress-fill" style="width: 38.52%"></div>
+                    </div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-label">Tablet最大合并分数</div>
+                    <div class="metric-value">156</div>
+                    <div class="mt-2 text-sm text-gray-600">合并延迟风险指标</div>
+                    <span class="risk-badge ml-2">高风险</span>
+                </div>
+            </div>
+            <div class="highlight">
+                <p class="font-medium">系统当前无慢查询记录，但FE节点QPS极高（1661万/秒），且Tablet合并分数达到156，表明系统处于高负载运行状态，存在潜在性能瓶颈风险。</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="slow-query" class="tab-content">
+        <div class="card p-6">
+            <h2 class="section-title">慢查询分析</h2>
+            <p class="mb-4">根据工具 <code>analyze_slow_queries_topn</code> 的分析结果，系统在最近7天内，未发现执行时间超过1000毫秒的慢查询。</p>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-blue-800 mb-2">分析参数</h3>
+                <ul class="list-disc list-inside text-blue-700 space-y-1">
+                    <li>分析周期：7天</li>
+                    <li>慢查询阈值：1000毫秒</li>
+                    <li>分析时间戳：2025-12-12T05:49:20.538004</li>
+                </ul>
+            </div>
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-green-800 mb-2">结论</h3>
+                <p class="text-green-700">系统未检测到符合慢查询定义的SQL语句，表明查询执行效率良好，不存在因单条SQL执行缓慢导致的性能问题。</p>
+            </div>
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                <h3 class="font-bold text-yellow-800 mb-2">风险提示</h3>
+                <p class="text-yellow-700">尽管无慢查询，但FE节点QPS高达1661万/秒，表明系统整体负载极高。高并发查询可能造成资源竞争，导致响应延迟波动。建议监控FE的CPU、内存和连接数指标，防止因资源耗尽导致服务不可用。</p>
+            </div>
+            <p class="mt-6 text-sm text-gray-500">数据来源：analyze_slow_queries_topn 工具分析结果 <cite><a href="#" target="_blank" rel="noopener noreferrer">[[1]]</a></cite></p>
+        </div>
+    </div>
+
+    <div id="fe-metrics" class="tab-content">
+        <div class="card p-6">
+            <h2 class="section-title">FE节点监控指标</h2>
+            <p class="mb-6">FE节点（172.31.73.13:8030）核心监控数据如下：</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="font-bold text-gray-800 mb-4">查询性能</h3>
+                    <table class="w-full text-sm">
+                        <tr>
+                            <td class="py-2 font-medium">QPS（查询每秒）</td>
+                            <td class="py-2 text-right">16,614,522</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-medium">99分位延迟</td>
+                            <td class="py-2 text-right">13 ms</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-medium">查询错误率</td>
+                            <td class="py-2 text-right">8.0</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-medium">请求总量</td>
+                            <td class="py-2 text-right">26,442,421</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-medium">连接总数</td>
+                            <td class="py-2 text-right">11</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div class="bg-gray-50 rounded-lg p-4">
+                    <h3 class="font-bold text-gray-800 mb-4">内存与事务</h3>
+                    <table class="w-full text-sm">
+                        <tr>
+                            <td class="py-2 font-medium">JVM堆内存使用</td>
+                            <td class="py-2 text-right">6.62 GB</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-medium">JVM堆内存使用率</td>
+                            <td class="py-2 text-right">38.52%</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-medium">事务开始总数</td>
+                            <td class="py-2 text-right">5,902,513</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-medium">事务成功总数</td>
+                            <td class="py-2 text-right">5,870,800</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-medium">事务拒绝率</td>
+                            <td class="py-2 text-right">62</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-medium">事务失败率</td>
+                            <td class="py-2 text-right">31,713</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-blue-800 mb-2">元数据日志状态</h3>
+                <p class="text-blue-700">编辑日志写入速率：27,284,415 /秒，读取速率：27,254,291 /秒，99分位延迟为2ms，表明元数据写入和读取性能正常，无明显延迟。</p>
+            </div>
+
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-green-800 mb-2">资源使用评估</h3>
+                <ul class="list-disc list-inside text-green-700 space-y-1">
+                    <li>JVM堆内存使用率38.52%，处于安全范围，无OOM风险</li>
+                    <li>连接总数仅11，远低于系统限制，连接资源充足</li>
+                    <li>报告队列大小为0，表明BE报告处理及时，无积压</li>
+                    <li>查询错误率8.0，需关注错误来源，可能为客户端或网络问题</li>
+                </ul>
+            </div>
+
+            <p class="mt-6 text-sm text-gray-500">数据来源：get_monitoring_metrics 工具采集结果 <cite><a href="#" target="_blank" rel="noopener noreferrer">[[2]]</a></cite></p>
+        </div>
+    </div>
+
+    <div id="tablet-compaction" class="tab-content">
+        <div class="card p-6">
+            <h2 class="section-title">Tablet合并分数异常风险分析</h2>
+            <p class="mb-6">Tablet合并分数是衡量存储层合并延迟的关键指标。分数越高，表示需要合并的增量数据越多，合并任务积压越严重。</p>
+            
+            <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-red-800 mb-2">关键发现</h3>
+                <p class="text-red-700">当前FE节点报告的 <strong>最大Tablet合并分数为156</strong>，远高于正常阈值（通常建议低于50）。这表明集群中存在多个Tablet的合并任务严重积压，可能导致以下问题：</p>
+                <ul class="list-disc list-inside text-red-700 mt-2 space-y-1">
+                    <li>查询性能下降：读取时需合并大量版本，增加I/O和CPU开销</li>
+                    <li>存储空间浪费：未合并的增量数据占用额外磁盘空间</li>
+                    <li>Compaction任务阻塞：可能影响新数据写入和负载均衡</li>
+                </ul>
+            </div>
+
+            <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-yellow-800 mb-2">根本原因分析</h3>
+                <p class="text-yellow-700">结合系统高QPS（1661万/秒）的背景，高合并分数极可能由以下原因导致：</p>
+                <ul class="list-disc list-inside text-yellow-700 mt-2 space-y-1">
+                    <li><strong>写入压力过大</strong>：高频写入导致增量数据（RowSet）快速生成，超过合并线程处理能力</li>
+                    <li><strong>合并资源不足</strong>：BE节点的compaction线程池可能配置过低，或CPU/IO资源被其他任务占用</li>
+                    <li><strong>合并策略不匹配</strong>：当前合并策略（如base/cumulative阈值）可能不适合当前写入负载模式</li>
+                </ul>
+            </div>
+
+            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-gray-800 mb-2">相关监控指标</h3>
+                <p class="text-gray-700">以下BE节点指标可进一步诊断合并问题：</p>
+                <ul class="list-disc list-inside text-gray-700 mt-2 space-y-1">
+                    <li><code>doris_be_base_compaction_deltas</code>：基础合并增量数</li>
+                    <li><code>doris_be_cumulative_compaction_deltas</code>：累积合并增量数</li>
+                    <li><code>doris_be_compaction_used_permits</code>：当前合并并发数</li>
+                    <li><code>doris_be_tablet_base_max_compaction_score</code>：基础合并最大分数</li>
+                    <li><code>doris_be_tablet_cumulative_max_compaction_score</code>：累积合并最大分数</li>
+                </ul>
+            </div>
+
+            <div class="highlight">
+                <p class="font-medium">建议立即检查BE节点的compaction线程池配置（如 <code>compaction_thread_pool_size</code>）和磁盘IO性能，评估是否需要增加BE节点或调整合并策略。</p>
+            </div>
+
+            <p class="mt-6 text-sm text-gray-500">数据来源：get_monitoring_metrics 工具采集结果 <cite><a href="#" target="_blank" rel="noopener noreferrer">[[2]]</a></cite></p>
+        </div>
+    </div>
+
+    <div id="table-optimization" class="tab-content">
+        <div class="card p-6">
+            <h2 class="section-title">表结构优化建议：cffex_tick</h2>
+            <p class="mb-6">针对数据库 <code>ads_market</code> 中的表 <code>cffex_tick</code>，其表结构已获取，现提出优化建议。</p>
+            
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-blue-800 mb-2">表结构概览</h3>
+                <p class="text-blue-700">表 <code>cffex_tick</code> 包含35个字段，主要为金融行情数据，包含交易日期、价格、成交量、买卖盘等高频更新字段。主键为 <code>instrument_id</code> 和 <code>trading_date</code>。</p>
+            </div>
+
+            <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-gray-800 mb-2">当前表结构（部分）</h3>
+                <table class="table-schema w-full text-sm">
+                    <thead>
+                        <tr>
+                            <th>字段名</th>
+                            <th>数据类型</th>
+                            <th>是否可空</th>
+                            <th>是否为主键</th>
+                            <th>备注</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>instrument_id</td>
+                            <td>varchar(20)</td>
+                            <td>否</td>
+                            <td>是</td>
+                            <td>合约ID</td>
+                        </tr>
+                        <tr>
+                            <td>trading_date</td>
+                            <td>datetime(3)</td>
+                            <td>否</td>
+                            <td>是</td>
+                            <td>交易日期</td>
+                        </tr>
+                        <tr>
+                            <td>product_id</td>
+                            <td>varchar(10)</td>
+                            <td>否</td>
+                            <td>否</td>
+                            <td>产品ID</td>
+                        </tr>
+                        <tr>
+                            <td>product_name</td>
+                            <td>varchar(50)</td>
+                            <td>否</td>
+                            <td>否</td>
+                            <td>产品名称</td>
+                        </tr>
+                        <tr>
+                            <td>is_main_contract</td>
+                            <td>tinyint</td>
+                            <td>否</td>
+                            <td>否</td>
+                            <td>是否主力合约</td>
+                        </tr>
+                        <tr>
+                            <td>last_price</td>
+                            <td>decimal(20,4)</td>
+                            <td>否</td>
+                            <td>否</td>
+                            <td>最新价</td>
+                        </tr>
+                        <tr>
+                            <td>volume</td>
+                            <td>bigint</td>
+                            <td>否</td>
+                            <td>否</td>
+                            <td>成交量</td>
+                        </tr>
+                        <tr>
+                            <td>turnover</td>
+                            <td>decimal(30,4)</td>
+                            <td>否</td>
+                            <td>否</td>
+                            <td>成交额</td>
+                        </tr>
+                        <tr>
+                            <td>open_interest</td>
+                            <td>bigint</td>
+                            <td>否</td>
+                            <td>否</td>
+                            <td>持仓量</td>
+                        </tr>
+                        <tr>
+                            <td>recv_timestamp</td>
+                            <td>bigint</td>
+                            <td>否</td>
+                            <td>否</td>
+                            <td>接收时间戳</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                <h3 class="font-bold text-green-800 mb-2">优化建议</h3>
+                <ol class="list-decimal list-inside text-green-700 space-y-2">
+                    <li><strong>启用分区（Partition）</strong>：建议按 <code>trading_date</code> 字段进行分区（如按天分区）。当前表为高频写入的行情数据，分区可显著提升查询效率（尤其时间范围查询）和数据生命周期管理（自动删除旧数据）。</li>
+                    <li><strong>优化排序键（Sort Key）</strong>：当前主键为 <code>(instrument_id, trading_date)</code>，建议在建表时显式指定排序键为 <code>(trading_date, instrument_id)</code>。因为查询通常按时间范围筛选，再按合约ID过滤，此顺序能最大化利用前缀索引，减少扫描数据量。</li>
+                    <li><strong>评估列式存储压缩</strong>：Doris的列式存储对数值型字段（如 <code>last_price</code>, <code>volume</code>, <code>turnover</code>）压缩率高，但 <code>recv_timestamp</code> 为bigint类型，若为Unix时间戳，可考虑转换为datetime类型以提升可读性，不影响性能。</li>
+                    <li><strong>监控数据增长</strong>：由于是tick级数据，单日数据量可能极大。建议监控 <code>doris_be_all_rowsets_num</code> 和 <code>doris_be_tablet_version_num</code> 指标，防止单个Tablet行集过多导致合并压力加剧。</li>
+                    <li><strong>避免全表扫描</strong>：所有查询应尽量包含 <code>trading_date</code> 和 <code>instrument_id</code> 条件，避免无限制的全表扫描，以减轻FE和BE节点压力。</li>
+                </ol>
+            </div>
+
+            <div class="code-block mb-6">
+                <p class="font-medium mb-2">建议的建表语句（示例）：</p>
+                <pre>CREATE TABLE cffex_tick (
+    instrument_id VARCHAR(20) NOT NULL,
+    trading_date DATETIME(3) NOT NULL,
+    product_id VARCHAR(10) NOT NULL,
+    product_name VARCHAR(50) NOT NULL,
+    is_main_contract TINYINT NOT NULL DEFAULT 0,
+    last_price DECIMAL(20,4) NOT NULL,
+    open_price DECIMAL(20,4) NOT NULL,
+    high_price DECIMAL(20,4) NOT NULL,
+    low_price DECIMAL(20,4) NOT NULL,
+    volume BIGINT NOT NULL,
+    turnover DECIMAL(30,4) NOT NULL,
+    open_interest BIGINT NOT NULL,
+    bid_price1 DECIMAL(20,4) NOT NULL,
+    bid_volume1 BIGINT NOT NULL,
+    ask_price1 DECIMAL(20,4) NOT NULL,
+    ask_volume1 BIGINT NOT NULL,
+    bid_price2 DECIMAL(20,4) NOT NULL,
+    bid_volume2 BIGINT NOT NULL,
+    ask_price2 DECIMAL(20,4) NOT NULL,
+    ask_volume2 BIGINT NOT NULL,
+    bid_price3 DECIMAL(20,4) NOT NULL,
+    bid_volume3 BIGINT NOT NULL,
+    ask_price3 DECIMAL(20,4) NOT NULL,
+    ask_volume3 BIGINT NOT NULL,
+    bid_price4 DECIMAL(20,4) NOT NULL,
+    bid_volume4 BIGINT NOT NULL,
+    ask_price4 DECIMAL(20,4) NOT NULL,
+    ask_volume4 BIGINT NOT NULL,
+    bid_price5 DECIMAL(20,4) NOT NULL,
+    bid_volume5 BIGINT NOT NULL,
+    ask_price5 DECIMAL(20,4) NOT NULL,
+    ask_volume5 BIGINT NOT NULL,
+    recv_timestamp BIGINT NOT NULL
+) ENGINE=OLAP
+DUPLICATE KEY(trading_date, instrument_id)
+PARTITION BY RANGE(trading_date)
+(PARTITION p20251212 VALUES LESS THAN ("2025-12-13"))
+PROPERTIES (
+    "replication_num" = "3",
+    "storage_medium" = "SSD"
+);</pre>
+            </div>
+
+            <p class="mt-6 text-sm text-gray-500">数据来源：get_db_table_list, get_table_schema 工具采集结果 <cite><a href="#" target="_blank" rel="noopener noreferrer">[[3]]</a></cite><cite><a href="#" target="_blank" rel="noopener noreferrer">[[4]]</a></cite></p>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        document.querySelectorAll('.tab-button').forEach(button => {
+            button.addEventListener('click', () => {
+                document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                button.classList.add('active');
+                const tabId = button.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

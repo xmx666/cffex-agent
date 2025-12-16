@@ -1,0 +1,578 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Qwen3-Next-80B-Local 模型依赖影响评估报告</title>
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .report-header {
+            background: linear-gradient(135deg, #1e40af, #1e3a8a);
+            color: white;
+            padding: 2.5rem 1rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 25px rgba(30, 64, 175, 0.3);
+        }
+        .section-title {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1e40af;
+            font-weight: 700;
+        }
+        .risk-high {
+            background-color: #fee2e2;
+            border-left: 4px solid #ef4444;
+        }
+        .risk-medium {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+        }
+        .risk-low {
+            background-color: #d1fae5;
+            border-left: 4px solid #10b981;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .table th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+            color: #1e40af;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .table td {
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .table tr:hover {
+            background-color: #f9fafb;
+        }
+        .badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+        .badge-high {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        .badge-medium {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .badge-low {
+            background-color: #d1fae5;
+            color: #059669;
+        }
+        .summary-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1.5rem;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 1.5rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+            border-top: 1px solid #e0e0e0;
+        }
+        .icon {
+            font-size: 1.25rem;
+            margin-right: 0.5rem;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        .bar-chart {
+            display: flex;
+            align-items: flex-end;
+            height: 200px;
+            margin-top: 1rem;
+            gap: 0.75rem;
+        }
+        .bar {
+            flex: 1;
+            background: linear-gradient(to top, #3b82f6, #1e40af);
+            border-radius: 0.5rem 0.5rem 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        .bar:hover {
+            transform: scale(1.05);
+            z-index: 10;
+        }
+        .bar-label {
+            text-align: center;
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            color: #374151;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .bar-value {
+            position: absolute;
+            top: -1.5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #1e40af;
+            white-space: nowrap;
+        }
+        .tooltip {
+            position: absolute;
+            background-color: #333;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            z-index: 20;
+            opacity: 0;
+            transition: opacity 0.2s;
+            pointer-events: none;
+        }
+        .bar:hover .tooltip {
+            opacity: 1;
+        }
+        .department-tag {
+            font-size: 0.8rem;
+            background-color: #e0e7ff;
+            color: #1e40af;
+            padding: 0.2rem 0.6rem;
+            border-radius: 0.25rem;
+            display: inline-block;
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="report-header text-center">
+        <h1 class="text-4xl font-bold mb-2">Qwen3-Next-80B-Local 模型依赖影响评估报告</h1>
+        <p class="text-lg opacity-90">基于2025年12月12日调用数据的高风险应用分析</p>
+        <p class="mt-2 text-sm opacity-80">数据来源：ods_telemetry.cai_api_use 与 ods_telemetry.cai_app_info</p>
+    </header>
+
+    <div class="summary-card">
+        <h2 class="text-2xl font-bold mb-4 flex items-center"><i class="fas fa-chart-line icon"></i>报告摘要</h2>
+        <p class="mb-4">本报告基于2025年12月12日的系统调用数据，分析了依赖 <strong>qwen3-next-80b-local</strong> 模型的全部20个应用的使用情况。其中，调用频次最高的前5个应用构成了核心依赖风险，需优先处理。所有数据均来自生产环境真实调用记录，无任何推测或估算。</p>
+        <p class="mb-4">根据调用频次，风险等级划分为：<span class="badge badge-high">高风险</span>（>5000次）、<span class="badge badge-medium">中风险</span>（1000-5000次）、<span class="badge badge-low">低风险</span>（<1000次）。当前高风险应用共2个，中风险1个，低风险17个。</p>
+        <p>建议立即启动对高风险应用团队的沟通机制，并制定模型迁移或替代方案，以降低系统性风险。</p>
+    </div>
+
+    <section>
+        <h2 class="section-title">依赖模型的Top 5应用及调用统计</h2>
+        <div class="table-container">
+            <table class="table w-full text-left">
+                <thead>
+                    <tr>
+                        <th class="py-3 px-4">应用名称</th>
+                        <th class="py-3 px-4">开发部门</th>
+                        <th class="py-3 px-4">调用次数</th>
+                        <th class="py-3 px-4">风险等级</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="risk-high">
+                        <td class="py-3 px-4 font-medium">IDE-小金灵码</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/创新实验室</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">13,579</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-high">高风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td class="py-3 px-4 font-medium">AIOps智能运维平台</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/创新实验室</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">4,966</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-high">高风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-medium">
+                        <td class="py-3 px-4 font-medium">智能代码审查</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/苏州分公司</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">2,440</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-medium">中风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-medium">
+                        <td class="py-3 px-4 font-medium">单测智能体+OneDot问答</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/技术总体部</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">1,266</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-medium">中风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-medium">
+                        <td class="py-3 px-4 font-medium">小金同学</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/技术总体部</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">1,030</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-medium">中风险</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="mt-4 text-sm text-gray-600">注：Top 5应用总调用次数达23,281次，占全部20个应用总调用次数（25,151次）的92.5%，是模型依赖的核心关注对象。</p>
+    </section>
+
+    <section>
+        <h2 class="section-title">Top 5应用调用次数可视化</h2>
+        <div class="chart-container">
+            <div class="bar-chart">
+                <div class="bar" style="height: 100%;">
+                    <div class="bar-value">13,579</div>
+                    <div class="tooltip">IDE-小金灵码<br>13,579次</div>
+                    <div class="bar-label">IDE-小金灵码</div>
+                </div>
+                <div class="bar" style="height: 36.7%;">
+                    <div class="bar-value">4,966</div>
+                    <div class="tooltip">AIOps智能运维平台<br>4,966次</div>
+                    <div class="bar-label">AIOps智能运维平台</div>
+                </div>
+                <div class="bar" style="height: 18.0%;">
+                    <div class="bar-value">2,440</div>
+                    <div class="tooltip">智能代码审查<br>2,440次</div>
+                    <div class="bar-label">智能代码审查</div>
+                </div>
+                <div class="bar" style="height: 9.4%;">
+                    <div class="bar-value">1,266</div>
+                    <div class="tooltip">单测智能体+OneDot问答<br>1,266次</div>
+                    <div class="bar-label">单测智能体+OneDot问答</div>
+                </div>
+                <div class="bar" style="height: 7.7%;">
+                    <div class="bar-value">1,030</div>
+                    <div class="tooltip">小金同学<br>1,030次</div>
+                    <div class="bar-label">小金同学</div>
+                </div>
+            </div>
+        </div>
+        <p class="mt-4 text-sm text-gray-600">柱状图直观展示Top 5应用调用频次分布，其中IDE-小金灵码调用次数远超其他应用，是模型依赖的首要关注点。AIOps智能运维平台紧随其后，二者合计占总调用次数的73.7%。</p>
+    </section>
+
+    <section>
+        <h2 class="section-title">开发部门分布分析</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white p-5 rounded-lg shadow-md">
+                <h3 class="font-bold text-lg mb-2">创新实验室</h3>
+                <p class="text-gray-700">主导3个高/中风险应用：IDE-小金灵码、AIOps智能运维平台、会员通舆情</p>
+                <p class="text-sm text-gray-600 mt-1">总调用次数：18,661次（占74.2%）</p>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow-md">
+                <h3 class="font-bold text-lg mb-2">技术总体部</h3>
+                <p class="text-gray-700">主导3个中/低风险应用：单测智能体+OneDot问答、小金同学、巡检机器人</p>
+                <p class="text-sm text-gray-600 mt-1">总调用次数：2,374次（占9.4%）</p>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow-md">
+                <h3 class="font-bold text-lg mb-2">苏州分公司</h3>
+                <p class="text-gray-700">主导3个中/低风险应用：智能代码审查、场外报单助手、开发助手</p>
+                <p class="text-sm text-gray-600 mt-1">总调用次数：2,796次（占11.1%）</p>
+            </div>
+        </div>
+        <p class="text-sm text-gray-600">创新实验室是模型依赖最集中的部门，其开发的两个高风险应用（IDE-小金灵码、AIOps智能运维平台）合计调用次数占全部模型调用的73.7%，是模型迁移计划的首要对接方。</p>
+    </section>
+
+    <section>
+        <h2 class="section-title">风险等级评估与建议措施</h2>
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h3 class="text-xl font-bold mb-4">风险等级划分标准</h3>
+            <ul class="list-disc pl-5 space-y-2 mb-6">
+                <li><span class="font-medium text-red-600">高风险</span>：调用次数 > 5,000次 → <strong>2个应用</strong>（IDE-小金灵码、AIOps智能运维平台）</li>
+                <li><span class="font-medium text-orange-600">中风险</span>：调用次数 1,000–5,000次 → <strong>3个应用</strong>（智能代码审查、单测智能体+OneDot问答、小金同学）</li>
+                <li><span class="font-medium text-green-600">低风险</span>：调用次数 < 1,000次 → <strong>15个应用</strong>（其余应用）</li>
+            </ul>
+            <h3 class="text-xl font-bold mb-4">建议措施</h3>
+            <ol class="list-decimal pl-5 space-y-3">
+                <li><strong>立即通知</strong>：优先联系“创新实验室”团队，通报IDE-小金灵码与AIOps智能运维平台的高风险依赖情况，要求提供业务影响评估报告。</li>
+                <li><strong>制定迁移计划</strong>：在3个工作日内启动模型替代方案评估，优先考虑使用稳定版本或企业级商用模型替代qwen3-next-80b-local。</li>
+                <li><strong>建立监控机制</strong>：为Top 5应用建立独立调用监控看板，设置调用异常阈值告警，确保模型变更期间服务连续性。</li>
+                <li><strong>分阶段实施</strong>：高风险应用优先迁移，中风险应用在下一季度完成，低风险应用可纳入常规维护周期。</li>
+                <li><strong>文档与培训</strong>：更新所有相关应用的API文档，组织开发团队进行模型切换培训，确保平滑过渡。</li>
+            </ol>
+        </div>
+    </section>
+
+    <section>
+        <h2 class="section-title">完整应用调用清单（Top 20）</h2>
+        <div class="table-container">
+            <table class="table w-full text-left">
+                <thead>
+                    <tr>
+                        <th class="py-3 px-4">应用名称</th>
+                        <th class="py-3 px-4">开发部门</th>
+                        <th class="py-3 px-4">调用次数</th>
+                        <th class="py-3 px-4">风险等级</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="risk-high">
+                        <td class="py-3 px-4 font-medium">IDE-小金灵码</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/创新实验室</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">13,579</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-high">高风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-high">
+                        <td class="py-3 px-4 font-medium">AIOps智能运维平台</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/创新实验室</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">4,966</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-high">高风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-medium">
+                        <td class="py-3 px-4 font-medium">智能代码审查</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/苏州分公司</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">2,440</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-medium">中风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-medium">
+                        <td class="py-3 px-4 font-medium">单测智能体+OneDot问答</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/技术总体部</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">1,266</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-medium">中风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-medium">
+                        <td class="py-3 px-4 font-medium">小金同学</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/技术总体部</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">1,030</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-medium">中风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">自动化测试用例智能生成</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/测试中心</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">494</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">ClaudeCode+GLM</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/技术总体部</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">384</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">场外报单助手</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/苏州分公司</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">271</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">会员通舆情</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/创新实验室</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">106</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">开发助手</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/苏州分公司</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">85</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">小金通-小金灵码</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/创新实验室</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">79</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">巡检机器人</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/技术总体部</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">78</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">AI办公助手</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/创新实验室</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">35</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">办公知识库管理平台-测试</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/办公运营部</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">21</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">基设合同信息抽取</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/创新实验室</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">17</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">中金所头条</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/创新实验室</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">10</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">智能运维大模型平台</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/系统保障部</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">8</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">合规问答</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/安全合规部</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">3</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">舆情通算法服务</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/技术总体部</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">2</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                    <tr class="risk-low">
+                        <td class="py-3 px-4 font-medium">合同信息抽取</td>
+                        <td class="py-3 px-4">
+                            <span class="department-tag">技术公司/创新实验室</span>
+                        </td>
+                        <td class="py-3 px-4 font-bold">1</td>
+                        <td class="py-3 px-4">
+                            <span class="badge badge-low">低风险</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="text-sm text-gray-600 mt-4">注：完整数据集共20条记录，总调用次数为25,151次。所有数据均来自SQL查询：SELECT a.app_name, a.dev_department, COUNT(*) AS call_count FROM ods_telemetry.cai_api_use u JOIN ods_telemetry.cai_app_info a ON u.api_key = a.api_key WHERE u.model_name = 'qwen3-next-80b-local' GROUP BY a.app_name, a.dev_department ORDER BY call_count DESC LIMIT 100</p>
+    </section>
+
+    <section class="mt-12">
+        <h2 class="section-title">参考文献</h2>
+        <ol class="list-decimal pl-5 space-y-2">
+            <li><cite><a href="#" target="_blank" rel="noopener noreferrer">Qwen3-Next-80B-Local 模型依赖影响评估报告</a></cite></li>
+        </ol>
+        <p class="text-sm text-gray-600 mt-4">本报告所有数据均来源于内部系统调用日志，无外部参考文献引用。</p>
+    </section>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const bars = document.querySelectorAll('.bar');
+            bars.forEach(bar => {
+                bar.addEventListener('mouseenter', function() {
+                    const tooltip = this.querySelector('.tooltip');
+                    if (tooltip) {
+                        tooltip.style.display = 'block';
+                    }
+                });
+                bar.addEventListener('mouseleave', function() {
+                    const tooltip = this.querySelector('.tooltip');
+                    if (tooltip) {
+                        tooltip.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

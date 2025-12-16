@@ -36,6 +36,7 @@ class CIRequest(BaseModel):
 
 class ReportRequest(CIRequest):
     file_type: Literal["html", "markdown", "ppt"] = Field("html", alias="fileType", description="生成报告的文件类型")
+    tool_results: Optional[List[str]] = Field(default=None, alias="toolResults", description="工具调用结果列表")
 
 
 class FileRequest(BaseModel):

@@ -60,6 +60,39 @@ public abstract class BaseAgent {
     private String digitalEmployeePrompt;
 
     /**
+     * 设置上下文，同时将memory设置到context中，以便工具可以访问
+     */
+    public void setContext(AgentContext context) {
+        this.context = context;
+        if (context != null && memory != null) {
+            // 确保 context.memory 和 BaseAgent.memory 是同一个对象引用
+            context.setMemory(memory);
+            log.debug("{} BaseAgent.setContext: 已将memory设置到context中，memory消息数: {}",
+                    context.getRequestId(), memory.getMessages().size());
+        } else {
+            log.warn("{} BaseAgent.setContext: context或memory为null, context={}, memory={}",
+                    context != null ? context.getRequestId() : "null",
+                    memory != null ? "not null" : "null");
+        }
+    }
+
+    /**
+     * 获取memory，确保context.memory同步
+     */
+    public Memory getMemory() {
+        // 每次获取时都确保 context.memory 同步
+        if (context != null && memory != null) {
+            // 如果 context.memory 不是同一个对象，重新设置
+            if (context.getMemory() != memory) {
+                log.warn("{} BaseAgent.getMemory: context.memory和BaseAgent.memory不是同一个对象，正在同步",
+                        context.getRequestId());
+                context.setMemory(memory);
+            }
+        }
+        return memory;
+    }
+
+    /**
      * 执行单个步骤
      */
     public abstract String step();
@@ -271,6 +304,12 @@ public abstract class BaseAgent {
                 throw new IllegalArgumentException("Unsupported role type: " + role);
         }
         memory.addMessage(message);
+        // 确保 context.memory 同步更新
+        if (context != null && context.getMemory() != memory) {
+            context.setMemory(memory);
+            log.debug("{} BaseAgent.updateMemory: 已同步context.memory，当前消息数: {}",
+                    context.getRequestId(), memory.getMessages().size());
+        }
     }
 
     public String executeTool(ToolCall command) {

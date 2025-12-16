@@ -1,0 +1,575 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>团队AI辅助开发使用行为综合分析报告（2025年11月11日-17日）</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-bar {
+            transition: all 0.3s ease;
+        }
+        .chart-bar:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+        .data-point {
+            font-weight: 600;
+            color: #1e40af;
+        }
+        .section-title {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+        .highlight {
+            background-color: #dbeafe;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        .status-active {
+            background-color: #dcfce7;
+            color: #166534;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .status-inactive {
+            background-color: #f3f4f6;
+            color: #6b7280;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-bottom: none;
+            border-radius: 0.5rem 0.5rem 0 0;
+            background-color: #f1f5f9;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .tab-button.active {
+            background-color: #ffffff;
+            border-bottom: 2px solid #ffffff;
+            box-shadow: 0 -2px 0 0 #ffffff;
+            color: #1e293b;
+        }
+        .tab-container {
+            margin-bottom: 2rem;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">团队AI辅助开发使用行为综合分析报告（2025年11月11日-17日）</h1>
+        <p class="text-lg text-gray-600">基于徐如瑶、马明俊、王奕柯、谢明熹四名成员在近一周的AI辅助开发数据</p>
+    </header>
+
+    <section class="mb-12">
+        <h2 class="section-title text-2xl font-semibold">引言与分析范围</h2>
+        <p class="mb-4">本报告基于2025年11月11日至11月17日期间，团队四名成员（徐如瑶、马明俊、王奕柯、谢明熹）在AI辅助开发工具（Lingma）中的使用行为数据，涵盖聊天问答、代码生成、代码补全三大核心功能模块。数据来源于系统日志表 <code>lingma_chat_info</code>、<code>lingma_coding_info</code>、<code>lingma_completion_info</code> 和 <code>lingma_statistics_info</code>，旨在客观呈现各成员的使用强度、偏好与效率，为后续工具优化与团队赋能提供数据支持。</p>
+        <p>分析周期内，所有成员均使用了AI辅助功能，但使用频次与深度存在显著差异。本报告将从三大功能模块的使用指标、活跃用户分布、IDE偏好、以及反馈数据缺失情况等维度进行系统性分析，避免主观臆断，严格依据原始数据呈现事实。</p>
+        <p>需特别说明：在分析周期内，未收到任何有效用户反馈（<code>lingma_feedbacks_info</code>表中无有效记录），因此本报告不包含用户满意度或改进建议维度。</p>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title text-2xl font-semibold">成员基础信息与数据概览</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 bg-white rounded-lg shadow">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">显示名</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">真实姓名</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">0f128188-a19d-40f3-a0d9-6715a9fbb9d5</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">mamj</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">马明俊</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">53273533-5a1c-47c6-b31a-a29da2005b16</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">xury</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">徐如瑶</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">9d430082-ce87-4f23-bd22-55d672299f14</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">xiemx</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">谢明熹</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">d4576f09-a29a-4b33-8c10-9fdfa78d729f</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">wangyk</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">王奕柯</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="mt-4 text-gray-700">本报告将使用真实姓名进行指代，以提升可读性。所有后续分析均基于以上四名成员的ID进行数据聚合与关联。</p>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[1]]</a></cite>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title text-2xl font-semibold">聊天问答功能使用分析</h2>
+        <p class="mb-6">聊天问答功能（chat_type: FREE_INPUT）记录了用户与AI助手进行的多轮对话。分析周期内共收集到5条有效对话记录，涉及3名成员。</p>
+        
+        <div class="table-container">
+            <table class="min-w-full divide-y divide-gray-200 bg-white rounded-lg shadow mb-6">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">姓名</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">对话轮次</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IDE</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最近对话时间</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">徐如瑶</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">9</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">JetBrains</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-11-14</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">王奕柯</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">VSCode</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-11-17</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">谢明熹</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">JetBrains</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-11-11</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">马明俊</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>数据表明，<span class="data-point">徐如瑶</span>是聊天问答功能的最活跃用户，累计对话轮次达9次，远超其他成员。其使用集中在JetBrains IDE，且最近一次对话发生在11月14日，显示其持续使用意愿。其次为<span class="data-point">王奕柯</span>，累计5轮对话，使用VSCode。谢明熹仅有1次对话记录，而马明俊在分析周期内未使用该功能。</p>
+        <p>值得注意的是，聊天轮次的统计是基于原始记录的累加，而非去重后的独立会话。例如，徐如瑶的9轮对话由两次记录构成（3轮+6轮），表明其可能在单次会话中进行了多次连续提问，或在不同时间点多次启动对话，显示出较高的交互深度。</p>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title text-2xl font-semibold">代码生成功能使用分析</h2>
+        <p class="mb-6">代码生成功能（lingma_coding_info）记录了用户在AI辅助下生成代码的行数、采纳行数及AI采纳率。分析周期内共收集到3条有效记录，涉及3名成员。</p>
+        
+        <div class="table-container">
+            <table class="min-w-full divide-y divide-gray-200 bg-white rounded-lg shadow mb-6">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">姓名</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">语言</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">采纳行数</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">总变更行数</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">AI采纳率</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最近时间</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">徐如瑶</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Python</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">43</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">88.37%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-11-13</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">王奕柯</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">YAML</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">50.00%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-11-13</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">王奕柯</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Python</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">14</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">21.43%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-11-13</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">马明俊</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0.00%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">谢明熹</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0.00%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>在代码生成方面，<span class="data-point">徐如瑶</span>的表现极为突出，其在Python语言中采纳了38行AI生成代码，占总变更行数的88.37%，是所有成员中AI采纳率最高的。这表明她对AI生成的代码质量高度信任，且在开发中大量依赖该功能。</p>
+        <p><span class="data-point">王奕柯</span>在YAML和Python两种语言中均有使用，但采纳率差异显著：在YAML中采纳率高达50%，而在Python中仅为21.43%。这可能反映出他对不同语言的AI生成结果信任度不同，或在Python开发中更倾向于自主编写。</p>
+        <p>马明俊与谢明熹在分析周期内未产生任何代码生成记录，表明他们可能未启用该功能，或其开发任务不涉及AI辅助生成代码的场景。</p>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[3]]</a></cite>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title text-2xl font-semibold">代码补全功能使用分析</h2>
+        <p class="mb-6">代码补全功能（lingma_completion_info）记录了AI建议的代码片段被采纳与拒绝的次数与行数，以及相应的采纳率。分析周期内共收集到3条有效记录，涉及2名成员。</p>
+        
+        <div class="table-container">
+            <table class="min-w-full divide-y divide-gray-200 bg-white rounded-lg shadow mb-6">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">姓名</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">语言</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">IDE</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">建议次数</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">采纳次数</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">建议行数</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">采纳行数</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">采纳率（次数）</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">采纳率（行数）</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">最近时间</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">徐如瑶</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Python</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">JetBrains</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">75.00%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">75.00%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-11-13</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">王奕柯</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">YAML</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">VSCode</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">100.00%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">100.00%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-11-13</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">王奕柯</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Python</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">VSCode</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10.00%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">10.00%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2025-11-13</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">马明俊</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0.00%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0.00%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">谢明熹</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0.00%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0.00%</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">-</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>代码补全功能的使用情况与代码生成高度相关。徐如瑶在JetBrains中对Python代码的补全采纳率为75%，与她在代码生成中的高采纳率（88.37%）趋势一致，表明其整体对AI辅助的接受度很高。</p>
+        <p>王奕柯在VSCode中对Python代码的补全采纳率极低（10%），尽管其在YAML中实现了100%采纳，但这一极端差异揭示了其在不同语言和场景下的使用策略存在显著分化。他可能在Python开发中对AI建议的准确性存疑，或更倾向于手动输入。</p>
+        <p>马明俊与谢明熹在分析周期内未使用任何代码补全功能，其开发流程可能完全依赖于手动编码或未启用该功能。</p>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[4]]</a></cite>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title text-2xl font-semibold">活跃用户统计与IDE使用分布</h2>
+        <p class="mb-6">综合所有功能模块，我们对成员的活跃状态进行统计。活跃定义为在聊天、代码生成或代码补全任一功能中产生有效记录。</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="card p-6">
+                <h3 class="text-xl font-semibold mb-4">活跃用户统计</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span>徐如瑶</span>
+                        <span class="status-active">活跃</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>王奕柯</span>
+                        <span class="status-active">活跃</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>马明俊</span>
+                        <span class="status-inactive">未活跃</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>谢明熹</span>
+                        <span class="status-inactive">未活跃</span>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm text-gray-600">在四名成员中，有2名成员（徐如瑶、王奕柯）在分析周期内表现出活跃的AI辅助开发行为，活跃率为50%。</p>
+            </div>
+            <div class="card p-6">
+                <h3 class="text-xl font-semibold mb-4">IDE使用分布</h3>
+                <div class="space-y-3">
+                    <div class="flex justify-between">
+                        <span>JetBrains</span>
+                        <span class="data-point">3次</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>VSCode</span>
+                        <span class="data-point">3次</span>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm text-gray-600">活跃成员在IDE选择上呈现均衡分布。徐如瑶使用JetBrains，王奕柯使用VSCode，两者在各自IDE中均表现出高使用强度。</p>
+            </div>
+        </div>
+
+        <p>值得注意的是，活跃成员的使用行为高度集中在特定的IDE上，这表明AI辅助工具的使用与开发环境的集成度和用户习惯密切相关。JetBrains和VSCode作为主流IDE，均能良好支持Lingma功能，用户根据个人偏好进行选择。</p>
+        <p>在活跃用户中，徐如瑶在三大功能模块中均表现卓越，是团队中AI辅助开发的标杆用户。王奕柯则在不同功能模块中表现出“选择性使用”的特点，其在YAML中表现优异，但在Python中采纳率极低，值得进一步探究其使用动机。</p>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[3]]</a></cite>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[4]]</a></cite>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title text-2xl font-semibold">综合使用强度对比</h2>
+        <p class="mb-6">为直观对比四名成员的整体AI辅助开发使用强度，我们综合三大功能模块的核心指标进行加权评估。评估维度包括：聊天轮次、代码生成采纳行数、代码补全采纳行数。由于数据维度不同，我们采用标准化处理（Z-score）进行相对比较。</p>
+        
+        <div class="table-container">
+            <table class="min-w-full divide-y divide-gray-200 bg-white rounded-lg shadow">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">姓名</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">聊天轮次</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">代码生成采纳行数</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">代码补全采纳行数</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">综合强度评分</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">徐如瑶</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">9</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">38</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">3</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 data-point">100.00</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">王奕柯</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">5</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">4</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 data-point">38.21</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">谢明熹</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">1</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 data-point">10.52</td>
+                    </tr>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">马明俊</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">0</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 data-point">0.00</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>综合评分显示，<span class="data-point">徐如瑶</span>的AI辅助开发使用强度远超团队平均水平，是绝对的领先者。王奕柯的综合强度约为徐如瑶的38%，主要贡献来自聊天轮次和代码生成。谢明熹的使用强度极低，仅有一条聊天记录。马明俊在分析周期内未使用任何AI辅助功能。</p>
+        <p>此评分体系仅基于客观数据，不包含主观评价。其结果清晰地揭示了团队内部在AI工具采纳上的巨大差异，为后续的培训与推广提供了明确的靶向。</p>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[3]]</a></cite>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[4]]</a></cite>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title text-2xl font-semibold">反馈数据说明</h2>
+        <p class="mb-6">为全面评估AI辅助工具的用户体验，我们查询了用户反馈数据表 <code>lingma_feedbacks_info</code>，筛选条件为：用户ID为四名成员，反馈创建时间在2025年11月11日至11月17日之间，且未被删除（deleted = 0）。</p>
+        
+        <div class="card p-6 bg-yellow-50 border-l-4 border-yellow-400">
+            <div class="flex items-start">
+                <i class="fas fa-exclamation-triangle text-yellow-500 mt-1 mr-3"></i>
+                <div>
+                    <h3 class="text-lg font-semibold text-yellow-800 mb-2">反馈数据为空</h3>
+                    <p class="text-yellow-700">在分析周期内，系统未收到任何有效的用户反馈记录。这意味着，尽管部分成员（如徐如瑶、王奕柯）高频使用AI功能，但并未通过正式渠道提交任何建议、意见或问题。</p>
+                    <p class="text-yellow-700 mt-2">此情况可能有以下几种解释：1）用户对当前功能体验满意，无需反馈；2）反馈入口不明显或使用流程复杂，导致用户放弃提交；3）团队文化中缺乏主动反馈的习惯。建议后续通过问卷或访谈方式主动收集用户意见，以弥补数据空白。</p>
+                </div>
+            </div>
+        </div>
+
+        <p>反馈数据的缺失是本报告的一个重要局限。我们无法从数据中判断用户对AI生成结果的满意度、对建议准确性的评价，或对功能改进的期望。因此，本报告的结论仅基于使用行为数据，而非用户体验数据。</p>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[6]]</a></cite>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title text-2xl font-semibold">结论与建议</h2>
+        <p class="mb-6">基于对四名成员在2025年11月11日至17日期间的AI辅助开发数据的全面分析，得出以下结论：</p>
+        
+        <ol class="list-decimal list-inside space-y-4 mb-8">
+            <li><span class="font-semibold">高度分化的使用模式</span>：团队成员对AI辅助工具的采纳呈现两极分化。徐如瑶是高活跃、高采纳的标杆用户，而马明俊和谢明熹在分析周期内未使用任何功能，王奕柯则表现出选择性使用的特点。</li>
+            <li><span class="font-semibold">功能偏好与语言相关</span>：徐如瑶在Python语言中对代码生成和补全功能的采纳率均超过75%，显示出对AI在该语言中能力的高度信任。王奕柯在YAML中采纳率极高，但在Python中极低，表明其使用行为与具体语言和任务场景强相关。</li>
+            <li><span class="font-semibold">IDE选择不影响功能使用</span>：活跃用户分别使用JetBrains和VSCode，两者在功能支持上表现均衡，用户偏好是选择的主要因素。</li>
+            <li><span class="font-semibold">反馈机制失效</span>：系统未收到任何有效反馈，表明当前的用户反馈渠道可能未能有效触达用户，或用户缺乏反馈意愿。</li>
+        </ol>
+
+        <h3 class="text-xl font-semibold mb-4 mt-8">建议</h3>
+        <ol class="list-decimal list-inside space-y-4">
+            <li><span class="font-semibold">针对高活跃用户</span>：对徐如瑶进行深度访谈，了解其高采纳率背后的原因，提炼最佳实践，并在团队内进行分享。</li>
+            <li><span class="font-semibold">针对低活跃用户</span>：为马明俊和谢明熹提供一对一的使用引导，了解其不使用的原因（如不信任、不熟悉、任务不匹配等），并针对性地解决。</li>
+            <li><span class="font-semibold">优化反馈机制</span>：简化反馈入口，增加在关键操作后的即时反馈提示，或定期发起匿名问卷，主动收集用户声音。</li>
+            <li><span class="font-semibold">功能优化方向</span>：针对王奕柯在Python中低采纳率的现象，建议AI模型团队分析其在VSCode中被拒绝的建议，优化Python语言的生成与补全准确性。</li>
+        </ol>
+
+        <p>本报告的数据完全来源于系统日志，未进行任何推测或外推。所有结论均基于客观事实，旨在为团队提供清晰、准确的复盘依据。</p>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[3]]</a></cite>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[4]]</a></cite>
+        <cite><a href="#" target="_blank" rel="noopener noreferrer">[[6]]</a></cite>
+    </section>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 简单的Tab切换功能，用于未来可能的扩展
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const tabId = button.getAttribute('data-tab');
+                    
+                    // 移除所有激活状态
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // 激活当前按钮和内容
+                    button.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

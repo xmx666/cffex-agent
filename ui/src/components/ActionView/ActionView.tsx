@@ -55,7 +55,12 @@ const ActionViewComp: GenieType.FC<ActionViewProps> = forwardRef((props, ref) =>
     return {
       ...planRef.current!,
       setFilePreview: (file) => {
-        setActiveActionView(ActionViewItemEnum.file);
+        // HTML和PPT文件应该在"浏览器"分栏显示，其他文件在"文件"分栏显示
+        if (file && (file.type === 'html' || file.type === 'ppt')) {
+          setActiveActionView(ActionViewItemEnum.browser);
+        } else {
+          setActiveActionView(ActionViewItemEnum.file);
+        }
         setCurFileItem(file);
       },
       changeActionView: setActiveActionView
@@ -68,7 +73,7 @@ const ActionViewComp: GenieType.FC<ActionViewProps> = forwardRef((props, ref) =>
       {/* 展示区域 */}
       <div className='mt-12 flex-1 h-0 flex flex-col'>
         <FilePreview taskItem={activeTask} taskList={taskList} className={classNames({ 'hidden': activeActionView !== ActionViewItemEnum.follow })} />
-        {activeActionView === ActionViewItemEnum.browser && <BrowserList taskList={taskList}/>}
+        {activeActionView === ActionViewItemEnum.browser && <BrowserList taskList={taskList} activeFile={curFileItem} clearActiveFile={() => setCurFileItem(undefined)} />}
         {activeActionView === ActionViewItemEnum.file && <FileList
           taskList={taskList}
           activeFile={curFileItem}

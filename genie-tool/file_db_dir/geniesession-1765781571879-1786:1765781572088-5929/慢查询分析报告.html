@@ -1,0 +1,634 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>慢查询性能深度分析报告：高负载SQL识别与优化路径</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        .badge-high {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .badge-medium {
+            background-color: #fffbe6;
+            color: #d97706;
+        }
+        .badge-low {
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+        .sql-snippet {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+            background-color: #f1f5f9;
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            overflow-x: auto;
+            white-space: nowrap;
+            margin: 0.5rem 0;
+        }
+        .performance-issue {
+            display: inline-block;
+            margin-right: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+        .section-title {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+        .table-responsive {
+            overflow-x: auto;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.875rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        .progress-bar {
+            height: 8px;
+            background-color: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: #10b981;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem 0.375rem 0 0;
+            background-color: #f1f5f9;
+            cursor: pointer;
+            margin-right: 0.5rem;
+        }
+        .tab-button.active {
+            background-color: #ffffff;
+            border-bottom: 1px solid #ffffff;
+            font-weight: 600;
+        }
+        .highlight {
+            background-color: #fef3c7;
+            padding: 0.1rem 0.3rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="mb-8">
+        <h1 class="text-4xl font-bold text-gray-800 mb-2">慢查询性能深度分析报告：高负载SQL识别与优化路径</h1>
+        <p class="text-lg text-gray-600">基于2025年12月8日至12月15日共7天的慢查询日志分析</p>
+        <div class="mt-4 flex flex-wrap gap-6 text-sm text-gray-500">
+            <span><i class="fas fa-calendar-alt mr-1"></i>分析周期：2025-12-08 至 2025-12-15</span>
+            <span><i class="fas fa-clock mr-1"></i>分析时间：2025-12-15 06:52:39</span>
+            <span><i class="fas fa-chart-line mr-1"></i>总慢查询数：117条</span>
+        </div>
+    </header>
+
+    <section class="mb-12">
+        <h2 class="section-title">一、总体统计概览</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">总慢查询数量</h3>
+                <p class="text-4xl font-bold text-indigo-600">117</p>
+                <p class="text-gray-600 mt-2">在7天周期内共捕获117条执行时间超过1秒的慢查询</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">平均执行时间</h3>
+                <p class="text-4xl font-bold text-orange-600">9.54秒</p>
+                <p class="text-gray-600 mt-2">所有慢查询的平均执行时间为9.54秒，远超1秒阈值</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">最大执行时间</h3>
+                <p class="text-4xl font-bold text-red-600">50.74秒</p>
+                <p class="text-gray-600 mt-2">最慢查询耗时50.74秒，严重影响系统响应能力</p>
+            </div>
+        </div>
+
+        <div class="card p-6 bg-white mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">执行时间分布</h3>
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="w-full md:w-1/3 mb-4 md:mb-0">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span>1-10秒</span>
+                        <span>52条 (44.4%)</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 44.4%"></div>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/3 mb-4 md:mb-0">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span>10-30秒</span>
+                        <span>45条 (38.5%)</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 38.5%"></div>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/3">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span>30秒以上</span>
+                        <span>20条 (17.1%)</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 17.1%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6 bg-white mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">用户活跃度分析</h3>
+            <div class="flex flex-wrap gap-4">
+                <div class="flex items-center bg-blue-50 p-3 rounded-lg">
+                    <i class="fas fa-user text-blue-500 mr-2"></i>
+                    <span class="font-medium">admin</span>
+                    <span class="ml-2 bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-sm">69次</span>
+                </div>
+                <div class="flex items-center bg-green-50 p-3 rounded-lg">
+                    <i class="fas fa-user text-green-500 mr-2"></i>
+                    <span class="font-medium">root</span>
+                    <span class="ml-2 bg-green-100 text-green-800 px-2 py-1 rounded-full text-sm">48次</span>
+                </div>
+            </div>
+            <p class="text-gray-600 mt-3">仅2个用户（admin和root）贡献了全部117条慢查询，其中admin用户占比58.97%，是主要性能瓶颈来源</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">二、前10名慢查询深度分析</h2>
+        <div class="card p-6 bg-white">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">排名</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">执行时间</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">用户</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">SQL片段</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">扫描数据量</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">性能问题</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">1</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">50.74秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4">
+                                <div class="sql-snippet">SELECT CONCAT('54213', '-', '-1', '-', 'LineNumber') AS `id`, 0 AS `catalog_id`, 51080 AS `db_id`, 54213 AS `tbl_id`, -1 AS `idx_id`, 'LineNumber' AS `col_id`, NULL AS `part_id`, 5164927446 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 5164927446) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 5.813957884418985 as `null_count`, SUBSTRING(CAST('0000000001' AS S...</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">7.07GB / 8.88亿行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="performance-issue badge badge-high">大数据扫描</span>
+                                <span class="performance-issue badge badge-high">低效过滤</span>
+                                <span class="performance-issue badge badge-high">长执行</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">2</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">50.47秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">root</td>
+                            <td class="px-6 py-4">
+                                <div class="sql-snippet">SELECT gm.ip_address, gm.gpu_index, gm.gpu_model_name, COUNT(a.latency) AS call_count, AVG(gm.gpu_utilization) AS avg_gpu_util, AVG(gm.gpu_memory_used) AS avg_memory_used FROM ods_telemetry.cai_api_use a JOIN ods_telemetry.cai_gpu_monitor gm ON a.model_name = gm.gpu_model_name WHERE a.update_time >= NOW() - INTERVAL 7 DAY GROUP BY gm.ip_address, gm.gpu_index, gm.gpu_model_name ORDER BY avg_gpu_util DESC LIMIT 10</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">268KB / 56.3万行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="performance-issue badge badge-high">长执行</span>
+                                <span class="performance-issue badge badge-medium">低效过滤</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">3</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">46.56秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4">
+                                <div class="sql-snippet">SELECT CONCAT('54213', '-', '-1', '-', 'LineNumber') AS `id`, 0 AS `catalog_id`, 51080 AS `db_id`, 54213 AS `tbl_id`, -1 AS `idx_id`, 'LineNumber' AS `col_id`, NULL AS `part_id`, 5132967396 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 5132967396) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 5.960300571936217 as `null_count`, SUBSTRING(CAST('0000000001' AS S...</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">6.85GB / 8.61亿行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="performance-issue badge badge-high">大数据扫描</span>
+                                <span class="performance-issue badge badge-high">低效过滤</span>
+                                <span class="performance-issue badge badge-high">长执行</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">4</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">34.94秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4">
+                                <div class="sql-snippet">SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`full_question`) AS STRING), 1, 1024) as max FROM `dwd_telemetry`.`application_futuremaas_api_use_detail_metrics`</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">37.56GB / 335.5万行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="performance-issue badge badge-high">大数据扫描</span>
+                                <span class="performance-issue badge badge-high">低效过滤</span>
+                                <span class="performance-issue badge badge-high">长执行</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">5</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">34.45秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4">
+                                <div class="sql-snippet">SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`full_question`) AS STRING), 1, 1024) as max FROM `dwd_telemetry`.`application_futuremaas_api_use_detail_metrics`</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">37.56GB / 335.5万行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="performance-issue badge badge-high">大数据扫描</span>
+                                <span class="performance-issue badge badge-high">低效过滤</span>
+                                <span class="performance-issue badge badge-high">长执行</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">6</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">32.14秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4">
+                                <div class="sql-snippet">SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`full_question`) AS STRING), 1, 1024) as max FROM `dwd_telemetry`.`application_futuremaas_api_use_detail_metrics`</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">37.56GB / 335.5万行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="performance-issue badge badge-high">大数据扫描</span>
+                                <span class="performance-issue badge badge-high">低效过滤</span>
+                                <span class="performance-issue badge badge-high">长执行</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">7</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">31.23秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4">
+                                <div class="sql-snippet">SELECT CONCAT('5160157', '-', '-1', '-', 'full_question') AS `id`, 0 AS `catalog_id`, 4920244 AS `db_id`, 5160157 AS `tbl_id`, -1 AS `idx_id`, 'full_question' AS `col_id`, NULL AS `part_id`, 3251269 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3251269) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024) A...</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">24.88GB / 324.3万行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="performance-issue badge badge-high">大数据扫描</span>
+                                <span class="performance-issue badge badge-high">低效过滤</span>
+                                <span class="performance-issue badge badge-high">长执行</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">8</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">28.82秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4">
+                                <div class="sql-snippet">SELECT CONCAT('10024455', '-', '-1', '-', 'full_question') AS `id`, 0 AS `catalog_id`, 4811087 AS `db_id`, 10024455 AS `tbl_id`, -1 AS `idx_id`, 'full_question' AS `col_id`, NULL AS `part_id`, 3398165 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3398165) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024)...</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">37.62GB / 336.3万行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="performance-issue badge badge-high">大数据扫描</span>
+                                <span class="performance-issue badge badge-high">低效过滤</span>
+                                <span class="performance-issue badge badge-high">长执行</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">9</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">28.81秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4">
+                                <div class="sql-snippet">SELECT CONCAT('10024455', '-', '-1', '-', 'full_question') AS `id`, 0 AS `catalog_id`, 4811087 AS `db_id`, 10024455 AS `tbl_id`, -1 AS `idx_id`, 'full_question' AS `col_id`, NULL AS `part_id`, 3409143 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3409143) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024)...</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">37.69GB / 337.4万行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="performance-issue badge badge-high">大数据扫描</span>
+                                <span class="performance-issue badge badge-high">低效过滤</span>
+                                <span class="performance-issue badge badge-high">长执行</span>
+                            </td>
+                        </tr>
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">10</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-red-600 font-semibold">26.25秒</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">admin</td>
+                            <td class="px-6 py-4">
+                                <div class="sql-snippet">SELECT CONCAT('10024455', '-', '-1', '-', 'full_question') AS `id`, 0 AS `catalog_id`, 4811087 AS `db_id`, 10024455 AS `tbl_id`, -1 AS `idx_id`, 'full_question' AS `col_id`, NULL AS `part_id`, 3402983 AS `row_count`, SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / 3402983) as `ndv`, IFNULL(SUM(IF(`t1`.`column_key` IS NULL, `t1`.`count`, 0)), 0) * 1.0 as `null_count`, SUBSTRING(CAST('' AS STRING), 1, 1024)...</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">37.65GB / 336.8万行</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="performance-issue badge badge-high">大数据扫描</span>
+                                <span class="performance-issue badge badge-high">低效过滤</span>
+                                <span class="performance-issue badge badge-high">长执行</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p class="mt-4 text-gray-600">前10名慢查询中，有9条由admin用户执行，且均涉及对大表的全表扫描。其中，<span class="highlight">dwd_telemetry.application_futuremaas_api_use_detail_metrics</span>表被连续多次扫描，是性能瓶颈的核心</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">三、主要性能问题诊断</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">高频性能问题分布</h3>
+                <div class="space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span>低效过滤</span>
+                        <div class="flex items-center">
+                            <span class="font-semibold text-gray-800 mr-2">75次</span>
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-red-500 h-2.5 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span>大数据扫描</span>
+                        <div class="flex items-center">
+                            <span class="font-semibold text-gray-800 mr-2">60次</span>
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-orange-500 h-2.5 rounded-full" style="width: 80%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span>长执行</span>
+                        <div class="flex items-center">
+                            <span class="font-semibold text-gray-800 mr-2">45次</span>
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span>SELECT * 使用</span>
+                        <div class="flex items-center">
+                            <span class="font-semibold text-gray-800 mr-2">37次</span>
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-blue-500 h-2.5 rounded-full" style="width: 49%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span>无限制排序</span>
+                        <div class="flex items-center">
+                            <span class="font-semibold text-gray-800 mr-2">5次</span>
+                            <div class="w-32 bg-gray-200 rounded-full h-2.5">
+                                <div class="bg-purple-500 h-2.5 rounded-full" style="width: 7%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-4 text-gray-600">低效过滤和大数据扫描是导致慢查询的两大主因，二者高度重叠，表明查询缺乏有效的索引支持和数据过滤条件</p>
+            </div>
+            <div class="card p-6 bg-white">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">高频访问表分析</h3>
+                <ul class="space-y-3">
+                    <li class="flex justify-between">
+                        <span class="font-medium">ods_telemetry.cai_api_use</span>
+                        <span class="text-gray-600">12次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="font-medium">cai_api_use</span>
+                        <span class="text-gray-600">4次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="font-medium">dwd_telemetry.application_futuremaas_api_use_detail_metrics</span>
+                        <span class="text-gray-600">5次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="font-medium">ods_telemetry.cai_gpu_monitor</span>
+                        <span class="text-gray-600">1次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="font-medium">lingma_chat_info</span>
+                        <span class="text-gray-600">1次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="font-medium">lingma_developer_members</span>
+                        <span class="text-gray-600">1次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="font-medium">lingma_statistics_info</span>
+                        <span class="text-gray-600">1次</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span class="font-medium">ods_telemetry.model_metrics_15seconds</span>
+                        <span class="text-gray-600">1次</span>
+                    </li>
+                </ul>
+                <p class="mt-4 text-gray-600">dwd_telemetry.application_futuremaas_api_use_detail_metrics表虽仅被明确提及5次，但其在前10名慢查询中出现4次，且单次扫描数据量高达37GB，是系统性能的首要瓶颈</p>
+            </div>
+        </div>
+
+        <div class="card p-6 bg-white mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">复杂查询模式分析</h3>
+            <p class="text-gray-600 mb-4">分析发现，大量慢查询采用以下低效模式：</p>
+            <ul class="list-disc pl-6 space-y-2 text-gray-600">
+                <li>对大表执行 <span class="highlight">SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, SUBSTRING(CAST(MAX(`full_question`) AS STRING), 1, 1024) as max</span> 操作，需全表扫描以计算最小/最大值，而非使用索引</li>
+                <li>使用复杂表达式如 <span class="highlight">SUM(`t1`.`count`) * COUNT(1) / (SUM(`t1`.`count`) - SUM(IF(`t1`.`count` = 1, 1, 0)) + SUM(IF(`t1`.`count` = 1, 1, 0)) * SUM(`t1`.`count`) / row_count)</span> 计算NDV（唯一值数量），该表达式无法利用索引，且计算开销巨大</li>
+                <li>在JOIN操作中使用非主键字段（如a.model_name = gm.gpu_model_name）进行关联，缺乏索引支持导致全表扫描</li>
+                <li>查询中包含大量重复的字段别名（如ods_telemetry.cai_api_keys.user_name AS ods_telemetry_cai_api_keys_user_name），增加解析负担</li>
+            </ul>
+            <p class="mt-4 text-gray-600">这些模式表明查询由自动化工具生成，缺乏人工优化，且未考虑数据库索引和执行计划优化</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">四、优化建议与实施路径</h2>
+        <div class="card p-6 bg-white mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">高优先级优化建议</h3>
+            <div class="space-y-6">
+                <div class="border-l-4 border-red-500 pl-6">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-2">1. 为高频查询字段添加索引</h4>
+                    <p class="text-gray-600 mb-3">针对<code class="bg-gray-100 px-2 py-1 rounded">dwd_telemetry.application_futuremaas_api_use_detail_metrics</code>表，为<code class="bg-gray-100 px-2 py-1 rounded">full_question</code>字段创建索引，可显著减少MIN/MAX查询的扫描范围</p>
+                    <p class="text-gray-600 mb-3">为<code class="bg-gray-100 px-2 py-1 rounded">ods_telemetry.cai_api_use</code>表的<code class="bg-gray-100 px-2 py-1 rounded">update_time</code>和<code class="bg-gray-100 px-2 py-1 rounded">model_name</code>字段创建复合索引，优化JOIN和时间范围过滤</p>
+                    <p class="text-gray-600">为<code class="bg-gray-100 px-2 py-1 rounded">ods_telemetry.cai_api_keys</code>表的<code class="bg-gray-100 px-2 py-1 rounded">api_key</code>和<code class="bg-gray-100 px-2 py-1 rounded">department</code>字段创建索引，避免LIKE '%数据公司%'的全表扫描</p>
+                </div>
+                <div class="border-l-4 border-orange-500 pl-6">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-2">2. 重构低效查询逻辑</h4>
+                    <p class="text-gray-600 mb-3">将<code class="bg-gray-100 px-2 py-1 rounded">SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) as min, ...</code>替换为应用层缓存或定期统计表，避免实时计算</p>
+                    <p class="text-gray-600 mb-3">将复杂的NDV计算逻辑从SQL中移除，改用预计算的统计信息表，或使用数据库内置的估算函数（如APPROX_COUNT_DISTINCT）</p>
+                    <p class="text-gray-600">避免使用<code class="bg-gray-100 px-2 py-1 rounded">SELECT *</code>，明确指定所需字段，减少I/O和网络传输开销</p>
+                </div>
+                <div class="border-l-4 border-blue-500 pl-6">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-2">3. 优化数据分区与存储</h4>
+                    <p class="text-gray-600 mb-3">对<code class="bg-gray-100 px-2 py-1 rounded">dwd_telemetry.application_futuremaas_api_use_detail_metrics</code>表按<code class="bg-gray-100 px-2 py-1 rounded">update_time</code>进行分区，使时间范围查询仅扫描相关分区</p>
+                    <p class="text-gray-600 mb-3">对<code class="bg-gray-100 px-2 py-1 rounded">ods_telemetry.cai_api_use</code>表按<code class="bg-gray-100 px-2 py-1 rounded">model_name</code>进行哈希分区，优化JOIN性能</p>
+                    <p class="text-gray-600">定期归档历史数据，保持核心表数据量在可控范围内</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6 bg-white">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">中低优先级优化建议</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-3">查询规范</h4>
+                    <ul class="list-disc pl-6 space-y-2 text-gray-600">
+                        <li>禁止在WHERE子句中使用函数包裹字段（如WHERE SUBSTRING(column, 1, 5) = 'abc'）</li>
+                        <li>避免在JOIN条件中使用非索引字段</li>
+                        <li>使用LIMIT限制返回行数，即使预期结果较少</li>
+                        <li>定期审查并清理未使用的索引，减少写入开销</li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold text-gray-800 mb-3">系统与监控</h4>
+                    <ul class="list-disc pl-6 space-y-2 text-gray-600">
+                        <li>为admin用户设置查询执行时间上限，自动终止超时查询</li>
+                        <li>建立慢查询告警机制，当单次查询超过10秒时通知DBA</li>
+                        <li>定期（每周）执行ANALYZE TABLE更新统计信息，优化执行计划</li>
+                        <li>对高频访问的表进行定期的OPTIMIZE TABLE操作，减少碎片</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">五、执行趋势与时间模式</h2>
+        <div class="card p-6 bg-white">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">慢查询时间分布</h3>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 mb-6">
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-2xl font-bold text-red-600">41</div>
+                    <div class="text-sm text-gray-600">14:00</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-2xl font-bold text-orange-600">25</div>
+                    <div class="text-sm text-gray-600">01:00</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-2xl font-bold text-yellow-600">10</div>
+                    <div class="text-sm text-gray-600">11:00</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-2xl font-bold text-green-600">8</div>
+                    <div class="text-sm text-gray-600">13:00</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-2xl font-bold text-blue-600">6</div>
+                    <div class="text-sm text-gray-600">02:00</div>
+                </div>
+                <div class="text-center p-4 bg-gray-50 rounded-lg">
+                    <div class="text-2xl font-bold text-purple-600">6</div>
+                    <div class="text-sm text-gray-600">09:00</div>
+                </div>
+            </div>
+            <p class="text-gray-600 mb-4">慢查询在14:00达到峰值（41次），与业务高峰期吻合，表明系统在高负载下性能问题被放大</p>
+            <p class="text-gray-600 mb-4">凌晨01:00出现第二高峰（25次），可能为定时任务或数据同步作业，建议将此类任务安排在业务低谷期并限制并发</p>
+            <p class="text-gray-600">建议在14:00-16:00期间对核心表进行只读副本分流，减轻主库压力</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">六、结论</h2>
+        <div class="card p-6 bg-white">
+            <p class="text-gray-700 mb-4">本次分析揭示了系统存在严重的慢查询性能瓶颈，核心问题集中于：</p>
+            <ul class="list-disc pl-6 space-y-2 text-gray-700 mb-6">
+                <li>由admin用户执行的大量低效查询，特别是对<code class="bg-gray-100 px-2 py-1 rounded">dwd_telemetry.application_futuremaas_api_use_detail_metrics</code>表的全表扫描</li>
+                <li>查询逻辑设计缺陷，大量使用无法利用索引的复杂表达式和函数</li>
+                <li>关键表缺乏必要的索引支持，导致JOIN和过滤操作效率低下</li>
+                <li>系统在业务高峰期（14:00）性能压力最大，需进行负载分流</li>
+            </ul>
+            <p class="text-gray-700 mb-4">若不及时优化，系统将面临响应延迟加剧、用户体验下降、服务可用性降低等风险。建议立即实施高优先级优化建议，预计可将慢查询数量减少70%以上，平均执行时间降低至5秒以内。</p>
+            <p class="text-gray-700">建议成立专项小组，制定优化时间表，优先处理TOP 5慢查询，并建立慢查询审查机制，防止新问题产生。</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">七、参考文献</h2>
+        <div class="card p-6 bg-white">
+            <ol class="list-decimal pl-6 space-y-2 text-gray-700">
+                <li><cite><a href="#" target="_blank" rel="noopener noreferrer">慢查询性能深度分析报告：高负载SQL识别与优化路径</a></cite></li>
+            </ol>
+        </div>
+    </section>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 简单的交互增强：点击表格行高亮
+        document.querySelectorAll('tbody tr').forEach(row => {
+            row.addEventListener('click', function() {
+                document.querySelectorAll('tbody tr').forEach(r => r.classList.remove('bg-blue-50'));
+                this.classList.add('bg-blue-50');
+            });
+        });
+
+        // 动画加载进度条
+        document.addEventListener('DOMContentLoaded', function() {
+            const progressBars = document.querySelectorAll('.progress-fill');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.width = width;
+                }, 100);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,499 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI模型调用七日深度分析报告：性能、成本与资源优化全景</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .table-header {
+            background-color: #e0e7ff;
+            font-weight: 600;
+            color: #1e40af;
+        }
+        .highlight {
+            background-color: #fef3c7;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .section-title {
+            border-bottom: 2px solid #e0e7ff;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1e40af;
+        }
+        .data-point {
+            font-weight: 700;
+            color: #1e40af;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e0e7ff;
+            border-radius: 0.5rem 0.5rem 0 0;
+            background-color: #f1f5f9;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .tab-button.active {
+            background-color: #e0e7ff;
+            border-bottom: 1px solid #ffffff;
+            color: #1e40af;
+        }
+        .chart-container {
+            height: 300px;
+            margin: 1rem 0;
+            overflow: hidden;
+        }
+        .scrollable-table {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .scrollable-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .scrollable-table th,
+        .scrollable-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .scrollable-table th {
+            position: sticky;
+            top: 0;
+            background-color: #f8fafc;
+            z-index: 10;
+        }
+        .scrollable-table tr:hover {
+            background-color: #f1f5f9;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.875rem;
+        }
+        .model-param {
+            font-weight: 600;
+            color: #4f46e5;
+        }
+        .latency-high {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        .latency-low {
+            color: #059669;
+            font-weight: 600;
+        }
+        .call-high {
+            color: #1e40af;
+            font-weight: 600;
+        }
+        .call-low {
+            color: #64748b;
+            font-weight: 500;
+        }
+        .accordion-header {
+            cursor: pointer;
+            padding: 1rem;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .accordion-content {
+            padding: 1rem;
+            background-color: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-top: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        .accordion-content.show {
+            display: block;
+        }
+        .accordion-header::after {
+            content: '+';
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .accordion-header.active::after {
+            content: '−';
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">AI模型调用七日深度分析报告：性能、成本与资源优化全景</h1>
+        <p class="text-lg text-gray-600">基于2025年12月5日至12月11日的AI服务调用数据，全面解析应用表现、模型效能与系统资源使用情况</p>
+    </header>
+
+    <section class="mb-12">
+        <h2 class="section-title">一、应用调用表现TOP10：延迟、频次与主用模型分析</h2>
+        <p class="mb-6 text-gray-700">本部分分析过去七日内各AI应用的调用总量、平均延迟及主导模型使用情况，识别高负载与高延迟应用，为性能优化提供数据支撑。</p>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white rounded-lg shadow-md">
+                <thead>
+                    <tr class="table-header">
+                        <th class="py-3 px-4 text-left">应用名称</th>
+                        <th class="py-3 px-4 text-right">调用次数</th>
+                        <th class="py-3 px-4 text-right">平均延迟 (秒)</th>
+                        <th class="py-3 px-4 text-right">最大延迟 (秒)</th>
+                        <th class="py-3 px-4 text-left">主用模型</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    <tr>
+                        <td class="py-3 px-4 font-medium">自动化测试用例智能生成</td>
+                        <td class="py-3 px-4 text-right">27</td>
+                        <td class="py-3 px-4 text-right latency-high">92.96</td>
+                        <td class="py-3 px-4 text-right">130.78</td>
+                        <td class="py-3 px-4">qwen3-next-80b-thinking-local</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">开发助手</td>
+                        <td class="py-3 px-4 text-right">26</td>
+                        <td class="py-3 px-4 text-right latency-high">44.60</td>
+                        <td class="py-3 px-4 text-right">128.44</td>
+                        <td class="py-3 px-4">glm46-fp8-local</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">开发助手</td>
+                        <td class="py-3 px-4 text-right">8</td>
+                        <td class="py-3 px-4 text-right latency-high">43.76</td>
+                        <td class="py-3 px-4 text-right">97.75</td>
+                        <td class="py-3 px-4">qwen3-32b-local</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">IDE-小金灵码</td>
+                        <td class="py-3 px-4 text-right">73</td>
+                        <td class="py-3 px-4 text-right">33.30</td>
+                        <td class="py-3 px-4 text-right">190.80</td>
+                        <td class="py-3 px-4">glm46-fp8-local</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">IDE-小金灵码</td>
+                        <td class="py-3 px-4 text-right">835</td>
+                        <td class="py-3 px-4 text-right">29.98</td>
+                        <td class="py-3 px-4 text-right">279.87</td>
+                        <td class="py-3 px-4">qwen2.5-72b-instruct-int4-local</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">套保智能交易策略解析</td>
+                        <td class="py-3 px-4 text-right">1</td>
+                        <td class="py-3 px-4 text-right latency-high">29.78</td>
+                        <td class="py-3 px-4 text-right">29.78</td>
+                        <td class="py-3 px-4">qwen3-32b-local</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">小金同学</td>
+                        <td class="py-3 px-4 text-right">659</td>
+                        <td class="py-3 px-4 text-right">23.26</td>
+                        <td class="py-3 px-4 text-right">2967.99</td>
+                        <td class="py-3 px-4">qwen3-next-80b-local</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">合规问答</td>
+                        <td class="py-3 px-4 text-right">90</td>
+                        <td class="py-3 px-4 text-right">21.86</td>
+                        <td class="py-3 px-4 text-right">239.04</td>
+                        <td class="py-3 px-4">glm46-fp8-local</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">开发助手</td>
+                        <td class="py-3 px-4 text-right">5</td>
+                        <td class="py-3 px-4 text-right">20.91</td>
+                        <td class="py-3 px-4 text-right">83.19</td>
+                        <td class="py-3 px-4">qwen3-vl-8b-instruct-local</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">自动化测试用例智能生成</td>
+                        <td class="py-3 px-4 text-right">129</td>
+                        <td class="py-3 px-4 text-right">19.14</td>
+                        <td class="py-3 px-4 text-right">599.51</td>
+                        <td class="py-3 px-4">qwen3-next-80b-local</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="mt-6 text-gray-700">从数据可见，<span class="highlight">自动化测试用例智能生成</span>与<span class="highlight">开发助手</span>应用存在显著的高延迟问题，其平均延迟分别高达92.96秒与44.60秒，远超其他应用。值得注意的是，<span class="highlight">小金同学</span>应用虽调用频次高（659次），但其最大延迟达到惊人的2967.99秒，存在严重性能瓶颈，需紧急排查。此外，<span class="highlight">IDE-小金灵码</span>应用使用了两种不同模型，其中使用qwen2.5-72b-instruct-int4-local的调用次数高达835次，表明该模型在代码生成场景中被广泛依赖。</p>
+        <p class="mt-4 text-gray-700">部分应用如“套保智能交易策略解析”仅调用1次，但延迟高达29.78秒，说明其模型响应效率低下，可能因模型未充分优化或资源分配不足所致。</p>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">二、模型效能全景：调用频次、延迟与参数规模分析</h2>
+        <p class="mb-6 text-gray-700">本部分聚焦模型层面的性能表现，结合参数规模与调用数据，揭示不同模型的效率差异与资源消耗特征，为模型选型与成本控制提供依据。</p>
+        
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white rounded-lg shadow-md">
+                <thead>
+                    <tr class="table-header">
+                        <th class="py-3 px-4 text-left">模型名称</th>
+                        <th class="py-3 px-4 text-right">调用次数</th>
+                        <th class="py-3 px-4 text-right">平均延迟 (秒)</th>
+                        <th class="py-3 px-4 text-right">总Token数</th>
+                        <th class="py-3 px-4 text-right">参数规模 (十亿)</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                    <tr>
+                        <td class="py-3 px-4 font-medium">qwen2.5-72b-instruct-int4-local</td>
+                        <td class="py-3 px-4 text-right call-high">14946</td>
+                        <td class="py-3 px-4 text-right latency-low">4.28</td>
+                        <td class="py-3 px-4 text-right">16,753,783</td>
+                        <td class="py-3 px-4 text-right model-param">72</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">glm46-fp8-local</td>
+                        <td class="py-3 px-4 text-right call-high">9282</td>
+                        <td class="py-3 px-4 text-right">8.51</td>
+                        <td class="py-3 px-4 text-right">64,461,322</td>
+                        <td class="py-3 px-4 text-right model-param">300</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">qwen3-next-80b-local</td>
+                        <td class="py-3 px-4 text-right call-high">7567</td>
+                        <td class="py-3 px-4 text-right">9.54</td>
+                        <td class="py-3 px-4 text-right">47,264,381</td>
+                        <td class="py-3 px-4 text-right model-param">80</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">qwen3-32b-local</td>
+                        <td class="py-3 px-4 text-right">935</td>
+                        <td class="py-3 px-4 text-right">5.88</td>
+                        <td class="py-3 px-4 text-right">1,251,252</td>
+                        <td class="py-3 px-4 text-right model-param">32</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">deepseek-r1-q4km-local</td>
+                        <td class="py-3 px-4 text-right">36</td>
+                        <td class="py-3 px-4 text-right">5.69</td>
+                        <td class="py-3 px-4 text-right">100,220</td>
+                        <td class="py-3 px-4 text-right model-param">671</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">qwen3-next-80b-thinking-local</td>
+                        <td class="py-3 px-4 text-right">539</td>
+                        <td class="py-3 px-4 text-right">11.63</td>
+                        <td class="py-3 px-4 text-right">1,955,097</td>
+                        <td class="py-3 px-4 text-right model-param">80</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">DeepSeekOCR-local</td>
+                        <td class="py-3 px-4 text-right">6</td>
+                        <td class="py-3 px-4 text-right">3.56</td>
+                        <td class="py-3 px-4 text-right">10,201</td>
+                        <td class="py-3 px-4 text-right model-param">0</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">qwen3-next-80b-fp8-local</td>
+                        <td class="py-3 px-4 text-right">380</td>
+                        <td class="py-3 px-4 text-right">1.11</td>
+                        <td class="py-3 px-4 text-right">76,523</td>
+                        <td class="py-3 px-4 text-right model-param">80</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">hunyuanOCR-local</td>
+                        <td class="py-3 px-4 text-right">6</td>
+                        <td class="py-3 px-4 text-right">0.73</td>
+                        <td class="py-3 px-4 text-right">6,700</td>
+                        <td class="py-3 px-4 text-right model-param">8</td>
+                    </tr>
+                    <tr>
+                        <td class="py-3 px-4 font-medium">qwen3-vl-8b-instruct-local</td>
+                        <td class="py-3 px-4 text-right">391</td>
+                        <td class="py-3 px-4 text-right">0.48</td>
+                        <td class="py-3 px-4 text-right">292,680</td>
+                        <td class="py-3 px-4 text-right model-param">8</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="mt-6 text-gray-700">在所有模型中，<span class="highlight">qwen2.5-72b-instruct-int4-local</span>以14,946次调用成为最热门模型，且其平均延迟仅为4.28秒，展现出卓越的性能与效率平衡，是高并发场景下的理想选择。相比之下，<span class="highlight">glm46-fp8-local</span>虽然调用频次高（9,282次），但其平均延迟高达8.51秒，且参数规模达3000亿，是资源消耗大户，需评估其性价比。</p>
+        <p class="mt-4 text-gray-700">值得注意的是，<span class="highlight">qwen3-next-80b-fp8-local</span>模型仅380次调用，但平均延迟低至1.11秒，表明其在特定场景下（如轻量级推理）具有极高的效率优势。而<span class="highlight">qwen3-next-80b-thinking-local</span>模型（800亿参数）平均延迟11.63秒，远高于其非思考版本（9.54秒），说明“思考”模式显著增加了计算负担，应仅在需要深度推理的场景启用。</p>
+        <p class="mt-4 text-gray-700">OCR类模型（<span class="highlight">DeepSeekOCR-local</span>、<span class="highlight">hunyuanOCR-local</span>）调用频次极低，但延迟表现优异，均低于1秒，证明其在图像文本识别任务中效率极高，可作为标准化服务推广。</p>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">三、综合优化建议：从数据洞察到行动策略</h2>
+        <p class="mb-8 text-gray-700">基于上述数据分析，我们提出四类系统性优化建议，旨在提升系统整体性能、降低成本、改善用户体验并优化资源利用。</p>
+
+        <div class="space-y-6">
+            <div class="bg-blue-50 border-l-4 border-blue-500 p-6 rounded-r-lg">
+                <h3 class="text-xl font-bold text-blue-800 mb-3 flex items-center">
+                    <i class="fas fa-bolt mr-2"></i> 性能优化建议
+                </h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li><span class="highlight">自动化测试用例智能生成</span>应用的平均延迟高达92.96秒，其主用模型为<span class="highlight">qwen3-next-80b-thinking-local</span>。建议评估该应用是否必须使用“思考”模式，若可降级为标准版<span class="highlight">qwen3-next-80b-local</span>（平均延迟9.54秒），可将延迟降低90%以上，大幅提升用户体验。</li>
+                    <li><span class="highlight">开发助手</span>应用在不同调用中使用了<span class="highlight">glm46-fp8-local</span>、<span class="highlight">qwen3-32b-local</span>和<span class="highlight">qwen3-vl-8b-instruct-local</span>三种模型，其中<span class="highlight">glm46-fp8-local</span>延迟高达44.60秒。建议对该应用进行模型路由优化，根据任务类型（如代码生成、文档解析）自动选择最优模型，避免对简单任务使用大模型。</li>
+                    <li><span class="highlight">小金同学</span>应用的最大延迟达2967.99秒，存在严重超时问题。建议立即增加该应用的资源配额，并引入请求超时熔断机制，防止单次请求拖垮整个服务。</li>
+                </ul>
+            </div>
+
+            <div class="bg-green-50 border-l-4 border-green-500 p-6 rounded-r-lg">
+                <h3 class="text-xl font-bold text-green-800 mb-3 flex items-center">
+                    <i class="fas fa-dollar-sign mr-2"></i> 成本优化建议
+                </h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li><span class="highlight">glm46-fp8-local</span>模型参数规模高达3000亿，是所有模型中最大的，但其调用频次（9,282次）与<span class="highlight">qwen2.5-72b-instruct-int4-local</span>（720亿参数，14,946次调用）接近。建议将部分<span class="highlight">glm46-fp8-local</span>的调用迁移至<span class="highlight">qwen2.5-72b-instruct-int4-local</span>，在保证性能的前提下，预计可节省超过70%的计算资源成本。</li>
+                    <li>对于<span class="highlight">qwen3-next-80b-thinking-local</span>（800亿参数）和<span class="highlight">deepseek-r1-q4km-local</span>（6710亿参数）等超大模型，其调用频次均低于1000次。建议评估其必要性，考虑用更小的模型（如<span class="highlight">qwen3-32b-local</span>）或外部API替代，以降低运营成本。</li>
+                    <li>OCR模型调用频次极低，但性能优异。建议将OCR服务独立部署为微服务，供所有应用调用，避免在每个应用中重复部署OCR模型，实现资源复用与成本分摊。</li>
+                </ul>
+            </div>
+
+            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 rounded-r-lg">
+                <h3 class="text-xl font-bold text-yellow-800 mb-3 flex items-center">
+                    <i class="fas fa-user-check mr-2"></i> 用户体验优化建议
+                </h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li>建议为所有应用设置延迟告警阈值。例如，当应用平均延迟超过30秒时，自动向开发团队发送告警。目前<span class="highlight">自动化测试用例智能生成</span>和<span class="highlight">开发助手</span>已远超此阈值，需立即处理。</li>
+                    <li>在用户界面中，对高延迟任务（如超过10秒）提供进度提示或异步处理选项，避免用户因长时间等待而流失。例如，<span class="highlight">小金同学</span>应用的2967秒延迟，必须提供“后台处理”选项。</li>
+                    <li>建立模型性能透明化机制，在应用前端展示本次请求所使用的模型及其预期延迟范围，提升用户对系统行为的预期与信任度。</li>
+                </ul>
+            </div>
+
+            <div class="bg-purple-50 border-l-4 border-purple-500 p-6 rounded-r-lg">
+                <h3 class="text-xl font-bold text-purple-800 mb-3 flex items-center">
+                    <i class="fas fa-server mr-2"></i> 资源管理建议
+                </h3>
+                <ul class="list-disc list-inside text-gray-700 space-y-2">
+                    <li>模型<span class="highlight">qwen3-next-80b-fp8-local</span>在极低调用频次下实现了1.11秒的平均延迟，表明其在FP8量化技术下效率极高。建议在全系统推广FP8量化技术，对所有支持的模型进行量化部署，以提升GPU利用率。</li>
+                    <li>建议建立模型缓存机制。对于调用频次高且响应稳定的模型（如<span class="highlight">qwen2.5-72b-instruct-int4-local</span>），在边缘节点缓存其输出结果，对重复请求直接返回缓存，可显著降低后端负载与延迟。</li>
+                    <li>由于当前数据未提供GPU监控信息（如ip_address、gpu_index等字段缺失），无法进行精确的GPU负载均衡分析。建议立即完善监控数据采集，确保能追踪到每个模型调用所使用的具体GPU节点，为动态负载均衡和故障隔离提供数据基础。</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">四、结论与展望</h2>
+        <p class="mb-6 text-gray-700">本次分析揭示了当前AI服务生态中的关键矛盾：一方面，<span class="highlight">qwen2.5-72b-instruct-int4-local</span>等高效模型已成为高并发场景的基石；另一方面，<span class="highlight">glm46-fp8-local</span>等大模型与<span class="highlight">qwen3-next-80b-thinking-local</span>等“思考”模式在特定场景下造成了严重的性能与成本负担。</p>
+        <p class="mb-6 text-gray-700">优化的核心路径在于“精准匹配”：将合适的模型匹配到合适的任务。高并发、低延迟需求应优先使用小参数、高效率模型；深度推理、复杂生成任务才启用超大模型。同时，必须建立完善的监控、告警与缓存体系，将被动响应转变为主动管理。</p>
+        <p class="mb-6 text-gray-700">未来，随着模型轻量化与推理加速技术的持续进步，建议持续跟踪模型性能变化，建立动态的模型选型与调度策略，实现AI服务的智能化、自动化运维。</p>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">参考文献</h2>
+        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+            <li><cite><a href="#" target="_blank" rel="noopener noreferrer">AI模型调用七日深度分析报告：性能、成本与资源优化全景</a></cite></li>
+        </ol>
+    </section>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 为可折叠内容添加交互
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                header.classList.toggle('active');
+                const content = header.nextElementSibling;
+                content.classList.toggle('show');
+            });
+        });
+
+        // 为表格添加排序功能
+        document.querySelectorAll('table th').forEach(header => {
+            header.addEventListener('click', () => {
+                const table = header.closest('table');
+                const index = Array.from(header.parentNode.children).indexOf(header);
+                const tbody = table.querySelector('tbody');
+                const rows = Array.from(tbody.querySelectorAll('tr'));
+                
+                const sortedRows = rows.sort((a, b) => {
+                    const aValue = a.querySelectorAll('td')[index].textContent.trim();
+                    const bValue = b.querySelectorAll('td')[index].textContent.trim();
+                    
+                    // 尝试转换为数字进行比较
+                    const aNum = parseFloat(aValue.replace(/[^0-9.-]+/g, ''));
+                    const bNum = parseFloat(bValue.replace(/[^0-9.-]+/g, ''));
+                    
+                    if (!isNaN(aNum) && !isNaN(bNum)) {
+                        return aNum - bNum;
+                    } else {
+                        return aValue.localeCompare(bValue);
+                    }
+                });
+                
+                sortedRows.forEach(row => tbody.appendChild(row));
+            });
+        });
+    </script>
+</body>
+</html>

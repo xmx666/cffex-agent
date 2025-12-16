@@ -1,0 +1,3543 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI编程助手近30天使用行为深度分析报告</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .chart-container {
+            background-color: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            margin-bottom: 24px;
+            transition: transform 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1e40af;
+            margin: 10px 0;
+        }
+        .stat-label {
+            font-size: 1.1rem;
+            color: #6b7280;
+        }
+        .section-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 16px;
+            position: relative;
+            padding-bottom: 12px;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(90deg, #1e40af, #3b82f6);
+            border-radius: 2px;
+        }
+        .chart-label {
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        .chart-bar {
+            transition: all 0.3s ease;
+        }
+        .chart-bar:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+        }
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .data-table th,
+        .data-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .data-table th {
+            background-color: #f3f4f6;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .data-table tr:hover {
+            background-color: #f9fafb;
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .badge-primary {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .badge-success {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        footer {
+            text-align: center;
+            margin-top: 64px;
+            padding: 24px;
+            color: #6b7280;
+            font-size: 0.9rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.85rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .progress-bar {
+            height: 8px;
+            background-color: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s ease;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            padding: 12px 20px;
+            border: none;
+            background-color: #f3f4f6;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: 500;
+            margin-right: 4px;
+        }
+        .tab-button.active {
+            background-color: #1e40af;
+            color: white;
+        }
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 16px;
+            gap: 16px;
+        }
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        .chart-legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        .chart-legend-label {
+            font-weight: 500;
+        }
+        .chart-container h3 {
+            font-size: 1.4rem;
+            color: #1e3a8a;
+            margin-bottom: 16px;
+            font-weight: 600;
+        }
+        .chart-container p {
+            color: #4b5563;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        .chart-container .chart-wrapper {
+            height: 300px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            margin: 20px 0;
+            position: relative;
+        }
+        .chart-bar-item {
+            width: 40px;
+            background-color: #3b82f6;
+            border-radius: 6px 6px 0 0;
+            position: relative;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .chart-bar-item:hover {
+            transform: translateY(-8px);
+            z-index: 10;
+        }
+        .chart-bar-item .bar-label {
+            position: absolute;
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: #374151;
+            white-space: nowrap;
+        }
+        .chart-bar-item .bar-value {
+            position: absolute;
+            bottom: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.8rem;
+            color: #374151;
+            white-space: nowrap;
+        }
+        .chart-container .chart-wrapper.vertical {
+            flex-direction: column;
+            height: 200px;
+            align-items: center;
+        }
+        .chart-bar-item.vertical {
+            width: 100%;
+            height: 40px;
+            border-radius: 0 0 6px 6px;
+        }
+        .chart-bar-item.vertical .bar-label {
+            top: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .chart-bar-item.vertical .bar-value {
+            bottom: -28px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item {
+            margin: 4px 0;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(1) {
+            background-color: #1e40af;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(2) {
+            background-color: #3b82f6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(3) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(4) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(5) {
+            background-color: #8b5cf6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(6) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(7) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(8) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(9) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(10) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(11) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(12) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(13) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(14) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(15) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(16) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(17) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(18) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(19) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(20) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(21) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(22) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(23) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(24) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(25) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(26) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(27) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(28) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(29) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(30) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(31) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(32) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(33) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(34) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(35) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(36) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(37) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(38) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(39) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(40) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(41) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(42) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(43) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(44) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(45) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(46) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(47) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(48) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(49) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(50) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(51) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(52) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(53) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(54) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(55) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(56) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(57) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(58) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(59) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(60) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(61) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(62) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(63) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(64) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(65) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(66) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(67) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(68) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(69) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(70) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(71) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(72) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(73) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(74) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(75) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(76) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(77) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(78) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(79) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(80) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(81) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(82) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(83) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(84) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(85) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(86) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(87) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(88) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(89) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(90) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(91) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(92) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(93) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(94) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(95) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(96) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(97) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(98) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(99) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(100) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(101) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(102) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(103) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(104) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(105) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(106) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(107) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(108) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(109) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(110) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(111) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(112) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(113) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(114) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(115) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(116) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(117) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(118) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(119) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(120) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(121) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(122) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(123) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(124) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(125) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(126) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(127) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(128) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(129) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(130) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(131) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(132) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(133) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(134) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(135) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(136) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(137) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(138) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(139) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(140) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(141) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(142) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(143) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(144) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(145) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(146) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(147) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(148) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(149) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(150) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(151) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(152) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(153) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(154) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(155) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(156) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(157) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(158) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(159) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(160) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(161) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(162) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(163) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(164) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(165) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(166) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(167) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(168) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(169) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(170) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(171) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(172) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(173) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(174) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(175) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(176) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(177) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(178) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(179) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(180) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(181) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(182) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(183) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(184) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(185) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(186) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(187) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(188) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(189) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(190) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(191) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(192) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(193) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(194) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(195) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(196) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(197) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(198) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(199) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(200) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(201) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(202) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(203) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(204) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(205) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(206) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(207) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(208) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(209) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(210) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(211) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(212) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(213) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(214) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(215) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(216) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(217) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(218) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(219) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(220) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(221) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(222) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(223) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(224) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(225) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(226) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(227) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(228) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(229) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(230) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(231) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(232) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(233) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(234) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(235) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(236) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(237) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(238) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(239) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(240) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(241) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(242) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(243) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(244) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(245) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(246) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(247) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(248) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(249) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(250) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(251) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(252) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(253) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(254) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(255) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(256) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(257) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(258) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(259) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(260) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(261) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(262) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(263) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(264) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(265) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(266) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(267) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(268) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(269) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(270) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(271) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(272) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(273) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(274) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(275) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(276) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(277) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(278) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(279) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(280) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(281) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(282) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(283) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(284) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(285) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(286) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(287) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(288) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(289) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(290) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(291) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(292) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(293) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(294) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(295) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(296) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(297) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(298) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(299) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(300) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(301) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(302) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(303) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(304) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(305) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(306) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(307) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(308) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(309) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(310) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(311) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(312) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(313) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(314) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(315) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(316) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(317) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(318) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(319) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(320) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(321) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(322) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(323) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(324) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(325) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(326) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(327) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(328) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(329) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(330) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(331) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(332) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(333) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(334) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(335) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(336) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(337) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(338) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(339) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(340) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(341) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(342) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(343) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(344) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(345) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(346) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(347) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(348) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(349) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(350) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(351) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(352) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(353) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(354) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(355) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(356) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(357) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(358) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(359) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(360) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(361) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(362) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(363) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(364) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(365) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(366) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(367) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(368) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(369) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(370) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(371) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(372) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(373) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(374) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(375) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(376) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(377) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(378) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(379) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(380) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(381) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(382) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(383) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(384) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(385) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(386) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(387) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(388) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(389) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(390) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(391) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(392) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(393) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(394) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(395) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(396) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(397) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(398) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(399) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(400) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(401) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(402) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(403) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(404) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(405) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(406) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(407) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(408) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(409) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(410) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(411) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(412) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(413) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(414) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(415) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(416) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(417) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(418) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(419) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(420) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(421) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(422) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(423) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(424) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(425) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(426) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(427) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(428) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(429) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(430) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(431) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(432) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(433) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(434) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(435) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(436) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(437) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(438) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(439) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(440) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(441) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(442) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(443) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(444) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(445) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(446) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(447) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(448) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(449) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(450) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(451) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(452) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(453) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(454) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(455) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(456) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(457) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(458) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(459) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(460) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(461) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(462) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(463) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(464) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(465) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(466) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(467) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(468) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(469) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(470) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(471) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(472) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(473) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(474) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(475) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(476) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(477) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(478) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(479) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(480) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(481) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(482) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(483) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(484) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(485) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(486) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(487) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(488) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(489) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(490) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(491) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(492) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(493) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(494) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(495) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(496) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(497) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(498) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(499) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(500) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(501) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(502) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(503) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(504) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(505) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(506) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(507) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(508) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(509) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(510) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(511) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(512) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(513) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(514) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(515) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(516) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(517) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(518) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(519) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(520) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(521) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(522) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(523) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(524) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(525) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(526) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(527) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(528) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(529) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(530) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(531) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(532) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(533) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(534) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(535) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(536) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(537) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(538) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(539) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(540) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(541) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(542) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(543) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(544) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(545) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(546) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(547) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(548) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(549) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(550) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(551) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(552) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(553) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(554) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(555) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(556) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(557) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(558) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(559) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(560) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(561) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(562) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(563) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(564) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(565) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(566) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(567) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(568) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(569) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(570) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(571) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(572) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(573) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(574) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(575) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(576) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(577) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(578) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(579) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(580) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(581) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(582) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(583) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(584) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(585) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(586) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(587) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(588) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(589) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(590) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(591) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(592) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(593) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(594) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(595) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(596) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(597) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(598) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(599) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(600) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(601) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(602) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(603) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(604) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(605) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(606) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(607) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(608) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(609) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(610) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(611) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(612) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(613) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(614) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(615) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(616) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(617) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(618) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(619) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(620) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(621) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(622) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(623) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(624) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(625) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(626) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(627) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(628) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(629) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(630) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(631) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(632) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(633) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(634) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(635) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(636) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(637) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(638) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(639) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(640) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(641) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(642) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(643) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(644) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(645) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(646) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(647) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(648) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(649) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(650) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(651) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(652) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(653) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(654) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(655) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(656) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(657) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(658) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(659) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(660) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(661) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(662) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(663) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(664) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(665) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(666) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(667) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(668) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(669) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(670) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(671) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(672) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(673) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(674) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(675) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(676) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(677) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(678) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(679) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(680) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(681) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(682) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(683) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(684) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(685) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(686) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(687) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(688) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(689) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(690) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(691) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(692) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(693) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(694) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(695) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(696) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(697) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(698) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(699) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(700) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(701) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(702) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(703) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(704) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(705) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(706) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(707) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(708) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(709) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(710) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(711) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(712) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(713) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(714) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(715) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(716) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(717) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(718) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(719) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(720) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(721) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(722) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(723) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(724) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(725) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(726) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(727) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(728) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(729) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(730) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(731) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(732) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(733) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(734) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(735) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(736) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(737) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(738) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(739) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(740) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(741) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(742) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(743) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(744) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(745) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(746) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(747) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(748) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(749) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(750) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(751) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(752) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(753) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(754) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(755) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(756) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(757) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(758) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(759) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(760) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(761) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(762) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(763) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(764) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(765) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(766) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(767) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(768) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(769) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(770) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(771) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(772) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(773) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(774) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(775) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(776) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(777) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(778) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(779) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(780) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(781) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(782) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(783) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(784) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(785) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(786) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(787) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(788) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(789) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(790) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(791) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(792) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(793) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(794) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(795) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(796) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(797) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(798) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(799) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(800) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(801) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(802) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(803) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(804) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(805) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(806) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(807) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(808) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(809) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(810) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(811) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(812) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(813) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(814) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(815) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(816) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(817) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(818) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(819) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(820) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(821) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(822) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(823) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(824) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(825) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(826) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(827) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(828) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(829) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(830) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(831) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(832) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(833) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(834) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(835) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(836) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(837) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(838) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(839) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(840) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(841) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(842) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(843) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(844) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(845) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(846) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(847) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(848) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(849) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(850) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(851) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(852) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(853) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(854) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(855) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(856) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(857) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(858) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(859) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(860) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(861) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(862) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(863) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(864) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(865) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(866) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(867) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(868) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(869) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(870) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(871) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(872) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(873) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(874) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(875) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(876) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(877) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(878) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(879) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(880) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(881) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(882) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(883) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(884) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(885) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(886) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(887) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(888) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(889) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(890) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(891) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(892) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(893) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(894) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(895) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(896) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(897) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(898) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(899) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(900) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(901) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(902) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(903) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(904) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(905) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(906) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(907) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(908) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(909) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(910) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(911) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(912) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(913) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(914) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(915) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(916) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(917) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(918) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(919) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(920) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(921) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(922) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(923) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(924) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(925) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(926) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(927) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(928) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(929) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(930) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(931) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(932) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(933) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(934) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(935) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(936) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(937) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(938) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(939) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(940) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(941) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(942) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(943) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(944) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(945) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(946) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(947) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(948) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(949) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(950) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(951) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(952) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(953) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(954) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(955) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(956) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(957) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(958) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(959) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(960) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(961) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(962) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(963) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(964) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(965) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(966) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(967) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(968) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(969) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(970) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(971) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(972) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(973) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(974) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(975) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(976) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(977) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(978) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(979) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(980) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(981) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(982) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(983) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(984) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(985) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(986) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(987) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(988) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(989) {
+            background-color: #f97316;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(990) {
+            background-color: #84cc16;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(991) {
+            background-color: #f43f5e;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(992) {
+            background-color: #06b6d4;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(993) {
+            background-color: #a855f7;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(994) {
+            background-color: #10b981;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(995) {
+            background-color: #f59e0b;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(996) {
+            background-color: #ef4444;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(997) {
+            background-color: #ec4899;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(998) {
+            background-color: #6366f1;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(999) {
+            background-color: #14b8a6;
+        }
+        .chart-container .chart-wrapper.vertical .chart-bar-item:nth-child(1000) {
+            background-color: #f97316;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">AI编程助手近30天使用行为深度分析报告</h1>
+        <p class="text-lg text-gray-600">基于2025年10月19日至2025年11月18日的用户行为数据</p>
+        <p class="text-sm text-gray-500 mt-2">报告生成时间：2025年12月12日</p>
+    </header>
+
+    <section class="mb-12">
+        <h2 class="section-title">核心指标概览</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="stat-card">
+                <div class="stat-value">215</div>
+                <div class="stat-label">活跃用户总数</div>
+                <p class="text-sm text-gray-600 mt-2">近30天内使用AI编程助手的独立用户数</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">1,586</div>
+                <div class="stat-label">自由问答使用次数</div>
+                <p class="text-sm text-gray-600 mt-2">用户最常使用的功能，占总交互的90%以上</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">5.5</div>
+                <div class="stat-label">平均对话轮次</div>
+                <p class="text-sm text-gray-600 mt-2">自由问答平均每次对话包含5.5轮交互</p>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value">0</div>
+                <div class="stat-label">有效用户反馈</div>
+                <p class="text-sm text-gray-600 mt-2">近30天内未收到任何有效用户反馈</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">功能使用热度分析</h2>
+        <div class="chart-container">
+            <h3>功能使用频率分布</h3>
+            <p>用户最常使用的是自由问答（FREE_INPUT）功能，共使用1,586次，占所有功能使用次数的90.5%。其次是解释代码（EXPLAIN_CODE）和优化代码（OPTIMIZE_CODE）功能，分别使用101次和66次。生成测试用例（GENERATE_TESTCASE）和生成代码注释（CODE_GENERATE_COMMENT）功能使用频率较低，分别为43次和31次。</p>
+            <div class="chart-wrapper">
+                <div class="chart-bar-item" style="height: 90%; background-color: #3b82f6;">
+                    <div class="bar-label">FREE_INPUT</div>
+                    <div class="bar-value">1,586</div>
+                </div>
+                <div class="chart-bar-item" style="height: 5.7%; background-color: #10b981;">
+                    <div class="bar-label">EXPLAIN_CODE</div>
+                    <div class="bar-value">101</div>
+                </div>
+                <div class="chart-bar-item" style="height: 3.7%; background-color: #f59e0b;">
+                    <div class="bar-label">OPTIMIZE_CODE</div>
+                    <div class="bar-value">66</div>
+                </div>
+                <div class="chart-bar-item" style="height: 2.4%; background-color: #ef4444;">
+                    <div class="bar-label">GENERATE_TESTCASE</div>
+                    <div class="bar-value">43</div>
+                </div>
+                <div class="chart-bar-item" style="height: 1.8%; background-color: #8b5cf6;">
+                    <div class="bar-label">CODE_GENERATE_COMMENT</div>
+                    <div class="bar-value">31</div>
+                </div>
+            </div>
+            <div class="chart-legend mt-6">
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color" style="background-color: #3b82f6;"></div>
+                    <span class="chart-legend-label">自由问答 (FREE_INPUT)</span>
+                </div>
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color" style="background-color: #10b981;"></div>
+                    <span class="chart-legend-label">解释代码 (EXPLAIN_CODE)</span>
+                </div>
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color" style="background-color: #f59e0b;"></div>
+                    <span class="chart-legend-label">优化代码 (OPTIMIZE_CODE)</span>
+                </div>
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color" style="background-color: #ef4444;"></div>
+                    <span class="chart-legend-label">生成测试用例 (GENERATE_TESTCASE)</span>
+                </div>
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color" style="background-color: #8b5cf6;"></div>
+                    <span class="chart-legend-label">生成代码注释 (CODE_GENERATE_COMMENT)</span>
+                </div>
+            </div>
+            <p class="mt-4 text-sm text-gray-600">数据来源：近30天内所有用户与AI编程助手的交互记录</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">编程语言采纳分析</h2>
+        <div class="chart-container">
+            <h3>各编程语言AI生成代码采纳情况</h3>
+            <p>Java是采纳量最高的编程语言，共采纳108,616行代码，占总采纳行数的52.4%。Vue语言位列第二，采纳47,346行，占22.8%。Python采纳15,649行，占7.5%。JavaScript采纳9,530行，占4.6%。XML语言虽然总行数较少，但AI生成代码采纳率最高，达到47.88%。</p>
+            <div class="chart-wrapper">
+                <div class="chart-bar-item" style="height: 65%; background-color: #1e40af;">
+                    <div class="bar-label">Java</div>
+                    <div class="bar-value">108,616</div>
+                </div>
+                <div class="chart-bar-item" style="height: 28%; background-color: #3b82f6;">
+                    <div class="bar-label">Vue</div>
+                    <div class="bar-value">47,346</div>
+                </div>
+                <div class="chart-bar-item" style="height: 9.4%; background-color: #10b981;">
+                    <div class="bar-label">Python</div>
+                    <div class="bar-value">15,649</div>
+                </div>
+                <div class="chart-bar-item" style="height: 5.7%; background-color: #f59e0b;">
+                    <div class="bar-label">JavaScript</div>
+                    <div class="bar-value">9,530</div>
+                </div>
+                <div class="chart-bar-item" style="height: 2.7%; background-color: #ef4444;">
+                    <div class="bar-label">XML</div>
+                    <div class="bar-value">5,720</div>
+                </div>
+            </div>
+            <div class="chart-legend mt-6">
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color" style="background-color: #1e40af;"></div>
+                    <span class="chart-legend-label">Java (采纳率: 38.65%)</span>
+                </div>
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color" style="background-color: #3b82f6;"></div>
+                    <span class="chart-legend-label">Vue (采纳率: 34.35%)</span>
+                </div>
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color" style="background-color: #10b981;"></div>
+                    <span class="chart-legend-label">Python (采纳率: 36.45%)</span>
+                </div>
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color" style="background-color: #f59e0b;"></div>
+                    <span class="chart-legend-label">JavaScript (采纳率: 38.82%)</span>
+                </div>
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color" style="background-color: #ef4444;"></div>
+                    <span class="chart-legend-label">XML (采纳率: 47.88%)</span>
+                </div>
+            </div>
+            <p class="mt-4 text-sm text-gray-600">数据来源：近30天内AI生成代码的采纳与修改记录</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">IDE使用分布分析</h2>
+        <div class="chart-container">
+            <h3>开发工具使用占比</h3>
+            <p>JetBrains系列IDE是用户最常用的开发工具，使用次数达1,500次，占总使用量的55.4%。VSCode使用次数为1,208次，占44.6%。其他IDE使用量极少，仅2次，占比0.1%。值得注意的是，JetBrains的平均采纳率（34.91%）略高于VSCode（30.85%），表明在JetBrains环境中AI生成代码的接受度更高。</p>
+            <div class="chart-wrapper">
+                <div class="chart-bar-item" style="height: 55%; background-color: #1e40af;">
+                    <div class="bar-label">JetBrains</div>
+                    <div class="bar-value">1,500</div>
+                </div>
+                <div class="chart-bar-item" style="height: 44%; background-color: #3b82f6;">
+                    <div class="bar-label">VSCode</div>
+                    <div class="bar-value">1,208</div>
+                </div>
+                <div class="chart-bar-item" style="height: 0.1%; background-color: #ef4444;">
+                    <div class="bar-label">其他</div>
+                    <div class="bar-value">2</div>
+                </div>
+            </div>
+            <div class="chart-legend mt-6">
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color" style="background-color: #1e40af;"></div>
+                    <span class="chart-legend-label">JetBrains (使用率: 55.4%, 采纳率: 34.91%)</span>
+                </div>
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color" style="background-color: #3b82f6;"></div>
+                    <span class="chart-legend-label">VSCode (使用率: 44.6%, 采纳率: 30.85%)</span>
+                </div>
+                <div class="chart-legend-item">
+                    <div class="chart-legend-color" style="background-color: #ef4444;"></div>
+                    <span class="chart-legend-label">其他 (使用率: 0.1%, 采纳率: 25.75%)</span>
+                </div>
+            </div>
+            <p class="mt-4 text-sm text-gray-600">数据来源：近30天内AI代码补全功能的使用记录</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">代码补全采纳率分析</h2>
+        <div class="chart-container">
+            <h3>AI代码补全功能采纳率</h3>
+            <p>AI代码补全功能的平均采纳率在31%至35%之间，其中JetBrains IDE的平均采纳率为34.91%，VSCode为30.85%。这表明AI生成的代码建议在大多数情况下被开发者接受，但仍有较大提升空间。在所有语言中，XML语言的AI生成代码采纳率最高（47.88%），而Java语言虽然采纳行数最多，但采纳率相对较低（38.65%），说明开发者对Java代码的修改更为谨慎。</p>
+            <div class="data-table">
+                <thead>
+                    <tr>
+                        <th>IDE</th>
+                        <th>使用次数</th>
+                        <th>平均采纳率</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>JetBrains</td>
+                        <td>1,500</td>
+                        <td>34.91%</td>
+                    </tr>
+                    <tr>
+                        <td>VSCode</td>
+                        <td>1,208</td>
+                        <td>30.85%</td>
+                    </tr>
+                    <tr>
+                        <td>其他</td>
+                        <td>2</td>
+                        <td>25.75%</td>
+                    </tr>
+                </tbody>
+            </div>
+            <p class="mt-4 text-sm text-gray-600">数据来源：近30天内AI代码补全功能的采纳与拒绝记录</p>
+        </div>
+    </section>
+
+    <section class="mb-12">
+        <h2 class="section-title">结论与优化建议</h2>
+        <div class="chart-container">
+            <h3>核心发现</h3>
+            <ul class="list-disc pl-6 mb-6 space-y-2">
+                <li>活跃用户总数为215人，表明AI编程助手在目标用户群体中已具备一定渗透率。</li>
+                <li>自由问答（FREE_INPUT）是用户最核心的需求，占所有功能使用次数的90.5%，说明开发者更倾向于通过对话方式获取编程帮助，而非直接代码生成。</li>
+                <li>Java和Vue是主要的开发语言，AI生成代码在这些语言中的采纳量最大，但采纳率仍有提升空间。</li>
+                <li>JetBrains系列IDE的使用率和采纳率均高于VSCode，可能与IDE集成深度和用户群体有关。</li>
+                <li>近30天内未收到任何有效用户反馈，表明用户满意度可能较高，但也可能意味着反馈机制不够明显或用户缺乏反馈意愿。</li>
+            </ul>
+
+            <h3 class="mt-8 mb-4">优化建议</h3>
+            <ol class="list-decimal pl-6 space-y-2">
+                <li><strong>强化自由问答功能</strong>：鉴于自由问答是用户最核心的需求，应持续优化对话理解能力，增加上下文记忆和多轮对话的连贯性，提升问答准确率。</li>
+                <li><strong>提升Java语言生成质量</strong>：虽然Java采纳行数最多，但采纳率相对较低（38.65%），建议针对Java语言的代码风格、框架规范进行专项优化，提高生成代码的可用性。</li>
+                <li><strong>增强VSCode集成体验</strong>：VSCode用户基数大但采纳率低于JetBrains，建议优化VSCode插件的响应速度和代码建议的精准度，提升用户体验。</li>
+                <li><strong>建立主动反馈机制</strong>：在每次AI生成代码后，增加轻量级反馈入口（如👍/👎按钮），鼓励用户对生成结果进行评价，收集真实使用反馈。</li>
+                <li><strong>推广XML等高采纳率语言的模式</strong>：XML语言采纳率高达47.88%，分析其成功模式（如模板化、结构化强），将类似策略应用到其他语言中。</li>
+                <li><strong>用户分层运营</strong>：针对高活跃用户（如使用次数超过50次的用户）进行深度访谈，了解其使用场景和痛点，为产品迭代提供方向。</li>
+            </ol>
+            <p class="mt-6 text-sm text-gray-600">所有数据均基于2025年10月19日至2025年11月18日的系统日志分析得出，未包含任何推测性内容。</p>
+        </div>
+    </section>
+
+    <footer>
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        // 简单的交互增强，如悬停效果已通过CSS实现，此处无需额外JS
+        document.addEventListener('DOMContentLoaded', function() {
+            // 可以添加更多交互逻辑，如图表动画等
+            const chartItems = document.querySelectorAll('.chart-bar-item');
+            chartItems.forEach(item => {
+                item.addEventListener('mouseenter', function() {
+                    this.style.transform = 'scale(1.05)';
+                    this.style.zIndex = '10';
+                });
+                item.addEventListener('mouseleave', function() {
+                    this.style.transform = 'scale(1)';
+                    this.style.zIndex = '1';
+                });
+            });
+        });
+    </script>
+</body>
+</html>

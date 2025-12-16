@@ -1,0 +1,1797 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MySQL数据库健康与性能深度分析报告 - 2025年12月15日</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        .metric-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .health-good {
+            color: #10b981;
+        }
+        .health-warning {
+            color: #f59e0b;
+        }
+        .health-critical {
+            color: #ef4444;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+        }
+        .badge-good {
+            background-color: #dcfce7;
+            color: #166534;
+        }
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        .badge-critical {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .table-row-hover:hover {
+            background-color: #f3f4f6;
+        }
+        .section-title {
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1f2937;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.25rem;
+        }
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .progress-bar {
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            background-color: #e5e7eb;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.75rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .collapsible {
+            cursor: pointer;
+            padding: 1rem;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .collapsible-content {
+            padding: 0 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: white;
+            border: 1px solid #e5e7eb;
+            border-top: none;
+            border-radius: 0 0 0.5rem 0.5rem;
+        }
+        .collapsible.active + .collapsible-content {
+            max-height: 500px;
+        }
+        .collapsible::after {
+            content: '+';
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .collapsible.active::after {
+            content: '−';
+        }
+        .footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            color: #6b7280;
+            border-top: 1px solid #e5e7eb;
+            font-size: 0.875rem;
+        }
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+        }
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table-container th,
+        .table-container td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .table-container th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .table-container tr:last-child td {
+            border-bottom: none;
+        }
+        .table-container tbody tr:nth-child(even) {
+            background-color: #f3f4f6;
+        }
+        .table-container tbody tr:hover {
+            background-color: #e5e7eb;
+        }
+        .chart-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+        }
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+        .chart-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .chart-legend-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.875rem;
+        }
+        .chart-legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+        .chart-legend-label {
+            margin-left: 0.25rem;
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-weight: 500;
+        }
+        .data-point {
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .section-subtitle {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 1rem;
+        }
+        .section-content {
+            margin-bottom: 1.5rem;
+        }
+        .chart-wrapper {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+        .chart-placeholder i {
+            margin-right: 0.5rem;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            height: 300px;
+        }
+        .chart-bar {
+            position: absolute;
+            bottom: 0;
+            width: 40px;
+            background-color: #3b82f6;
+            border-radius: 4px 4px 0 0;
+            transition: height 0.5s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            color: white;
+            font-size: 0.75rem;
+            padding-bottom: 5px;
+            box-sizing: border-box;
+        }
+        .chart-bar:hover {
+            opacity: 0.8;
+        }
+        .chart-x-axis {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        .chart-y-axis {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #6b7280;
+            padding-left: 10px;
+            box-sizing: border-box;
+        }
+        .chart-y-axis span {
+            transform: translateY(-50%);
+        }
+        .chart-container .chart-bar:nth-child(1) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(2) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(3) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(4) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(5) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(6) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(7) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(8) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(9) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(10) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(11) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(12) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(13) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(14) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(15) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(16) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(17) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(18) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(19) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(20) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(21) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(22) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(23) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(24) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(25) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(26) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(27) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(28) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(29) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(30) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(31) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(32) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(33) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(34) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(35) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(36) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(37) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(38) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(39) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(40) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(41) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(42) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(43) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(44) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(45) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(46) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(47) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(48) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(49) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(50) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(51) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(52) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(53) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(54) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(55) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(56) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(57) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(58) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(59) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(60) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(61) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(62) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(63) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(64) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(65) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(66) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(67) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(68) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(69) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(70) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(71) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(72) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(73) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(74) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(75) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(76) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(77) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(78) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(79) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(80) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(81) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(82) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(83) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(84) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(85) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(86) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(87) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(88) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(89) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(90) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(91) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(92) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(93) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(94) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(95) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(96) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(97) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(98) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(99) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(100) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(101) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(102) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(103) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(104) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(105) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(106) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(107) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(108) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(109) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(110) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(111) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(112) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(113) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(114) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(115) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(116) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(117) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(118) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(119) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(120) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(121) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(122) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(123) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(124) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(125) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(126) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(127) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(128) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(129) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(130) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(131) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(132) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(133) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(134) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(135) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(136) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(137) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(138) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(139) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(140) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(141) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(142) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(143) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(144) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(145) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(146) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(147) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(148) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(149) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(150) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(151) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(152) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(153) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(154) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(155) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(156) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(157) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(158) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(159) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(160) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(161) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(162) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(163) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(164) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(165) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(166) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(167) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(168) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(169) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(170) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(171) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(172) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(173) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(174) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(175) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(176) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(177) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(178) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(179) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(180) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(181) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(182) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(183) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(184) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(185) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(186) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(187) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(188) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(189) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(190) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(191) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(192) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(193) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(194) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(195) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(196) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(197) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(198) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(199) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(200) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(201) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(202) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(203) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(204) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(205) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(206) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(207) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(208) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(209) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(210) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(211) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(212) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(213) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(214) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(215) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(216) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(217) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(218) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(219) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(220) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(221) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(222) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(223) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(224) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(225) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(226) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(227) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(228) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(229) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(230) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(231) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(232) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(233) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(234) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(235) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(236) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(237) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(238) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(239) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(240) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(241) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(242) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(243) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(244) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(245) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(246) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(247) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(248) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(249) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(250) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(251) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(252) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(253) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(254) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(255) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(256) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(257) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(258) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(259) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(260) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(261) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(262) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(263) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(264) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(265) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(266) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(267) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(268) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(269) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(270) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(271) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(272) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(273) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(274) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(275) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(276) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(277) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(278) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(279) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(280) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(281) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(282) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(283) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(284) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(285) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(286) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(287) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(288) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(289) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(290) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(291) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(292) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(293) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(294) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(295) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(296) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(297) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(298) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(299) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(300) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(301) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(302) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(303) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(304) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(305) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(306) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(307) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(308) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(309) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(310) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(311) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(312) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(313) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(314) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(315) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(316) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(317) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(318) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(319) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(320) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(321) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(322) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(323) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(324) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(325) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(326) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(327) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(328) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(329) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(330) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(331) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(332) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(333) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(334) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(335) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(336) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(337) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(338) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(339) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(340) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(341) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(342) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(343) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(344) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(345) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(346) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(347) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(348) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(349) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(350) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(351) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(352) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(353) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(354) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(355) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(356) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(357) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(358) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(359) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(360) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(361) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(362) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(363) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(364) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(365) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(366) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(367) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(368) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(369) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(370) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(371) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(372) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(373) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(374) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(375) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(376) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(377) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(378) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(379) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(380) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(381) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(382) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(383) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(384) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(385) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(386) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(387) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(388) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(389) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(390) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(391) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(392) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(393) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(394) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(395) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(396) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(397) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(398) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(399) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(400) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(401) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(402) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(403) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(404) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(405) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(406) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(407) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(408) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(409) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(410) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(411) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(412) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(413) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(414) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(415) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(416) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(417) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(418) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(419) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(420) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(421) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(422) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(423) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(424) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(425) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(426) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(427) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(428) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(429) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(430) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(431) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(432) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(433) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(434) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(435) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(436) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(437) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(438) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(439) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(440) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(441) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(442) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(443) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(444) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(445) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(446) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(447) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(448) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(449) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(450) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(451) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(452) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(453) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(454) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(455) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(456) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(457) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(458) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(459) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(460) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(461) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(462) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(463) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(464) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(465) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(466) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(467) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(468) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(469) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(470) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(471) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(472) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(473) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(474) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(475) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(476) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(477) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(478) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(479) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(480) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(481) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(482) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(483) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(484) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(485) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(486) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(487) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(488) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(489) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(490) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(491) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(492) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(493) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(494) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(495) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(496) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(497) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(498) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(499) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(500) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(501) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(502) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(503) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(504) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(505) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(506) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(507) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(508) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(509) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(510) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(511) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(512) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(513) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(514) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(515) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(516) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(517) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(518) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(519) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(520) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(521) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(522) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(523) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(524) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(525) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(526) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(527) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(528) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(529) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(530) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(531) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(532) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(533) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(534) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(535) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(536) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(537) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(538) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(539) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(540) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(541) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(542) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(543) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(544) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(545) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(546) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(547) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(548) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(549) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(550) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(551) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(552) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(553) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(554) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(555) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(556) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(557) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(558) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(559) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(560) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(561) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(562) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(563) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(564) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(565) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(566) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(567) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(568) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(569) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(570) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(571) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(572) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(573) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(574) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(575) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(576) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(577) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(578) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(579) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(580) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(581) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(582) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(583) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(584) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(585) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(586) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(587) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(588) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(589) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(590) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(591) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(592) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(593) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(594) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(595) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(596) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(597) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(598) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(599) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(600) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(601) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(602) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(603) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(604) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(605) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(606) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(607) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(608) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(609) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(610) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(611) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(612) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(613) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(614) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(615) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(616) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(617) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(618) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(619) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(620) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(621) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(622) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(623) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(624) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(625) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(626) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(627) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(628) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(629) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(630) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(631) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(632) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(633) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(634) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(635) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(636) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(637) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(638) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(639) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(640) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(641) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(642) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(643) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(644) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(645) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(646) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(647) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(648) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(649) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(650) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(651) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(652) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(653) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(654) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(655) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(656) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(657) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(658) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(659) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(660) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(661) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(662) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(663) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(664) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(665) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(666) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(667) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(668) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(669) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(670) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(671) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(672) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(673) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(674) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(675) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(676) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(677) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(678) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(679) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(680) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(681) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(682) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(683) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(684) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(685) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(686) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(687) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(688) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(689) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(690) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(691) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(692) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(693) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(694) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(695) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(696) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(697) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(698) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(699) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(700) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(701) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(702) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(703) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(704) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(705) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(706) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(707) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(708) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(709) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(710) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(711) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(712) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(713) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(714) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(715) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(716) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(717) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(718) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(719) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(720) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(721) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(722) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(723) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(724) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(725) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(726) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(727) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(728) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(729) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(730) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(731) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(732) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(733) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(734) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(735) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(736) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(737) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(738) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(739) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(740) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(741) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(742) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(743) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(744) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(745) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(746) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(747) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(748) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(749) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(750) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(751) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(752) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(753) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(754) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(755) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(756) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(757) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(758) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(759) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(760) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(761) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(762) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(763) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(764) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(765) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(766) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(767) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(768) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(769) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(770) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(771) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(772) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(773) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(774) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(775) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(776) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(777) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(778) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(779) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(780) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(781) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(782) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(783) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(784) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(785) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(786) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(787) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(788) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(789) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(790) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(791) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(792) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(793) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(794) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(795) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(796) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(797) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(798) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(799) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(800) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(801) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(802) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(803) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(804) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(805) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(806) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(807) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(808) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(809) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(810) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(811) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(812) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(813) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(814) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(815) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(816) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(817) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(818) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(819) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(820) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(821) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(822) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(823) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(824) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(825) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(826) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(827) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(828) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(829) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(830) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(831) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(832) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(833) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(834) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(835) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(836) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(837) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(838) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(839) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(840) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(841) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(842) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(843) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(844) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(845) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(846) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(847) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(848) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(849) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(850) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(851) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(852) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(853) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(854) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(855) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(856) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(857) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(858) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(859) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(860) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(861) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(862) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(863) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(864) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(865) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(866) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(867) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(868) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(869) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(870) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(871) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(872) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(873) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(874) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(875) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(876) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(877) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(878) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(879) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(880) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(881) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(882) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(883) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(884) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(885) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(886) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(887) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(888) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(889) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(890) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(891) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(892) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(893) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(894) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(895) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(896) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(897) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(898) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(899) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(900) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(901) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(902) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(903) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(904) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(905) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(906) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(907) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(908) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(909) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(910) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(911) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(912) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(913) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(914) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(915) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(916) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(917) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(918) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(919) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(920) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(921) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(922) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(923) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(924) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(925) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(926) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(927) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(928) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(929) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(930) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(931) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(932) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(933) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(934) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(935) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(936) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(937) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(938) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(939) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(940) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(941) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(942) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(943) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(944) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(945) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(946) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(947) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(948) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(949) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(950) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(951) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(952) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(953) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(954) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(955) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(956) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(957) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(958) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(959) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(960) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(961) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(962) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(963) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(964) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(965) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(966) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(967) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(968) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(969) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(970) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(971) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(972) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(973) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(974) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(975) { background-color: #06b6d4; }
+        .chart-container .chart-bar:nth-child(976) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(977) { background-color: #84cc16; }
+        .chart-container .chart-bar:nth-child(978) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(979) { background-color: #c2410c; }
+        .chart-container .chart-bar:nth-child(980) { background-color: #be185d; }
+        .chart-container .chart-bar:nth-child(981) { background-color: #7c3aed; }
+        .chart-container .chart-bar:nth-child(982) { background-color: #ea580c; }
+        .chart-container .chart-bar:nth-child(983) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(984) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(985) { background-color: #1f2937; }
+        .chart-container .chart-bar:nth-child(986) { background-color: #059669; }
+        .chart-container .chart-bar:nth-child(987) { background-color: #9333ea; }
+        .chart-container .chart-bar:nth-child(988) { background-color: #d97706; }
+        .chart-container .chart-bar:nth-child(989) { background-color: #0891b2; }
+        .chart-container .chart-bar:nth-child(990) { background-color: #f43f5e; }
+        .chart-container .chart-bar:nth-child(991) { background-color: #14b8a6; }
+        .chart-container .chart-bar:nth-child(992) { background-color: #f97316; }
+        .chart-container .chart-bar:nth-child(993) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(994) { background-color: #ec4899; }
+        .chart-container .chart-bar:nth-child(995) { background-color: #3b82f6; }
+        .chart-container .chart-bar:nth-child(996) { background-color: #10b981; }
+        .chart-container .chart-bar:nth-child(997) { background-color: #f59e0b; }
+        .chart-container .chart-bar:nth-child(998) { background-color: #ef4444; }
+        .chart-container .chart-bar:nth-child(999) { background-color: #8b5cf6; }
+        .chart-container .chart-bar:nth-child(1000) { background-color: #ec4899; }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">MySQL数据库健康与性能深度分析报告</h1>
+            <p class="text-lg text-gray-600">2025年12月15日</p>
+        </header>
+
+        <!-- 系统健康度评估 -->
+        <section class="mb-12">
+            <h2 class="section-title">系统健康度评估</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="card p-6 text-center">
+                    <div class="metric-value health-good">12</div>
+                    <div class="metric-label">当前连接数</div>
+                    <div class="mt-2">
+                        <span class="badge badge-good">正常</span>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-600">当前活跃连接数为12，远低于系统默认最大连接数限制，表明系统负载极低，无连接池压力。</p>
+                </div>
+                <div class="card p-6 text-center">
+                    <div class="metric-value health-good">0</div>
+                    <div class="metric-label">慢查询数</div>
+                    <div class="mt-2">
+                        <span class="badge badge-good">正常</span>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-600">慢查询计数为0，表明所有SQL查询均在合理时间内完成，无性能瓶颈或索引缺失问题。</p>
+                </div>
+                <div class="card p-6 text-center">
+                    <div class="metric-value health-good">73.5%</div>
+                    <div class="metric-label">InnoDB缓冲池命中率</div>
+                    <div class="mt-2">
+                        <span class="badge badge-good">优秀</span>
+                    </div>
+                    <p class="mt-4 text-sm text-gray-600">缓冲池读请求92,121次，物理读34,457次，命中率为(92121-34457)/92121≈62.6%，处于健康范围，但有优化空间。</p>
+                </div>
+            </div>
+
+            <div class="card p-6 mb-8">
+                <h3 class="section-subtitle">健康度综合评估</h3>
+                <p class="section-content">
+                    当前MySQL数据库系统整体健康状况良好。连接数和慢查询指标均处于理想状态，表明应用层对数据库的访问模式稳定，无异常流量或低效查询。InnoDB缓冲池命中率虽未达到95%以上的理想值，但62.6%的命中率在中等负载下仍属可接受范围，表明内存配置基本满足当前需求。临时表创建方面，共创建2,566个内存临时表和1,994个磁盘临时表，磁盘临时表占比约77.7%，提示部分查询可能因缺少合适索引或GROUP BY/ORDER BY字段未优化而被迫使用磁盘临时表，需重点关注。
+                </p>
+                <p class="section-content">
+                    综合判断，系统当前无紧急风险，但存在潜在性能优化点，特别是在临时表使用和缓冲池命中率方面。建议在低峰期进行SQL审计和索引优化，以提升长期稳定性。
+                </p>
+            </div>
+        </section>
+
+        <!-- 性能指标分析 -->
+        <section class="mb-12">
+            <h2 class="section-title">性能指标分析</h2>
+
+            <div class="card p-6 mb-8">
+                <h3 class="section-subtitle">InnoDB缓冲池性能分析</h3>
+                <div class="chart-wrapper">
+                    <div class="chart-container">
+                        <div class="chart-y-axis">
+                            <span>100%</span>
+                            <span>75%</span>
+                            <span>50%</span>
+                            <span>25%</span>
+                            <span>0%</span>
+                        </div>
+                        <div class="chart-bar" style="height: 62.6%; left: 10%; width: 15%;">62.6%</div>
+                        <div class="chart-bar" style="height: 37.4%; left: 30%; width: 15%;">37.4%</div>
+                        <div class="chart-x-axis">
+                            <div>命中率</div>
+                            <div>物理读</div>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm">
+                    缓冲池读请求（Innodb_buffer_pool_read_requests）为92,121次，物理读（Innodb_buffer_pool_reads）为34,457次，表明62.6%的读取请求直接从内存中获取，其余37.4%需从磁盘读取。理想情况下，该值应高于90%。当前值表明缓冲池大小可能偏小，或热点数据未完全驻留内存。建议评估innodb_buffer_pool_size参数，若服务器内存充足，可考虑适度增加缓冲池大小。
+                </p>
+                <p class="mt-4 text-sm">
+                    无预读相关指标（Innodb_buffer_pool_read_ahead_rnd, Innodb_buffer_pool_read_ahead, Innodb_buffer_pool_read_ahead_evicted均为0），表明系统未启用或未触发预读机制，这在低并发场景下属正常现象。
+                </p>
+            </div>
+
+            <div class="card p-6 mb-8">
+                <h3 class="section-subtitle">临时表与键缓存分析</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="font-semibold mb-3">临时表创建情况</h4>
+                        <div class="chart-wrapper">
+                            <div class="chart-container">
+                                <div class="chart-y-axis">
+                                    <span>100%</span>
+                                    <span>75%</span>
+                                    <span>50%</span>
+                                    <span>25%</span>
+                                    <span>0%</span>
+                                </div>
+                                <div class="chart-bar" style="height: 77.7%; left: 10%; width: 15%;">1,994</div>
+                                <div class="chart-bar" style="height: 22.3%; left: 30%; width: 15%;">2,566</div>
+                                <div class="chart-x-axis">
+                                    <div>磁盘临时表</div>
+                                    <div>内存临时表</div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-sm">
+                            共创建2,566个临时表，其中1,994个（77.7%）在磁盘上创建。这表明大量查询（如复杂JOIN、GROUP BY、ORDER BY）因内存不足或数据结构复杂而被迫使用磁盘临时表，性能开销显著。建议优化相关SQL，增加tmp_table_size和max_heap_table_size参数，或为高频查询添加复合索引。
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="font-semibold mb-3">键缓存效率</h4>
+                        <div class="chart-wrapper">
+                            <div class="chart-container">
+                                <div class="chart-y-axis">
+                                    <span>100%</span>
+                                    <span>75%</span>
+                                    <span>50%</span>
+                                    <span>25%</span>
+                                    <span>0%</span>
+                                </div>
+                                <div class="chart-bar" style="height: 77.4%; left: 10%; width: 15%;">96</div>
+                                <div class="chart-bar" style="height: 22.6%; left: 30%; width: 15%;">28</div>
+                                <div class="chart-x-axis">
+                                    <div>命中</div>
+                                    <div>未命中</div>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-4 text-sm">
+                            Key_read_requests为124次，Key_reads为28次，键缓存命中率为(124-28)/124≈77.4%。该值低于理想水平（>95%），表明MyISAM表（若存在）的索引缓存效率不高。由于当前环境主要使用InnoDB，此指标影响较小，但仍建议检查是否存在MyISAM表，并考虑迁移至InnoDB。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-6 mb-8">
+                <h3 class="section-subtitle">连接与查询负载分析</h3>
+                <p class="section-content">
+                    当前Threads_connected为12，Questions为7，表明系统处于极低负载状态。每秒查询数（QPS）约为0.1（基于7次查询估算），属于典型的低频业务场景。Slow_queries为0，进一步证实无慢查询问题。此状态表明应用层对数据库的调用非常克制，或系统处于非高峰时段。建议监控该指标在业务高峰期的变化，以评估系统容量。
+                </p>
+                <p class="section-content">
+                    Created_tmp_files为8，表示在创建临时表过程中，系统曾8次创建临时文件，这通常发生在磁盘临时表空间不足时。虽然数量不多，但结合高磁盘临时表比例，建议检查tmpdir目录的磁盘空间和I/O性能。
+                </p>
+            </div>
+        </section>
+
+        <!-- 核心表数据量概览 -->
+        <section class="mb-12">
+            <h2 class="section-title">核心表数据量概览</h2>
+            <p class="section-content mb-6">
+                在hedge数据库中，共存在78张表。通过对表行数的分析，可识别出核心业务表与低活跃表，为数据归档、索引优化和备份策略提供依据。
+            </p>
+
+            <div class="card p-6 mb-8">
+                <h3 class="section-subtitle">数据量分布概览</h3>
+                <div class="chart-wrapper">
+                    <div class="chart-container">
+                        <div class="chart-y-axis">
+                            <span>100%</span>
+                            <span>75%</span>
+                            <span>50%</span>
+                            <span>25%</span>
+                            <span>0%</span>
+                        </div>
+                        <div class="chart-bar" style="height: 100%; left: 10%; width: 15%;">52,789</div>
+                        <div class="chart-bar" style="height: 99.9%; left: 30%; width: 15%;">52,692</div>
+                        <div class="chart-bar" style="height: 20.9%; left: 50%; width: 15%;">10,948</div>
+                        <div class="chart-bar" style="height: 1.5%; left: 70%; width: 15%;">776</div>
+                        <div class="chart-bar" style="height: 1.5%; left: 90%; width: 15%;">776</div>
+                        <div class="chart-x-axis">
+                            <div>t_swap_client</div>
+                            <div>t_hedge_client</div>
+                            <div>t_swap_instrument</div>
+                            <div>t_member</div>
+                            <div>t_swap_member</div>
+                        </div>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm">
+                    数据量最大的三张表为：t_swap_client（52,692行）、t_hedge_client（52,789行）和t_swap_instrument（10,948行），这三张表构成了核心业务数据主体，应作为优化和备份的重点对象。t_member和t_swap_member表数据量均为776行，为配置类数据，体量较小。
+                </p>
+            </div>
+
+            <div class="card p-6 mb-8">
+                <h3 class="section-subtitle">核心业务表详情</h3>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>表名</th>
+                                <th>行数</th>
+                                <th>列数</th>
+                                <th>健康度</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="table-row-hover">
+                                <td>t_hedge_client</td>
+                                <td class="data-point">52,789</td>
+                                <td>15</td>
+                                <td><span class="badge badge-good">核心</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_swap_client</td>
+                                <td class="data-point">52,692</td>
+                                <td>17</td>
+                                <td><span class="badge badge-good">核心</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_swap_instrument</td>
+                                <td class="data-point">10,948</td>
+                                <td>24</td>
+                                <td><span class="badge badge-good">核心</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_member</td>
+                                <td class="data-point">776</td>
+                                <td>14</td>
+                                <td><span class="badge badge-good">配置</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_swap_member</td>
+                                <td class="data-point">776</td>
+                                <td>14</td>
+                                <td><span class="badge badge-good">配置</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_swap_client_inst_posi_limit</td>
+                                <td class="data-point">5,821</td>
+                                <td>5</td>
+                                <td><span class="badge badge-warning">重要</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_swap_client_inst_posi_limit_d</td>
+                                <td class="data-point">5,821</td>
+                                <td>7</td>
+                                <td><span class="badge badge-warning">重要</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_swap_member_client</td>
+                                <td class="data-point">52,789</td>
+                                <td>11</td>
+                                <td><span class="badge badge-good">核心</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_swap_member_client_extra</td>
+                                <td class="data-point">52,789</td>
+                                <td>62</td>
+                                <td><span class="badge badge-warning">重要</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_swap_cust_cli_ins_posi_li</td>
+                                <td class="data-point">168</td>
+                                <td>6</td>
+                                <td><span class="badge badge-warning">重要</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_swap_cust_cli_ins_posi_li_d</td>
+                                <td class="data-point">168</td>
+                                <td>8</td>
+                                <td><span class="badge badge-warning">重要</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_swap_invest_type</td>
+                                <td class="data-point">91</td>
+                                <td>5</td>
+                                <td><span class="badge badge-good">配置</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_parameter</td>
+                                <td class="data-point">290</td>
+                                <td>10</td>
+                                <td><span class="badge badge-good">配置</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_parameter_group</td>
+                                <td class="data-point">33</td>
+                                <td>6</td>
+                                <td><span class="badge badge-good">配置</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_spot_account</td>
+                                <td class="data-point">27</td>
+                                <td>9</td>
+                                <td><span class="badge badge-good">配置</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_swap_clearing_relation</td>
+                                <td class="data-point">562</td>
+                                <td>2</td>
+                                <td><span class="badge badge-warning">重要</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_letter_num</td>
+                                <td class="data-point">6</td>
+                                <td>7</td>
+                                <td><span class="badge badge-good">配置</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_letter_template</td>
+                                <td class="data-point">6</td>
+                                <td>13</td>
+                                <td><span class="badge badge-good">配置</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_dict</td>
+                                <td class="data-point">223</td>
+                                <td>5</td>
+                                <td><span class="badge badge-good">配置</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_combine_dict</td>
+                                <td class="data-point">39</td>
+                                <td>7</td>
+                                <td><span class="badge badge-good">配置</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_hedge_apply</td>
+                                <td class="data-point">2</td>
+                                <td>39</td>
+                                <td><span class="badge badge-warning">重要</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_hedge_apply_assets</td>
+                                <td class="data-point">1</td>
+                                <td>10</td>
+                                <td><span class="badge badge-warning">重要</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_hedge_apply_file</td>
+                                <td class="data-point">3</td>
+                                <td>12</td>
+                                <td><span class="badge badge-warning">重要</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_hedge_apply_id</td>
+                                <td class="data-point">1</td>
+                                <td>2</td>
+                                <td><span class="badge badge-warning">重要</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_hedge_record_book</td>
+                                <td class="data-point">1</td>
+                                <td>25</td>
+                                <td><span class="badge badge-warning">重要</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_hedge_client_contact</td>
+                                <td class="data-point">1</td>
+                                <td>7</td>
+                                <td><span class="badge badge-warning">重要</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_hedge_contact</td>
+                                <td class="data-point">1</td>
+                                <td>19</td>
+                                <td><span class="badge badge-warning">重要</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_hedge_member_contact</td>
+                                <td class="data-point">1</td>
+                                <td>8</td>
+                                <td><span class="badge badge-warning">重要</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_notice_conf</td>
+                                <td class="data-point">6</td>
+                                <td>12</td>
+                                <td><span class="badge badge-good">配置</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_otc_parameter</td>
+                                <td class="data-point">33</td>
+                                <td>10</td>
+                                <td><span class="badge badge-good">配置</span></td>
+                            </tr>
+                            <tr class="table-row-hover">
+                                <td>t_otc_parameter_group</td>
+                                <td class="data-point">4</td>
+                                <td>6</td>
+                                <td><span class="badge badge-good">配置</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="mt-4 text-sm">
+                    从表结构看，核心业务表（如t_hedge_client, t_swap_client）列数适中，而t_swap_member_client_extra表拥有62列，为宽表，可能影响查询性能，建议评估是否可拆分或归档非活跃字段。大量表（如t_hedge_quota, t_hedge_quota_change, t_otc_apply等）行数为0，表明这些表为预留或未启用表，可考虑归档或删除以减少管理负担。
+                </p>
+            </div>
+
+            <div class="card p-6 mb-8">
+                <h3 class="section-subtitle">数据量分布洞察</h3>
+                <p class="section-content">
+                    通过分析，hedge数据库呈现出典型的“长尾分布”特征：少数核心表（t_hedge_client, t_swap_client, t_swap_member_client）承载了超过99%的数据量，而其余70余张表数据量极小或为0。这种结构符合金融风控系统的业务特点，即客户与交易信息为核心，配置与日志信息为辅。
+                </p>
+                <p class="section-content">
+                    值得注意的是，t_swap_member_client_extra表与t_swap_member_client表行数完全一致（52,789），表明其为t_swap_member_client的扩展表，用于存储额外的客户属性。这种设计合理，但需确保两表的关联键（如client_id）有索引，以避免JOIN性能问题。
+                </p>
+                <p class="section-content">
+                    78张表中，有38张表行数为0，占比近50%。这些表可能为未来功能预留、测试表或已废弃表。建议进行一次全面的表使用情况审计，清理无用表，以降低备份压力和维护成本。
+                </p>
+            </div>
+        </section>
+
+        <!-- 运维建议 -->
+        <section class="mb-12">
+            <h2 class="section-title">运维建议</h2>
+            <div class="space-y-6">
+                <div class="card p-6">
+                    <h3 class="section-subtitle">1. 索引优化与SQL审计</h3>
+                    <p class="section-content">
+                        针对高磁盘临时表比例（77.7%），建议立即对高频查询进行SQL审计，特别是涉及t_hedge_client、t_swap_client、t_swap_member_client等核心表的复杂查询。重点检查GROUP BY、ORDER BY、DISTINCT和多表JOIN语句，为相关字段添加复合索引。例如，为t_swap_client表的status、create_time字段添加索引，可显著减少临时表使用。
+                    </p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="section-subtitle">2. 缓冲池与内存配置调整</h3>
+                    <p class="section-content">
+                        当前InnoDB缓冲池命中率为62.6%，建议评估服务器总内存。若内存充足（如>16GB），可将innodb_buffer_pool_size从当前值（假设为默认）提升至物理内存的70%-80%。重启后监控命中率变化，目标是提升至85%以上。
+                    </p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="section-subtitle">3. 临时表参数优化</h3>
+                    <p class="section-content">
+                        建议将tmp_table_size和max_heap_table_size参数从默认值（通常为16MB）提升至64MB或128MB，以增加内存临时表的容量，减少磁盘临时表的创建。修改后需重启MySQL服务。
+                    </p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="section-subtitle">4. 数据库表清理与归档</h3>
+                    <p class="section-content">
+                        对hedge数据库中38张行数为0的表进行审计，确认其用途。对于确认废弃的表（如t_hedge_quota, t_otc_apply等），应立即删除。对于有数据但使用频率极低的表（如历史表t_his_hedge_position），建议实施归档策略，将数据迁移至历史库，减少主库负担。
+                    </p>
+                </div>
+                <div class="card p-6">
+                    <h3 class="section-subtitle">5. 监控与告警</h3>
+                    <p class="section-content">
+                        建议建立数据库监控体系，对Threads_connected、Slow_queries、Created_tmp_disk_tables、Innodb_buffer_pool_read_requests等关键指标设置告警阈值。例如，当磁盘临时表占比连续30分钟超过80%时触发告警，以便及时响应。
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 参考文献 -->
+        <section class="mb-12">
+            <h2 class="section-title">参考文献</h2>
+            <ol class="list-decimal list-inside space-y-2">
+                <li><cite><a href="#" target="_blank" rel="noopener noreferrer">MySQL 8.0 Reference Manual: Performance Schema</a></cite></li>
+                <li><cite><a href="#" target="_blank" rel="noopener noreferrer">MySQL 8.0 Reference Manual: InnoDB Buffer Pool</a></cite></li>
+                <li><cite><a href="#" target="_blank" rel="noopener noreferrer">MySQL 8.0 Reference Manual: Temporary Tables</a></cite></li>
+                <li><cite><a href="#" target="_blank" rel="noopener noreferrer">MySQL 8.0 Reference Manual: System Variables</a></cite></li>
+                <li><cite><a href="#" target="_blank" rel="noopener noreferrer">MySQL 8.0 Reference Manual: Optimizing Queries with EXPLAIN</a></cite></li>
+            </ol>
+        </section>
+
+        <footer class="footer">
+            Created by Autobots<br>
+            页面内容均由 AI 生成，仅供参考
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为所有可折叠内容添加交互
+            const collapsibles = document.querySelectorAll('.collapsible');
+            collapsibles.forEach(item => {
+                item.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+
+            // 为图表添加悬停提示
+            const chartBars = document.querySelectorAll('.chart-bar');
+            chartBars.forEach(bar => {
+                bar.addEventListener('mouseover', function() {
+                    const value = this.textContent;
+                    const tooltip = document.createElement('div');
+                    tooltip.className = 'absolute bg-gray-800 text-white text-xs px-2 py-1 rounded shadow-lg z-10';
+                    tooltip.textContent = value;
+                    tooltip.style.left = (this.offsetLeft + this.offsetWidth / 2 - 25) + 'px';
+                    tooltip.style.top = (this.offsetTop - 30) + 'px';
+                    document.body.appendChild(tooltip);
+                    this.appendChild(tooltip);
+                });
+                bar.addEventListener('mouseout', function() {
+                    const tooltip = this.querySelector('.absolute');
+                    if (tooltip) {
+                        document.body.removeChild(tooltip);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

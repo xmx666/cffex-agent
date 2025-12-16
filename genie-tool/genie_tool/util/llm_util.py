@@ -28,20 +28,39 @@ def filter_think_content(content: str, is_report_generation: bool = False) -> st
     if not content:
         return content
 
-    # 如果是报告生成场景，需要更严格的过滤
+    # 如果是报告生成场景，需要更严格的过滤，但要保留HTML格式
     if is_report_generation:
-        # 过滤掉明显的think标签内容
+        # 对于报告生成场景（HTML/PPT/Markdown报告），所有内容都应该保留原始格式
+        # 因为报告生成时，大模型返回的代码格式是正确的，不应该被修改
+        # 只过滤明显的think标签内容，不进行任何strip操作
+
+        think_markers = [
+            '思考：', '让我想想', '我需要', '首先', '然后', '接下来',
+            'think:', 'thinking:', 'let me think', 'i need to'
+        ]
+
+        # 只过滤明显的think标签内容，不进行行级别的strip
         patterns = [
             r'<think>.*?</think>',  # <think>标签内容
             r'<thinking>.*?</thinking>',  # <thinking>标签内容
-            r'思考：.*?(?=\n|$)',  # 思考：开头的内容
-            r'让我思考一下.*?(?=\n|$)',  # 让我思考一下开头的内容
-            r'我需要.*?(?=\n|$)',  # 我需要开头的内容
-            r'首先.*?(?=\n|$)',  # 首先开头的内容（如果是思考过程）
         ]
 
         for pattern in patterns:
             content = re.sub(pattern, '', content, flags=re.DOTALL | re.IGNORECASE)
+
+        # 检查是否有明显的think标记行（但不要strip，保留原始格式）
+        lines = content.split('\n')
+        filtered_lines = []
+
+        for line in lines:
+            # 对于报告生成场景，不strip，保留原始格式（包括空格）
+            # 只跳过明显的思考过程行
+            line_lower = line.lower().strip()
+            if any(marker in line_lower for marker in think_markers):
+                continue
+            filtered_lines.append(line)  # 保留原始格式，不strip
+
+        return '\n'.join(filtered_lines)
 
     # 通用过滤：移除明显的思考过程标记
     think_markers = [
@@ -90,8 +109,19 @@ async def ask_llm(
             else:
                 message["content"] = json.loads(
                     SensitiveWordsReplace.replace(json.dumps(message["content"], ensure_ascii=False)))
+    # 为qwen3模型添加think控制参数
     if "qwen3" in model.lower():
-        kwargs["chat_template_kwargs"]={"enable_thinking":False}
+        kwargs["chat_template_kwargs"] = {"enable_thinking": False}
+
+    # 如果是报告生成场景，记录完整的消息格式用于调试
+    if is_report_generation:
+        import json
+        from loguru import logger
+        logger.info("=" * 80)
+        logger.info("ask_llm 最终发送给大模型的完整消息（完整内容，不做拆分）:")
+        logger.info("=" * 80)
+        logger.info(json.dumps(messages, ensure_ascii=False, indent=2))
+        logger.info("=" * 80)
 
     response = await acompletion(
         messages=messages,

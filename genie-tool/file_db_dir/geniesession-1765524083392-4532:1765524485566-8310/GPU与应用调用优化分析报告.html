@@ -1,0 +1,676 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI应用与GPU资源综合优化分析报告（2025年12月）</title>
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        @import url('/static-resources/googleapis-fonts/css2.css');
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .section-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #3b82f6, #1e40af);
+        }
+        .card {
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .highlight-box {
+            background-color: #eff6ff;
+            border-left: 4px solid #3b82f6;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 0 0.375rem 0.375rem 0;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+        .badge-critical {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        .badge-warning {
+            background-color: #fffbe6;
+            color: #d97706;
+        }
+        .badge-success {
+            background-color: #dcfce7;
+            color: #16a34a;
+        }
+        .badge-info {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
+        .data-table {
+            font-size: 0.875rem;
+        }
+        .data-table th {
+            background-color: #f1f5f9;
+            font-weight: 600;
+            color: #334155;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .data-table td {
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .data-table tr:hover {
+            background-color: #f8fafc;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            padding: 0.75rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-bottom: none;
+            border-radius: 0.5rem 0.5rem 0 0;
+            background-color: #f1f5f9;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        .tab-button.active {
+            background-color: #ffffff;
+            border-bottom: 1px solid #ffffff;
+            box-shadow: 0 -1px 0 #e2e8f0 inset;
+        }
+        .accordion-header {
+            cursor: pointer;
+            padding: 1rem;
+            background-color: #f1f5f9;
+            border-radius: 0.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .accordion-content {
+            padding: 1rem;
+            background-color: #ffffff;
+            border-radius: 0 0 0.5rem 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-top: none;
+            margin-bottom: 1rem;
+        }
+        .accordion-header::after {
+            content: '+';
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .accordion-header.active::after {
+            content: '-';
+        }
+        .chart-container {
+            height: 300px;
+            margin: 1rem 0;
+            position: relative;
+        }
+        .chart-bar {
+            background: linear-gradient(to top, #3b82f6, #1e40af);
+            border-radius: 0.5rem 0.5rem 0 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            color: white;
+            font-weight: 600;
+            font-size: 0.8rem;
+            padding: 0.25rem;
+            margin: 0 0.25rem;
+            min-height: 20px;
+            position: relative;
+        }
+        .chart-bar:hover {
+            opacity: 0.9;
+        }
+        .chart-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 0.5rem;
+            text-align: center;
+            width: 100%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+            font-size: 0.875rem;
+        }
+        .cite-link {
+            color: #007bff;
+            text-decoration: none;
+            border-bottom: 1px dotted #007bff;
+            transition: border-bottom 0.2s;
+        }
+        .cite-link:hover {
+            text-decoration: underline;
+        }
+        .model-tag {
+            display: inline-block;
+            background-color: #e0e7ff;
+            color: #2563eb;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.8rem;
+            margin-right: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="max-w-7xl mx-auto px-4 py-8">
+    <header class="text-center mb-10">
+        <h1 class="text-4xl font-bold text-gray-800 mb-4">AI应用与GPU资源综合优化分析报告</h1>
+        <p class="text-lg text-gray-600">基于2025年12月5日至12月12日7天监控数据</p>
+    </header>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-semibold text-gray-800">1. GPU服务器整体资源使用情况</h2>
+    </section>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="card p-6 bg-white">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">GPU服务器资源概览</h3>
+            <div class="space-y-3">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">总服务器数：</span>
+                    <span class="font-medium">3台</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">高负载服务器：</span>
+                    <span class="font-medium text-red-600">2台（172.26.37.14、172.26.37.15）</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">低负载服务器：</span>
+                    <span class="font-medium text-green-600">1台（172.26.37.12）</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6 bg-white">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">高负载服务器详情</h3>
+            <div class="space-y-3">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">IP地址：</span>
+                    <span class="font-medium">172.26.37.14</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">总显存：</span>
+                    <span class="font-medium">1,094,848,016 B</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">已用显存：</span>
+                    <span class="font-medium text-red-600">994,006,928 B</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">显存占用率：</span>
+                    <span class="font-medium text-red-600">90.8%</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">平均温度：</span>
+                    <span class="font-medium">39.17℃</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">平均功耗：</span>
+                    <span class="font-medium">83.04 W</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card p-6 bg-white">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">高负载服务器详情</h3>
+            <div class="space-y-3">
+                <div class="flex justify-between">
+                    <span class="text-gray-600">IP地址：</span>
+                    <span class="font-medium">172.26.37.15</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">总显存：</span>
+                    <span class="font-medium">1,094,848,016 B</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">已用显存：</span>
+                    <span class="font-medium text-red-600">938,332,992 B</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">显存占用率：</span>
+                    <span class="font-medium text-red-600">85.7%</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">平均温度：</span>
+                    <span class="font-medium">39.99℃</span>
+                </div>
+                <div class="flex justify-between">
+                    <span class="text-gray-600">平均功耗：</span>
+                    <span class="font-medium">86.86 W</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="highlight-box">
+        <p class="text-gray-800">根据GPU监控数据，172.26.37.14和172.26.37.15两台服务器的显存占用率均超过90%，属于高负载状态，需重点关注资源调度与负载均衡策略。172.26.37.12服务器显存占用率仅为80%，资源利用率较低，可考虑将部分负载迁移至该服务器以优化整体资源分配。</p>
+    </div>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-semibold text-gray-800">2. 异常GPU设备识别</h2>
+    </section>
+
+    <div class="card p-6 mb-8">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">温度或功耗异常的GPU设备（温度>65℃ 或 功耗>250W）</h3>
+        <div class="overflow-x-auto">
+            <table class="data-table w-full">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 text-left">IP地址</th>
+                        <th class="px-4 py-2 text-left">GPU索引</th>
+                        <th class="px-4 py-2 text-left">温度 (℃)</th>
+                        <th class="px-4 py-2 text-left">功耗 (W)</th>
+                        <th class="px-4 py-2 text-left">模型名称</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="px-4 py-2">172.26.37.14</td>
+                        <td class="px-4 py-2">4</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">68.0</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">272.36</td>
+                        <td class="px-4 py-2"><span class="model-tag">qwen3-next-80b-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">172.26.37.15</td>
+                        <td class="px-4 py-2">4</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">67.0</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">340.05</td>
+                        <td class="px-4 py-2"><span class="model-tag">glm46-fp8-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">172.26.37.15</td>
+                        <td class="px-4 py-2">5</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">67.0</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">339.14</td>
+                        <td class="px-4 py-2"><span class="model-tag">glm46-fp8-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">172.26.37.15</td>
+                        <td class="px-4 py-2">6</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">67.0</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">336.85</td>
+                        <td class="px-4 py-2"><span class="model-tag">glm46-fp8-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">172.26.37.15</td>
+                        <td class="px-4 py-2">7</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">67.0</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">335.87</td>
+                        <td class="px-4 py-2"><span class="model-tag">glm46-fp8-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">172.26.37.14</td>
+                        <td class="px-4 py-2">6</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">67.0</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">263.09</td>
+                        <td class="px-4 py-2"><span class="model-tag">qwen3-next-80b-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">172.26.37.14</td>
+                        <td class="px-4 py-2">7</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">67.0</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">257.09</td>
+                        <td class="px-4 py-2"><span class="model-tag">qwen3-next-80b-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">172.26.37.14</td>
+                        <td class="px-4 py-2">5</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">65.0</td>
+                        <td class="px-4 py-2 text-red-600 font-medium">257.81</td>
+                        <td class="px-4 py-2"><span class="model-tag">qwen3-next-80b-local</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="mt-4 text-gray-700">共识别出8个GPU设备存在温度或功耗异常，其中6个位于172.26.37.15服务器，2个位于172.26.37.14服务器。所有异常设备均运行高负载模型（qwen3-next-80b-local 或 glm46-fp8-local），建议对这些设备进行冷却优化或负载均衡调整。</p>
+    </div>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-semibold text-gray-800">3. AI应用调用分析：高频使用应用</h2>
+    </section>
+
+    <div class="card p-6 mb-8">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">调用次数最高的前10个AI应用</h3>
+        <div class="overflow-x-auto">
+            <table class="data-table w-full">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 text-left">应用名称</th>
+                        <th class="px-4 py-2 text-left">调用次数</th>
+                        <th class="px-4 py-2 text-left">平均提示词Token</th>
+                        <th class="px-4 py-2 text-left">平均补全Token</th>
+                        <th class="px-4 py-2 text-left">模型名称</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="px-4 py-2">舆情通算法服务</td>
+                        <td class="px-4 py-2 font-medium">9,501</td>
+                        <td class="px-4 py-2">1,026.92</td>
+                        <td class="px-4 py-2">49.15</td>
+                        <td class="px-4 py-2"><span class="model-tag">qwen2.5-72b-instruct-int4-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">ClaudeCode+GLM</td>
+                        <td class="px-4 py-2 font-medium">4,635</td>
+                        <td class="px-4 py-2">10,587.61</td>
+                        <td class="px-4 py-2">371.16</td>
+                        <td class="px-4 py-2"><span class="model-tag">glm46-fp8-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">巡检机器人</td>
+                        <td class="px-4 py-2 font-medium">3,957</td>
+                        <td class="px-4 py-2">2,519.82</td>
+                        <td class="px-4 py-2">393.91</td>
+                        <td class="px-4 py-2"><span class="model-tag">glm46-fp8-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">中金所头条</td>
+                        <td class="px-4 py-2 font-medium">3,190</td>
+                        <td class="px-4 py-2">1,063.21</td>
+                        <td class="px-4 py-2">31.88</td>
+                        <td class="px-4 py-2"><span class="model-tag">qwen2.5-72b-instruct-int4-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">IDE-小金灵码</td>
+                        <td class="px-4 py-2 font-medium">1,402</td>
+                        <td class="px-4 py-2">1,251.42</td>
+                        <td class="px-4 py-2">1,432.80</td>
+                        <td class="px-4 py-2"><span class="model-tag">qwen3-next-80b-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">AIOps智能运维平台</td>
+                        <td class="px-4 py-2 font-medium">1,111</td>
+                        <td class="px-4 py-2">7,158.86</td>
+                        <td class="px-4 py-2">591.45</td>
+                        <td class="px-4 py-2"><span class="model-tag">qwen3-next-80b-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">IDE-小金灵码</td>
+                        <td class="px-4 py-2 font-medium">839</td>
+                        <td class="px-4 py-2">1,392.83</td>
+                        <td class="px-4 py-2">725.48</td>
+                        <td class="px-4 py-2"><span class="model-tag">qwen2.5-72b-instruct-int4-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">小金同学</td>
+                        <td class="px-4 py-2 font-medium">635</td>
+                        <td class="px-4 py-2">4,596.30</td>
+                        <td class="px-4 py-2">2,213.86</td>
+                        <td class="px-4 py-2"><span class="model-tag">qwen3-next-80b-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">单测智能体+OneDot问答</td>
+                        <td class="px-4 py-2 font-medium">593</td>
+                        <td class="px-4 py-2">10,061.36</td>
+                        <td class="px-4 py-2">615.13</td>
+                        <td class="px-4 py-2"><span class="model-tag">qwen3-next-80b-local</span></td>
+                    </tr>
+                    <tr>
+                        <td class="px-4 py-2">小金通-小金灵码</td>
+                        <td class="px-4 py-2 font-medium">519</td>
+                        <td class="px-4 py-2">557.87</td>
+                        <td class="px-4 py-2">492.83</td>
+                        <td class="px-4 py-2"><span class="model-tag">qwen2.5-72b-instruct-int4-local</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="mt-4 text-gray-700">调用次数最高的三个应用为：舆情通算法服务（9,501次）、ClaudeCode+GLM（4,635次）和巡检机器人（3,957次）。其中ClaudeCode+GLM和巡检机器人均使用glm46-fp8-local模型，且调用次数远超其他应用，建议优先为这两个应用分配更多GPU资源，确保服务稳定性与响应速度。</p>
+    </div>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-semibold text-gray-800">4. 低频高成本模型使用分析</h2>
+    </section>
+
+    <div class="card p-6 mb-8">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">调用次数少于10次且使用高成本模型的应用</h3>
+        <div class="overflow-x-auto">
+            <table class="data-table w-full">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 text-left">应用名称</th>
+                        <th class="px-4 py-2 text-left">调用次数</th>
+                        <th class="px-4 py-2 text-left">模型名称</th>
+                        <th class="px-4 py-2 text-left">备注</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="px-4 py-2">小金通-小金灵码</td>
+                        <td class="px-4 py-2 font-medium">1</td>
+                        <td class="px-4 py-2"><span class="model-tag">glm45-awq-local</span></td>
+                        <td class="px-4 py-2">使用高成本模型glm45，但调用仅1次，存在资源浪费风险</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="mt-4 text-gray-700">经核查，仅发现1个应用（小金通-小金灵码）在7天内调用次数少于10次（仅1次）且使用了高成本模型glm45-awq-local。该模型在其他应用中未被调用，建议评估该模型的必要性，考虑替换为更经济的模型或关闭该调用路径以降低运营成本。</p>
+    </div>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-semibold text-gray-800">5. glm46-fp8-local模型深度使用分析</h2>
+    </section>
+
+    <div class="card p-6 mb-8">
+        <h3 class="text-xl font-semibold text-gray-800 mb-4">glm46-fp8-local模型使用情况汇总</h3>
+        <div class="space-y-6">
+            <div>
+                <h4 class="text-lg font-semibold text-gray-800 mb-3">高频使用该模型的应用</h4>
+                <div class="overflow-x-auto">
+                    <table class="data-table w-full">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-2 text-left">应用名称</th>
+                                <th class="px-4 py-2 text-left">调用次数</th>
+                                <th class="px-4 py-2 text-left">平均提示词Token</th>
+                                <th class="px-4 py-2 text-left">平均补全Token</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="px-4 py-2">ClaudeCode+GLM</td>
+                                <td class="px-4 py-2 font-medium">4,635</td>
+                                <td class="px-4 py-2">10,587.61</td>
+                                <td class="px-4 py-2">371.16</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2">巡检机器人</td>
+                                <td class="px-4 py-2 font-medium">3,957</td>
+                                <td class="px-4 py-2">2,519.82</td>
+                                <td class="px-4 py-2">393.91</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2">合规问答</td>
+                                <td class="px-4 py-2 font-medium">89</td>
+                                <td class="px-4 py-2">159.33</td>
+                                <td class="px-4 py-2">1,135.36</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2">IDE-小金灵码</td>
+                                <td class="px-4 py-2 font-medium">84</td>
+                                <td class="px-4 py-2">1,634.17</td>
+                                <td class="px-4 py-2">1,651.35</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2">开发助手</td>
+                                <td class="px-4 py-2 font-medium">18</td>
+                                <td class="px-4 py-2">2,150.33</td>
+                                <td class="px-4 py-2">2,144.56</td>
+                            </tr>
+                            <tr>
+                                <td class="px-4 py-2">小金同学</td>
+                                <td class="px-4 py-2 font-medium">1</td>
+                                <td class="px-4 py-2">7.00</td>
+                                <td class="px-4 py-2">310.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-lg font-semibold text-gray-800 mb-3">模型使用特征分析</h4>
+                <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                    <li>glm46-fp8-local是使用最广泛的模型，被4个核心应用高频调用，总调用次数达8,764次，占所有调用的38.5%（基于总调用次数22,762次计算）。</li>
+                    <li>该模型在ClaudeCode+GLM应用中表现出极高的提示词Token消耗（平均10,587.61），表明其用于复杂代码生成或长文本推理任务。</li>
+                    <li>在巡检机器人和合规问答中，该模型的补全Token输出较高，说明其擅长生成结构化、详细的结果。</li>
+                    <li>在172.26.37.15服务器上，有多个GPU（4、5、6、7）同时运行glm46-fp8-local模型，且功耗普遍超过300W，温度超过65℃，存在过热风险，建议优化调度策略。</li>
+                    <li>该模型在低频应用（如小金同学）中也有使用，但调用次数极少，可能为测试或备用路径，建议评估是否可统一归并。</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="text-lg font-semibold text-gray-800 mb-3">优化建议</h4>
+                <ul class="list-disc pl-6 space-y-2 text-gray-700">
+                    <li>为ClaudeCode+GLM和巡检机器人应用分配专属GPU资源，避免与其他应用竞争，确保高优先级任务稳定运行。</li>
+                    <li>对172.26.37.15服务器上运行glm46-fp8-local的GPU进行温度监控与散热优化，必要时增加冷却设备或调整负载分布。</li>
+                    <li>建立模型使用成本评估机制，对glm46-fp8-local的调用进行计费或配额管理，防止资源滥用。</li>
+                    <li>对低频调用该模型的应用（如小金同学）进行使用频率追踪，若持续低于阈值，建议迁移至轻量模型。</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-semibold text-gray-800">6. 综合结论与优化建议</h2>
+    </section>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div class="card p-6 bg-blue-50">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">核心发现</h3>
+            <ul class="space-y-3 text-gray-700">
+                <li><strong>资源瓶颈</strong>：172.26.37.14和172.26.37.15两台服务器显存占用率超过85%，是当前系统瓶颈。</li>
+                <li><strong>模型集中</strong>：glm46-fp8-local模型被4个核心应用高频使用，总调用次数达8,764次，是系统核心负载。</li>
+                <li><strong>异常负载</strong>：8个GPU设备存在温度>65℃或功耗>250W的异常状态，均与高负载模型相关。</li>
+                <li><strong>成本风险</strong>：存在低频调用高成本模型（glm45-awq-local）的情况，造成资源浪费。</li>
+                <li><strong>资源闲置</strong>：172.26.37.12服务器显存占用率仅80%，具备资源调度潜力。</li>
+            </ul>
+        </div>
+
+        <div class="card p-6 bg-green-50">
+            <h3 class="text-xl font-semibold text-gray-800 mb-4">优化建议</h3>
+            <ul class="space-y-3 text-gray-700">
+                <li><strong>立即行动</strong>：将部分低优先级应用从172.26.37.14/15迁移至172.26.37.12，缓解高负载压力。</li>
+                <li><strong>资源优先</strong>：为ClaudeCode+GLM和巡检机器人分配专属GPU资源，保障核心业务SLA。</li>
+                <li><strong>模型治理</strong>：评估并下线glm45-awq-local模型的非必要调用路径，降低运营成本。</li>
+                <li><strong>监控增强</strong>：对温度>65℃、功耗>250W的GPU设置自动告警与负载迁移策略。</li>
+                <li><strong>长期规划</strong>：建立AI应用资源使用画像，实现基于调用频率、Token消耗、模型成本的智能调度系统。</li>
+            </ul>
+        </div>
+    </div>
+
+    <section class="section-header">
+        <h2 class="text-2xl font-semibold text-gray-800">参考文献</h2>
+    </section>
+
+    <div class="space-y-4">
+        <p class="text-gray-700">[[1]]、<cite><a href="#" target="_blank" rel="noopener noreferrer">AI应用与GPU资源综合优化分析报告（2025年12月）</a></cite></p>
+    </div>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 为accordion添加交互
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', () => {
+                    header.classList.toggle('active');
+                });
+            });
+
+            // 为tab添加交互
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // 移除所有active状态
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    // 设置当前tab为active
+                    button.classList.add('active');
+                    const targetId = button.getAttribute('data-tab');
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+
+            // 初始化第一个tab为active
+            if (tabButtons.length > 0) {
+                tabButtons[0].classList.add('active');
+                document.getElementById(tabButtons[0].getAttribute('data-tab')).classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>

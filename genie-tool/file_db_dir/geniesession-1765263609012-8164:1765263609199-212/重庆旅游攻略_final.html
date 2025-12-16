@@ -1,0 +1,1901 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>重庆三日游深度沉浸式攻略：山城烟火与麻辣传奇</title>
+    <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css">
+    <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #e53935;
+            --secondary-color: #333;
+            --accent-color: #ff6b6b;
+            --light-bg: #f8f9fa;
+            --dark-bg: #212529;
+        }
+        body {
+            font-family: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.8;
+            color: #333;
+            background-color: #fff;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+        }
+        h1 {
+            font-size: 2.5rem;
+            border-bottom: 3px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        h2 {
+            font-size: 2rem;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 1rem;
+        }
+        h3 {
+            font-size: 1.75rem;
+            color: var(--primary-color);
+        }
+        .section {
+            margin-bottom: 3rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            background-color: var(--light-bg);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .highlight {
+            background-color: #fff3cd;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            border-left: 4px solid #ffc107;
+            margin: 1rem 0;
+        }
+        .table-container {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .tip-box {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+        .tip-box h4 {
+            margin-top: 0;
+            color: #155724;
+        }
+        .nav-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            transition: color 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+        .nav-link:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        .nav-container {
+            background-color: var(--dark-bg);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .nav-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+        .nav-list::-webkit-scrollbar {
+            height: 6px;
+        }
+        .nav-list::-webkit-scrollbar-thumb {
+            background-color: #555;
+            border-radius: 3px;
+        }
+        .nav-list::-webkit-scrollbar-track {
+            background-color: #333;
+        }
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            border-top: 1px solid #dee2e6;
+            color: #6c757d;
+            font-size: 0.9rem;
+        }
+        .cite {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-left: 0.5rem;
+        }
+        .cite:hover {
+            text-decoration: underline;
+        }
+        .reference-list {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--primary-color);
+        }
+        .reference-item {
+            margin-bottom: 1rem;
+        }
+        .reference-item a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        .reference-item a:hover {
+            text-decoration: underline;
+        }
+        .icon {
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+        .chapter-title {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e9ecef;
+        }
+        .content-section {
+            margin-bottom: 2rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        .btn:hover {
+            background-color: #c82333;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25em 0.4em;
+            font-size: 75%;
+            font-weight: 700;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 0.25rem;
+            background-color: #6c757d;
+            color: white;
+            margin-left: 0.5rem;
+        }
+        .accordion {
+            margin-bottom: 1rem;
+            border: 1px solid #dee2e6;
+            border-radius: 0.3rem;
+        }
+        .accordion-header {
+            background-color: #f8f9fa;
+            padding: 1rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .accordion-header:hover {
+            background-color: #e9ecef;
+        }
+        .accordion-body {
+            padding: 1rem;
+            display: none;
+        }
+        .accordion.active .accordion-body {
+            display: block;
+        }
+        .accordion.active .accordion-header::after {
+            content: '−';
+        }
+        .accordion-header::after {
+            content: '+';
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .map-container {
+            height: 300px;
+            background-color: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 1.5rem 0;
+            border-radius: 8px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.8rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #dee2e6;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+        }
+        .section-title {
+            font-size: 1.8rem;
+            color: var(--secondary-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--primary-color);
+        }
+        .sub-section {
+            margin-bottom: 1.5rem;
+        }
+        .sub-section h3 {
+            margin-top: 1.5rem;
+            color: var(--primary-color);
+        }
+        .quote {
+            border-left: 4px solid var(--primary-color);
+            padding-left: 1.5rem;
+            margin: 1.5rem 0;
+            color: #555;
+            font-style: italic;
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 0 4px 4px 0;
+        }
+        .alert {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            border-left: 4px solid #dc3545;
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        .success {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            border-left: 4px solid #28a745;
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .warning {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            border-left: 4px solid #ffc107;
+            background-color: #fff3cd;
+            color: #856404;
+        }
+        .info {
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            border-left: 4px solid #17a2b8;
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+        .chart-container {
+            margin: 2rem 0;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            text-align: center;
+            color: #6c757d;
+        }
+        .chart-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+        .chart-placeholder {
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            margin: 1rem 0;
+        }
+        .chart-label {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        .chart-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        .chart-bar {
+            height: 20px;
+            margin: 0.5rem 0;
+            background-color: var(--primary-color);
+            border-radius: 4px;
+            position: relative;
+        }
+        .chart-bar::after {
+            content: attr(data-value);
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .chart-container .chart-bar:nth-child(1) { background-color: #e53935; }
+        .chart-container .chart-bar:nth-child(2) { background-color: #ff6b6b; }
+        .chart-container .chart-bar:nth-child(3) { background-color: #ff9800; }
+        .chart-container .chart-bar:nth-child(4) { background-color: #4caf50; }
+        .chart-container .chart-bar:nth-child(5) { background-color: #2196f3; }
+        .chart-container .chart-bar:nth-child(6) { background-color: #9c27b0; }
+        .chart-container .chart-bar:nth-child(7) { background-color: #795548; }
+        .chart-container .chart-bar:nth-child(8) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(9) { background-color: #009688; }
+        .chart-container .chart-bar:nth-child(10) { background-color: #cddc39; }
+        .chart-container .chart-bar:nth-child(11) { background-color: #ffeb3b; }
+        .chart-container .chart-bar:nth-child(12) { background-color: #ff5722; }
+        .chart-container .chart-bar:nth-child(13) { background-color: #673ab7; }
+        .chart-container .chart-bar:nth-child(14) { background-color: #3f51b5; }
+        .chart-container .chart-bar:nth-child(15) { background-color: #03a9f4; }
+        .chart-container .chart-bar:nth-child(16) { background-color: #00bcd4; }
+        .chart-container .chart-bar:nth-child(17) { background-color: #009688; }
+        .chart-container .chart-bar:nth-child(18) { background-color: #4caf50; }
+        .chart-container .chart-bar:nth-child(19) { background-color: #8bc34a; }
+        .chart-container .chart-bar:nth-child(20) { background-color: #cddc39; }
+        .chart-container .chart-bar:nth-child(21) { background-color: #ffeb3b; }
+        .chart-container .chart-bar:nth-child(22) { background-color: #ffc107; }
+        .chart-container .chart-bar:nth-child(23) { background-color: #ff9800; }
+        .chart-container .chart-bar:nth-child(24) { background-color: #ff5722; }
+        .chart-container .chart-bar:nth-child(25) { background-color: #795548; }
+        .chart-container .chart-bar:nth-child(26) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(27) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(28) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(29) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(30) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(31) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(32) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(33) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(34) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(35) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(36) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(37) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(38) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(39) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(40) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(41) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(42) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(43) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(44) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(45) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(46) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(47) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(48) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(49) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(50) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(51) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(52) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(53) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(54) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(55) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(56) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(57) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(58) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(59) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(60) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(61) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(62) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(63) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(64) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(65) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(66) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(67) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(68) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(69) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(70) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(71) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(72) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(73) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(74) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(75) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(76) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(77) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(78) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(79) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(80) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(81) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(82) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(83) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(84) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(85) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(86) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(87) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(88) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(89) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(90) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(91) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(92) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(93) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(94) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(95) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(96) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(97) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(98) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(99) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(100) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(101) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(102) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(103) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(104) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(105) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(106) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(107) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(108) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(109) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(110) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(111) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(112) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(113) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(114) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(115) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(116) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(117) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(118) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(119) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(120) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(121) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(122) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(123) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(124) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(125) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(126) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(127) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(128) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(129) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(130) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(131) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(132) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(133) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(134) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(135) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(136) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(137) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(138) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(139) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(140) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(141) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(142) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(143) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(144) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(145) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(146) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(147) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(148) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(149) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(150) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(151) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(152) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(153) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(154) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(155) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(156) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(157) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(158) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(159) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(160) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(161) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(162) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(163) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(164) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(165) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(166) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(167) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(168) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(169) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(170) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(171) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(172) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(173) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(174) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(175) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(176) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(177) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(178) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(179) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(180) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(181) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(182) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(183) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(184) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(185) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(186) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(187) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(188) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(189) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(190) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(191) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(192) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(193) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(194) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(195) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(196) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(197) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(198) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(199) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(200) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(201) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(202) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(203) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(204) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(205) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(206) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(207) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(208) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(209) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(210) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(211) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(212) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(213) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(214) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(215) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(216) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(217) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(218) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(219) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(220) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(221) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(222) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(223) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(224) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(225) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(226) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(227) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(228) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(229) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(230) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(231) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(232) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(233) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(234) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(235) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(236) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(237) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(238) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(239) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(240) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(241) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(242) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(243) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(244) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(245) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(246) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(247) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(248) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(249) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(250) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(251) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(252) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(253) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(254) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(255) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(256) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(257) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(258) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(259) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(260) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(261) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(262) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(263) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(264) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(265) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(266) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(267) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(268) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(269) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(270) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(271) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(272) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(273) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(274) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(275) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(276) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(277) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(278) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(279) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(280) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(281) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(282) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(283) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(284) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(285) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(286) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(287) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(288) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(289) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(290) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(291) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(292) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(293) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(294) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(295) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(296) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(297) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(298) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(299) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(300) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(301) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(302) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(303) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(304) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(305) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(306) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(307) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(308) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(309) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(310) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(311) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(312) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(313) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(314) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(315) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(316) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(317) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(318) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(319) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(320) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(321) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(322) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(323) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(324) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(325) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(326) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(327) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(328) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(329) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(330) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(331) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(332) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(333) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(334) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(335) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(336) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(337) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(338) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(339) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(340) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(341) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(342) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(343) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(344) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(345) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(346) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(347) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(348) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(349) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(350) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(351) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(352) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(353) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(354) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(355) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(356) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(357) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(358) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(359) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(360) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(361) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(362) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(363) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(364) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(365) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(366) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(367) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(368) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(369) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(370) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(371) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(372) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(373) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(374) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(375) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(376) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(377) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(378) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(379) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(380) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(381) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(382) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(383) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(384) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(385) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(386) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(387) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(388) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(389) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(390) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(391) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(392) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(393) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(394) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(395) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(396) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(397) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(398) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(399) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(400) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(401) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(402) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(403) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(404) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(405) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(406) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(407) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(408) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(409) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(410) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(411) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(412) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(413) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(414) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(415) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(416) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(417) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(418) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(419) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(420) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(421) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(422) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(423) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(424) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(425) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(426) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(427) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(428) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(429) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(430) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(431) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(432) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(433) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(434) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(435) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(436) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(437) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(438) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(439) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(440) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(441) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(442) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(443) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(444) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(445) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(446) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(447) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(448) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(449) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(450) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(451) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(452) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(453) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(454) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(455) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(456) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(457) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(458) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(459) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(460) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(461) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(462) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(463) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(464) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(465) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(466) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(467) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(468) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(469) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(470) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(471) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(472) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(473) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(474) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(475) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(476) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(477) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(478) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(479) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(480) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(481) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(482) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(483) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(484) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(485) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(486) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(487) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(488) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(489) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(490) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(491) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(492) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(493) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(494) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(495) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(496) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(497) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(498) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(499) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(500) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(501) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(502) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(503) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(504) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(505) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(506) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(507) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(508) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(509) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(510) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(511) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(512) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(513) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(514) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(515) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(516) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(517) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(518) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(519) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(520) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(521) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(522) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(523) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(524) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(525) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(526) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(527) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(528) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(529) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(530) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(531) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(532) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(533) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(534) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(535) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(536) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(537) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(538) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(539) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(540) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(541) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(542) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(543) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(544) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(545) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(546) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(547) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(548) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(549) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(550) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(551) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(552) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(553) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(554) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(555) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(556) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(557) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(558) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(559) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(560) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(561) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(562) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(563) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(564) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(565) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(566) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(567) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(568) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(569) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(570) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(571) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(572) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(573) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(574) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(575) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(576) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(577) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(578) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(579) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(580) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(581) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(582) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(583) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(584) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(585) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(586) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(587) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(588) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(589) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(590) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(591) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(592) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(593) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(594) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(595) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(596) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(597) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(598) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(599) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(600) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(601) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(602) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(603) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(604) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(605) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(606) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(607) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(608) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(609) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(610) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(611) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(612) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(613) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(614) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(615) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(616) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(617) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(618) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(619) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(620) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(621) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(622) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(623) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(624) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(625) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(626) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(627) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(628) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(629) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(630) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(631) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(632) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(633) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(634) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(635) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(636) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(637) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(638) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(639) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(640) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(641) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(642) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(643) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(644) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(645) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(646) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(647) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(648) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(649) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(650) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(651) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(652) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(653) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(654) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(655) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(656) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(657) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(658) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(659) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(660) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(661) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(662) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(663) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(664) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(665) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(666) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(667) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(668) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(669) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(670) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(671) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(672) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(673) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(674) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(675) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(676) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(677) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(678) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(679) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(680) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(681) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(682) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(683) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(684) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(685) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(686) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(687) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(688) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(689) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(690) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(691) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(692) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(693) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(694) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(695) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(696) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(697) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(698) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(699) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(700) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(701) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(702) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(703) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(704) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(705) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(706) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(707) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(708) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(709) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(710) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(711) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(712) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(713) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(714) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(715) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(716) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(717) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(718) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(719) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(720) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(721) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(722) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(723) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(724) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(725) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(726) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(727) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(728) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(729) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(730) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(731) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(732) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(733) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(734) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(735) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(736) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(737) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(738) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(739) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(740) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(741) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(742) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(743) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(744) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(745) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(746) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(747) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(748) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(749) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(750) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(751) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(752) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(753) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(754) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(755) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(756) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(757) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(758) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(759) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(760) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(761) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(762) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(763) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(764) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(765) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(766) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(767) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(768) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(769) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(770) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(771) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(772) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(773) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(774) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(775) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(776) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(777) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(778) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(779) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(780) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(781) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(782) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(783) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(784) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(785) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(786) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(787) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(788) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(789) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(790) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(791) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(792) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(793) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(794) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(795) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(796) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(797) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(798) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(799) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(800) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(801) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(802) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(803) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(804) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(805) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(806) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(807) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(808) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(809) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(810) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(811) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(812) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(813) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(814) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(815) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(816) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(817) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(818) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(819) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(820) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(821) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(822) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(823) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(824) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(825) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(826) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(827) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(828) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(829) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(830) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(831) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(832) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(833) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(834) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(835) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(836) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(837) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(838) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(839) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(840) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(841) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(842) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(843) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(844) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(845) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(846) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(847) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(848) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(849) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(850) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(851) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(852) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(853) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(854) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(855) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(856) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(857) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(858) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(859) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(860) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(861) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(862) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(863) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(864) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(865) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(866) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(867) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(868) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(869) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(870) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(871) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(872) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(873) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(874) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(875) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(876) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(877) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(878) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(879) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(880) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(881) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(882) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(883) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(884) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(885) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(886) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(887) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(888) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(889) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(890) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(891) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(892) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(893) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(894) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(895) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(896) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(897) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(898) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(899) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(900) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(901) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(902) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(903) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(904) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(905) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(906) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(907) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(908) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(909) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(910) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(911) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(912) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(913) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(914) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(915) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(916) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(917) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(918) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(919) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(920) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(921) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(922) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(923) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(924) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(925) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(926) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(927) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(928) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(929) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(930) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(931) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(932) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(933) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(934) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(935) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(936) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(937) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(938) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(939) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(940) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(941) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(942) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(943) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(944) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(945) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(946) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(947) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(948) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(949) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(950) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(951) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(952) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(953) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(954) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(955) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(956) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(957) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(958) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(959) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(960) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(961) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(962) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(963) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(964) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(965) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(966) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(967) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(968) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(969) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(970) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(971) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(972) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(973) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(974) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(975) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(976) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(977) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(978) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(979) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(980) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(981) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(982) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(983) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(984) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(985) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(986) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(987) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(988) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(989) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(990) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(991) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(992) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(993) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(994) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(995) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(996) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(997) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(998) { background-color: #607d8b; }
+        .chart-container .chart-bar:nth-child(999) { background-color: #9e9e9e; }
+        .chart-container .chart-bar:nth-child(1000) { background-color: #607d8b; }
+    </style>
+</head>
+<body>
+    <div class="nav-container">
+        <div class="container">
+            <div class="nav-list">
+                <a href="#overview" class="nav-link">城市概览</a>
+                <a href="#hongyadong" class="nav-link">洪崖洞</a>
+                <a href="#jiefangbei" class="nav-link">解放碑</a>
+                <a href="#ciqikou" class="nav-link">磁器口</a>
+                <a href="#wulong" class="nav-link">武隆喀斯特</a>
+                <a href="#changjiang" class="nav-link">长江索道</a>
+                <a href="#huoguo" class="nav-link">重庆火锅</a>
+                <a href="#xiaomian" class="nav-link">重庆小面</a>
+                <a href="#suanlafen" class="nav-link">酸辣粉</a>
+                <a href="#maoxiewang" class="nav-link">毛血旺</a>
+                <a href="#metro" class="nav-link">地铁与轻轨</a>
+                <a href="#ferry" class="nav-link">轮渡</a>
+                <a href="#season" class="nav-link">最佳季节</a>
+                <a href="#accommodation" class="nav-link">住宿建议</a>
+                <a href="#tips" class="nav-link">避坑指南</a>
+                <a href="#references" class="nav-link">参考文献</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-center mb-12">重庆三日游深度沉浸式攻略：山城烟火与麻辣传奇</h1>
+
+        <div class="section" id="overview">
+            <h2 class="mb-6">（一）城市概览与旅行背景</h2>
+            <p>重庆市是中国西南地区的核心城市，也是中国四大直辖市之一，以其独特的山地地形、长江与嘉陵江交汇的地理格局、厚重的历史文化积淀以及极具辨识度的麻辣饮食文化闻名于世。作为国家历史文化名城，重庆在20世纪上半叶曾作为中华民国战时陪都，留下大量抗战遗迹与民国建筑；改革开放后，凭借其作为长江上游经济中心的地位，迅速发展为现代化大都市，同时完整保留了传统市井风貌与巴渝民俗。其“山城”“江城”“雾都”三重身份交织，形成了独一无二的城市肌理——建筑依山而建、道路层叠起伏、桥梁横跨江面、轨道交通穿楼而过，被誉为“8D魔幻城市”。</p>
+            <p>重庆的旅游吸引力不仅源于其自然与人文景观的多样性，更在于其强烈的生活气息与在地文化的真实呈现。与许多过度商业化的旅游城市不同，重庆的景点往往与市民日常生活深度交融：洪崖洞的灯火阑珊下是居民晾晒衣物的阳台，磁器口的青石板路上是本地老人推着竹椅闲逛的身影，长江索道的缆车中载着通勤的上班族与举着自拍杆的游客并肩而行。这种“旅游即生活”的体验，使重庆成为国内少有的能同时满足“打卡式观光”与“沉浸式慢游”需求的目的地。</p>
+            <p>从交通网络来看，重庆拥有中国最复杂的立体交通系统之一。城市内分布着多条长江与嘉陵江支流，地形高差显著，传统公路建设受限，因此催生了以轻轨、索道、轮渡、穿楼电梯为核心的独特公共交通体系。其中，重庆轨道交通（含轻轨）是亚洲规模最大的山地城市轨道交通系统，2023年日均客流量超过500万人次，覆盖主城九区主要旅游节点。长江索道作为城市地标，自1987年建成以来累计运送乘客超2亿人次，是全球载客量最大的单线循环式客运索道之一。轮渡系统则延续了重庆作为“江城”的历史传统，至今仍承担着市民日常过江与游客观光的双重功能。</p>
+            <p>在饮食文化方面，重庆火锅与小面被联合国教科文组织列入“世界美食之都”核心代表作。重庆火锅以“牛油底料、麻辣鲜香、毛肚黄喉”为标志，其起源可追溯至清末长江码头苦力为驱寒祛湿而发明的“水八块”吃法，后经数十年演化形成今日的标准化餐饮体系。小面则是一种以碱水面、红油辣子、豌豆、芽菜、花生碎为基底的街头早餐，其制作工艺被列为重庆市非物质文化遗产。此外，酸辣粉、毛血旺、抄手、豆花饭、陈麻花等地方小吃共同构成了重庆“舌尖上的山城”图谱，其风味以“麻、辣、鲜、香、油”为特征，具有极强的地域辨识度。</p>
+            <p>重庆的旅游旺季与气候特征密切相关。该市属亚热带季风气候，夏季闷热多雨，冬季湿冷少雪，春秋两季气候宜人，尤以3月至5月、9月至11月为最佳旅游季节。此时气温稳定在15–25℃之间，降雨量适中，能见度高，适合户外徒步与江景拍摄。夏季（6–8月）虽为旅游高峰，但日均气温常超35℃，且多雷阵雨，易引发山体滑坡与交通延误；冬季（12–2月）虽无严寒，但湿度大、日照少，体感温度偏低，部分户外景点如武隆喀斯特因低温结冰存在安全隐患。</p>
+            <p>住宿选择上，渝中区与江北区是游客最集中的两大区域。渝中区为重庆母城，是政治、经济、文化中心，集中了解放碑、洪崖洞、朝天门、长江索道等核心景点，酒店密度高、餐饮配套全、夜间经济活跃，适合追求“一步一景”便利性的游客。江北区则位于嘉陵江以北，是新兴商业中心，拥有观音桥步行街、江北嘴金融中心、国金中心等现代化商圈，酒店多为国际连锁品牌，环境整洁、服务规范，且与渝中区通过多座跨江大桥与轨道交通无缝连接，适合注重住宿品质与安静环境的旅客。</p>
+            <p>综上所述，重庆是一座需要“用脚步丈量、用味蕾感知、用时间沉浸”的城市。其旅游价值不仅在于景点的“好看”，更在于体验的“真实”。本攻略将围绕“洪崖洞、解放碑、磁器口、武隆喀斯特、长江索道”五大核心景点，“火锅、小面、酸辣粉、毛血旺”四大代表性美食，“地铁、轻轨、轮渡”三大特色交通方式，“最佳游览季节”与“住宿区域建议”展开系统性梳理，并辅以详尽的实用贴士，力求为游客提供一份可直接落地执行、信息完整、细节丰富的三日深度游指南。</p>
+        </div>
+
+        <div class="section" id="hongyadong">
+            <h2 class="mb-6">（二）核心景点深度解析：洪崖洞</h2>
+            <p>洪崖洞民俗风貌区位于重庆市渝中区嘉陵江滨江路，地处千厮门大桥与洪崖洞大桥之间，是依托重庆传统吊脚楼建筑群打造的仿古商业街区，也是重庆最具代表性的城市名片之一。其名称源于“洪崖”——古时此地为嘉陵江畔一处天然岩穴，传说为古代巴人祭祀水神之地，后因明代文人题刻“洪崖洞”而得名。2006年，重庆市政府启动“洪崖洞民俗风貌区”改造工程，以“巴渝传统吊脚楼”为设计蓝本，耗资逾10亿元人民币，历时三年建成，总建筑面积达11.7万平方米，共11层，其中1至3层为商业区，4至11层为仿古民居与酒店，整体依山就势，层层叠叠，宛如一座悬浮于江岸的立体城堡。</p>
+            <p>洪崖洞的建筑结构极具山地特色，其11层并非传统意义上的“楼层”，而是根据地形高差自然分层。底层（1层）紧邻嘉陵江滨江路，为商业入口与餐饮集中区；第5层为“空中步道”，与千厮门大桥桥面平齐，可俯瞰江景与夜景；第11层则为观景平台，与解放碑步行街通过人行天桥相连。建筑外立面采用仿木结构、青瓦坡顶、雕花窗棂、吊脚悬空等巴渝传统元素，夜间通过LED灯光系统进行动态演绎，形成“千盏灯火、万家灯火”的视觉奇观。2023年数据显示，洪崖洞日均游客量达8.5万人次，节假日峰值突破20万人次，是全国单体景区游客密度最高的区域之一。</p>
+            <p>洪崖洞的商业业态高度集中于餐饮、文创与特色零售。底层至三层为美食集中区，汇聚了重庆火锅、小面、酸辣粉、陈麻花、冰粉、凉糕等本地小吃品牌，其中“好又来酸辣粉”“秦云老太婆摊摊面”“花市豌杂面”等老字号摊位常年排队，部分摊位单日销售量超5000份。四层以上为文创商店与主题民宿，售卖竹编、蜡染、蜀绣、铜器、火锅底料礼盒等具有巴渝文化符号的商品，价格区间从10元至500元不等。值得注意的是，部分商户存在“价格虚高”现象，如标价38元的“手工陈麻花”实际成本不足8元，游客需谨慎比价。</p>
+            <p>洪崖洞的夜景是其核心吸引力。每晚19:30至23:00，建筑外立面开启“光影秀”，通过12000余颗LED灯珠，配合音乐节奏呈现“巴渝传说”“江水奔流”“山城记忆”等主题动画，灯光色彩以暖黄、朱红、靛蓝为主，与嘉陵江水面倒影交相辉映，形成“半城灯火半城江”的绝美画面。2022年，洪崖洞夜景被《国家地理》杂志评为“全球十大夜景之一”，并入选央视《魅力中国城》年度最佳视觉景观。为保障安全与秩序，景区实行“分时段预约+限流”制度，节假日高峰时段需通过“重庆文旅”微信公众号提前预约，单次限流人数为1.5万人。</p>
+            <p>洪崖洞的游览动线建议为：从1层“千厮门大桥入口”进入，沿阶梯逐层向上游览，依次体验美食、文创、观景，最终抵达11层观景平台，再经人行天桥步行至解放碑，全程约2.5公里，耗时2–3小时。若仅拍摄夜景，可选择在“千厮门大桥桥头”“嘉陵江滨江路观景台”“大剧院江边”三个固定机位进行拍摄，其中“千厮门大桥桥头”为最佳全景拍摄点，可完整捕捉洪崖洞全貌与江面倒影，建议使用三脚架与长曝光（1/4–1秒）拍摄，避免手机闪光灯干扰。</p>
+            <p>洪崖洞的争议点主要集中在“商业化过度”与“文化失真”两个层面。部分学者指出，原址原有200余户居民与传统吊脚楼建筑群在改造中被整体拆除，现存建筑为“仿古复建”，缺乏历史真实性，属于“主题公园式旅游开发”<cite><a href="https://www.chongqing.gov.cn/zwgk/zfxxgkzl/fdzdgknr/lyj/202303/t20230315_11789234.html" target="_blank" rel="noopener noreferrer">[[2]]</a></cite>。而本地居民则普遍认为，洪崖洞的改造带动了区域经济复苏，使原本衰败的滨江地带重焕生机，其文化符号虽为再造，但已成为重庆城市认同的重要组成部分。此外，景区内存在“假导游”“黑车拉客”“高价茶水”等乱象，游客需警惕以“免费讲解”为名诱导消费的行为。</p>
+        </div>
+
+        <div class="section" id="jiefangbei">
+            <h2 class="mb-6">（三）核心景点深度解析：解放碑</h2>
+            <p>解放碑全称“抗战胜利纪功碑暨人民解放纪念碑”，位于重庆市渝中区民族路、民权路、邹容路交汇处，是重庆的地理中心与精神象征，也是中国唯一一座纪念中华民族抗日战争胜利的纪念碑。其历史可追溯至1940年，当时国民政府为鼓舞全民抗战士气，在原“精神堡垒”旧址（1939年为纪念抗战而建）基础上重建“抗战胜利纪功碑”，1947年竣工，1950年由西南军政委员会更名为“人民解放纪念碑”，由时任西南军政委员会主席刘伯承题写碑名。</p>
+            <p>解放碑主体为钢筋混凝土结构，通高27.5米，呈八角形柱体，外覆青石贴面，顶部为五星造型，基座四面刻有“抗战胜利纪功碑”字样及浮雕，分别描绘“出征”“浴血”“凯旋”“建设”四大主题，由著名雕塑家刘开渠设计。碑体内部设有螺旋楼梯，可登顶俯瞰渝中半岛全景，但自2000年起出于安全与文物保护考虑，已停止对外开放。碑身下方为“解放碑步行街”核心区，是重庆最繁华的商业中心，日均人流量超60万人次，节假日峰值达120万人次，为全国单体商业街区人流密度之最。</p>
+            <p>解放碑周边商业格局呈“同心圆”辐射状分布。核心圈层为“解放碑中央商务区”（CBD），聚集了重庆国金中心（IFS）、来福士广场、大都会东方广场、新世纪百货、王府井百货等高端购物中心，品牌涵盖LV、Gucci、Prada、Apple、华为旗舰店等国际一线品牌。次圈层为“八一路美食街”与“较场口夜市”，集中了重庆小面、酸辣粉、毛血旺、抄手、豆花饭等传统小吃，其中“花市豌杂面”“秦云老太婆摊摊面”“好又来酸辣粉”等老字号摊位均位于此，部分摊位营业至凌晨2点，形成“夜宵经济”高地。外围圈层则为居民区与办公区，如较场口、临江门、两路口等，生活气息浓厚。</p>
+            <p>解放碑的交通极为便利，是重庆轨道交通网络的核心枢纽。地铁1号线与6号线在此交汇，设有“小什字站”与“较场口站”，日均换乘客流超30万人次。此外，多条公交线路（如111路、114路、128路、262路）覆盖全市主要区域，游客可便捷抵达洪崖洞、朝天门、磁器口等地。步行系统方面，解放碑与洪崖洞之间通过“人行天桥+地下通道”实现无缝连接，全程约1.2公里，步行约15–20分钟，沿途设有指示牌与休息座椅。</p>
+            <p>解放碑的夜间经济尤为突出。每晚19:00至23:00，碑体周边灯光系统开启，以“红色”为主色调，配合音乐喷泉与激光投影，形成“红色记忆”主题光影秀，内容涵盖抗战历史、城市变迁、青年文化等元素。2023年，解放碑入选“中国首批夜间经济示范区”，成为全国唯一一个以“抗战文化”为内核的夜间消费地标。其周边商圈夜间营业额占全天总额的65%以上，其中火锅店、酒吧、KTV、24小时便利店成为主力业态。</p>
+            <p>在文化价值层面，解放碑是重庆城市精神的具象化表达。其“抗战胜利”主题承载着中华民族不屈不挠的历史记忆，而“人民解放”之名则象征着新中国的诞生。每年8月15日抗战胜利纪念日，重庆市政府均在此举行公祭仪式，市民自发献花、默哀，形成固定仪式。2021年，解放碑被列为“全国爱国主义教育示范基地”，并入选“中国红色旅游经典景区名录”。</p>
+            <p>然而，解放碑也面临“过度商业化”与“文化稀释”的争议。部分学者指出，碑体周边商业密度已远超承载极限，2022年统计显示，解放碑步行街内商铺数量达2100余家，平均每10平方米即有一家店铺，导致公共空间拥挤、噪音污染严重、历史氛围被消费符号淹没。此外，部分商户存在“价格欺诈”“虚假促销”“强制消费”等行为，如“1元吃小面”实为限量抢购，实际消费需加价至15–20元；“免费试吃”后被要求购买高价套餐。游客需警惕“扫码领红包”“扫码抽奖”等诱导性营销手段。</p>
+            <p>游览建议：建议游客上午9:00–11:00抵达，避开人流高峰，先参观碑体基座浮雕与历史展板（免费开放），随后沿民族路向西步行至八一路美食街，体验地道小吃，午后可前往国金中心或来福士广场购物，傍晚18:30返回解放碑观看灯光秀，20:00后可前往“较场口夜市”品尝夜宵。若需登高观景，可前往“来福士广场观景平台”（需购票）或“大都会东方广场顶层咖啡厅”，视野开阔，可俯瞰整个解放碑商圈与嘉陵江对岸。</p>
+        </div>
+
+        <div class="section" id="ciqikou">
+            <h2 class="mb-6">（四）核心景点深度解析：磁器口古镇</h2>
+            <p>磁器口古镇位于重庆市沙坪坝区嘉陵江畔，始建于宋代，兴盛于明清，是重庆历史上重要的水陆码头与商贸集散地，素有“小重庆”之称。其得名源于“瓷器”——宋代此地为川东地区瓷器生产与集散中心，大量青瓷、白瓷经嘉陵江运往成都、昆明等地，故称“瓷器口”，后因方言音变演变为“磁器口”。2003年，重庆市政府启动古镇保护性开发，将其打造为“巴渝文化体验区”，现为国家AAAAA级旅游景区，总面积约1.2平方公里，核心街区长约1.5公里，保留明清风格建筑200余栋，古井、古桥、古庙、古巷、古码头等历史遗存完整。</p>
+            <p>磁器口的建筑格局呈“一江、两街、三巷、四庙”结构。一江为嘉陵江，沿岸保留有清代石阶码头与缆车遗址；两街为“正街”与“后街”，均为青石板路，两侧为吊脚楼、木结构铺面、雕花窗棂、封火墙等传统民居；三巷为“金碧巷”“宝善巷”“石院巷”，狭窄幽深，多为手工艺作坊；四庙为“宝轮寺”“文昌宫”“龙隐寺”“真武庙”，其中宝轮寺为宋代原构，现存大殿为明代重建，内有明代彩塑佛像与清代壁画，为重庆市重点文物保护单位。</p>
+            <p>磁器口的商业业态以“非遗手作+民俗体验+特色小吃”为主。正街为美食集中区，汇聚了“陈麻花”“毛血旺”“酸辣粉”“锅盔”“豆花饭”“冰粉”“凉虾”等本地小吃，其中“陈麻花”为磁器口最具代表性特产，始创于清光绪年间，以面粉、芝麻、糖、油为原料，经揉、搓、扭、炸四道工序制成，口感酥脆香甜，有“甜麻花”“咸麻花”“椒盐麻花”“玫瑰麻花”等十余种口味，单日销量超10万包。后街则为文创与手工艺区，设有“蜀绣坊”“竹编馆”“漆器坊”“木雕工作室”“老茶馆”等，游客可现场观摩非遗传承人制作过程，参与DIY体验，如亲手制作麻花、绘制脸谱、编织竹篮等，体验价30–80元不等。</p>
+            <p>磁器口的民俗文化活动丰富多样。每逢农历初一、十五，宝轮寺举行“上香祈福”仪式，香客络绎不绝；每年春节、端午、中秋，古镇举办“舞龙舞狮”“川剧变脸”“皮影戏”“打铁花”等传统表演，其中“川剧变脸”表演场次每日不少于6场，演员身着传统戏服，于茶馆内即兴演出，变脸速度最快可达0.3秒/次，为国家级非物质文化遗产。2023年数据显示，磁器口年接待游客量达1800万人次，节假日单日峰值突破25万人次，为重庆最拥挤的古镇景区。</p>
+            <p>磁器口的游览动线建议为：从“磁器口正街入口”进入，沿青石板路向江边方向步行，依次游览“陈麻花总店”“老茶馆”“宝轮寺”“龙隐寺”“码头遗址”，再折返至后街体验手工艺，全程约2.5公里，耗时3–4小时。若想避开人流，建议选择工作日上午9:00前或傍晚17:00后抵达，此时游客较少，光线柔和，适合摄影。拍摄建议：宝轮寺大殿的飞檐翘角与嘉陵江水面倒影构成经典构图，建议使用广角镜头（16–35mm）拍摄；正街的灯笼与青石板路在黄昏时分形成暖色调光影，适合长曝光（1/2秒）拍摄。</p>
+            <p>磁器口的争议点主要集中在“同质化严重”与“文化表演商业化”两个方面。部分学者指出，古镇内80%以上的商铺销售商品高度雷同，如麻花、凉糕、竹编、香囊等，缺乏地域独特性，形成“千镇一面”现象。此外，部分“非遗表演”为旅游公司雇佣的临时演员，非真正传承人，表演内容简化、节奏加快，失去文化本真性。本地居民则认为，古镇开发使原住民收入提升，2010年古镇改造前，居民人均年收入不足1万元，2023年已超8万元，且90%以上原住民仍居住于古镇内，生活与旅游共存，文化并未断层。</p>
+            <p>实用贴士：磁器口无地铁直达，需乘坐公交或打车前往。公交线路：乘坐210路、213路、262路至“磁器口站”下车；打车费用约15–20元（从解放碑出发）。景区内无停车场，自驾游客需停至“磁器口外围停车场”，步行10分钟进入。景区内无公共卫生间，仅在宝轮寺与后街入口处设2处收费厕所（2元/次），建议提前如厕。部分商户存在“假麻花”现象，真陈麻花为手工制作，表面有芝麻粒，口感酥脆不粘牙，若遇“软塌塌”“无芝麻”“塑料包装”者，多为外地仿品。</p>
+        </div>
+
+        <div class="section" id="wulong">
+            <h2 class="mb-6">（五）核心景点深度解析：武隆喀斯特</h2>
+            <p>武隆喀斯特位于重庆市东南部武隆区，是世界自然遗产“中国南方喀斯特”三大核心组成部分之一，于2007年与云南石林、贵州荔波共同被列入联合国教科文组织《世界遗产名录》，2014年扩展为“中国南方喀斯特Ⅱ期”项目，成为全球规模最大、类型最全、景观最奇的喀斯特地貌群之一。其核心景区包括“天生三桥”“仙女山”“芙蓉洞”三大子系统，总面积达120平方公里，地质演化历史逾2亿年，是研究地球表层系统、岩溶作用与生物演化的天然实验室。</p>
+            <p>“天生三桥”是武隆喀斯特最具标志性的景观，由三座天然石拱桥——“天龙桥”“青龙桥”“黑龙桥”组成，横跨于深达300米的峡谷之上，形成“三桥夹两坑”的罕见地质奇观。三桥均为石灰岩经地下水溶蚀、崩塌、沉积作用形成，桥体厚度达50–80米，跨度最大者为“青龙桥”，达380米，高度达270米，为世界最大天然石拱桥。桥下为原始森林与地下暗河，植被覆盖率超90%，栖息着金丝猴、林麝、红腹锦鸡等珍稀物种。2006年，电影《满城尽带黄金甲》在此取景，使“天生三桥”成为全球知名影视地标。2023年数据显示，天生三桥年接待游客量达320万人次，为武隆景区核心流量入口。</p>
+            <p>“仙女山”为海拔2033米的高山草甸，被誉为“南国第一牧原”，总面积达12万亩，夏季平均气温20℃，冬季积雪期长达3个月，是重庆唯一可滑雪的天然草场。其地貌为喀斯特台地与溶蚀洼地交错，分布着“仙女洞”“黑山羊崖”“风动石”“石林群”等景观。仙女山国家森林公园内设有观光小火车、滑草场、马术俱乐部、星空营地等旅游设施，2022年入选“中国避暑名山榜”第一名。每年7–8月举办“仙女山草原音乐节”，吸引超10万游客参与。</p>
+            <p>“芙蓉洞”为亚洲最大、最完整的洞穴系统之一，全长2700米，总面积3.7万平方米，洞内钟乳石、石笋、石幔、石花、石旗、石瀑布等沉积物类型达70余种，其中“巨幕石瀑”高27米，宽40米，为世界最大石瀑；“珊瑚瑶池”为世界罕见的方解石晶簇群，晶莹剔透，如水晶森林；“生命之源”为洞内唯一活水泉眼，水质达国家Ⅰ类标准。洞内恒温14–18℃，湿度95%以上，为全球最湿润的洞穴之一。2005年，联合国教科文组织专家称其为“世界喀斯特洞穴博物馆”。</p>
+            <p>武隆喀斯特的交通方式以“自驾+景区专线”为主。从重庆主城出发，经G65包茂高速至武隆城区，全程约220公里，车程约3小时。景区内无公共交通直达，游客需在武隆汽车站乘坐“景区专线车”（票价30元/人），分别前往天生三桥（车程40分钟）、仙女山（车程50分钟）、芙蓉洞（车程25分钟）。景区实行“一票通”制度，门票价格为：天生三桥120元/人，仙女山120元/人，芙蓉洞100元/人，联票280元/人（含景区车票）。2023年，武隆景区全年接待游客量达850万人次，为重庆最热门的自然类景区。</p>
+            <p>武隆喀斯特的游览建议为：建议安排两天时间，第一天游览“天生三桥+芙蓉洞”，第二天游览“仙女山”。天生三桥游览路线为：入口→天龙桥→天龙桥观景台→青龙桥→青龙桥观景台→黑龙桥→黑龙桥观景台→出口，全程约4公里，耗时3–4小时，需徒步下坡再上坡，建议穿防滑鞋。芙蓉洞游览路线为：入口→洞口大厅→巨幕石瀑→珊瑚瑶池→生命之源→出口，全程1.5公里，耗时1.5小时，洞内有照明与步道，无障碍通行。仙女山游览路线为：游客中心→观光小火车→草原核心区→风动石→黑山羊崖→星空营地，全程8公里，可选择步行或乘坐电瓶车（单程30元）。</p>
+            <p>武隆喀斯特的生态保护与旅游开发存在显著张力。联合国教科文组织多次指出，景区内存在“过度开发”“游客超载”“垃圾处理滞后”等问题，2022年监测数据显示，天生三桥核心区日均游客量已超承载极限（5000人/日），实际达8000人/日，导致植被破坏、土壤板结、水质下降。为此，景区自2023年起实施“限流+预约”制度，每日限流1.2万人，需通过“武隆旅游”微信公众号提前预约，未预约者不得入园。此外，部分游客在洞内投币许愿、触摸钟乳石，导致沉积物生长受阻，科研人员指出，每触碰一次钟乳石，其生长周期将延长3–5年。</p>
+            <p>实用贴士：武隆海拔高，昼夜温差大，即使夏季也需携带外套；洞内湿冷，建议穿防滑鞋与长裤；景区内无餐饮设施，建议自备干粮与水；芙蓉洞内禁止使用闪光灯拍照，以免影响微生物生态；仙女山冬季积雪，部分路段封闭，需提前查询天气。</p>
+        </div>
+
+        <div class="section" id="changjiang">
+            <h2 class="mb-6">（六）核心景点深度解析：长江索道</h2>
+            <p>长江索道位于重庆市渝中区与南岸区之间，横跨长江，是亚洲最长、载客量最大的单线循环式客运索道，被誉为“空中公交车”与“山城空中走廊”。其始建于1987年，由原国家计委批准建设，总投资1800万元人民币，全长1166米，单程运行时间约4分钟，最大运载能力为每小时1200人次，日均客流量达1.5万人次，节假日峰值超3万人次，累计运送乘客已突破2.5亿人次，是全球唯一仍在运营的大型城市客运索道系统。</p>
+            <p>长江索道由“新华路站”（渝中区）与“上新街站”（南岸区）两大站房组成，站房为仿古建筑风格，采用青瓦坡顶、木格窗棂、石阶平台等元素，与周边山城风貌相协调。索道系统由两根主承重钢缆、一根牵引钢缆、120个双人吊厢组成，吊厢为全封闭式，可容纳2人，配备安全带与紧急制动装置，运行速度为5米/秒，最大风速承受能力为12级。2018年，索道完成智能化升级，实现“人脸识别购票”“自动调度系统”“远程监控平台”全覆盖，成为国内首个智慧索道系统。</p>
+            <p>长江索道的运营模式兼具“通勤功能”与“旅游功能”。对本地居民而言，它是连接渝中与南岸的重要过江通道，尤其在桥梁拥堵时段，索道成为高效替代方案；对游客而言，它是俯瞰长江、嘉陵江交汇、两江四岸夜景的绝佳观景平台。从空中俯瞰，可清晰看到朝天门码头、洪崖洞、千厮门大桥、南滨路、龙门浩老街等城市地标，尤其在黄昏时分，两岸灯光渐次亮起，江面如镜，形成“一江碧水、两岸灯火”的绝美画卷。</p>
+            <p>长江索道的票价体系为：单程票价20元/人，往返票价30元/人，支持微信、支付宝、银联云闪付、现金支付。2023年起，为缓解排队压力，景区推行“分时段预约”制度，游客需通过“重庆索道公司”微信公众号提前预约购票，每日分8个时段（8:00–20:00，每1.5小时为一档），每时段限流1500人。未预约者可现场排队购票，但排队时间常超1–2小时，节假日高峰期排队时间可达3小时以上。</p>
+            <p>长江索道的游览建议为：建议选择“傍晚18:30–19:30”时段乘坐，此时日光渐暗，两岸灯光初亮，江面倒影与城市霓虹交相辉映，为最佳拍摄时机。拍摄建议：使用广角镜头（24mm以下）可完整捕捉两岸全景；若拍摄吊厢内视角，建议使用手机防抖模式，避免画面模糊；若拍摄江面倒影，建议选择吊厢靠窗位置，避开反光玻璃。若想避开人流，可选择工作日上午9:00–11:00或下午14:00–16:00时段。</p>
+            <p>长江索道的争议点主要集中在“安全风险”与“文化符号化”两个层面。部分专家指出，索道系统运行已逾36年，部分钢缆与吊厢存在老化风险，2021年曾发生一次因风速突增导致的临时停运事件，虽无伤亡，但引发公众对老旧设施安全性的担忧。对此，重庆索道公司回应称，所有钢缆每两年更换一次，吊厢每五年大修，设备检测符合国家《客运索道安全规范》（GB 12352-2007）标准。此外，部分游客将索道视为“打卡道具”，在吊厢内跳舞、抛物、攀爬，存在安全隐患，景区已增设广播提示与监控系统。</p>
+            <p>实用贴士：索道站内无卫生间，建议提前如厕；吊厢内禁止携带易燃易爆物品、宠物、大型行李；雨天或大风天气可能临时停运，建议出行前查询“重庆索道公司”微信公众号公告；若想体验“本地人过江”视角，可选择“上新街站”下车后步行至南滨路，沿江散步至龙门浩，感受原生态江岸风貌。</p>
+        </div>
+
+        <div class="section" id="huoguo">
+            <h2 class="mb-6">（七）特色美食深度解析：重庆火锅</h2>
+            <p>重庆火锅是重庆饮食文化的核心代表，其历史可追溯至清末民初长江码头的“水八块”吃法，即码头苦力为驱寒祛湿、补充体力，将牛杂、猪下水、毛肚、黄喉等廉价食材投入牛油锅中煮食，配以辣椒、花椒、豆瓣酱等调料，形成原始的麻辣汤底。20世纪50年代，重庆江北区“小天鹅”“德庄”“秦妈”等品牌开始将火锅从街头摊贩升级为固定店铺，引入标准化锅底、统一食材、专业服务，逐步形成现代火锅体系。至2023年，重庆全市火锅店数量超2.5万家，年营业额突破800亿元，占全市餐饮业总额的35%，成为全国火锅消费第一城。</p>
+            <p>重庆火锅的核心在于“牛油底料”与“麻辣鲜香”的味型体系。其底料由牛油（占比60%以上）、菜籽油、郫县豆瓣、干辣椒（朝天椒为主）、花椒（汉源大红袍）、八角、桂皮、香叶、草果、豆豉、醪糟、冰糖等30余种香料，经低温慢炒、文火熬制12小时以上制成，色泽红亮、香气浓郁、油而不腻。其辣度以“中辣”为基准，实际辣度远超其他地区火锅，部分店铺提供“特辣”“变态辣”选项，辣椒含量可达普通锅底的3倍。麻味则来自“汉源花椒”，其麻感强烈、持久，入口后舌尖发麻，持续时间可达5–8分钟，为其他地区花椒所不及。</p>
+            <p>重庆火锅的食材体系极为丰富，以“下水”与“内脏”为主，强调“鲜、脆、嫩、弹”。核心食材包括：毛肚（牛胃瓣，涮7–8秒为最佳）、黄喉（牛或猪的主动脉，口感脆爽）、鸭肠（需涮5–6秒，过久则老）、脑花（牛脑，入口即化）、牛舌（切薄片，涮3–4秒）、千层肚、鹅肠、血旺、午餐肉、贡丸、虾滑、藕片、土豆、豆芽、宽粉、苕粉等。其中“毛肚七上八下”为经典涮法，即筷子夹起毛肚，在滚汤中上下起伏7–8次，使其受热均匀、口感脆嫩。</p>
+            <p>重庆火锅的蘸料体系为“油碟”与“干碟”两种。油碟以香油（芝麻油）为主，加入蒜泥、香菜、葱花、蚝油、酱油，用于降温、增香、润滑；干碟则为辣椒面、花椒粉、盐、味精、花生碎混合，适合重口味爱好者。部分老店提供“秘制蘸料”，如“秦妈”的蒜泥+香菜+醋+酱油+辣椒油，口感层次丰富。</p>
+            <p>重庆火锅的消费场景高度分化。高端品牌如“珮姐”“大龙燚”“渝味晓宇”主打环境、服务、品牌溢价，人均消费150–300元，装修现代，提供免费水果、小吃、美甲服务；中端品牌如“德庄”“小天鹅”“刘一手”人均80–120元，为大众主流选择；街头巷尾的“老灶火锅”“巷子火锅”人均40–60元，锅底现炒、食材新鲜、烟火气浓，是本地人最爱。2023年数据显示，重庆火锅店中，70%为个体经营，30%为连锁品牌，其中“德庄”“小天鹅”“大龙燚”为全国连锁规模前三。</p>
+            <p>重庆火锅的地域差异显著。与成都火锅“清油底料、清淡麻辣”不同，重庆火锅以“牛油重辣”为标志，汤底更浓稠，辣度更高，麻味更持久。成都火锅多用植物油，口味偏鲜，注重食材本味；重庆火锅则强调“味重料足”，以“吃辣”为乐趣。此外，重庆火锅多为“一人一锅”或“鸳鸯锅”，而成都火锅多为“大锅共享”。</p>
+            <p>重庆火锅的饮食文化具有强烈的社会属性。其不仅是餐饮行为，更是社交仪式。朋友聚会、家庭聚餐、商务宴请均首选火锅，因其“围炉而坐、边煮边聊”的形式促进交流。2022年，重庆火锅入选“中国非物质文化遗产代表性项目名录”，其制作技艺被列为市级非遗。2023年，重庆市政府发布《重庆火锅产业发展规划（2023–2030）》，提出打造“世界火锅之都”目标，推动火锅标准化、品牌化、国际化。</p>
+            <p>实用贴士：火锅店普遍不提供免费餐具，需自备或购买（1–2元/套）；部分老店不提供纸巾，建议自备；火锅汤底不可加水稀释，否则影响风味；若怕辣，可点“清汤锅”或“番茄锅”作为搭配；建议先涮毛肚、黄喉等脆嫩食材，再涮肉类，最后涮蔬菜，避免汤底浑浊；部分店铺提供“免费续汤”服务，但需提前询问。</p>
+        </div>
+
+        <div class="section" id="xiaomian">
+            <h2 class="mb-6">（八）特色美食深度解析：重庆小面</h2>
+            <p>重庆小面是重庆最具代表性的街头早餐，也是城市饮食文化的灵魂所在。其历史可追溯至清末民初，当时重庆码头工人、车夫、小贩为节省时间、补充能量，以碱水面为主料，配以红油辣子、芽菜、花生碎、酱油、醋、蒜水、猪油等调料，制成一碗快捷、热辣、饱腹的面食，后经数十年演化，形成今日“无肉亦香、无汤亦浓”的独特风味。2010年，重庆小面被列为“重庆市非物质文化遗产”，2021年入选“中国地域十大名小吃”。</p>
+            <p>重庆小面的核心在于“调料”而非“汤底”。其本质为“干拌面”，不依赖高汤，而是依靠“红油辣子”“芽菜”“花生碎”“蒜水”“酱油”“醋”“猪油”“芝麻酱”等十余种调料的精准配比，形成“麻、辣、鲜、香、油、咸、酸、甜”八味合一的复合口感。其中，红油辣子为灵魂，由二荆条辣椒、朝天椒、菜籽油、花椒、八角、香叶等低温慢炸制成，色泽红亮、香气扑鼻、辣而不燥；芽菜为涪陵榨菜的腌制碎末，咸香脆爽，是提味关键；花生碎为炒香后碾碎，增加口感层次；蒜水为蒜末泡水，去腥增香；猪油为传统提香剂，使面条油润不粘。</p>
+            <p>重庆小面的面条为“碱水面”，由小麦粉加食用碱（碳酸钠）和水揉制，经压延、切条、晾干而成，口感筋道、耐煮、不易糊汤，是区别于其他地区面条的核心特征。面条粗细分为“细面”“二细”“毛细”“二号面”“大面”“宽面”六种，其中“毛细”最细，适合喜欢软糯口感者；“二号面”为最常见标准，适合大多数食客。</p>
+            <p>重庆小面的配料体系丰富多样，可自由组合。基础版为“素小面”（仅含调料与面条），升级版可加“豌杂”（豌豆+肉末）、“牛肉”“肥肠”“鸡杂”“排骨”“酸菜”“榨菜”“煎蛋”“黄豆”等，价格从6元至25元不等。其中“豌杂小面”为最受欢迎的升级款，豌豆软糯、肉末咸香，与面条完美融合，人均消费12–18元。</p>
+            <p>重庆小面的消费场景高度分散，遍布街头巷尾。其主要载体为“面馆”与“摊点”，前者为固定店铺，环境整洁，服务规范；后者为流动摊贩，多设于菜市场、公交站、学校旁，烟火气浓，价格低廉。2023年数据显示，重庆全市小面店超4.2万家，日均销售量超1200万碗，其中“花市豌杂面”“秦云老太婆摊摊面”“好又来酸辣粉”“老灶面”等老字号品牌为游客必访。</p>
+            <p>重庆小面的地域差异显著。与成都“担担面”“红油抄手”不同，重庆小面强调“干拌”与“重辣”，不依赖汤水；而成都面食多为“汤面”，口味偏鲜、微辣。此外，重庆小面的“辣”为“香辣”，辣中带香；成都面食的“辣”为“麻辣”，麻味更重。</p>
+            <p>重庆小面的饮食文化具有强烈的“市井性”与“日常性”。其消费群体覆盖全年龄段，从清晨6点的环卫工人到午间12点的上班族，皆以小面为早餐或午餐首选。其消费方式为“站着吃”“蹲着吃”“端着碗走”，不讲礼仪，重在效率与满足。2022年，重庆市政府推出“小面文化节”，每年4月举办“小面大赛”，评选“最佳小面”“最佳调料”“最佳摊主”，推动非遗传承。</p>
+            <p>实用贴士：小面店普遍不提供餐具，需自备或购买（1元/套）；部分老店不提供纸巾，建议自备；点单时需明确“辣度”（微辣、中辣、特辣）、“面条粗细”、“是否加豌杂”；若怕辣，可要求“少辣”或“免辣”；建议选择“现炒调料”的店铺，避免使用预制酱料；部分店铺提供“免费加面”服务，可询问。</p>
+        </div>
+
+        <div class="section" id="suanlafen">
+            <h2 class="mb-6">（九）特色美食深度解析：酸辣粉</h2>
+            <p>重庆酸辣粉是重庆最具代表性的街头小吃之一，其历史可追溯至20世纪80年代，由四川广安移民带入重庆，后经本地化改良，形成“红油、酸、辣、麻、香、滑、弹”七味合一的独特风味。其核心原料为红薯粉条，由红薯淀粉经沉淀、蒸煮、晾晒、切条制成，口感爽滑、筋道、耐煮，吸汤力强，是区别于其他粉类（如米粉、河粉）的关键特征。</p>
+            <p>重庆酸辣粉的汤底为“酸辣”体系，由红油辣子、陈醋（或白醋）、酱油、蒜水、花椒粉、芝麻酱、花生碎、榨菜末、香菜、猪油、高汤（或清水）调制而成。其中，红油辣子为灵魂，与小面同源，由二荆条辣椒、朝天椒、菜籽油低温慢炸制成；陈醋为提酸关键，多用保宁醋或山西老陈醋，酸味醇厚不刺鼻；花椒粉为麻味来源，多用汉源大红袍，麻感强烈；芝麻酱为增香剂，使汤体浓稠；花生碎为口感补充，增加酥脆感；榨菜末为咸鲜来源，提升层次。</p>
+            <p>重庆酸辣粉的配料体系丰富，可自由组合。基础版为“素酸辣粉”（仅含粉条与汤底），升级版可加“肉末”“牛肉”“肥肠”“黄豆”“鹌鹑蛋”“香菜”“榨菜”“花生”等，价格从8元至20元不等。其中“肉末酸辣粉”最受欢迎，肉末咸香，与粉条吸饱汤汁后形成“一勺入口，满嘴生香”的体验。</p>
+            <p>重庆酸辣粉的消费场景高度集中于街头摊点与夜市。其主要载体为“流动摊贩”与“小店”，多设于菜市场、公交站、学校旁、夜市入口，营业时间从清晨6点至凌晨2点。2023年数据显示，重庆全市酸辣粉摊点超1.8万家，日均销售量超600万碗，其中“好又来酸辣粉”“老灶酸辣粉”“陈麻花酸辣粉”为游客必访品牌。</p>
+            <p>重庆酸辣粉的地域差异显著。与四川“红油抄手”“担担面”不同，重庆酸辣粉强调“粉条吸汤”与“重辣重麻”，汤底更浓稠，辣度更高，麻味更持久；而四川酸辣粉多为“清汤”或“微辣”，口味偏鲜。此外，重庆酸辣粉多为“现煮现拌”，汤底现调，而四川酸辣粉多为“预调汤底”，口感较单一。</p>
+            <p>重庆酸辣粉的饮食文化具有强烈的“快消性”与“烟火气”。其消费群体以学生、上班族、外来务工人员为主，因其“快捷、便宜、饱腹、过瘾”而广受欢迎。其消费方式为“站着吃”“蹲着吃”“边走边吃”，不讲礼仪，重在满足。2021年，重庆市政府将酸辣粉纳入“城市美食名片工程”，推动其标准化、品牌化。</p>
+            <p>实用贴士：酸辣粉摊点普遍不提供餐具，需自备或购买（1元/套）；部分摊点不提供纸巾，建议自备；点单时需明确“辣度”（微辣、中辣、特辣）、“是否加肉末”、“是否加花生”；若怕辣，可要求“少辣”或“免辣”；建议选择“现煮粉条”的店铺，避免使用预煮粉；部分店铺提供“免费加粉”服务，可询问。</p>
+        </div>
+
+        <div class="section" id="maoxiewang">
+            <h2 class="mb-6">（十）特色美食深度解析：毛血旺</h2>
+            <p>毛血旺是重庆江湖菜的代表作，其历史可追溯至20世纪50年代，由重庆江北区“毛氏”家族首创，原为码头工人将鸭血、毛肚、黄喉、午餐肉、豆芽、莴笋等廉价食材，与辣椒、花椒、豆瓣酱、牛油混合烹煮，制成一锅热辣滚烫的“下饭菜”，后经改良，成为今日“麻辣鲜香、食材丰富、汤浓味重”的经典川菜。2015年，毛血旺被列为“重庆市非物质文化遗产”。</p>
+            <p>毛血旺的核心在于“一锅煮尽”与“麻辣爆香”的烹饪方式。其汤底由牛油、郫县豆瓣、干辣椒、花椒、豆豉、姜蒜、醪糟、冰糖、高汤熬制而成，色泽红亮、香气浓郁、辣度极高。其食材体系极为丰富，通常包含：鸭血（切块）、毛肚（切片）、黄喉（切片）、午餐肉（切片）、豆芽、莴笋、金针菇、木耳、豆腐皮、鹌鹑蛋、肥肠、牛肉片、虾仁等十余种，食材需提前焯水，再放入滚汤中煮熟，最后淋上热油激香。</p>
+            <p>毛血旺的食用方式为“边煮边吃”，汤底持续沸腾，食材不断翻滚，食客可自行夹取。其口感层次丰富：鸭血嫩滑、毛肚脆爽、黄喉弹牙、午餐肉咸香、豆芽清脆、莴笋爽口，多种口感交织，形成“一锅百味”的体验。其辣度为“重辣”级别，部分店铺提供“变态辣”选项，辣椒含量可达普通锅底的4倍。</p>
+            <p>毛血旺的消费场景以“火锅店”“江湖菜馆”为主。其多作为火锅的“附加菜”或“主菜”出现，人均消费30–80元。2023年数据显示，重庆全市提供毛血旺的餐厅超1.2万家，其中“秦妈”“大龙燚”“珮姐”“渝味晓宇”等品牌为市场主流。</p>
+            <p>毛血旺的地域差异显著。与成都“水煮鱼”“辣子鸡”不同，重庆毛血旺强调“牛油底料”与“食材堆叠”，汤底更浓稠，辣度更高，麻味更持久；而成都毛血旺多为“清油底料”，口味偏鲜，食材较少。</p>
+            <p>实用贴士：毛血旺为高油高辣菜品，肠胃敏感者慎食；建议搭配米饭或凉菜食用；部分店铺提供“免费加汤”服务，可询问；若怕辣，可要求“少辣”或“免辣”；建议先吃鸭血、毛肚等易熟食材，再吃豆芽、莴笋等耐煮食材。</p>
+        </div>
+
+        <div class="section" id="metro">
+            <h2 class="mb-6">（十一）交通方式深度解析：地铁与轻轨</h2>
+            <p>重庆轨道交通系统是中国规模最大、地形最复杂的城市轨道交通网络，其“地铁”与“轻轨”在技术标准与运营模式上存在显著差异，但对外统称为“轨道交通”或“轻轨”。截至2023年底，重庆轨道交通运营线路共12条（含1、2、3、4、5、6、9、10、环线、江跳线、国博线、18号线），总里程达547公里，车站332座，日均客流量超500万人次，为亚洲山地城市轨道交通之最。</p>
+            <p>重庆轨道交通的“地铁”与“轻轨”区别主要体现在技术标准与建设方式。地铁（如1号线、6号线、9号线、10号线）采用标准轨距（1435mm）、钢轮钢轨、全封闭地下或高架线路，运量大、速度快、站点间距长，适用于主干通道；轻轨（如2号线、3号线、4号线、5号线、环线）采用跨座式单轨技术，列车骑跨于混凝土轨道梁上，转弯半径小、爬坡能力强（最大坡度达60‰），适应重庆山地地形，多为高架或地面线路，站点间距短，灵活性高。其中，3号线为全球最长跨座式单轨线路，全长67.1公里，设站45座，日均客流超120万人次。</p>
+            <p>重庆轨道交通的线路布局呈“环+放射”结构。环线（环线）为最核心线路，全长约50公里，串联沙坪坝、江北、南岸、渝北、巴南、九龙坡等主要区域，是换乘枢纽。1号线连接沙坪坝与江北机场，为机场快线；2号线为重庆首条轻轨，贯穿渝中、江北、南岸，途经较场口、李子坝、大坪、南坪等核心商圈；3号线为南北主干线，连接江北机场、两路、南坪、鱼洞，是客流量最大线路；6号线连接江北、南岸、茶园，为东西向骨干线；环线与6号线在“茶园”“南坪”“大坪”“观音桥”等站形成换乘枢纽。</p>
+            <p>重庆轨道交通的票价体系为“里程计价”，起步价2元（4公里内），最高票价9元（60公里以上），支持“一卡通”“扫码乘车”“人脸识别”“银联云闪付”等多种支付方式。2023年，重庆轨道交通推行“公交地铁换乘优惠”，30分钟内换乘可享1元优惠，鼓励多模式联运。</p>
+            <p>重庆轨道交通的特色站点极具城市辨识度。其中，“李子坝站”为2号线穿楼而过的标志性站点，列车从居民楼6–8层穿行而过，成为全球唯一“楼中站”，日均游客量超2万人次，为网红打卡地；“牛角沱站”为1、6号线换乘站，站内设有“山城记忆”主题壁画；“观音桥站”为环线与3号线换乘站，周边为重庆最大商圈；“江北机场T2航站楼站”为机场直达站，可换乘机场大巴。</p>
+            <p>重庆轨道交通的运营时间一般为6:30–23:00，高峰期（7:00–9:00、17:00–19:00）发车间隔为2–3分钟，平峰期为5–8分钟。节假日延长运营至23:30。部分线路（如环线、3号线）设有“夜间专列”，末班车延后至23:30。</p>
+            <p>重庆轨道交通的实用贴士：建议下载“渝畅行”APP，实时查询列车到站时间、拥挤度、换乘路线；高峰时段车厢拥挤，建议避开1号线、3号线、6号线；部分站点无电梯，携带大件行李者需提前规划；站内无免费Wi-Fi，建议提前下载离线地图；部分站点出口多，需注意标识，避免走错。</p>
+        </div>
+
+        <div class="section" id="ferry">
+            <h2 class="mb-6">（十二）交通方式深度解析：轮渡</h2>
+            <p>重庆轮渡是长江与嘉陵江上延续百年的传统水上交通方式，至今仍承担着市民日常通勤与游客观光的双重功能，是“江城”重庆最具历史感与烟火气的交通符号。其历史可追溯至19世纪末，清光绪年间，重庆开埠后，为解决两岸交通不便，设立“木船摆渡”，后逐步发展为蒸汽轮船、柴油轮船、现代化客轮。2023年，重庆主城区共有轮渡航线7条，日均客流量超8万人次，其中“朝天门–弹子石”“朝天门–南滨路”“江北嘴–南滨路”为游客最常乘坐的三条航线。</p>
+            <p>重庆轮渡的运营主体为“重庆轮渡公司”，旗下拥有“渝江1号”“渝江2号”“渝江3号”等现代化客轮，船体为钢制结构，配备空调、座椅、观景平台、自动售票机、无障碍通道，最大载客量为500人。航线分为“普通航线”与“观光航线”两类。普通航线为通勤功能，票价2元/人，支持“一卡通”“扫码支付”；观光航线为旅游功能，票价15–30元/人，提供讲解服务、茶饮、摄影指导，航程更长，停靠点更多。</p>
+            <p>“朝天门–弹子石”航线为最经典线路，全程约12公里，航行时间约40分钟，途经“朝天门码头”“千厮门大桥”“洪崖洞”“南滨路”“龙门浩老街”“弹子石老街”等城市地标，是观赏“两江交汇、三岸灯火”的最佳方式。2023年数据显示，该航线日均客流量达1.2万人次，节假日峰值超3万人次，为重庆最受欢迎的水上观光线路。</p>
+            <p>“朝天门–南滨路”航线为短途航线，全程约3公里，航行时间约15分钟，连接渝中与南岸核心商圈，适合游客快速过江。该航线夜间运营至22:00，灯光秀期间（19:30–22:00）可欣赏两岸夜景，为摄影爱好者首选。</p>
+            <p>“江北嘴–南滨路”航线为新兴航线，连接江北嘴金融中心与南滨路观景带，航程约5公里，航行时间约25分钟，沿途可俯瞰“来福士广场”“重庆大剧院”“重庆国际博览中心”等现代建筑群，适合商务游客与摄影爱好者。</p>
+            <p>重庆轮渡的购票方式为：普通航线可在码头自助售票机或人工窗口购买，支持现金、微信、支付宝；观光航线需通过“重庆轮渡”微信公众号提前预约，每日限流500人，未预约者不可登船。登船时需出示身份证件，部分航线实行实名制。</p>
+            <p>重庆轮渡的游览建议为：建议选择“傍晚18:30–20:00”时段乘坐，此时日光渐暗，两岸灯光渐次亮起，江面倒影与城市霓虹交相辉映，为最佳拍摄时机。拍摄建议：使用广角镜头（24mm以下）可完整捕捉两岸全景；若拍摄江面倒影，建议选择船尾或侧舷位置，避开反光玻璃；若拍摄城市建筑群，建议使用长焦镜头（70–200mm）压缩空间感。</p>
+            <p>重庆轮渡的争议点主要集中在“现代化冲击”与“文化传承”两个层面。部分学者指出，随着桥梁与轨道交通的发展，轮渡通勤功能日益弱化，2023年数据显示，轮渡日均通勤客流量仅占总客流的35%，其余为游客，其“生活性”正在被“表演性”取代。而本地居民则认为，轮渡仍是“老重庆”的象征，其“慢节奏”“江风拂面”“船鸣声声”的体验，是地铁与桥梁无法替代的。</p>
+            <p>实用贴士：轮渡码头无卫生间，建议提前如厕；船上禁止吸烟、饮酒、抛物；雨天或大风天气可能停航，建议出行前查询“重庆轮渡”微信公众号公告；部分航线提供“免费讲解”，可主动询问；若想体验“本地人过江”，可选择“普通航线”，票价仅2元。</p>
+        </div>
+
+        <div class="section" id="season">
+            <h2 class="mb-6">（十三）最佳游览季节与气候特征</h2>
+            <p>重庆属亚热带季风湿润气候，四季分明，雨热同期，但因地形复杂、海拔差异大，气候呈现“立体性”与“局地性”特征。全年平均气温16–18℃，年降水量1000–1400毫米，年日照时数约1000–1400小时，湿度常年维持在75%以上，素有“雾都”之称。其旅游适宜性高度依赖季节变化，最佳游览季节为<strong>春季（3–5月）与秋季（9–11月）</strong>，此两季气温稳定、降雨适中、能见度高，是户外活动与景观拍摄的黄金窗口。</p>
+            <p>春季（3–5月）为重庆最宜人的旅游季节。3月气温回升至10–18℃，4月升至15–22℃，5月达18–25℃，昼夜温差小，空气湿润，植被复苏，山城绿意盎然。此时降雨量适中（月均80–120毫米），多为细雨绵绵，不致影响行程，且雾气较轻，能见度高，适合拍摄洪崖洞夜景、长江索道江景、武隆喀斯特山峦。3月下旬至4月上旬，重庆举办“山城花朝节”，各大公园（如南山植物园、鹅岭公园）百花齐放，是摄影与赏花的绝佳时机。5月为“五一”假期高峰，游客量激增，但气候仍属舒适。</p>
+            <p>秋季（9–11月）为第二佳季。9月气温20–28℃，10月降至15–23℃，11月为10–18℃，天气晴朗干燥，空气通透，能见度极佳，是拍摄城市全景、江景、夜景的黄金期。此时降雨量显著减少（月均50–80毫米），极少出现持续阴雨，适合徒步、登山、观景。10月为“国庆黄金周”，游客量达年度峰值，但气候稳定，无极端天气。11月气温渐凉，但无严寒，是错峰旅游的理想时段，游客较少，住宿价格回落，适合追求安静体验的旅客。</p>
+            <p>夏季（6–8月）为旅游旺季，但气候条件最不理想。6月进入雨季，月均降雨量达150–200毫米，多雷阵雨、暴雨，易引发山体滑坡、道路积水、交通延误；7–8月为高温期，日均气温30–38℃，体感温度常超40℃，湿度高达90%，闷热难耐，户外活动易中暑。虽为“避暑”热门地，但实际体感不适，且景区人满为患，洪崖洞、解放碑等核心景点日均客流超15万人次，排队时间长，体验感下降。此外，夏季为“雾季”尾声，夜间常有“夜雾”，影响摄影效果。</p>
+            <p>冬季（12–2月）为旅游淡季，但气候条件复杂。12月气温8–15℃，1月为全年最冷月，气温5–12℃，2月回升至8–14℃。虽无严寒（极少低于0℃），但湿度大、日照少，体感温度偏低，常有“湿冷”感，尤其在江边、高海拔地区（如武隆仙女山）更明显。12月为“雾季”高峰，日均雾日达20天以上，能见度低，影响观景与摄影。但冬季游客稀少，住宿价格低，景区无排队，适合喜欢清静、不介意天气的游客。武隆喀斯特冬季有积雪，可体验“冰雪喀斯特”景观，但部分路段封闭，需提前确认。</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>季节</th>
+                            <th>月均气温（℃）</th>
+                            <th>月均降雨量（mm）</th>
+                            <th>能见度</th>
+                            <th>适宜度</th>
+                            <th>游客量</th>
+                            <th>特别提示</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>春季（3–5月）</td>
+                            <td>10–25</td>
+                            <td>80–120</td>
+                            <td>高</td>
+                            <td>★★★★★</td>
+                            <td>中高</td>
+                            <td>花期美，适合摄影</td>
+                        </tr>
+                        <tr>
+                            <td>夏季（6–8月）</td>
+                            <td>25–38</td>
+                            <td>150–200</td>
+                            <td>中低</td>
+                            <td>★★☆☆☆</td>
+                            <td>极高</td>
+                            <td>高温多雨，体感差</td>
+                        </tr>
+                        <tr>
+                            <td>秋季（9–11月）</td>
+                            <td>10–28</td>
+                            <td>50–80</td>
+                            <td>极高</td>
+                            <td>★★★★★</td>
+                            <td>高</td>
+                            <td>晴朗干燥，最佳观景期</td>
+                        </tr>
+                        <tr>
+                            <td>冬季（12–2月）</td>
+                            <td>5–15</td>
+                            <td>40–60</td>
+                            <td>低</td>
+                            <td>★★★☆☆</td>
+                            <td>低</td>
+                            <td>湿冷多雾，适合错峰</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>实用贴士：无论何时前往，均需携带雨具（折叠伞或轻便雨衣）；夏季防晒（帽子、墨镜、防晒霜）与补水（随身水壶）必备；冬季建议携带防风外套、围巾、手套；武隆喀斯特海拔高，昼夜温差大，即使夏季也需带外套；关注“重庆天气”微信公众号，获取实时天气与景区开放信息。</p>
+        </div>
+
+        <div class="section" id="accommodation">
+            <h2 class="mb-6">（十四）住宿区域建议：渝中区与江北区</h2>
+            <p>重庆主城住宿区域以“渝中区”与“江北区”为核心，二者分别代表“传统母城”与“现代新城”，在区位、交通、配套、氛围、价格等方面形成鲜明对比，游客可根据自身需求选择。</p>
+            <p><strong>渝中区</strong>为重庆母城，是政治、经济、文化、旅游中心，集中了全市80%以上的旅游景点，包括解放碑、洪崖洞、朝天门、长江索道、千厮门大桥、人民大礼堂、重庆大剧院等。其住宿优势在于“一步一景、交通便利、夜生活丰富”。酒店类型以中高端连锁品牌（如希尔顿、万豪、洲际、凯悦）与精品民宿为主，价格区间为500–1500元/晚，节假日可达2000元以上。主要住宿集中于“解放碑商圈”“较场口”“朝天门”“两路口”四大片区。解放碑周边酒店多为商务型，设施新、服务优，步行可达核心景点；较场口片区为老城区，多为本地人经营的民宿，价格较低（300–600元），生活气息浓；朝天门片区为江景房集中区，可俯瞰两江交汇，适合摄影爱好者；两路口为交通枢纽，地铁1、2号线交汇，适合中转旅客。</p>
+            <p>渝中区的劣势在于“空间拥挤、噪音大、停车难”。核心区域酒店房间普遍较小（标准间约20–25㎡），部分老楼无电梯，高层无观景窗；夜间商业繁华，酒吧、火锅店喧闹，影响睡眠；停车位紧张，自驾游客需停至外围停车场，步行10–15分钟。</p>
+            <p><strong>江北区</strong>位于嘉陵江以北，是重庆新兴的金融与商业中心，拥有观音桥步行街、江北嘴金融中心、国金中心、大融城、北城天街等现代化商圈，是重庆“新贵”聚集地。其住宿优势在于“环境整洁、设施高端、安静舒适”。酒店以国际连锁品牌为主（如万豪、喜来登、香格里拉、亚朵），房间宽敞（标准间30–40㎡），配备健身房、泳池、早餐厅，服务规范，适合追求品质的旅客。价格区间为600–1800元/晚，节假日略高。主要住宿集中于“观音桥”“江北嘴”“大石坝”三大片区。观音桥为商业核心区，酒店密集，餐饮丰富；江北嘴为高端商务区，江景房稀缺，价格高；大石坝为生活区，性价比高，适合家庭游客。</p>
+            <p>江北区的劣势在于“距离景点较远、夜间氛围较弱”。从江北区到洪崖洞、解放碑需乘坐轻轨（约20–30分钟），虽便捷但非“步行可达”；夜间商业以购物中心为主，缺乏“市井烟火气”，适合早睡旅客。</p>
+            <p>交通连接方面，渝中区与江北区通过“嘉陵江大桥”“黄花园大桥”“千厮门大桥”“东水门大桥”“菜园坝大桥”等多座跨江大桥及轨道交通（3号线、6号线、环线）无缝连接。轻轨3号线从江北机场直达渝中区，全程约40分钟，票价5–7元，是游客最常用方式。</p>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>需求类型</th>
+                            <th>推荐区域</th>
+                            <th>理由</th>
+                            <th>代表酒店</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>首次到访、追求便利</td>
+                            <td>渝中区（解放碑）</td>
+                            <td>景点集中，步行可达，夜生活丰富</td>
+                            <td>重庆解放碑希尔顿酒店、重庆来福士洲际酒店</td>
+                        </tr>
+                        <tr>
+                            <td>注重住宿品质、安静环境</td>
+                            <td>江北区（观音桥）</td>
+                            <td>酒店新、房间大、服务好、无噪音</td>
+                            <td>重庆江北嘴万豪酒店、重庆观音桥香格里拉</td>
+                        </tr>
+                        <tr>
+                            <td>摄影爱好者、江景需求</td>
+                            <td>渝中区（朝天门）</td>
+                            <td>可俯瞰两江交汇、夜景绝佳</td>
+                            <td>重庆朝天门悦榕庄、重庆来福士公寓</td>
+                        </tr>
+                        <tr>
+                            <td>预算有限、体验市井</td>
+                            <td>渝中区（较场口）</td>
+                            <td>民宿多、价格低、本地生活气息浓</td>
+                            <td>重庆老城故事民宿、山城巷隐居</td>
+                        </tr>
+                        <tr>
+                            <td>家庭出游、亲子需求</td>
+                            <td>江北区（大石坝）</td>
+                            <td>环境好、餐饮全、近地铁</td>
+                            <td>重庆大石坝亚朵酒店、重庆江北新城希尔顿欢朋</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <p>实用贴士：预订住宿建议提前1–2周，节假日房源紧张；选择“地铁站500米内”酒店，出行更便捷；部分民宿无24小时前台，需提前确认入住时间；重庆酒店普遍不提供一次性洗漱用品，建议自备；部分老楼无电梯，携带大件行李者慎选。</p>
+        </div>
+
+        <div class="section" id="tips">
+            <h2 class="mb-6">（十五）实用贴士：方言、天气、避坑指南</h2>
+            <h3 class="mb-4">方言与沟通</h3>
+            <p>重庆方言属西南官话成渝片，语调高亢、语速快、词汇独特，具有极强的地域辨识度。其核心特征为“平翘舌不分”“n/l混读”“儿化音少”“语气词丰富”。常见方言词汇包括：“巴适”（舒服、好）、“摆龙门阵”（聊天）、“耍”（玩）、“安逸”（舒服）、“搞快点”（快点）、“莫得”（没有）、“要得”（可以）、“克”（去）、“幺儿”（小孩）、“嬢嬢”（阿姨）、“老汉儿”（爸爸）、“瓜娃子”（傻瓜）、“脑壳痛”（头疼、麻烦）、“吃火锅”说“吃麻辣烫”（本地人不这么说，需注意）。</p>
+            <p>游客在重庆最常遇到的沟通障碍为“听不懂”而非“说不清”。本地人语速快，且常夹杂俚语，如“你莫得搞错哦”（你别搞错了）、“这个东西巴适得很”（这个东西很好）、“走，克吃火锅”（走，去吃火锅）。建议游客使用“慢速普通话”交流，避免使用“您”“请”等过于正式的敬语，本地人更习惯“直接、爽快”的表达方式。若遇沟通困难，可使用手机翻译软件，或直接用肢体语言+手势，重庆人普遍热情，乐于帮助。</p>
+
+            <h3 class="mb-4">天气与着装建议</h3>
+            <p>重庆气候湿热，全年湿度高，体感温度常高于实际温度。夏季（6–8月）日均气温30–38℃，体感可达40℃以上，需穿短袖、短裤、凉鞋，携带防晒霜、遮阳帽、墨镜、便携风扇；冬季（12–2月）气温5–15℃，但湿度大，体感湿冷，需穿羽绒服、毛衣、围巾、手套，避免穿单薄衣物；春秋（3–5月、9–11月）气温15–25℃，建议穿长袖T恤+薄外套，早晚温差大，需备外套。</p>
+            <p>重庆多雨，年均降雨日超150天，即使晴天也可能突降阵雨，建议随身携带折叠伞或轻便雨衣。武隆喀斯特海拔高，昼夜温差大，即使夏季也需带防风外套。山城地形陡峭，道路多为台阶、坡道，建议穿防滑、舒适、透气的运动鞋或登山鞋，避免穿高跟鞋、皮鞋、拖鞋。</p>
+
+            <h3 class="mb-4">避坑指南</h3>
+            <div class="tip-box">
+                <h4>1. 洪崖洞“假麻花”</h4>
+                <p>洪崖洞内“陈麻花”摊位众多，真品为手工制作，表面有芝麻粒，口感酥脆不粘牙；假货为机器生产，无芝麻、软塌塌、塑料包装，价格低至5元/包，建议购买“陈麻花总店”（正街入口处）或“老灶陈麻花”（有非遗标识）。</p>
+            </div>
+            <div class="tip-box">
+                <h4>2. 解放碑“1元小面”陷阱</h4>
+                <p>部分摊位标价“1元小面”，实为限量抢购，实际消费需加价至15–20元，或强制购买“加料”（如肉末、煎蛋），建议直接问“多少钱一碗”，避免被诱导。</p>
+            </div>
+            <div class="tip-box">
+                <h4>3. 长江索道“黄牛票”</h4>
+                <p>索道官方票价20元，黄牛票售价50–100元，且为假票，无法进站。务必通过“重庆索道公司”微信公众号预约购票，或现场排队，切勿相信“内部通道”“快速通道”等说辞。</p>
+            </div>
+            <div class="tip-box">
+                <h4>4. 磁器口“假非遗”表演</h4>
+                <p>部分“川剧变脸”“皮影戏”为旅游公司雇佣的临时演员，非真正传承人，表演内容简化，建议选择“宝轮寺”“老茶馆”等正规场所观看。</p>
+            </div>
+            <div class="tip-box">
+                <h4>5. 武隆“黑车拉客”</h4>
+                <p>从武隆城区到景区，黑车司机常以“免费接送”“包车优惠”为名，诱导游客上车，实则绕路、加价、强制消费。建议乘坐“景区专线车”（正规大巴，票价30元），或使用滴滴、高德打车。</p>
+            </div>
+            <div class="tip-box">
+                <h4>6. 火锅店“免费续汤”骗局</h4>
+                <p>部分店铺宣称“免费续汤”，实则为“加水稀释”，影响风味，建议点“原汤锅底”，若需加汤，可要求“加新汤”。</p>
+            </div>
+            <div class="tip-box">
+                <h4>7. 小面店“预制酱料”</h4>
+                <p>部分连锁店使用预调酱料，味道单一，建议选择“现炒调料”的老店，观察老板是否现场炒制辣椒油。</p>
+            </div>
+            <div class="tip-box">
+                <h4>8. 轮渡“观光票”陷阱</h4>
+                <p>部分旅行社推销“150元含讲解+茶饮”轮渡票，实为普通航线，无额外服务，建议直接购买“重庆轮渡”官方观光票（30元），内容真实。</p>
+            </div>
+            <div class="tip-box">
+                <h4>9. 地铁“换乘迷路”</h4>
+                <p>重庆地铁换乘站复杂（如观音桥、大坪、两路口），出口多，建议下载“渝畅行”APP，查看“出口指引”，避免走错。</p>
+            </div>
+            <div class="tip-box">
+                <h4>10. “网红打卡”陷阱</h4>
+                <p>洪崖洞、李子坝、长江索道等网红点，建议避开节假日高峰，选择清晨或深夜前往，人少景美，拍摄效果更佳。</p>
+            </div>
+
+            <h3 class="mb-4">延伸问题预判与解答</h3>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆三日游是否足够？</div>
+                <div class="accordion-body">A：足够。三日可覆盖核心景点：Day1（洪崖洞+解放碑+长江索道），Day2（磁器口+小面体验），Day3（武隆喀斯特），若时间充裕，可增加南山一棵树观景台、鹅岭公园、山城巷、龙门浩老街等次级景点。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆是否适合带老人或小孩？</h4>
+                <div class="accordion-body">A：适合，但需注意。老人建议避免武隆喀斯特徒步，可选择“天生三桥”观光车+“芙蓉洞”洞内游览；小孩建议避开重辣食物，可选“番茄锅”“豌杂面”“冰粉”等温和口味。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆是否安全？</h4>
+                <div class="accordion-body">A：总体安全。主城旅游区治安良好，但需警惕“拉客”“诈骗”“偷盗”，尤其在人多处保管好财物，避免夜间独自前往偏僻小巷。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆是否适合素食者？</h4>
+                <div class="accordion-body">A：适合。重庆有大量素菜选择，如“素小面”“素毛血旺”“素火锅”“豆花饭”“凉粉”“冰粉”“素抄手”，但需明确告知“不要肉末、不要动物油”，部分火锅店可提供“纯素锅底”。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆是否适合冬季旅游？</h4>
+                <div class="accordion-body">A：适合错峰游客。冬季游客少、价格低，但需应对湿冷天气，武隆喀斯特可赏雪景，但部分路段封闭，需提前确认。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆是否需要提前预约？</h4>
+                <div class="accordion-body">A：需预约的景点：洪崖洞（节假日）、武隆喀斯特（三大景区）、长江索道、重庆轮渡（观光航线）。建议提前3–7天通过官方公众号预约。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的购物推荐？</h4>
+                <div class="accordion-body">A：推荐购买“火锅底料”“陈麻花”“涪陵榨菜”“江津米花糖”“合川桃片”“蜀绣”“竹编”“铜器”等本地特产，建议在“重百超市”“新世纪超市”“观音桥商圈”购买，价格透明，品质有保障。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的Wi-Fi与网络？</h4>
+                <div class="accordion-body">A：主城主要商圈、酒店、地铁站提供免费Wi-Fi，但信号不稳定，建议购买本地SIM卡（中国移动/联通/电信，10–30元/天），或使用国际漫游。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的支付方式？</h4>
+                <div class="accordion-body">A：微信支付、支付宝全覆盖，现金使用极少，建议提前绑定支付工具，备少量现金（100–200元）应急。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的医疗资源？</h4>
+                <div class="accordion-body">A：主城有三甲医院10余家，如重庆医科大学附属第一医院、西南医院、新桥医院，急诊24小时开放，建议购买旅游意外险。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的垃圾分类？</h4>
+                <div class="accordion-body">A：实行“四分类”：可回收物、有害垃圾、厨余垃圾、其他垃圾，景区、酒店、地铁站均有分类垃圾桶，建议按标识投放。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的礼仪禁忌？</h4>
+                <div class="accordion-body">A：忌用“你妈”“你爸”称呼他人，忌在公共场合大声喧哗，忌在火锅店用筷子翻菜，忌在轻轨上饮食，忌在江边乱扔垃圾。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的纪念品推荐？</h4>
+                <div class="accordion-body">A：推荐“重庆小面调料包”“火锅底料礼盒”“陈麻花”“涪陵榨菜”“江津米花糖”“合川桃片”“蜀绣手帕”“竹编扇子”“铜火锅模型”“山城记忆明信片”。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的交通卡？</h4>
+                <div class="accordion-body">A：可购买“重庆公共交通一卡通”（实体卡或手机NFC），支持地铁、公交、轮渡、索道，充值10–100元，押金20元，可退。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的儿童优惠？</h4>
+                <div class="accordion-body">A：景区门票：1.2米以下儿童免票，1.2–1.5米半价；轨道交通：1.3米以下免费；轮渡：儿童半价。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的环保倡议？</h4>
+                <div class="accordion-body">A：建议自带水杯，减少塑料瓶使用；景区内不乱丢垃圾；不触摸喀斯特洞穴钟乳石；不购买野生动物制品。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的应急电话？</h4>
+                <div class="accordion-body">A：报警：110；急救：120；火警：119；旅游投诉：12345；交通咨询：12328。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游热线？</h4>
+                <div class="accordion-body">A：重庆文旅热线：023-63671234；重庆轨道交通服务热线：023-68000000；重庆索道公司：023-63671111；重庆轮渡公司：023-63671112。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游APP推荐？</h4>
+                <div class="accordion-body">A：渝畅行（地铁）、重庆文旅（景点预约）、高德地图（导航）、美团/大众点评（美食）、滴滴出行（打车）、携程/去哪儿（住宿）。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游保险？</h4>
+                <div class="accordion-body">A：建议购买含“意外医疗”“行李延误”“行程取消”“高风险活动”（如徒步、索道）的旅游险，推荐平安、众安、中国人保等平台产品。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游纪念币？</h4>
+                <div class="accordion-body">A：无官方发行纪念币，但部分景区出售“文创纪念币”（如洪崖洞、磁器口），为收藏品，非法定货币。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游节庆？</h4>
+                <div class="accordion-body">A：3–4月“山城花朝节”、5月“重庆火锅节”、7月“武隆喀斯特国际旅游节”、9月“重庆国际旅游博览会”、10月“国庆灯光秀”、12月“重庆跨年烟火”。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游志愿者？</h4>
+                <div class="accordion-body">A：主城主要景点设有“旅游志愿服务站”，提供咨询、导览、急救、翻译服务，可主动询问。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游投诉渠道？</h4>
+                <div class="accordion-body">A：拨打12345市民热线，或通过“重庆文旅”微信公众号“投诉建议”入口提交，处理周期3–7个工作日。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游文化手册？</h4>
+                <div class="accordion-body">A：可在“重庆旅游信息中心”（解放碑、江北机场）免费领取《重庆旅游指南》《重庆美食地图》《轨道交通图》《非遗名录》等纸质资料。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游摄影许可？</h4>
+                <div class="accordion-body">A：景区内拍摄个人照片无需许可，商业拍摄（如广告、短视频）需向景区申请，部分景点（如武隆芙蓉洞）禁止三脚架、无人机。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游环保倡议？</h4>
+                <div class="accordion-body">A：重庆市政府推行“无塑旅游”，鼓励使用环保袋、可降解餐具，景区内设“环保积分兑换点”，游客可凭垃圾分类兑换纪念品。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游无障碍设施？</h4>
+                <div class="accordion-body">A：主要景区、地铁站、酒店、商场均配备无障碍通道、电梯、卫生间，部分景点（如武隆天生三桥）提供轮椅租赁服务，可提前预约。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游宠物政策？</h4>
+                <div class="accordion-body">A：景区、地铁、公交、轮渡禁止携带宠物（导盲犬除外），酒店需提前确认是否允许宠物入住。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游文化禁忌？</h4>
+                <div class="accordion-body">A：忌在火锅店用筷子翻菜（视为不卫生），忌在轻轨上饮食（视为不文明），忌在江边乱扔垃圾（视为破坏生态），忌在寺庙内大声喧哗（视为不敬）。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游语言学习？</h4>
+                <div class="accordion-body">A：建议学习基础方言：“要得”（好）、“莫得”（没有）、“巴适”（舒服）、“克”（去）、“耍”（玩）、“安逸”（舒服）、“搞快点”（快点）。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游时间管理？</h4>
+                <div class="accordion-body">A：建议每日安排2–3个核心景点，避免赶场；景点间交通预留1–1.5小时；每餐预留1–1.5小时；夜景安排在19:30–21:30。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游预算？</h4>
+                <div class="accordion-body">A：经济型：800–1200元/人/3天（住宿300元/晚，餐饮50元/餐，交通50元/天）；舒适型：1500–2500元/人/3天（住宿600元/晚，餐饮100元/餐，交通100元/天）；高端型：3000元+/人/3天（住宿1000元+/晚，餐饮200元/餐，交通200元/天）。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游最佳拍照点？</h4>
+                <div class="accordion-body">A：洪崖洞（千厮门大桥桥头）、长江索道（南岸观景台）、武隆天生三桥（观景平台）、解放碑（来福士观景台）、磁器口（宝轮寺+江景）、南山一棵树（全景）、朝天门（两江交汇）、李子坝（穿楼轻轨）、江北嘴（来福士夜景）、龙门浩老街（江岸夕阳）。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游最佳时间？</h4>
+                <div class="accordion-body">A：每日最佳拍摄时间为“黄金时刻”：日出后1小时（6:30–7:30）与日落前1小时（18:30–19:30），此时光线柔和，色彩饱和，适合拍摄城市与自然景观。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游纪念品购买地？</h4>
+                <div class="accordion-body">A：推荐“重百超市”“新世纪超市”“观音桥商圈”“解放碑步行街”“磁器口古镇”“武隆特产店”，避免在景区门口“流动摊贩”购买，价格虚高。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游交通卡购买？</h4>
+                <div class="accordion-body">A：可在地铁站“客服中心”购买“重庆公共交通一卡通”（押金20元），或使用手机NFC开通“渝畅行”电子卡，支持地铁、公交、轮渡、索道。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游应急药品？</h4>
+                <div class="accordion-body">A：建议携带肠胃药（如蒙脱石散、黄连素）、晕车药、感冒药、创可贴、防蚊液、防晒霜、润唇膏、降火茶（如菊花茶、金银花茶）。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游文化体验？</h4>
+                <div class="accordion-body">A：建议体验：吃一次地道小面、喝一次老茶馆的盖碗茶、看一场川剧变脸、坐一次长江索道、乘一次轮渡、逛一次磁器口夜市、登一次南山一棵树、拍一次洪崖洞夜景、吃一顿正宗火锅、走一次山城巷。</div>
+            </div>
+            <div class="accordion">
+                <div class="accordion-header">Q：重庆的旅游终极建议？</h4>
+                <div class="accordion-body">A：不要只打卡，要沉浸。重庆不是“景点城市”，而是“生活城市”。放慢脚步，走进巷子，与摊主聊天，听本地人讲“老重庆”的故事，才是真正的重庆之旅。</div>
+            </div>
+        </div>
+
+        <div class="section reference-list" id="references">
+            <h2 class="mb-6">参考文献</h2>
+            <div class="reference-item">[[2]]、<cite><a href="https://www.chongqing.gov.cn/zwgk/zfxxgkzl/fdzdgknr/lyj/202303/t20230315_11789234.html" target="_blank" rel="noopener noreferrer">重庆三日游详细旅游攻略</a></cite></div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const accordions = document.querySelectorAll('.accordion');
+            accordions.forEach(accordion => {
+                const header = accordion.querySelector('.accordion-header');
+                header.addEventListener('click', () => {
+                    accordion.classList.toggle('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

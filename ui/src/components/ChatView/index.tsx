@@ -23,10 +23,12 @@ type Props = {
   // 新增：历史记录恢复
   restoreSession?: ChatSession;
   onSessionRestored?: () => void;
+  // 新增：返回主页面回调
+  onBackToHome?: () => void;
 };
 
 const ChatView: GenieType.FC<Props> = (props) => {
-  const { inputInfo: inputInfoProp, product, restoreSession, onSessionRestored } = props;
+  const { inputInfo: inputInfoProp, product, restoreSession, onSessionRestored, onBackToHome } = props;
 
   const [chatTitle, setChatTitle] = useState("");
   const [taskList, setTaskList] = useState<MESSAGE.Task[]>([]);
@@ -65,25 +67,39 @@ const ChatView: GenieType.FC<Props> = (props) => {
             return null;
           })
           .filter(t => t !== null) as Array<{ id: string; name: string; domainName?: string }>;
-        setSelectedTemplates(templates);
+        // 只在模板列表真正变化时才更新状态，避免闪烁
+        setSelectedTemplates(prev => {
+          const prevIds = prev.map(t => t.id).sort().join(',');
+          const newIds = templates.map(t => t.id).sort().join(',');
+          if (prevIds !== newIds) {
+            return templates;
+          }
+          return prev;
+        });
       } else {
-        setSelectedTemplates([]);
+        // 只有在确实没有选择模板时才清空
+        setSelectedTemplates(prev => {
+          if (prev.length > 0) {
+            return [];
+          }
+          return prev;
+        });
       }
     };
 
     loadSelectedTemplates();
 
-    // 监听localStorage变化（当用户在模板设置页面修改选择时）
-    const handleStorageChange = () => {
+    // 监听自定义事件（当用户在模板设置页面修改选择时）
+    const handleUserSelectedChange = () => {
       loadSelectedTemplates();
     };
 
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('userSelectedTemplatesChange', handleUserSelectedChange);
     // 定期检查（因为storage事件只在其他标签页触发）
-    const interval = setInterval(loadSelectedTemplates, 1000);
+    const interval = setInterval(loadSelectedTemplates, 2000); // 改为2秒，减少刷新频率
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('userSelectedTemplatesChange', handleUserSelectedChange);
       clearInterval(interval);
     };
   }, []);
@@ -505,6 +521,15 @@ const ChatView: GenieType.FC<Props> = (props) => {
 
         <div className="w-full flex justify-between">
           <div className="w-full flex items-center pb-8">
+            {onBackToHome && (
+              <button
+                onClick={onBackToHome}
+                className="mr-12 p-4 hover:bg-gray-100 rounded-[4px] transition-colors flex items-center justify-center"
+                title="返回主页面"
+              >
+                <i className="font_family icon-fanhui text-[16px] text-[#27272A]"></i>
+              </button>
+            )}
             <Logo />
             <div className="overflow-hidden whitespace-nowrap text-ellipsis text-[16px] font-[500] text-[#27272A] mr-8">
               {chatTitle}

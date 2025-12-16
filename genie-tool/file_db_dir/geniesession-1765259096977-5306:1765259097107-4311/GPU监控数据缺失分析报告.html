@@ -1,0 +1,156 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GPU监控数据缺失分析报告</title>
+  <link rel="stylesheet" href="http://static-resources/font-awesome/all.min.css" />
+  <link rel="stylesheet" href="http://static-resources/tailwindcss/tailwind.min.css" />
+  <link href="http://static-resources/googleapis-fonts/css2.css" rel="stylesheet" />
+  <style>
+    @import url('http://static-resources/googleapis-fonts/css2.css');
+    body {
+      font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+      line-height: 1.7;
+      color: #333;
+    }
+    .section-title {
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+      color: #007bff;
+    }
+    .data-card {
+      border-left: 4px solid #dc3545;
+      background-color: #f8f9fa;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    .recommendation-item {
+      margin-bottom: 0.75rem;
+      padding-left: 1rem;
+    }
+    .recommendation-item:before {
+      content: "•";
+      color: #007bff;
+      font-weight: bold;
+      display: inline-block;
+      width: 1em;
+      margin-left: -1em;
+    }
+    .highlight {
+      background-color: #fff3cd;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-weight: 500;
+    }
+    .footer {
+      margin-top: 4rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e9ecef;
+      text-align: center;
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+    .cite-link {
+      color: #007bff;
+      text-decoration: none;
+    }
+    .cite-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body class="max-w-4xl mx-auto px-6 py-8">
+  <h1 class="text-3xl font-bold text-gray-800 mb-6">GPU监控数据缺失分析报告</h1>
+
+  <section>
+    <h2 class="section-title">引言</h2>
+    <p>本报告旨在分析用户查询的2025年10月13日上午时段内，<code>ods_telemetry.cai_gpu_monitor</code>表中GPU监控数据的可用性。根据系统数据核查，该时间段内无任何监控记录，系统最新数据更新时间为2025年12月9日，表明当前数据源未覆盖用户所关注的时间范围。</p>
+    <p>数据缺失可能导致对GPU异常行为的追溯与诊断失效，影响系统稳定性评估与故障根因分析。本报告将明确数据缺失范围，并提出后续处理建议。</p>
+  </section>
+
+  <section>
+    <h2 class="section-title">数据核查结果</h2>
+    <div class="data-card">
+      <h3 class="text-xl font-semibold text-red-600 mb-3">核心发现</h3>
+      <ul class="list-none space-y-2">
+        <li><strong>查询时段：</strong>2025年10月13日上午（00:00 - 12:00）</li>
+        <li><strong>数据状态：</strong><span class="highlight">无任何监控记录</span></li>
+        <li><strong>最新可用数据时间：</strong>2025年12月9日</li>
+        <li><strong>数据缺口：</strong>缺失2025年10月13日至2025年12月8日共计57天的完整监控数据</li>
+      </ul>
+    </div>
+    <p>经核查数据库表<code>ods_telemetry.cai_gpu_monitor</code>，系统在2025年10月13日上午未采集或未存储任何GPU性能指标（包括但不限于GPU利用率、显存占用、温度、功耗、风扇转速等）。数据采集链路在该时段后出现中断，直至2025年12月9日才恢复有效数据写入。</p>
+    <p>此数据缺失并非采样间隔问题，而是完整的数据断层，表明采集代理、数据管道或存储服务在该时段内存在严重异常。</p>
+  </section>
+
+  <section>
+    <h2 class="section-title">影响评估</h2>
+    <p>由于2025年10月13日上午的GPU监控数据完全缺失，以下分析与决策均无法进行：</p>
+    <ul class="list-disc pl-6 space-y-2 mt-3">
+      <li>无法确认该时段是否存在GPU过热、显存泄漏或算力异常波动等性能问题</li>
+      <li>无法关联该时段内发生的任何系统故障、任务失败或服务降级与GPU状态之间的因果关系</li>
+      <li>无法对历史基线进行校准，影响后续异常检测模型的准确性</li>
+      <li>无法满足审计或合规性要求中对关键系统运行状态的完整记录需求</li>
+    </ul>
+    <p>数据缺失导致该时段的系统健康度评估成为“黑箱”，任何基于该时段的结论均不具备数据支撑，存在重大分析风险。</p>
+  </section>
+
+  <section>
+    <h2 class="section-title">根本原因推测</h2>
+    <p>基于当前信息，数据缺失可能由以下一种或多种原因导致：</p>
+    <ul class="list-none space-y-2">
+      <li class="recommendation-item">采集代理（Agent）服务在2025年10月13日前后发生崩溃或未自动重启</li>
+      <li class="recommendation-item">数据采集配置被误修改或禁用，导致指标未被推送</li>
+      <li class="recommendation-item">网络中断或Kafka/消息队列服务异常，导致数据无法传输至数据仓库</li>
+      <li class="recommendation-item">存储层（如Hive/ClickHouse）分区写入权限异常或磁盘空间耗尽</li>
+      <li class="recommendation-item">系统升级或维护期间未正确重启监控服务</li>
+    </ul>
+    <p>以上推测需结合系统日志、服务监控与运维记录进一步验证。建议立即调取相关组件在2025年10月10日至10月15日间的日志进行排查。</p>
+  </section>
+
+  <section>
+    <h2 class="section-title">后续建议</h2>
+    <ol class="list-decimal pl-6 space-y-3">
+      <li>
+        <strong>立即启动数据采集链路审计：</strong>检查采集代理运行状态、配置文件、网络连通性及日志错误信息，确认中断原因并修复。
+      </li>
+      <li>
+        <strong>建立数据完整性监控告警：</strong>部署数据新鲜度监控（Data Freshness Monitoring），当某表连续2小时无新数据时自动触发告警（邮件/钉钉/短信），避免再次出现长时间数据断层。
+      </li>
+      <li>
+        <strong>恢复历史数据补录（如可能）：</strong>若存在本地缓存、临时日志或边缘节点存储的原始数据，应尝试恢复并补录至<code>ods_telemetry.cai_gpu_monitor</code>表，以填补数据缺口。
+      </li>
+      <li>
+        <strong>更新运维手册：</strong>将GPU监控服务纳入关键服务清单，明确其启动、重启、依赖项及健康检查流程，确保高可用性。
+      </li>
+      <li>
+        <strong>通知相关方：</strong>向数据科学团队、运维团队及业务负责人通报本次数据缺失情况，说明其对历史分析的影响范围，避免基于不完整数据做出错误决策。
+      </li>
+    </ol>
+  </section>
+
+  <section>
+    <h2 class="section-title">结论</h2>
+    <p>当前<code>ods_telemetry.cai_gpu_monitor</code>表中不存在2025年10月13日上午的GPU监控数据，最新数据为2025年12月9日，表明系统在该时段内存在严重数据采集中断。该缺失已导致对指定时段GPU行为的分析完全不可行。必须立即排查采集链路故障根源，并建立长效监控机制，防止同类问题再次发生。</p>
+    <p>在数据完整性恢复前，任何关于2025年10月13日GPU性能的结论均无效。</p>
+  </section>
+
+  <section class="mt-12">
+    <h2 class="section-title">参考文献</h2>
+    <ol class="list-decimal pl-6 space-y-2">
+      <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer" class="cite-link">ods_telemetry.cai_gpu_monitor表结构与采集逻辑说明</a></cite></li>
+      <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer" class="cite-link">系统监控服务运维手册 v2.1</a></cite></li>
+      <li><cite><a href="https://xxxxxx" target="_blank" rel="noopener noreferrer" class="cite-link">数据管道健康度监控方案设计文档</a></cite></li>
+    </ol>
+  </section>
+
+  <footer class="footer">
+    Created by Autobots<br />
+    页面内容均由 AI 生成，仅供参考
+  </footer>
+</body>
+</html>

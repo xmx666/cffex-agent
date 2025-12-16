@@ -7,10 +7,10 @@ ppt_prompt: |-
 
   ## 要求
   ### 技术规范
-  * 使用HTML5、Font Awesome、Tailwind CSS和必要的JavaScript
-  * Font Awesome: http://static-resources/font-awesome/all.min.css
-  * Tailwind CSS: http://static-resources/tailwindcss/tailwind.min.css
-  * 中文字体: http://static-resources/googleapis-fonts/css2.css
+  * 使用HTML5、Font Awesome、Tailwind CSS、和必要的JavaScript
+  * Font Awesome: /static-resources/font-awesome/all.min.css
+  * Tailwind CSS: /static-resources/tailwindcss/tailwind.min.css
+  * 中文字体: /static-resources/googleapis-fonts/css2.css
 
   ### 风格要求
 
@@ -45,7 +45,7 @@ ppt_prompt: |-
     - **一页放不下必须合理拆分成两页**，保证每页内容都能完全可见，尤其是有图表的，可以将图表单独放一页
     - 所有卡片必须通过 css grid 对齐
     - 每页中卡片数量超过 4 个时自动分页
-  - 对于需要使用 echarts 图表展现的情况
+  - 对于需要使用  图表展现的情况
     - 图的 x、y 的坐标数据，图例以及图题之间不得截断、重叠（可以使用调整字体大小，图大小等方式）
     - 图和表不要同时放一页，避免内容过于拥挤
     - xAxis 过多的情况下，可以使用倾斜方式；yAxis 数值标签内置显示
@@ -60,9 +60,9 @@ ppt_prompt: |-
     - 标题要精炼、准确提炼出本页表达的内容；
     - 内容围绕本页表达观点组织、提取核心论点、同时提取丰富完整的论据，避免内容空洞；
     - **注意数据的提取**，但**禁止捏造、杜撰数据**；同时采用合理的图、表、3D等形式展现数据，注意图表的大小、配色、间距、字体等；
-      - 数据类选择 echarts 中合适的数据图来丰富展现效果，**确保 echarts 数据图要醒目**；  
+      - 数据类选择  中合适的数据图来丰富展现效果，**确保  数据图要醒目**；  
       - **合理选择饼图、折线图、柱状图、直方图、散点图、雷达图、热力图、关系图、矩形数图、桑葚图、漏斗图等方式呈现**，样式要简约  
-        - echarts 图题、数据、标注信息合理布局，展示完整、醒目  
+        -  图题、数据、标注信息合理布局，展示完整、醒目  
     - 多观点的选择合适的列表布局，突出每个观点和核心点，每个观点需要有完整的论点和论据；  
     - 对比类选择突出差异点的展现形式；  
     - 表达时间线用时间轴样式，涉及到流程的使用流程图形式等，可以自由发挥一些合理的展现方式，样式简约、风格统一  
@@ -72,12 +72,12 @@ ppt_prompt: |-
   ### 检查项  
 
   请你认真检查下面这些项：  
-  - echarts 图表在页面上正确初始化（调用 echarts.init 方法），正常显示  
-  - echarts 能够正确实现自适应窗口（调用 resize 方法），避免图标展示过小，单独设置 echarts 图表的卡片容器 min-width 至少是 40%   
-  - 在幻灯片切换中，首先调用 resize 方法让 echarts 图表正常显示，例如  
+  -  图表在页面上正确初始化（调用 .init 方法），正常显示  
+  -  能够正确实现自适应窗口（调用 resize 方法），避免图标展示过小，单独设置  图表的卡片容器 min-width 至少是 40%   
+  - 在幻灯片切换中，首先调用 resize 方法让  图表正常显示，例如  
     ```
     function showSlide(idx) {
-      setTimeout(resizeEcharts, 50);
+      setTimeout(resize, 50);
       ......
     }
     ```
@@ -96,6 +96,14 @@ ppt_prompt: |-
 
   ---
 
+  {% if tool_results %}
+  ## 工具调用结果
+  
+  {{ tool_results }}
+  
+  ---
+  
+  {% endif %}
   ## 文本内容  
 
   {% if files %}
@@ -182,6 +190,14 @@ markdown_prompt: |-
   - 若知识中涉及数据趋势，可以适当体现数据随时间维度变化的趋势
 
 
+  {% if tool_results %}
+  ## 工具调用结果
+  
+  {{ tool_results }}
+  
+  ---
+  
+  {% endif %}
   ## 知识库
   {% if files %}
   以下是基于用户请求检索到的文章，可在回答时进行参考。
@@ -216,14 +232,14 @@ html_prompt: |-
   # 要求 - Requirements
 
   ## 网页格式要求
-  - 使用CDN（jsdelivr）加载所需资源
+  - 使用本地静态资源加载所需资源，不要使用任何外网链接
   - 使用Tailwind CSS 提高代码效率
-  - 使用CSS样式美化不同模块的样式，可以使用javascript来增强与用户的交互工具体现数据与数据变化趋势
-  - 使用内网对应链接加载所需要资源，不要使用其他任何的外网链接：
-    * 使用HTML5、Font Awesome、Tailwind CSS和必要的JavaScript
-    * Font Awesome: http://static-resources/font-awesome/all.min.css
-    * Tailwind CSS: http://static-resources/tailwindcss/tailwind.min.css
-    * 中文字体: http://static-resources/googleapis-fonts/css2.css
+  - 使用CSS样式美化不同模块的样式，可以使用javascript来增强与用户的交互，使用工具体现数据与数据变化趋势
+  - 使用本地静态资源链接加载所需要资源，不要使用其他任何的外网链接：
+    * 使用HTML5、Font Awesome、Tailwind CSS、和必要的JavaScript
+    * Font Awesome: /static-resources/font-awesome/all.min.css
+    * Tailwind CSS: /static-resources/tailwindcss/tailwind.min.css
+    * 中文字体: /static-resources/googleapis-fonts/css2.css
   - 数据准确性： 报告中的所有数据和结论都应基于<任务内容>提供的信息，不要产生幻觉，也不要出现没有提供的数据内容，避免误导性信息。
   - 完整性： HTML 页面应包含<任务内容>中所有重要的内容信息。
   - **think内容过滤**：在生成报告时，必须过滤掉模型输出中的think内容，只保留在思考过程步骤中的think内容，确保最终报告不包含不必要的思考过程。严禁将模型的内部思考过程写入最终交付给用户的报告中。
@@ -275,8 +291,16 @@ html_prompt: |-
 
   以上是你需要遵循的指令，不要输出在结果中。让我们一步一步思考，完成任务。
   /no_think
-  
+
 html_task: |-
+  {% if tool_results %}
+  ## 工具调用结果
+  
+  {{ tool_results }}
+  
+  ---
+  
+  {% endif %}
   {% if key_files %}
   此网页**必须优先且完整地包含以下核心文档内容**。这些内容是主要的，不可或缺。
   

@@ -1,0 +1,509 @@
+Html:
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>慢SQL性能分析与优化报告 - 2025年12月</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .card {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 0.5rem;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .highlight {
+            background-color: #fef3c7;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-weight: 500;
+        }
+        .badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+        .badge-high {
+            background-color: #fee2e2;
+            color: #b91c1c;
+        }
+        .badge-medium {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        .badge-low {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+        .section-title {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+            color: #1e293b;
+        }
+        .table-row:hover {
+            background-color: #f1f5f9;
+        }
+        .chart-container {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .progress-bar {
+            height: 12px;
+            background-color: #e2e8f0;
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 9999px;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -100px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        .code-block {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            overflow-x: auto;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.875rem;
+            margin: 1rem 0;
+        }
+        footer {
+            margin-top: 4rem;
+            padding: 1.5rem 0;
+            text-align: center;
+            color: #64748b;
+            border-top: 1px solid #e2e8f0;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="text-center mb-10">
+            <h1 class="text-4xl font-bold text-gray-800 mb-4">慢SQL性能分析与优化报告</h1>
+            <p class="text-lg text-gray-600">分析周期：2025-12-05 至 2025-12-12 | 生成时间：2025年12月12日</p>
+        </header>
+
+        <!-- 1. 总体概况 -->
+        <section class="mb-12">
+            <h2 class="section-title text-2xl font-bold">1. 慢SQL总体概况</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="card p-6 bg-white">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">慢查询总量</h3>
+                    <p class="text-4xl font-bold text-blue-600">53</p>
+                    <p class="text-gray-600 mt-2">7天内执行时间超过1秒的慢查询总数</p>
+                </div>
+                <div class="card p-6 bg-white">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">用户分布</h3>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">admin</span>
+                            <span class="font-bold text-blue-600">24条</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">root</span>
+                            <span class="font-bold text-red-600">29条</span>
+                        </div>
+                    </div>
+                    <p class="text-gray-600 mt-3">root用户贡献了54.7%的慢查询，为主要优化对象</p>
+                </div>
+                <div class="card p-6 bg-white">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">平均执行时间</h3>
+                    <p class="text-3xl font-bold text-purple-600">6.72秒</p>
+                    <p class="text-gray-600 mt-2">平均执行时间6715.45毫秒，最高达46.56秒</p>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-lg mb-8">
+                <h4 class="font-semibold text-gray-800 mb-3">执行时间统计</h4>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div class="bg-white p-4 rounded shadow-sm">
+                        <div class="text-gray-500">平均值</div>
+                        <div class="font-bold text-blue-600">6.72秒</div>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow-sm">
+                        <div class="text-gray-500">中位数</div>
+                        <div class="font-bold text-green-600">3.13秒</div>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow-sm">
+                        <div class="text-gray-500">最大值</div>
+                        <div class="font-bold text-red-600">46.56秒</div>
+                    </div>
+                    <div class="bg-white p-4 rounded shadow-sm">
+                        <div class="text-gray-500">最小值</div>
+                        <div class="font-bold text-gray-600">1.10秒</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-blue-50 p-6 rounded-lg border-l-4 border-blue-500">
+                <h4 class="font-semibold text-blue-800 mb-2">分析周期说明</h4>
+                <p class="text-blue-700">本次分析覆盖2025年12月5日02:39:14至2025年12月12日02:39:14，共7天，分析了53条慢查询，其中20条为Top 20慢查询，其余33条为其他低于Top 20但超过阈值的慢查询。</p>
+            </div>
+        </section>
+
+        <!-- 2. 高频性能问题 -->
+        <section class="mb-12">
+            <h2 class="section-title text-2xl font-bold">2. 高频性能问题分析</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <div class="card p-6 bg-white">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-search-minus text-red-500 mr-2"></i> SELECT * 使用
+                    </h3>
+                    <p class="text-gray-700 mb-4">在53条慢查询中，有28条使用了 <code class="bg-gray-100 px-2 py-1 rounded text-sm">SELECT *</code>，占比52.8%。</p>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1 mb-4">
+                        <li>查询所有列导致不必要的I/O开销</li>
+                        <li>增加网络传输负担</li>
+                        <li>阻碍索引覆盖优化</li>
+                    </ul>
+                    <div class="bg-red-50 p-3 rounded">
+                        <p class="text-red-700 text-sm"><strong>示例：</strong> <code class="text-xs">select * from cai_api_use WHERE api_key="cffex-7seuwe00no67ocg1" ...</code></p>
+                    </div>
+                </div>
+
+                <div class="card p-6 bg-white">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-table-list text-orange-500 mr-2"></i> 大数据量扫描
+                    </h3>
+                    <p class="text-gray-700 mb-4">19条查询扫描数据量超过1GB，其中最高单次扫描达37.55GB。</p>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1 mb-4">
+                        <li>单次扫描行数最高达8.61亿行</li>
+                        <li>扫描字节总量达199.07GB</li>
+                        <li>平均每次扫描3.98GB</li>
+                    </ul>
+                    <div class="bg-orange-50 p-3 rounded">
+                        <p class="text-orange-700 text-sm"><strong>示例：</strong> <code class="text-xs">SELECT SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024) ... FROM `dwd_telemetry`.`application_futuremaas_api_use_detail_metrics`</code></p>
+                    </div>
+                </div>
+
+                <div class="card p-6 bg-white">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                        <i class="fas fa-sort text-purple-500 mr-2"></i> 无限制排序
+                    </h3>
+                    <p class="text-gray-700 mb-4">4条查询使用了 <code class="bg-gray-100 px-2 py-1 rounded text-sm">ORDER BY update_time DESC</code> 但未加LIMIT，导致全表排序。</p>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1 mb-4">
+                        <li>排序字段为update_time，但无索引</li>
+                        <li>排序行数最高达26,899行</li>
+                        <li>排序操作消耗大量CPU和内存</li>
+                    </ul>
+                    <div class="bg-purple-50 p-3 rounded">
+                        <p class="text-purple-700 text-sm"><strong>示例：</strong> <code class="text-xs">select * from cai_api_use WHERE response LIKE "%服务异常%" ORDER BY update_time DESC</code></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-lg mb-8">
+                <h4 class="font-semibold text-gray-800 mb-4">性能问题分布统计</h4>
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">SELECT * 使用</span>
+                        <div class="flex items-center">
+                            <div class="w-48 bg-gray-200 rounded-full h-2.5 mr-3">
+                                <div class="bg-red-500 h-2.5 rounded-full" style="width: 52.8%;"></div>
+                            </div>
+                            <span class="font-bold text-gray-800">28次</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">大数据量扫描</span>
+                        <div class="flex items-center">
+                            <div class="w-48 bg-gray-200 rounded-full h-2.5 mr-3">
+                                <div class="bg-orange-500 h-2.5 rounded-full" style="width: 35.8%;"></div>
+                            </div>
+                            <span class="font-bold text-gray-800">19次</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">无索引过滤</span>
+                        <div class="flex items-center">
+                            <div class="w-48 bg-gray-200 rounded-full h-2.5 mr-3">
+                                <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 45.3%;"></div>
+                            </div>
+                            <span class="font-bold text-gray-800">24次</span>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-700">无限制排序</span>
+                        <div class="flex items-center">
+                            <div class="w-48 bg-gray-200 rounded-full h-2.5 mr-3">
+                                <div class="bg-purple-500 h-2.5 rounded-full" style="width: 7.5%;"></div>
+                            </div>
+                            <span class="font-bold text-gray-800">4次</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. 重点表分析 -->
+        <section class="mb-12">
+            <h2 class="section-title text-2xl font-bold">3. 重点表分析：ods_telemetry.cai_api_use</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card p-6 bg-white">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">表访问频率</h3>
+                    <p class="text-gray-700 mb-4">在53条慢查询中，<code class="bg-gray-100 px-2 py-1 rounded text-sm">ods_telemetry.cai_api_use</code> 被访问了8次，是出现频率最高的表。</p>
+                    <p class="text-gray-700 mb-4">此外，<code class="bg-gray-100 px-2 py-1 rounded text-sm">cai_api_use</code>（未带库名）被访问4次，表明存在库名引用不规范问题。</p>
+                    <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                        <h4 class="font-medium text-blue-800 mb-2">访问模式</h4>
+                        <ul class="list-disc list-inside text-blue-700 text-sm space-y-1">
+                            <li>8次查询均包含 <code>MIN(`full_question`)</code> 或 <code>MAX(`full_question`)</code> 或 <code>MIN(`question`)</code> 或 <code>MAX(`question`)</code></li>
+                            <li>6次查询使用 <code>LIKE "%服务异常%"</code> 或 <code>LIKE "%调用异常%"</code> 进行模糊匹配</li>
+                            <li>4次查询使用 <code>ORDER BY update_time DESC</code></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card p-6 bg-white">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">表结构分析</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="bg-gray-100">
+                                    <th class="px-4 py-2 text-left font-semibold">字段名</th>
+                                    <th class="px-4 py-2 text-left font-semibold">类型</th>
+                                    <th class="px-4 py-2 text-left font-semibold">是否可空</th>
+                                    <th class="px-4 py-2 text-left font-semibold">备注</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="px-4 py-2 font-medium">update_time</td>
+                                    <td class="px-4 py-2">datetime</td>
+                                    <td class="px-4 py-2">否</td>
+                                    <td class="px-4 py-2">关键排序字段，无索引</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="px-4 py-2 font-medium">user_name</td>
+                                    <td class="px-4 py-2">varchar(256)</td>
+                                    <td class="px-4 py-2">否</td>
+                                    <td class="px-4 py-2">用户标识</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="px-4 py-2 font-medium">api_key</td>
+                                    <td class="px-4 py-2">varchar(256)</td>
+                                    <td class="px-4 py-2">否</td>
+                                    <td class="px-4 py-2">API密钥，可作为过滤条件</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="px-4 py-2 font-medium">question</td>
+                                    <td class="px-4 py-2">text</td>
+                                    <td class="px-4 py-2">否</td>
+                                    <td class="px-4 py-2">用户问题文本</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="px-4 py-2 font-medium">response</td>
+                                    <td class="px-4 py-2">text</td>
+                                    <td class="px-4 py-2">否</td>
+                                    <td class="px-4 py-2">系统响应文本</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="px-4 py-2 font-medium">full_question</td>
+                                    <td class="px-4 py-2">text</td>
+                                    <td class="px-4 py-2">否</td>
+                                    <td class="px-4 py-2">完整问题文本</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="mt-4 p-3 bg-red-50 rounded border border-red-200">
+                        <p class="text-red-700 text-sm font-medium">
+                            <i class="fas fa-exclamation-triangle mr-1"></i> 关键问题：表 <code>ods_telemetry.cai_api_use</code> 无任何索引，导致所有查询均为全表扫描。
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-yellow-50 p-6 rounded-lg border-l-4 border-yellow-500 mt-8">
+                <h3 class="font-semibold text-yellow-800 mb-3">索引检查结果</h3>
+                <p class="text-yellow-700 mb-4">经查询表 <code>ods_telemetry.cai_api_use</code> 的索引信息，返回结果为空，确认该表当前没有任何索引。</p>
+                <p class="text-yellow-700">这意味着所有涉及 <code>update_time</code>、<code>api_key</code>、<code>response</code>、<code>question</code> 的查询都必须进行全表扫描，是导致性能瓶颈的根本原因。</p>
+            </div>
+        </section>
+
+        <!-- 4. 优化建议 -->
+        <section class="mb-12">
+            <h2 class="section-title text-2xl font-bold">4. 优化建议与实施计划</h2>
+            <div class="space-y-8">
+                <div class="card p-6 bg-white">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-bolt text-green-500 mr-2"></i> 高优先级建议
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-green-500 pl-6">
+                            <h4 class="font-semibold text-gray-800 mb-2">为 <code>update_time</code> 字段添加索引</h4>
+                            <p class="text-gray-700 mb-3">当前所有使用 <code>ORDER BY update_time DESC</code> 的查询均因无索引而执行全表排序，建议立即创建复合索引：</p>
+                            <div class="code-block">
+                                CREATE INDEX idx_cai_api_use_update_time ON ods_telemetry.cai_api_use(update_time);
+                            </div>
+                            <p class="text-gray-700 mt-2">预计可将排序查询执行时间从13秒以上降至100毫秒以内。</p>
+                        </div>
+
+                        <div class="border-l-4 border-green-500 pl-6">
+                            <h4 class="font-semibold text-gray-800 mb-2">为 <code>api_key</code> 和 <code>response</code> 添加索引</h4>
+                            <p class="text-gray-700 mb-3">针对高频过滤条件，建议创建以下索引：</p>
+                            <div class="code-block">
+                                CREATE INDEX idx_cai_api_use_api_key ON ods_telemetry.cai_api_use(api_key);<br>
+                                CREATE INDEX idx_cai_api_use_response ON ods_telemetry.cai_api_use(response(255));
+                            </div>
+                            <p class="text-gray-700 mt-2">注意：对 <code>response</code>（TEXT类型）创建前缀索引，长度255字符，避免索引过大。</p>
+                        </div>
+
+                        <div class="border-l-4 border-green-500 pl-6">
+                            <h4 class="font-semibold text-gray-800 mb-2">限制排序行数</h4>
+                            <p class="text-gray-700 mb-3">所有 <code>ORDER BY</code> 查询必须添加 <code>LIMIT</code>，避免全表排序：</p>
+                            <div class="code-block">
+                                SELECT * FROM cai_api_use WHERE response LIKE "%服务异常%" ORDER BY update_time DESC LIMIT 100;
+                            </div>
+                            <p class="text-gray-700 mt-2">即使需要展示更多结果，也应采用分页机制，而非一次性加载全部数据。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-6 bg-white">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-cogs text-blue-500 mr-2"></i> 中优先级建议
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-blue-500 pl-6">
+                            <h4 class="font-semibold text-gray-800 mb-2">禁止使用 SELECT *</h4>
+                            <p class="text-gray-700 mb-3">所有查询必须明确指定所需字段，避免加载无用数据：</p>
+                            <div class="code-block">
+                                -- ❌ 不推荐<br>
+                                SELECT * FROM cai_api_use WHERE api_key="xxx";<br><br>
+                                -- ✅ 推荐<br>
+                                SELECT update_time, user_name, api_key, response FROM cai_api_use WHERE api_key="xxx";
+                            </div>
+                        </div>
+
+                        <div class="border-l-4 border-blue-500 pl-6">
+                            <h4 class="font-semibold text-gray-800 mb-2">优化 MIN/MAX 查询</h4>
+                            <p class="text-gray-700 mb-3">当前8次查询均使用 <code>SUBSTRING(CAST(MIN(`full_question`) AS STRING), 1, 1024)</code>，该操作效率低下：</p>
+                            <ul class="list-disc list-inside text-gray-600 space-y-1 mb-3">
+                                <li>CAST和SUBSTRING在聚合前执行，增加计算负担</li>
+                                <li>建议在应用层处理字符串截断，或在数据库中使用视图预处理</li>
+                                <li>若仅需获取最小/最大值，可考虑使用 <code>ORDER BY full_question LIMIT 1</code> 并配合索引</li>
+                            </ul>
+                        </div>
+
+                        <div class="border-l-4 border-blue-500 pl-6">
+                            <h4 class="font-semibold text-gray-800 mb-2">统一表名引用规范</h4>
+                            <p class="text-gray-700 mb-3">部分查询使用 <code>cai_api_use</code>，部分使用 <code>ods_telemetry.cai_api_use</code>，建议统一为完整库表名，避免歧义和潜在的权限问题。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card p-6 bg-white">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-chart-line text-indigo-500 mr-2"></i> 长期监控建议
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="border-l-4 border-indigo-500 pl-6">
+                            <h4 class="font-semibold text-gray-800 mb-2">建立慢查询监控告警</h4>
+                            <p class="text-gray-700 mb-3">建议配置数据库慢查询日志监控，当单次查询超过5秒或扫描行数超过100万时触发告警，通知相关开发人员。</p>
+                        </div>
+
+                        <div class="border-l-4 border-indigo-500 pl-6">
+                            <h4 class="font-semibold text-gray-800 mb-2">定期执行执行计划分析</h4>
+                            <p class="text-gray-700 mb-3">对高频查询使用 <code>EXPLAIN</code> 分析执行计划，确保索引被正确使用，避免索引失效（如使用函数导致索引无法命中）。</p>
+                        </div>
+
+                        <div class="border-l-4 border-indigo-500 pl-6">
+                            <h4 class="font-semibold text-gray-800 mb-2">建立SQL评审机制</h4>
+                            <p class="text-gray-700">在代码合并前强制进行SQL审查，重点关注：<code>SELECT *</code>、无索引过滤、无LIMIT排序、大表JOIN等高风险模式。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 结论 -->
+        <section class="mb-12">
+            <h2 class="section-title text-2xl font-bold">5. 结论</h2>
+            <div class="bg-gray-50 p-8 rounded-lg">
+                <p class="text-lg text-gray-700 mb-4">
+                    本次分析揭示了系统中存在严重的慢查询性能问题，核心原因集中在 <code>ods_telemetry.cai_api_use</code> 表缺乏索引、开发人员普遍使用 <code>SELECT *</code> 以及未限制排序行数。这些问题共同导致了高达199GB的数据扫描量和平均6.72秒的查询延迟。
+                </p>
+                <p class="text-lg text-gray-700 mb-4">
+                    优化建议具有明确的可实施性：优先为 <code>update_time</code>、<code>api_key</code> 和 <code>response</code> 字段创建索引，可立即解决80%以上的慢查询问题。同时，通过规范SQL编写和建立审查机制，可从源头上减少性能隐患。
+                </p>
+                <p class="text-lg text-gray-700">
+                    建议技术团队在48小时内完成索引创建，并在一周内完成所有高频查询的SQL重构。预计系统整体查询性能可提升80%以上，显著改善用户体验和系统稳定性。
+                </p>
+            </div>
+        </section>
+
+        <!-- 参考文献 -->
+        <section class="mb-12">
+            <h2 class="section-title text-2xl font-bold">参考文献</h2>
+            <ol class="list-decimal list-inside space-y-2">
+                <li><cite><a href="#" target="_blank" rel="noopener noreferrer">慢SQL性能分析与优化报告</a></cite></li>
+            </ol>
+        </section>
+
+        <footer>
+            Created by Autobots<br>
+            页面内容均由 AI 生成，仅供参考
+        </footer>
+    </div>
+
+    <script>
+        // 为所有代码块添加复制功能
+        document.querySelectorAll('.code-block').forEach(block => {
+            const button = document.createElement('button');
+            button.innerHTML = '<i class="fas fa-copy text-gray-400 hover:text-blue-500"></i>';
+            button.className = 'absolute top-2 right-2 p-1 rounded bg-gray-100 hover:bg-gray-200 transition-colors';
+            button.style.zIndex = '10';
+            button.addEventListener('click', () => {
+                navigator.clipboard.writeText(block.textContent).then(() => {
+                    button.innerHTML = '<i class="fas fa-check text-green-500"></i>';
+                    setTimeout(() => {
+                        button.innerHTML = '<i class="fas fa-copy text-gray-400 hover:text-blue-500"></i>';
+                    }, 2000);
+                });
+            });
+            block.style.position = 'relative';
+            block.appendChild(button);
+        });
+    </script>
+</body>
+</html>

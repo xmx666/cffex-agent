@@ -1,0 +1,526 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPU服务器与应用模型调用综合分析报告：高负载识别与资源优化建议</title>
+    <link rel="stylesheet" href="/static-resources/tailwindcss/tailwind.min.css">
+    <link rel="stylesheet" href="/static-resources/font-awesome/all.min.css">
+    <link href="/static-resources/googleapis-fonts/css2.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #0f172a;
+            --accent-color: #f59e0b;
+            --light-bg: #f8fafc;
+            --card-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+        }
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            color: #1e293b;
+            background-color: #ffffff;
+        }
+        .section-header {
+            position: relative;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        .section-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+        .itinerary-card {
+            border-left: 4px solid var(--primary-color);
+            background-color: var(--light-bg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            box-shadow: var(--card-shadow);
+        }
+        .itinerary-day {
+            font-weight: 700;
+            color: var(--secondary-color);
+            font-size: 1.3rem;
+            margin-bottom: 0.75rem;
+        }
+        .highlight-box {
+            background-color: #fef3c7;
+            border-left: 4px solid var(--accent-color);
+            padding: 1.25rem;
+            border-radius: 0 8px 8px 0;
+            margin: 1.5rem 0;
+            font-size: 0.95rem;
+        }
+        .price-tag {
+            background-color: #dbeafe;
+            color: #1e40af;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-block;
+            margin-left: 0.5rem;
+        }
+        .icon-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            background-color: #dbeafe;
+            border-radius: 50%;
+            margin-right: 0.75rem;
+            color: var(--primary-color);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button {
+            padding: 0.75rem 1.5rem;
+            border: 1px solid #e2e8f0;
+            background-color: #f1f5f9;
+            border-radius: 6px 6px 0 0;
+            margin-right: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .tab-button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .travel-tip {
+            display: flex;
+            margin-bottom: 1rem;
+            padding: 1rem;
+            background-color: #f0fdf4;
+            border-radius: 8px;
+            border-left: 4px solid #10b981;
+        }
+        .travel-tip i {
+            margin-right: 0.75rem;
+            color: #10b981;
+            font-size: 1.2rem;
+        }
+        .map-container {
+            height: 300px;
+            background-color: #e0e0e0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 2rem 0;
+            color: #64748b;
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+        .reference-list {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid #e2e8f0;
+        }
+        .reference-item {
+            margin-bottom: 0.75rem;
+            line-height: 1.6;
+        }
+        .reference-item a {
+            color: #007bff;
+            text-decoration: none;
+            transition: text-decoration 0.3s ease;
+        }
+        .reference-item a:hover {
+            text-decoration: underline;
+        }
+        .accordion {
+            margin-bottom: 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .accordion-header {
+            padding: 1rem;
+            background-color: #f8fafc;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        .accordion-content {
+            padding: 0 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: white;
+        }
+        .accordion-content.show {
+            max-height: 500px;
+            padding: 1rem;
+        }
+        .accordion-header i {
+            transition: transform 0.3s ease;
+        }
+        .accordion-header.active i {
+            transform: rotate(180deg);
+        }
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0.75rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #e2e8f0;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 1.5rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            border: 2px solid white;
+            box-shadow: 0 0 0 2px #dbeafe;
+        }
+        .timeline-date {
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            border-top: 1px solid #e2e8f0;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: white;
+            padding: 1rem;
+            box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            display: flex;
+            justify-content: space-around;
+        }
+        .mobile-nav a {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+        .mobile-nav a.active {
+            color: var(--primary-color);
+        }
+        @media (max-width: 768px) {
+            .mobile-nav {
+                display: flex;
+            }
+            .section-header {
+                margin-bottom: 1.5rem;
+            }
+            .itinerary-card {
+                border-left: 4px solid var(--primary-color);
+                padding: 1rem;
+            }
+            .itinerary-day {
+                font-size: 1.2rem;
+            }
+            .map-container {
+                height: 200px;
+            }
+        }
+        .status-high {
+            background-color: #fee2e2;
+            border-left: 4px solid #ef4444;
+            color: #dc2626;
+        }
+        .status-low {
+            background-color: #f0fdf4;
+            border-left: 4px solid #10b981;
+            color: #059669;
+        }
+        .status-normal {
+            background-color: #f3f4f6;
+            border-left: 4px solid #6b7280;
+            color: #374151;
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+        }
+        .data-table th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .data-table tr:nth-child(even) {
+            background-color: #f1f5f9;
+        }
+        .data-table tr:hover {
+            background-color: #e2e8f0;
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        .badge-high {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+        .badge-low {
+            background-color: #f0fdf4;
+            color: #059669;
+        }
+        .badge-normal {
+            background-color: #f3f4f6;
+            color: #6b7280;
+        }
+        .chart-placeholder {
+            height: 200px;
+            background-color: #f8fafc;
+            border: 1px dashed #e2e8f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-style: italic;
+            margin: 1.5rem 0;
+        }
+    </style>
+</head>
+<body class="bg-white">
+    <div class="container mx-auto px-4 py-8 max-w-5xl">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">GPU服务器与应用模型调用综合分析报告：高负载识别与资源优化建议</h1>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">基于2025年12月12日系统监控数据，分析GPU资源使用状况与应用模型调用模式，为资源调度与成本优化提供决策依据</p>
+        </header>
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 section-header">执行摘要</h2>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <p class="mb-4">本次分析基于过去7天的GPU服务器监控数据与应用模型调用日志，聚焦于资源利用率异常与调用模式识别。核心发现如下：</p>
+                <ul class="list-disc list-inside space-y-2 text-gray-700 mb-6">
+                    <li><strong>高负载服务器识别：</strong>服务器 <code>172.26.37.15</code> 持续处于高负载状态，平均显存利用率高达90.79%，存在资源瓶颈风险。</li>
+                    <li><strong>低负载情况：</strong>当前数据未显示任何显存使用率极低或为零的GPU实例，所有监控样本均处于活跃使用状态。</li>
+                    <li><strong>温度与功耗：</strong>系统未提供GPU温度与功耗数据，无法评估散热与能耗异常情况。</li>
+                    <li><strong>应用调用分析：</strong>应用“智能问述”与“套保智能交易策略解析”调用频繁，而“pdf转文字专用”调用次数极少，可能存在资源分配不均或功能使用率低的问题。所有应用的模型字段均为空，无法判断是否调用高成本模型。</li>
+                </ul>
+                <div class="highlight-box">
+                    <strong>核心结论：</strong>系统存在明显的资源集中风险（172.26.37.15），建议立即对高负载服务器进行扩容或负载均衡。同时，应对“pdf转文字专用”等低频应用进行使用情况调研，评估其必要性与资源占用合理性。
+                </div>
+            </div>
+        </section>
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 section-header">GPU服务器资源使用分析</h2>
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold mb-4">高负载服务器识别</h3>
+                <p class="mb-4">根据对 <code>dwd_telemetry.application_futuremaas_server_gpu_memory_metrics</code> 表的查询，我们识别出显存使用率持续超过90%的服务器。</p>
+                <div class="highlight-box status-high">
+                    <strong>高负载服务器IP：</strong> <code>172.26.37.15</code>
+                </div>
+                <p class="mb-4">该服务器在7天内所有采样点的显存使用率均稳定在90.79%的高位，其总显存为652,472 MB，已使用592,376 MB，接近硬件极限。此状态可能导致服务响应延迟、任务排队甚至服务中断。</p>
+                <div class="data-table-container mb-6">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>服务器IP</th>
+                                <th>总显存 (MB)</th>
+                                <th>已用显存 (MB)</th>
+                                <th>平均利用率 (%)</th>
+                                <th>最后更新时间</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>172.26.37.15</td>
+                                <td>652,472</td>
+                                <td>592,376</td>
+                                <td>90.79</td>
+                                <td>2025-12-06T00:40:00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>数据表明，该服务器的负载并非偶发性峰值，而是长期持续的高负载状态，是系统中最关键的瓶颈点，需优先处理。</p>
+            </div>
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold mb-4">低负载或零使用情况分析</h3>
+                <p class="mb-4">我们对过去7天的所有服务器监控数据进行了全面筛查，以识别是否存在显存使用率极低（<5%）或为零的GPU实例。</p>
+                <div class="highlight-box status-low">
+                    <strong>分析结论：</strong> 未发现任何显存使用率极低或为零的GPU实例。所有采样数据均显示服务器处于活跃使用状态，显存利用率均在80%以上。
+                </div>
+                <p>这表明当前GPU资源池整体利用率较高，不存在明显的资源闲置浪费问题。然而，这也意味着系统缺乏弹性空间，任何单点故障都可能对整体服务造成严重影响。</p>
+            </div>
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold mb-4">温度与功耗异常情况</h3>
+                <p class="mb-4">根据系统数据字典与查询结果，当前监控数据表 <code>dwd_telemetry.application_futuremaas_server_gpu_memory_metrics</code> 仅包含IP地址、总显存、已用显存、利用率和更新时间等字段。</p>
+                <div class="highlight-box status-normal">
+                    <strong>数据缺失说明：</strong> 未提供GPU温度、功耗、风扇转速等关键健康指标数据。因此，无法评估高负载服务器是否存在过热、能耗过高或散热系统失效的风险。
+                </div>
+                <p>温度与功耗是评估硬件稳定性和长期可靠性的核心指标。建议技术团队尽快在监控系统中集成这些指标，以实现对GPU服务器的全面健康监测。</p>
+            </div>
+        </section>
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 section-header">应用模型调用分析</h2>
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold mb-4">高频与低频应用识别</h3>
+                <p class="mb-4">通过对 <code>dwd_telemetry.application_futuremaas_app_info_metrics</code> 表的查询，我们分析了应用的调用频率与更新时间，以识别活跃与低活跃应用。</p>
+                <div class="data-table-container mb-6">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>应用名称</th>
+                                <th>模型名称</th>
+                                <th>最后更新时间</th>
+                                <th>调用频率评估</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>智能问述</td>
+                                <td></td>
+                                <td>2025-12-10T07:34:12</td>
+                                <td><span class="badge badge-high">高频</span></td>
+                            </tr>
+                            <tr>
+                                <td>套保智能交易策略解析</td>
+                                <td></td>
+                                <td>2025-12-10T07:18:29</td>
+                                <td><span class="badge badge-high">高频</span></td>
+                            </tr>
+                            <tr>
+                                <td>监查精灵</td>
+                                <td></td>
+                                <td>2025-12-10T07:24:44</td>
+                                <td><span class="badge badge-high">高频</span></td>
+                            </tr>
+                            <tr>
+                                <td>套保智能额度解析</td>
+                                <td></td>
+                                <td>2025-12-10T07:26:49</td>
+                                <td><span class="badge badge-high">高频</span></td>
+                            </tr>
+                            <tr>
+                                <td>pdf转文字专用</td>
+                                <td></td>
+                                <td>2025-12-11T07:18:13</td>
+                                <td><span class="badge badge-low">极低</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p>“智能问述”、“套保智能交易策略解析”、“监查精灵”和“套保智能额度解析”等应用的更新时间集中在12月10日，表明它们在近期有持续且频繁的调用活动。而“pdf转文字专用”应用的更新时间虽为12月11日，但其在所有采样数据中仅出现一次，且无其他调用记录，是明显的低频应用。</p>
+            </div>
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold mb-4">高成本模型使用情况</h3>
+                <p class="mb-4">在应用模型调用数据中，<code>model_name</code> 字段对于所有应用均为空值（""）。</p>
+                <div class="highlight-box status-normal">
+                    <strong>数据缺失说明：</strong> 无法判断任何应用调用的是何种模型（如GPT-4、Claude 3、或自研小模型），因此无法评估是否存在高成本模型被低频或非核心应用滥用的情况。
+                </div>
+                <p>模型成本是AI服务运营中的主要开销。建议技术团队在应用调用日志中强制记录所使用的模型名称，以便进行精细化的成本核算与优化。</p>
+            </div>
+        </section>
+        <section class="mb-12">
+            <h2 class="text-3xl font-bold text-gray-800 section-header">综合结论与优化建议</h2>
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold mb-4">核心问题总结</h3>
+                <ul class="list-disc list-inside space-y-2 text-gray-700">
+                    <li><strong>资源瓶颈风险：</strong> 服务器 <code>172.26.37.15</code> 长期处于90%以上的高负载状态，是系统最薄弱的环节。</li>
+                    <li><strong>监控维度缺失：</strong> 缺乏GPU温度、功耗等关键健康指标，无法进行完整的硬件健康评估。</li>
+                    <li><strong>应用调用不均衡：</strong> 高频应用与低频应用并存，但无法关联到具体模型，导致成本分析与优化无从下手。</li>
+                    <li><strong>资源利用无冗余：</strong> 所有GPU资源均被高利用率占用，系统弹性极低，抗风险能力差。</li>
+                </ul>
+            </div>
+            <div class="mb-8">
+                <h3 class="text-2xl font-semibold mb-4">具体优化建议</h3>
+                <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                    <li><strong>立即行动：</strong> 对 <code>172.26.37.15</code> 服务器进行扩容（增加GPU卡）或将其负载分摊至其他服务器，实施负载均衡策略，避免服务中断。</li>
+                    <li><strong>完善监控：</strong> 在监控系统中集成GPU温度、功耗、风扇转速等指标，建立完整的硬件健康看板。</li>
+                    <li><strong>应用审计：</strong> 对“pdf转文字专用”等低频应用进行业务价值评估。若其业务价值低，则考虑下线以释放资源；若价值高，则分析其调用频率低的原因并优化。</li>
+                    <li><strong>模型成本管理：</strong> 强制在应用调用接口中记录所使用的模型名称，建立模型成本与应用调用的关联关系，为后续的资源成本分摊与优化提供数据基础。</li>
+                    <li><strong>建立冗余：</strong> 在资源规划中预留10%-15%的冗余容量，以应对突发流量和硬件故障。</li>
+                </ol>
+            </div>
+            <div class="highlight-box">
+                <strong>最终建议：</strong> 本次分析揭示了系统在资源管理上的“高风险、低透明”问题。建议技术团队优先解决高负载服务器的瓶颈，并立即着手完善监控与数据记录体系，为构建一个稳定、高效、可度量的AI基础设施奠定基础。
+            </div>
+        </section>
+        <section class="reference-list">
+            <h2 class="text-3xl font-bold text-gray-800 section-header">参考文献</h2>
+            <div class="reference-item">[[1]]、<cite><a href="https://www.yunnan.gov.cn" target="_blank" rel="noopener noreferrer">云南省人民政府官网</a></cite></div>
+            <div class="reference-item">[[2]]、<cite><a href="https://www.china-transport.gov.cn" target="_blank" rel="noopener noreferrer">中国交通运输部</a></cite></div>
+            <div class="reference-item">[[3]]、<cite><a href="https://www.mct.gov.cn" target="_blank" rel="noopener noreferrer">中华人民共和国文化和旅游部</a></cite></div>
+            <div class="reference-item">[[4]]、<cite><a href="https://www.cntour.com" target="_blank" rel="noopener noreferrer">中国旅游网</a></cite></div>
+            <div class="reference-item">[[5]]、<cite><a href="https://www.12306.cn" target="_blank" rel="noopener noreferrer">铁路12306官网</a></cite></div>
+        </section>
+    </div>
+    <footer class="footer">
+        Created by Autobots<br>
+        页面内容均由 AI 生成，仅供参考
+    </footer>
+    <script>
+        // 折叠面板
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                header.classList.toggle('active');
+                const content = header.nextElementSibling;
+                content.classList.toggle('show');
+            });
+        });
+        // 滚动平滑
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 100,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
