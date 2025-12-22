@@ -91,7 +91,12 @@ const FileList: GenieType.FC<{
     switch (fileItem.type) {
       case 'ppt':
       case 'html':
-        content = <HTMLRenderer htmlUrl={fileItem.url} className="h-full" />;
+        // 确保URL存在才渲染
+        if (fileItem.url) {
+          content = <HTMLRenderer htmlUrl={fileItem.url} className="h-full" />;
+        } else {
+          content = <Empty description="文件URL不存在" className="mt-32" />;
+        }
         break;
       case 'csv':
       case 'xlsx':
@@ -113,20 +118,48 @@ const FileList: GenieType.FC<{
       stopCopying();
       throw new Error('Network response was not ok');
     }
-    const data = await response.text();
+    let data = await response.text();
 
-    const copyData = data;
+    // 如果是HTML文件，将相对路径转换为绝对路径，确保复制出来的HTML也能正常显示
+    if (fileItem.type === 'html' || fileItem.type === 'ppt') {
+      try {
+        // 从fileItem.url中提取服务器的基础URL（protocol + host）
+        const urlObj = new URL(fileItem.url);
+        const baseUrl = `${urlObj.protocol}//${urlObj.host}`;
+        
+        // 将HTML中的相对路径（以/开头的路径）转换为绝对路径
+        // 匹配 href="、src="、url( 等属性中的相对路径
+        data = data.replace(
+          /(href|src|url)\s*=\s*["'](\/[^"']+)["']/gi,
+          (match, attr, path) => {
+            // 如果路径已经是绝对路径（http://或https://开头），则不处理
+            if (path.startsWith('http://') || path.startsWith('https://')) {
+              return match;
+            }
+            // 将相对路径转换为绝对路径
+            return `${attr}="${baseUrl}${path}"`;
+          }
+        );
+        
+        // 处理CSS中的url()相对路径
+        data = data.replace(
+          /url\s*\(\s*["']?(\/[^"')]+)["']?\s*\)/gi,
+          (match, path) => {
+            // 如果路径已经是绝对路径，则不处理
+            if (path.startsWith('http://') || path.startsWith('https://')) {
+              return match;
+            }
+            // 将相对路径转换为绝对路径
+            return `url("${baseUrl}${path}")`;
+          }
+        );
+      } catch (error) {
+        console.warn('转换HTML路径时出错:', error);
+        // 如果转换失败，使用原始数据
+      }
+    }
 
-    // const parts = fileItem.name?.split('.');
-    // const suffix = parts[parts.length - 1];
-    // this.activeFileContent = data
-    // const copyData = suffix === 'md' || suffix === 'txt' ? data : `\`\`\`${suffix}\n${data}\n\`\`\``;
-    // this.markDownContent = this.md.render(
-    //   suffix === 'md' || suffix === 'txt'
-    //     ? data
-    //     : `\`\`\`${suffix}\n${data}\n\`\`\``
-    // )
-    copyText(copyData);
+    copyText(data);
     stopCopying();
     showMessage()?.success('复制成功');
   });

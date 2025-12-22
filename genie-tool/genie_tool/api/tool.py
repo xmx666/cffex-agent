@@ -11,6 +11,7 @@ import time
 
 from fastapi import APIRouter
 from sse_starlette import ServerSentEvent, EventSourceResponse
+from loguru import logger
 
 from genie_tool.model.code import ActionOutput, CodeOuput
 from genie_tool.model.protocal import CIRequest, ReportRequest, DeepSearchRequest
@@ -162,12 +163,19 @@ async def post_report(
                 body.file_names[idx] = f"{os.getenv('FILE_SERVER_URL')}/preview/{body.request_id}/{f_name}"
     
     def _parser_html_content(content: str):
+        """
+        移除markdown代码块标记，保留原始HTML格式
+        大模型返回的HTML代码本身是正确的，不需要修复空格
+        """
         if content.startswith("```\nhtml"):
             content = content[len("```\nhtml"): ]
         if content.startswith("```html"):
             content = content[len("```html"): ]
         if content.endswith("```"):
             content = content[: -3]
+        
+        # 只移除markdown代码块标记，不修改HTML内容本身
+        # 大模型返回的HTML代码格式是正确的，应该原样保留
         return content
 
     async def _stream():
@@ -175,10 +183,16 @@ async def post_report(
         acc_content = ""
         acc_token = 0
         acc_time = time.time()
+        # 调试：检查 tool_results 是否接收
+        tool_results = getattr(body, 'tool_results', None)
+        logger.info(f"post_report 接收到 tool_results: {tool_results is not None}, 数量: {len(tool_results) if tool_results else 0}")
+        if tool_results:
+            logger.info(f"post_report tool_results 第一个结果长度: {len(tool_results[0]) if tool_results[0] else 0}")
         async for chunk in report(
             task=body.task,
             file_names=body.file_names,
             file_type=body.file_type,
+            tool_results=tool_results,
         ):
             content += chunk
             acc_content += chunk
@@ -243,6 +257,7 @@ async def post_report(
             task=body.task,
             file_names=body.file_names,
             file_type=body.file_type,
+            tool_results=getattr(body, 'tool_results', None),
         ):
             content += chunk
         if body.file_type in ["ppt", "html"]:

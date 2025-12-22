@@ -108,9 +108,15 @@ const ToolItem: FC<{
           (tool.resultMap.messageType === "extend" ||
             tool.resultMap.messageType === "report")) ||
           loadingType.includes(tool.messageType));
+      
+      // 获取工具参数
+      const toolParam = tool.toolResult?.toolParam || {};
+      const hasToolParam = Object.keys(toolParam).length > 0;
+      
       return (
+        <div className="mt-[8px]">
         <div
-          className="mt-[8px] flex items-center px-10 py-6 bg-[#F2F3F7] w-fit rounded-[16px] cursor-pointer overflow-hidden max-w-full"
+            className="flex items-center px-10 py-6 bg-[#F2F3F7] w-fit rounded-[16px] cursor-pointer overflow-hidden max-w-full"
           onClick={() => changeActiveChat(tool)}
         >
           {loading ? (
@@ -131,6 +137,13 @@ const ToolItem: FC<{
               {actionInfo.name}
             </div>
           </div>
+          </div>
+          {hasToolParam && (
+            <div className="mt-[4px] ml-[28px] text-[11px] text-[#2029459E] opacity-70">
+              输入: {JSON.stringify(toolParam, null, 2).substring(0, 100)}
+              {JSON.stringify(toolParam, null, 2).length > 100 ? '...' : ''}
+            </div>
+          )}
         </div>
       );
     }

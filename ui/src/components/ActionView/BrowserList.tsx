@@ -6,6 +6,7 @@ import { LinkOutlined } from "@ant-design/icons";
 import { Empty, Result } from "antd";
 import classNames from "classnames";
 import { getSearchList, PanelItemType } from "../ActionPanel";
+import HTMLRenderer from "../ActionPanel/HTMLRenderer";
 
 type BrowserItem = {
   messageTime: string;
@@ -36,14 +37,17 @@ const BrowserItem: GenieType.FC<{item: BrowserItem}> = (props) => {
 };
 
 const BrowserList: GenieType.FC<{
-  taskList?: PanelItemType[]
+  taskList?: PanelItemType[];
+  activeFile?: CHAT.TFile;
+  clearActiveFile?: () => void;
 }> = (props) => {
-  const { taskList } = props;
+  const { taskList, activeFile, clearActiveFile } = props;
 
   const [ activeItem, setActiveItem ] = useState<string | undefined>();
 
   const clearActive = () => {
     setActiveItem(undefined);
+    clearActiveFile?.();
   };
 
   const browserList = useMemo(() => {
@@ -98,6 +102,30 @@ const BrowserList: GenieType.FC<{
       </div>
     </div>;
   });
+
+  // 如果有activeFile且是HTML/PPT文件，优先显示文件内容
+  if (activeFile && (activeFile.type === 'html' || activeFile.type === 'ppt')) {
+    return <ActionViewFrame
+      className="p-16 overflow-y-auto"
+      titleNode={
+        <div className="flex-1 flex items-center w-0">
+          <span
+            className="cursor-pointer text-ellipsis whitespace-nowrap overflow-hidden hover:font-medium"
+            onClick={clearActive}
+          >
+            {activeFile.name}
+          </span>
+        </div>
+      }
+      onClickTitle={clearActive}
+    >
+      {activeFile.url ? (
+        <HTMLRenderer htmlUrl={activeFile.url} className="h-full" />
+      ) : (
+        <Empty description="文件URL不存在" className="mt-32" />
+      )}
+    </ActionViewFrame>;
+  }
 
   if (!browserList?.length) {
     content = <Empty />;

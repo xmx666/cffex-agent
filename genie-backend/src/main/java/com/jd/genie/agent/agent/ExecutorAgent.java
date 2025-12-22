@@ -143,17 +143,47 @@ public class ExecutorAgent extends ReActAgent {
     @Override
     public String act() {
         if (toolCalls.isEmpty()) {
-            GenieConfig genieConfig = SpringContextHolder.getApplicationContext().getBean(GenieConfig.class);
-            setState(AgentState.FINISHED);
-            // 删除工具结果
-            if ("1".equals(genieConfig.getClearToolMessage())) {
-                getMemory().clearToolContext();
+            // 使用智能判断器分析任务完成状态
+            String lastMessage = getMemory().getLastMessage().getContent();
+            String query = context.getQuery();
+            
+            TaskCompletionAnalyzer.TaskCompletionResult result = 
+                TaskCompletionAnalyzer.analyze(lastMessage, query, toolCalls, context, getMemory());
+            
+            if (result.shouldContinue()) {
+                log.warn("{} 智能判断器建议继续执行: {}", context.getRequestId(), result.getReason());
+                setState(AgentState.RUNNING);
+                // 重新触发思考过程
+                think();
+                return "任务未完成，请重新思考并调用相应工具完成任务。";
+            } else {
+                log.info("{} 智能判断器确认任务完成: {}", context.getRequestId(), result.getReason());
+                // 真正的任务完成处理
+                GenieConfig genieConfig = SpringContextHolder.getApplicationContext().getBean(GenieConfig.class);
+                setState(AgentState.FINISHED);
+                // 删除工具结果
+                if ("1".equals(genieConfig.getClearToolMessage())) {
+                    getMemory().clearToolContext();
+                }
+                // 返回固定话术
+                if (!genieConfig.getTaskCompleteDesc().isEmpty()) {
+                    return genieConfig.getTaskCompleteDesc();
+                }
+                return getMemory().getLastMessage().getContent();
             }
-            // 返回固定话术
-            if (!genieConfig.getTaskCompleteDesc().isEmpty()) {
-                return genieConfig.getTaskCompleteDesc();
+        }
+        
+        // 检查是否有重复的工具调用
+        for (ToolCall toolCall : toolCalls) {
+            String toolName = toolCall.getFunction().getName();
+            String arguments = toolCall.getFunction().getArguments();
+            if (isDuplicateToolCall(toolName, arguments)) {
+                log.warn("{} 检测到重复工具调用: {} with args: {}", context.getRequestId(), toolName, arguments);
+                setState(AgentState.FINISHED);
+                return "任务已完成，检测到重复工具调用，自动结束任务。";
             }
-            return getMemory().getLastMessage().getContent();
+            // 记录工具调用
+            recordToolCall(toolName, arguments);
         }
 
         Map<String, String> toolResults = executeTools(toolCalls);

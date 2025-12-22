@@ -11,6 +11,13 @@ import com.jd.genie.agent.tool.common.CodeInterpreterTool;
 import com.jd.genie.agent.tool.common.DeepSearchTool;
 import com.jd.genie.agent.tool.common.FileTool;
 import com.jd.genie.agent.tool.common.ReportTool;
+import com.jd.genie.agent.tool.common.WeatherTool;
+import com.jd.genie.agent.tool.common.TranslationTool;
+import com.jd.genie.agent.tool.common.CalculatorTool;
+import com.jd.genie.agent.tool.common.StockTool;
+import com.jd.genie.agent.tool.common.NewsDataFetchTool;
+import com.jd.genie.agent.tool.common.NewsContentGeneratorTool;
+import com.jd.genie.agent.tool.common.NewsTTSTool;
 import com.jd.genie.agent.tool.mcp.McpTool;
 import com.jd.genie.agent.util.DateUtil;
 import com.jd.genie.agent.util.ThreadUtil;
@@ -19,16 +26,20 @@ import com.jd.genie.model.req.AgentRequest;
 import com.jd.genie.model.req.GptQueryReq;
 import com.jd.genie.service.AgentHandlerService;
 import com.jd.genie.service.IGptProcessService;
+import com.jd.genie.service.McpToolSyncService;
+import com.jd.genie.service.McpServerManagementService;
 import com.jd.genie.service.impl.AgentHandlerFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.UnsupportedEncodingException;
@@ -38,6 +49,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import com.jd.genie.agent.tool.BaseTool;
 
 @Slf4j
 @RestController
@@ -51,6 +63,10 @@ public class GenieController {
     private AgentHandlerFactory agentHandlerFactory;
     @Autowired
     private IGptProcessService gptProcessService;
+    @Autowired
+    private McpToolSyncService mcpToolSyncService;
+    @Autowired
+    private McpServerManagementService mcpServerManagementService;
 
     /**
      * 开启SSE心跳
@@ -83,6 +99,8 @@ public class GenieController {
         emitter.onCompletion(() -> {
             log.info("{} SSE connection completed normally", requestId);
             heartbeatFuture.cancel(true);
+            // 从MCP工具同步服务注销工具集合
+            mcpToolSyncService.unregisterToolCollection(requestId);
         });
 
         // 监听连接超时事件
@@ -90,6 +108,8 @@ public class GenieController {
             log.info("{} SSE connection timed out", requestId);
             heartbeatFuture.cancel(true);
             emitter.complete();
+            // 从MCP工具同步服务注销工具集合
+            mcpToolSyncService.unregisterToolCollection(requestId);
         });
 
         // 监听连接错误事件
@@ -97,6 +117,8 @@ public class GenieController {
             log.info("{} SSE connection error: ", requestId, ex);
             heartbeatFuture.cancel(true);
             emitter.completeWithError(ex);
+            // 从MCP工具同步服务注销工具集合
+            mcpToolSyncService.unregisterToolCollection(requestId);
         });
     }
 
@@ -202,18 +224,71 @@ public class GenieController {
                 htmlTool.setAgentContext(agentContext);
                 toolCollection.addTool(htmlTool);
             }
-            if (agentToolList.contains("search")) {
-                DeepSearchTool deepSearchTool = new DeepSearchTool();
-                deepSearchTool.setAgentContext(agentContext);
-                toolCollection.addTool(deepSearchTool);
-            }
+            // 内网环境禁用deep_search工具，避免网络连接错误
+            // if (agentToolList.contains("search")) {
+            //     DeepSearchTool deepSearchTool = new DeepSearchTool();
+            //     deepSearchTool.setAgentContext(agentContext);
+            //     toolCollection.addTool(deepSearchTool);
+            // }
         }
+
+        // 自定义Agent工具
+        WeatherTool weatherTool = new WeatherTool();
+        weatherTool.setAgentContext(agentContext);
+        toolCollection.addTool(weatherTool);
+        
+        TranslationTool translationTool = new TranslationTool();
+        translationTool.setAgentContext(agentContext);
+        toolCollection.addTool(translationTool);
+        
+        CalculatorTool calculatorTool = new CalculatorTool();
+        calculatorTool.setAgentContext(agentContext);
+        toolCollection.addTool(calculatorTool);
+        
+        // 新增新闻查询工具（带容错机制）
+        NewsDataFetchTool newsDataFetchTool = new NewsDataFetchTool();
+        newsDataFetchTool.setAgentContext(agentContext);
+        toolCollection.addTool(newsDataFetchTool);
+        log.info("{} 成功注册新闻工具: agent_news", agentContext.getRequestId());
+        
+        // 立即验证工具注册
+        BaseTool registeredTool = toolCollection.getTool("agent_news");
+        if (registeredTool != null) {
+            log.info("{} 验证成功: agent_news 工具已注册，工具名称: {}", 
+                agentContext.getRequestId(), registeredTool.getName());
+        } else {
+            log.error("{} 验证失败: agent_news 工具注册失败！", agentContext.getRequestId());
+        }
+        
+        // 新增股票查询工具
+        StockTool stockTool = new StockTool();
+        stockTool.setAgentContext(agentContext);
+        toolCollection.addTool(stockTool);
+        log.info("{} 成功注册股票工具: agent_stock", agentContext.getRequestId());
+        
+        // 新增新闻内容生成工具
+        NewsContentGeneratorTool newsContentGeneratorTool = new NewsContentGeneratorTool();
+        newsContentGeneratorTool.setAgentContext(agentContext);
+        toolCollection.addTool(newsContentGeneratorTool);
+        
+        // 新增新闻TTS工具
+        NewsTTSTool newsTTSTool = new NewsTTSTool();
+        newsTTSTool.setAgentContext(agentContext);
+        toolCollection.addTool(newsTTSTool);
 
         // mcp tool
         try {
             McpTool mcpTool = new McpTool();
             mcpTool.setAgentContext(agentContext);
-            for (String mcpServer : genieConfig.getMcpServerUrlArr()) {
+            
+            // 使用动态MCP服务器配置
+            String[] activeMcpServerUrls = mcpServerManagementService.getActiveMcpServerUrls();
+            if (activeMcpServerUrls.length == 0) {
+                // 如果没有动态配置，回退到默认配置
+                activeMcpServerUrls = genieConfig.getMcpServerUrlArr();
+            }
+            
+            for (String mcpServer : activeMcpServerUrls) {
                 String listToolResult = mcpTool.listTool(mcpServer);
                 if (listToolResult.isEmpty()) {
                     log.error("{} mcp server {} invalid", agentContext.getRequestId(), mcpServer);
@@ -240,8 +315,19 @@ public class GenieController {
                     toolCollection.addMcpTool(method, description, inputSchema, mcpServer);
                 }
             }
+            
+            // 注册工具集合到MCP同步服务
+            mcpToolSyncService.registerToolCollection(agentContext.getRequestId(), toolCollection);
+            
         } catch (Exception e) {
             log.error("{} add mcp tool failed", agentContext.getRequestId(), e);
+        }
+
+        // 工具注册完成，显示总结
+        log.info("{} 工具注册完成，共注册 {} 个工具", 
+            agentContext.getRequestId(), toolCollection.getToolMap().size());
+        for (BaseTool tool : toolCollection.getToolMap().values()) {
+            log.info("{} 已注册工具: {}", agentContext.getRequestId(), tool.getName());
         }
 
         return toolCollection;
@@ -266,6 +352,50 @@ public class GenieController {
     @RequestMapping(value = "/web/api/v1/gpt/queryAgentStreamIncr", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter queryAgentStreamIncr(@RequestBody GptQueryReq params) {
         return gptProcessService.queryMultiAgentIncrStream(params);
+    }
+
+    /**
+     * 手动触发MCP工具同步
+     * @return 同步结果信息
+     */
+    @PostMapping("/admin/mcp/sync")
+    public ResponseEntity<Map<String, Object>> triggerMcpToolSync() {
+        try {
+            mcpToolSyncService.triggerManualSync();
+            
+            Map<String, Object> result = new HashMap<>();
+            result.put("status", "success");
+            result.put("message", "MCP工具同步已触发");
+            result.put("activeSessionCount", mcpToolSyncService.getActiveSessionCount());
+            result.put("totalKnownToolsCount", mcpToolSyncService.getTotalKnownToolsCount());
+            result.put("timestamp", LocalDateTime.now().toString());
+            
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            log.error("手动触发MCP工具同步失败", e);
+            
+            Map<String, Object> result = new HashMap<>();
+            result.put("status", "error");
+            result.put("message", "MCP工具同步失败: " + e.getMessage());
+            result.put("timestamp", LocalDateTime.now().toString());
+            
+            return ResponseEntity.status(500).body(result);
+        }
+    }
+
+    /**
+     * 获取MCP工具同步状态
+     * @return 同步状态信息
+     */
+    @RequestMapping("/admin/mcp/status")
+    public ResponseEntity<Map<String, Object>> getMcpToolSyncStatus() {
+        Map<String, Object> status = new HashMap<>();
+        status.put("activeSessionCount", mcpToolSyncService.getActiveSessionCount());
+        status.put("totalKnownToolsCount", mcpToolSyncService.getTotalKnownToolsCount());
+        status.put("timestamp", LocalDateTime.now().toString());
+        status.put("syncInterval", "5 minutes");
+        
+        return ResponseEntity.ok(status);
     }
 
 }

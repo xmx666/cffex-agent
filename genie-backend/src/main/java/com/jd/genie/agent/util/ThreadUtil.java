@@ -36,7 +36,11 @@ public class ThreadUtil {
     public static void await(CountDownLatch latch) {
         try {
             latch.await();
-        } catch (Exception var2) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("等待工具执行完成时被中断", e);
+        } catch (Exception e) {
+            throw new RuntimeException("等待工具执行完成时发生异常", e);
         }
     }
 

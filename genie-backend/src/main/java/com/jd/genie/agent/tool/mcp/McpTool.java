@@ -70,7 +70,8 @@ public class McpTool implements BaseTool {
             log.info("list tool request: {} response: {}", JSON.toJSONString(mcpToolRequest), response);
             return response;
         } catch (Exception e) {
-            log.error("{} list tool error", agentContext.getRequestId(), e);
+            String requestId = agentContext != null ? agentContext.getRequestId() : "sync-task";
+            log.error("{} list tool error", requestId, e);
         }
         return "";
     }
@@ -89,7 +90,8 @@ public class McpTool implements BaseTool {
             log.info("call tool request: {} response: {}", JSON.toJSONString(mcpToolRequest), response);
             return response;
         } catch (Exception e) {
-            log.error("{} call tool error ", agentContext.getRequestId(), e);
+            String requestId = agentContext != null ? agentContext.getRequestId() : "sync-task";
+            log.error("{} call tool error ", requestId, e);
         }
         return "";
     }

@@ -3,6 +3,7 @@ package com.jd.genie.agent.agent;
 import com.jd.genie.agent.dto.File;
 import com.jd.genie.agent.dto.Message;
 import com.jd.genie.agent.dto.TaskSummaryResult;
+import com.jd.genie.agent.enums.RoleType;
 import com.jd.genie.agent.llm.LLM;
 import com.jd.genie.agent.util.SpringContextHolder;
 import com.jd.genie.config.GenieConfig;
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 @Data
@@ -54,7 +57,7 @@ public class SummaryAgent extends BaseAgent {
         }
         log.info("requestId: {} {} product files:{}", requestId, logFlag, files);
         String result = files.stream()
-                .filter(file -> !file.getIsInternalFile()) // 过滤内部文件
+                .filter(file -> !Boolean.TRUE.equals(file.getIsInternalFile())) // 过滤内部文件
                 .map(file -> file.getFileName() + " : " + file.getDescription())
                 .collect(Collectors.joining("\n"));
 
@@ -102,9 +105,16 @@ public class SummaryAgent extends BaseAgent {
         if (!CollectionUtils.isEmpty(files)) {
             Collections.reverse(files);
         } else {
-            log.error("requestId: {} llmResponse:{} productFile list is empty", requestId, llmResponse);
-            // 文件列表为空，交付物中不显示文件
-            return TaskSummaryResult.builder().taskSummary(summary).build();
+            log.warn("requestId: {} llmResponse:{} productFile list is empty", requestId, llmResponse);
+            // 文件列表为空时，检查LLM是否提到了文件名
+            if (StringUtils.isNotBlank(fileNames) && !fileNames.trim().equals("无")) {
+                // 如果LLM提到了文件名但实际没有文件，说明任务可能没有完成
+                String enhancedSummary = summary + "\n\n注意：任务可能尚未完全完成，建议继续执行相关工具调用以生成所需文件。";
+                return TaskSummaryResult.builder().taskSummary(enhancedSummary).build();
+            } else {
+                // 如果LLM没有提到文件名，说明任务确实完成了
+                return TaskSummaryResult.builder().taskSummary(summary).build();
+            }
         }
         List<File> product = new ArrayList<>();
         String[] items = fileNames.split("、");
@@ -139,15 +149,25 @@ public class SummaryAgent extends BaseAgent {
             // 2. 构建系统消息（提取为独立方法）
             log.info("requestId: {} summaryTaskResult: messages:{}", requestId, messages.size());
             StringBuilder sb = new StringBuilder();
+            // 只使用TOOL角色的消息content（工具调用结果）进行总结，避免上下文过长
+            int toolMessageCount = 0;
             for (Message message : messages) {
+                // 只提取TOOL角色的消息
+                if (message.getRole() == RoleType.TOOL) {
                 String content = message.getContent();
-                if (content != null && content.length() > getMessageSizeLimit()) {
-                    log.info("requestId: {} message truncate,{}", requestId, message);
-                    content = content.substring(0, getMessageSizeLimit());
+                    if (content != null && !content.trim().isEmpty()) {
+                        // 不限制工具结果的长度，避免重要信息缺失
+                        sb.append(String.format("工具执行结果 %d:\n%s\n\n", ++toolMessageCount, content));
+                    }
                 }
-                sb.append(String.format("role:%s content:%s\n", message.getRole(), content));
             }
-            String formattedPrompt = formatSystemPrompt(sb.toString(), query);
+            log.info("requestId: {} summaryTaskResult: 提取了 {} 个工具调用结果用于总结", requestId, toolMessageCount);
+            // 如果没有工具调用结果，使用空字符串，LLM会根据query生成总结
+            String taskHistory = sb.toString();
+            if (toolMessageCount == 0) {
+                log.warn("requestId: {} summaryTaskResult: 没有找到工具调用结果，将使用空的任务历史", requestId);
+            }
+            String formattedPrompt = formatSystemPrompt(taskHistory, query);
             Message userMessage = createSystemMessage(formattedPrompt);
 
             // 3. 调用LLM并处理结果
@@ -158,8 +178,8 @@ public class SummaryAgent extends BaseAgent {
                     false,
                     0.01);
 
-            // 5. 解析响应
-            String llmResponse = summaryFuture.get();
+            // 5. 解析响应（设置超时时间避免无限等待）
+            String llmResponse = summaryFuture.get(300, java.util.concurrent.TimeUnit.SECONDS);
             log.info("requestId: {} summaryTaskResult: {}", requestId, llmResponse);
 
             return parseLlmResponse(llmResponse);

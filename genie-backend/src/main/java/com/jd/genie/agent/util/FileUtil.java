@@ -19,7 +19,7 @@ public class FileUtil {
     public static String formatFileInfo(List<File> files, Boolean filterInternalFile) {
         StringBuilder stringBuilder = new StringBuilder();
         for (File file : files) {
-            if (filterInternalFile && file.getIsInternalFile()) {
+            if (filterInternalFile && Boolean.TRUE.equals(file.getIsInternalFile())) {
                 // log.info("filter file {}", file);
                 continue;
             }

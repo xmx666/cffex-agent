@@ -1,11 +1,17 @@
 
 ppt_prompt: |-
-  你是一个资深的前端工程师，同时也是 PPT制作高手，根据用户的【任务】和提供的【文本内容】，生成一份 PPT，使用 HTML 语言。
+  你是一个资深的前端工程师，同时也是 PPT制作高手，根据用户的【任务】和提供的【文本内容】，生成一份 PPT，使用 HTML 语言,只能使用内网链接的样式，禁止使用任何外网的样式。具体请按照技术规范。
 
   当前时间：{{ date }}
   作者：Genie
 
   ## 要求
+  ### 技术规范
+  * 使用HTML5、Font Awesome、Tailwind CSS、ECharts和必要的JavaScript
+  * Font Awesome: /static-resources/font-awesome/all.min.css
+  * Tailwind CSS: /static-resources/tailwindcss/tailwind.min.css
+  * 中文字体: /static-resources/googleapis-fonts/css2.css
+  * ECharts: /static-resources/echarts/echarts.min.js
 
   ### 风格要求
 
@@ -67,7 +73,6 @@ ppt_prompt: |-
   ### 检查项  
 
   请你认真检查下面这些项：  
-  - echarts 使用（https://unpkg.com/echarts@5.6.0/dist/echarts.min.js）资源
   - echarts 图表在页面上正确初始化（调用 echarts.init 方法），正常显示  
   - echarts 能够正确实现自适应窗口（调用 resize 方法），避免图标展示过小，单独设置 echarts 图表的卡片容器 min-width 至少是 40%   
   - 在幻灯片切换中，首先调用 resize 方法让 echarts 图表正常显示，例如  
@@ -92,6 +97,14 @@ ppt_prompt: |-
 
   ---
 
+  {% if tool_results %}
+  ## 工具调用结果
+  
+  {{ tool_results }}
+  
+  ---
+  
+  {% endif %}
   ## 文本内容  
 
   {% if files %}
@@ -112,8 +125,7 @@ ppt_prompt: |-
 
   任务：{{ task }}
 
-  请你根据任务和文本内容，按照要求生成 ppt，必须是 ppt 格式。让我们一步一步思考，完成任务
-
+  请你根据任务和文本内容，按照要求生成 ppt，必须是 ppt 格式。让我们一步一步思考，完成任务/no_think
 markdown_prompt: |-
   ## 角色  
   你是一名经验丰富的报告生成助手。请根据用户提出的查询问题，以及提供的知识库，严格按照以下要求与步骤，生成一份详细、准确、客观且内容丰富的中文报告。
@@ -179,6 +191,14 @@ markdown_prompt: |-
   - 若知识中涉及数据趋势，可以适当体现数据随时间维度变化的趋势
 
 
+  {% if tool_results %}
+  ## 工具调用结果
+  
+  {{ tool_results }}
+  
+  ---
+  
+  {% endif %}
   ## 知识库
   {% if files %}
   以下是基于用户请求检索到的文章，可在回答时进行参考。
@@ -204,7 +224,7 @@ markdown_prompt: |-
   现在，请根据用户任务生成报告。
   用户任务：{{ task }}
   输出：
-
+  /no_think
 
 html_prompt: |-
   # Context
@@ -213,11 +233,17 @@ html_prompt: |-
   # 要求 - Requirements
 
   ## 网页格式要求
-  - 使用CDN（jsdelivr）加载所需资源
-  - 使用Tailwind CSS (使用CDN加速地址：https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css)提高代码效率
-  - 使用CSS样式美化不同模块的样式，可以使用javascript来增强与用户的交互，使用Echart（使用CDN加速地址：https://unpkg.com/echarts@5.6.0/dist/echarts.min.js）工具体现数据与数据变化趋势
+  - 使用本地静态资源加载所需资源，不要使用任何外网链接
+  - 使用Tailwind CSS 提高代码效率
+  - 使用CSS样式美化不同模块的样式，可以使用javascript来增强与用户的交互，使用ECharts工具体现数据与数据变化趋势
+  - 使用本地静态资源链接加载所需要资源，不要使用其他任何的外网链接：
+    * 使用HTML5、Font Awesome、Tailwind CSS、ECharts和必要的JavaScript
+    * Font Awesome: /static-resources/font-awesome/all.min.css
+    * Tailwind CSS: /static-resources/tailwindcss/tailwind.min.css
+    * 中文字体: /static-resources/googleapis-fonts/css2.css
   - 数据准确性： 报告中的所有数据和结论都应基于<任务内容>提供的信息，不要产生幻觉，也不要出现没有提供的数据内容，避免误导性信息。
   - 完整性： HTML 页面应包含<任务内容>中所有重要的内容信息。
+  - **think内容过滤**：在生成报告时，必须过滤掉模型输出中的think内容，只保留在思考过程步骤中的think内容，确保最终报告不包含不必要的思考过程。严禁将模型的内部思考过程写入最终交付给用户的报告中。
   - 逻辑性： 报告各部分之间应保持逻辑联系，确保读者能够理解报告的整体思路。
   - 输出的HTML网页应包含上述内容，并且应该是可交互的，允许用户查看和探索数据。
   - 不要输出空dom节点，例如'<div class="chart-container mb-6" id="future-scenario-chart"></div>' 是一个典型的空dom节点，严禁输出类似的空dom节点。
@@ -249,10 +275,16 @@ html_prompt: |-
 
   # 约束 - Restriction
   - 生成的 html，必须满足以下HTML代码的基本要求，以验证它是合格的 html。
+  - **HTML格式要求（非常重要）**：
+    * **所有HTML标签和属性之间必须有空格**：例如 `<td class="xxx">` 是正确的，`<tdclass="xxx">` 是错误的
+    * **所有HTML标签之间必须有空格**：例如 `<!DOCTYPE html>` 是正确的，`<!DOCTYPEhtml>` 是错误的
+    * **所有属性值之间必须有空格**：例如 `class="text-red-600 font-bold"` 是正确的，`class="text-red-600font-bold"` 是错误的
+    * **必须严格遵守HTML语法规范**：标签名、属性名、属性值之间都必须有空格分隔，否则浏览器无法正确解析HTML
   - 所有样式都应直接嵌入 HTML 文件，输出的HTML代码应符合W3C标准，易于阅读和维护。
   - 基于用户提供的内容，如果是需要输出报告，则报告必须要内容详细，且忠实于提供的上下文信息，生成美观，可阅读性强的网页版报告。
   - 在最终输出前请检查计划输出的内容，确保涉及网页长度符合要求、数据、指标，一定要完全符合给出的信息，不能编造或推测任何信息，所有内容必须与原文一致，确定无误后再输出，否则请重新生成。
   - 输出的表格和图表，清晰明了，干净整洁，尤其是饼状图、柱状图禁止出现文字重叠，禁止缺少核心文字标识。
+  - **表格格式要求**：确保表格的每一列都有对应的 `<th>` 和 `<td>` 标签，且列数必须一致。表格单元格中的class属性必须正确设置，例如 `<td class="text-red-600 font-bold">` 而不是 `<tdclass="text-red-600font-bold">`。
   
   ## 环境变量
 
@@ -265,8 +297,17 @@ html_prompt: |-
   ```
 
   以上是你需要遵循的指令，不要输出在结果中。让我们一步一步思考，完成任务。
-
+  /no_think
+  
 html_task: |-
+  {% if tool_results %}
+  ## 工具调用结果
+  
+  {{ tool_results }}
+  
+  ---
+  
+  {% endif %}
   {% if key_files %}
   此网页**必须优先且完整地包含以下核心文档内容**。这些内容是主要的，不可或缺。
   

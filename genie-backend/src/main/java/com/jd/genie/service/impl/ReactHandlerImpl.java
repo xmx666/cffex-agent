@@ -40,14 +40,23 @@ public class ReactHandlerImpl implements AgentHandlerService {
             if (!CollectionUtils.isEmpty(agentContext.getProductFiles())) {
                 List<File> fileResponses = agentContext.getProductFiles();
                 // 过滤中间搜索结果文件
-                fileResponses.removeIf(file -> Objects.nonNull(file) && file.getIsInternalFile());
+                fileResponses.removeIf(file -> Objects.nonNull(file) && Boolean.TRUE.equals(file.getIsInternalFile()));
                 Collections.reverse(fileResponses);
                 taskResult.put("fileList", fileResponses);
+                log.info("{} 设置fileList到taskResult，文件数量: {}", agentContext.getRequestId(), fileResponses.size());
+                for (File file : fileResponses) {
+                    log.info("{} 文件信息: fileName={}, domainUrl={}, ossUrl={}", 
+                        agentContext.getRequestId(), file.getFileName(), file.getDomainUrl(), file.getOssUrl());
+                }
+            } else {
+                log.info("{} agentContext.getProductFiles()为空", agentContext.getRequestId());
             }
         } else {
             taskResult.put("fileList", result.getFiles());
+            log.info("{} 使用result.getFiles()，文件数量: {}", agentContext.getRequestId(), result.getFiles().size());
         }
 
+        log.info("{} 发送result消息，taskResult内容: {}", agentContext.getRequestId(), taskResult);
         agentContext.getPrinter().send("result", taskResult);
 
         return "";

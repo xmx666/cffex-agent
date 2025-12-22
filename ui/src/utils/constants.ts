@@ -7,14 +7,7 @@ import excleIcon from '@/assets/icon/excle.png';
 import pdfIcon from '@/assets/icon/pdf.png';
 import txtIcon from '@/assets/icon/txt.png';
 import htmlIcon  from '@/assets/icon/HTML.png';
-import mov1 from '@/assets/mov/mov1.mp4';
-import mov2 from '@/assets/mov/mov2.mp4';
-import mov3 from '@/assets/mov/mov3.mp4';
-import mov4 from '@/assets/mov/mov4.mp4';
-import demo1 from '@/assets/icon/demo1.png';
-import demo2 from '@/assets/icon/demo2.png';
-import demo3 from '@/assets/icon/demo3.png';
-import demo4 from '@/assets/icon/demo4.png';
+// 案例数据已简化，不再需要导入图片和视频
 
 import { ActionViewItemEnum } from "./enums";
 
@@ -85,37 +78,10 @@ export const InputSize:Record<string, string>  = {
   small: '32'
 };
 
+// 使用案例问题列表 - 点击问题即可执行查询
 export const demoList = [
-  {
-    title: 'Browser代码架构分析',
-    description: '帮我分析github中开源的browser-use的代码，并进行分析',
-    tag: '专业研究',
-    videoUrl: mov1,
-    url: '//storage.360buyimg.com/pubfree-bucket/ei-data-resource/89ab083/static/demoPage.html',
-    image: demo1
-  },
-  {
-    title: '京东财报分析',
-    description: '分析一下京东的最新财务报告，总结出核心数据以及公司发展情况',
-    tag: '数据分析',
-    videoUrl: mov2,
-    url: '//storage.360buyimg.com/pubfree-bucket/ei-data-resource/89ab083/static/demoPage2.html',
-    image: demo2
-  },
-  {
-    title: 'HR智能招聘产品竞品分析',
-    description: '分析一下HR智能招聘领域的优秀产品，形成一个竞品对比报告',
-    tag: '竞品调研',
-    videoUrl: mov3,
-    url: '//storage.360buyimg.com/pubfree-bucket/ei-data-resource/89ab083/static/demoPage3.html',
-    image: demo3
-  },
-  {
-    title: '超市销售数据分析',
-    description: '帮我分析一下国内销售数据',
-    tag: '数据分析',
-    videoUrl: mov4,
-    url: '//storage.360buyimg.com/pubfree-bucket/ei-data-resource/89ab083/static/demoPage4.html',
-    image: demo4
-  }
+  '如何进行集成发布?',
+  '仿真上线后,要做哪些分支操作?',
+  '系统测试覆盖率数据为什么没有刷新?',
+  '我的部门未来一个月有哪些集成发布即将发布?'
 ];

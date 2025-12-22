@@ -253,16 +253,11 @@ show_progress() {
 wait_for_services() {
     echo -e "${BLUE}⏳ 等待服务启动...${NC}"
     
-    local services=(
-        "前端服务:3000"
-        "后端服务:8080" 
-        "工具服务:1601"
-        "MCP客户端:8188"
-    )
+    local services="前端服务:3000 后端服务:8080 工具服务:1601 MCP客户端:8188"
     
-    local total_services=${#services[@]}
+    local total_services=4
     local started_services=0
-    local failed_services=()
+    local failed_services=""
     local max_attempts=30
     local attempt=0
     
@@ -270,15 +265,17 @@ wait_for_services() {
     
     while [ $attempt -lt $max_attempts ] && [ $started_services -lt $total_services ]; do
         started_services=0
-        failed_services=()
+        failed_services=""
         
-        for service_info in "${services[@]}"; do
-            IFS=':' read -r service_name port <<< "$service_info"
+        for service_info in $services; do
+            IFS=':' read -r service_name port << EOF
+$service_info
+EOF
             
             if curl -s http://localhost:$port > /dev/null 2>&1; then
                 started_services=$((started_services + 1))
             else
-                failed_services+=("$service_name")
+                failed_services="$failed_services $service_name"
             fi
         done
         
@@ -293,8 +290,10 @@ wait_for_services() {
     echo "=================================="
     
     # 详细检查每个服务
-    for service_info in "${services[@]}"; do
-        IFS=':' read -r service_name port <<< "$service_info"
+    for service_info in $services; do
+        IFS=':' read -r service_name port << EOF
+$service_info
+EOF
         
         if curl -s http://localhost:$port > /dev/null 2>&1; then
             echo -e "${GREEN}✅ $service_name 运行正常 (http://localhost:$port)${NC}"
@@ -306,9 +305,9 @@ wait_for_services() {
     echo "=================================="
     
     # 显示失败的服务
-    if [ ${#failed_services[@]} -gt 0 ]; then
+    if [ -n "$failed_services" ]; then
         echo -e "${RED}⚠️  以下服务启动失败：${NC}"
-        for service in "${failed_services[@]}"; do
+        for service in $failed_services; do
             echo -e "${RED}   - $service${NC}"
         done
         echo ""
@@ -322,18 +321,15 @@ wait_for_services() {
 
 # 显示服务信息
 show_service_info() {
-    local services=(
-        "前端界面:3000"
-        "后端API:8080" 
-        "工具服务:1601"
-        "MCP客户端:8188"
-    )
+    local services="前端界面:3000 后端API:8080 工具服务:1601 MCP客户端:8188"
     
     local all_running=true
     
     # 检查所有服务是否都运行正常
-    for service_info in "${services[@]}"; do
-        IFS=':' read -r service_name port <<< "$service_info"
+    for service_info in $services; do
+        IFS=':' read -r service_name port << EOF
+$service_info
+EOF
         if ! curl -s http://localhost:$port > /dev/null 2>&1; then
             all_running=false
             break
@@ -353,8 +349,10 @@ show_service_info() {
         echo -e "${YELLOW}⚠️  部分服务启动完成${NC}"
         echo "=================================="
         echo -e "${BLUE}可用的服务地址：${NC}"
-        for service_info in "${services[@]}"; do
-            IFS=':' read -r service_name port <<< "$service_info"
+        for service_info in $services; do
+            IFS=':' read -r service_name port << EOF
+$service_info
+EOF
             if curl -s http://localhost:$port > /dev/null 2>&1; then
                 echo -e "  ✅ $service_name: ${GREEN}http://localhost:$port${NC}"
             else
@@ -398,8 +396,8 @@ cleanup() {
     
     # 清理占用端口的进程
     echo -e "${BLUE}🔍 清理占用端口的进程...${NC}"
-    PORTS=(3000 8080 1601 8188)
-    for port in "${PORTS[@]}"; do
+    PORTS="3000 8080 1601 8188"
+    for port in $PORTS; do
         local pids=$(lsof -ti :$port 2>/dev/null)
         if [ ! -z "$pids" ]; then
             echo -e "${YELLOW}   清理端口 $port 的进程...${NC}"

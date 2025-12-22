@@ -1,7 +1,10 @@
 import { fetchEventSource, EventSourceMessage } from '@microsoft/fetch-event-source';
 
-const customHost = window.SERVICE_BASE_URL || 'http://127.0.0.1:8080';
-const DEFAULT_SSE_URL = `${customHost}/web/api/v1/gpt/queryAgentStreamIncr`;
+// 获取服务基础URL，如果为空则使用相对路径（通过Vite代理）
+const customHost = window.SERVICE_BASE_URL || '';
+const DEFAULT_SSE_URL = customHost 
+  ? `${customHost}/web/api/v1/gpt/queryAgentStreamIncr`
+  : '/web/api/v1/gpt/queryAgentStreamIncr';
 
 const SSE_HEADERS = {
   'Content-Type': 'application/json',
@@ -25,6 +28,8 @@ interface SSEConfig {
 export default (config: SSEConfig, url: string = DEFAULT_SSE_URL): void => {
   const { body = null, handleMessage, handleError, handleClose } = config;
 
+  console.log('🔗 正在连接到SSE服务器:', url);
+  
   fetchEventSource(url, {
     method: 'POST',
     credentials: 'include',
@@ -43,12 +48,18 @@ export default (config: SSEConfig, url: string = DEFAULT_SSE_URL): void => {
       }
     },
     onerror(error: Error) {
-      console.error('SSE error:', error);
+      console.error('SSE连接错误:', error);
+      console.error('连接URL:', url);
+      console.error('请求体:', body);
       handleError(error);
     },
     onclose() {
-      console.log('SSE connection closed');
+      console.log('SSE连接已关闭');
       handleClose();
     }
+  }).catch((error: Error) => {
+    console.error('fetchEventSource失败:', error);
+    console.error('连接URL:', url);
+    handleError(error);
   });
 };

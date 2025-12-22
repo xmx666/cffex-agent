@@ -73,18 +73,33 @@ public class ToolCollection {
      * 执行工具
      */
     public Object execute(String name, Object toolInput) {
-        if (toolMap.containsKey(name)) {
-            BaseTool tool = getTool(name);
-            return tool.execute(toolInput);
-        } else if (mcpToolMap.containsKey(name)) {
-            McpToolInfo toolInfo = mcpToolMap.get(name);
-            McpTool mcpTool = new McpTool();
-            mcpTool.setAgentContext(agentContext);
-            return mcpTool.callTool(toolInfo.getMcpServerUrl(), name, toolInput);
-        } else {
-            log.error("Error: Unknown tool {}", name);
+        log.info("{} 开始执行工具: {}, 输入: {}", 
+            agentContext != null ? agentContext.getRequestId() : "unknown", name, toolInput);
+        
+        try {
+            if (toolMap.containsKey(name)) {
+                BaseTool tool = getTool(name);
+                log.info("{} 找到工具: {}, 开始执行", 
+                    agentContext != null ? agentContext.getRequestId() : "unknown", name);
+                Object result = tool.execute(toolInput);
+                log.info("{} 工具 {} 执行完成，结果: {}", 
+                    agentContext != null ? agentContext.getRequestId() : "unknown", name, result);
+                return result;
+            } else if (mcpToolMap.containsKey(name)) {
+                McpToolInfo toolInfo = mcpToolMap.get(name);
+                McpTool mcpTool = new McpTool();
+                mcpTool.setAgentContext(agentContext);
+                return mcpTool.callTool(toolInfo.getMcpServerUrl(), name, toolInput);
+            } else {
+                log.error("{} 错误: 未知工具 {}", 
+                    agentContext != null ? agentContext.getRequestId() : "unknown", name);
+                return "错误: 未知工具 " + name;
+            }
+        } catch (Exception e) {
+            log.error("{} 工具 {} 执行异常: ", 
+                agentContext != null ? agentContext.getRequestId() : "unknown", name, e);
+            return "工具 " + name + " 执行失败: " + e.getMessage();
         }
-        return null;
     }
 
     /**

@@ -100,6 +100,11 @@ public class SSEPrinter implements Printer {
                         @SuppressWarnings("unchecked")
                         Map<String, Object> taskResult = (Map<String, Object>) message;
                         Object summary = taskResult.get("taskSummary");
+                        Object fileList = taskResult.get("fileList");
+                        log.info("{} result消息处理 - taskSummary: {}, fileList: {}", request.getRequestId(), summary, fileList);
+                        if (fileList instanceof List) {
+                            log.info("{} fileList是List类型，大小: {}", request.getRequestId(), ((List<?>) fileList).size());
+                        }
                         response.setResultMap(taskResult);
                         response.setResult(summary != null ? summary.toString() : null);
                     } else {

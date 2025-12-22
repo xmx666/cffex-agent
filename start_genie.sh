@@ -146,3 +146,4 @@ fi
 # 保持容器运行
 echo "所有服务已启动，保持容器运行..."
 tail -f /dev/null
+wait

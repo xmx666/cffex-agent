@@ -88,7 +88,7 @@ public class PlanSolveHandlerImpl implements AgentHandlerService {
                     if (!CollectionUtils.isEmpty(agentContext.getProductFiles())) {
                         List<File> fileResponses = agentContext.getProductFiles();
                         // 过滤中间搜索结果文件
-                        fileResponses.removeIf(file -> Objects.nonNull(file) && file.getIsInternalFile());
+                        fileResponses.removeIf(file -> Objects.nonNull(file) && Boolean.TRUE.equals(file.getIsInternalFile()));
                         Collections.reverse(fileResponses);
                         taskResult.put("fileList", fileResponses);
                     }

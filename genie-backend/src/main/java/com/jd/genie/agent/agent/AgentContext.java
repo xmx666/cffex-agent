@@ -1,6 +1,7 @@
 package com.jd.genie.agent.agent;
 
 import com.jd.genie.agent.dto.File;
+import com.jd.genie.agent.dto.Memory;
 import com.jd.genie.agent.printer.Printer;
 import com.jd.genie.agent.tool.ToolCollection;
 import com.jd.genie.model.dto.FileInformation;
@@ -33,4 +34,5 @@ public class AgentContext {
     String basePrompt;
     Integer agentType;
     List<File> taskProductFiles;
+    Memory memory; // 添加memory字段，用于工具访问消息历史
 }

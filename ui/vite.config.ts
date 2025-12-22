@@ -3,7 +3,10 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import tailwindcss from '@tailwindcss/vite';
 
-const serverBaseUrl = 'http://127.0.0.1:8080';
+// 根据运行环境设置后端地址
+// 开发环境：如果后端在本地运行，使用 localhost:8080
+// 生产环境或服务器开发：使用实际的服务器地址
+const serverBaseUrl = process.env.VITE_SERVER_URL || 'http://172.31.73.223:8080';
 
 export default defineConfig((mode) => ({
   plugins: [
@@ -26,11 +29,20 @@ export default defineConfig((mode) => ({
         target: serverBaseUrl,
         changeOrigin: true,
       },
+      '/api': {
+        target: serverBaseUrl,
+        changeOrigin: true,
+      },
+      '/admin': {
+        target: serverBaseUrl,
+        changeOrigin: true,
+      },
     },
   },
   define: {
-    // 一定要序列化，否则打包时会报错
-    SERVICE_BASE_URL: JSON.stringify(mode.mode === 'development' ? '' : serverBaseUrl),
+    // 在服务器环境中，即使开发模式也需要使用完整URL
+    // 如果在本地运行，使用空字符串让Vite代理处理
+    SERVICE_BASE_URL: JSON.stringify(serverBaseUrl),
   },
   build: {
     outDir: 'dist',

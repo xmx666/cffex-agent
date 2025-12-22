@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jd.genie.agent.agent.AgentContext;
 import com.jd.genie.agent.dto.Message;
+import com.jd.genie.agent.enums.RoleType;
 import com.jd.genie.agent.dto.tool.McpToolInfo;
 import com.jd.genie.agent.dto.tool.ToolCall;
 import com.jd.genie.agent.dto.tool.ToolChoice;
@@ -32,6 +33,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -77,6 +79,88 @@ public class LLM {
         // 初始化 tokenizer
         this.tokenCounter = new TokenCounter();
         this.objectMapper = new ObjectMapper();
+    }
+
+    /**
+     * 智能调整max_tokens以避免超出上下文限制
+     */
+    private int adjustMaxTokensForContext(List<Map<String, Object>> formattedMessages, int originalMaxTokens) {
+        // 估算输入消息的token数量（粗略估算：1 token ≈ 4 characters）
+        int estimatedInputTokens = 0;
+        for (Map<String, Object> message : formattedMessages) {
+            Object content = message.get("content");
+            if (content instanceof String) {
+                estimatedInputTokens += ((String) content).length() / 4;
+            } else if (content instanceof List) {
+                // 处理多模态内容
+                for (Object item : (List<?>) content) {
+                    if (item instanceof Map) {
+                        Map<?, ?> itemMap = (Map<?, ?>) item;
+                        Object text = itemMap.get("text");
+                        if (text instanceof String) {
+                            estimatedInputTokens += ((String) text).length() / 4;
+                        }
+                    }
+                }
+            }
+        }
+        
+        // 模型最大上下文长度（qwen3-32b-local和qwen3-next-80b-local，已升级到256k）
+        int maxContextLength = 256000;
+        
+        // 预留安全边距（5000 tokens，256k上下文下可以更宽松）
+        int safetyMargin = 5000;
+        int availableForOutput = maxContextLength - estimatedInputTokens - safetyMargin;
+        
+        // 确保不超过原始max_tokens，也不超过可用空间
+        int adjustedMaxTokens = Math.min(originalMaxTokens, Math.max(availableForOutput, 1000));
+        
+        if (adjustedMaxTokens != originalMaxTokens) {
+            log.warn("调整max_tokens: 原始={}, 调整后={}, 输入tokens估算={}", 
+                originalMaxTokens, adjustedMaxTokens, estimatedInputTokens);
+        }
+        
+        return adjustedMaxTokens;
+    }
+
+    /**
+     * 截断消息内容，避免请求体过大
+     */
+    private List<Message> truncateMessages(List<Message> messages) {
+        List<Message> truncatedMessages = new ArrayList<>();
+        final int MAX_CONTENT_LENGTH = 50000; // 最大内容长度（256k上下文下可以更长）
+        final int MAX_TOOL_CONTENT_LENGTH = 10000; // 工具消息最大长度（256k上下文下可以更长）
+        
+        for (Message message : messages) {
+            Message truncatedMessage = new Message();
+            truncatedMessage.setRole(message.getRole());
+            truncatedMessage.setBase64Image(message.getBase64Image());
+            truncatedMessage.setToolCalls(message.getToolCalls());
+            truncatedMessage.setToolCallId(message.getToolCallId());
+            
+            String content = message.getContent();
+            if (content != null) {
+                // 根据消息类型设置不同的截断长度
+                int maxLength = (message.getRole() == RoleType.TOOL) ? MAX_TOOL_CONTENT_LENGTH : MAX_CONTENT_LENGTH;
+                
+                if (content.length() > maxLength) {
+                    // 截断内容并添加提示
+                    String truncatedContent = content.substring(0, maxLength) + 
+                        "\n\n[注意：内容已截断，原始长度：" + content.length() + " 字符]";
+                    truncatedMessage.setContent(truncatedContent);
+                    log.warn("消息内容过长已截断：原始长度={}, 截断后长度={}", 
+                        content.length(), truncatedContent.length());
+                } else {
+                    truncatedMessage.setContent(content);
+                }
+            } else {
+                truncatedMessage.setContent(content);
+            }
+            
+            truncatedMessages.add(truncatedMessage);
+        }
+        
+        return truncatedMessages;
     }
 
     /**
@@ -232,6 +316,14 @@ public class LLM {
             // 根据模型设置不同的参数
             params.put("max_tokens", maxTokens);
             params.put("temperature", temperature != null ? temperature : this.temperature);
+            
+            // 为qwen3模型添加think控制参数
+            if (model.contains("qwen3")) {
+                Map<String, Object> chatTemplateKwargs = new HashMap<>();
+                chatTemplateKwargs.put("enable_thinking", false);
+                params.put("chat_template_kwargs", chatTemplateKwargs);
+            }
+            
             if (Objects.nonNull(extParams)) {
                 params.putAll(extParams);
             }
@@ -443,7 +535,10 @@ public class LLM {
                     formattedMessages.addAll(formatMessages(List.of(systemMsgs), model.contains("claude")));
                 }
             }
-            formattedMessages.addAll(formatMessages(messages, model.contains("claude")));
+            
+            // 对消息进行截断处理，避免请求体过大
+            List<Message> truncatedMessages = truncateMessages(messages);
+            formattedMessages.addAll(formatMessages(truncatedMessages, model.contains("claude")));
 
             params.put("model", model);
             if (StringUtils.isNotEmpty(llmErp)) {
@@ -456,14 +551,34 @@ public class LLM {
                 params.put("tool_choice", toolChoice.getValue());
             }
 
-            // 添加模型特定参数
-            params.put("max_tokens", maxTokens);
+            // 智能调整max_tokens以避免超出上下文限制
+            int adjustedMaxTokens = adjustMaxTokensForContext(formattedMessages, maxTokens);
+            params.put("max_tokens", adjustedMaxTokens);
             params.put("temperature", temperature != null ? temperature : this.temperature);
+            
+            // 为qwen3模型添加think控制参数
+            if (model.contains("qwen3")) {
+                Map<String, Object> chatTemplateKwargs = new HashMap<>();
+                chatTemplateKwargs.put("enable_thinking", false);
+                params.put("chat_template_kwargs", chatTemplateKwargs);
+            }
+            
             if (Objects.nonNull(extParams)) {
                 params.putAll(extParams);
             }
 
-            log.info("{} call llm request {}", context.getRequestId(), JSONObject.toJSONString(params));
+            // 记录请求大小信息
+            String requestJson = JSONObject.toJSONString(params);
+            log.info("{} call llm request size: {} bytes, message count: {}", 
+                context.getRequestId(), requestJson.length(), formattedMessages.size());
+            
+            // 如果请求过大，记录警告
+            if (requestJson.length() > 100000) { // 100KB
+                log.warn("{} LLM请求体较大: {} bytes，可能导致400错误", 
+                    context.getRequestId(), requestJson.length());
+            }
+            
+            log.info("{} call llm request {}", context.getRequestId(), requestJson);
             if (!stream) {
                 params.put("stream", false);
                 // 调用 API
@@ -591,8 +706,11 @@ public class LLM {
                 public void onResponse(Call call, Response response) throws IOException {
                     try (ResponseBody responseBody = response.body()) {
                         if (!response.isSuccessful()) {
+                            String errorBody = responseBody != null ? responseBody.string() : "No error body";
+                            log.error("LLM API调用失败: code={}, message={}, body={}", 
+                                response.code(), response.message(), errorBody);
                             future.completeExceptionally(
-                                    new IOException("Unexpected response code: " + response)
+                                    new IOException("Unexpected response code: " + response + ", body: " + errorBody)
                             );
                         } else {
                             future.complete(responseBody.string());
@@ -648,8 +766,10 @@ public class LLM {
                     boolean isContent = true;
                     try (ResponseBody responseBody = response.body()) {
                         if (!response.isSuccessful() || responseBody == null) {
-                            log.error("{} ask tool stream response error or empty", context.getRequestId());
-                            future.completeExceptionally(new IOException("Unexpected response code: " + response));
+                            String errorBody = responseBody != null ? responseBody.string() : "No error body";
+                            log.error("{} ask tool stream response error: code={}, message={}, body={}", 
+                                context.getRequestId(), response.code(), response.message(), errorBody);
+                            future.completeExceptionally(new IOException("Unexpected response code: " + response + ", body: " + errorBody));
                             return;
                         }
 
@@ -663,9 +783,18 @@ public class LLM {
                                 new InputStreamReader(responseBody.byteStream())
                         );
                         while ((line = reader.readLine()) != null) {
+                            log.debug("{} 收到流式响应行: {}", context.getRequestId(), line);
+                            
+                            // 跳过空行和注释行
+                            if (line.trim().isEmpty() || line.startsWith(":")) {
+                                continue;
+                            }
+                            
                             if (line.startsWith("data: ")) {
                                 String data = line.substring(6);
+                                log.debug("{} 解析流式数据: {}", context.getRequestId(), data);
                                 if (data.equals("[DONE]")) {
+                                    log.info("{} 收到流式响应结束标记 [DONE]", context.getRequestId());
                                     break;
                                 }
                                 if (isFirstToken) {
@@ -673,6 +802,7 @@ public class LLM {
                                 }
                                 try {
                                     JsonNode chunk = objectMapper.readTree(data);
+                                    log.debug("{} 解析JSON块: {}", context.getRequestId(), chunk);
                                     if (chunk.has("choices") && !chunk.get("choices").isEmpty()) {
                                         for (JsonNode element : chunk.get("choices")) {
                                             OpenAIChoice choice = objectMapper.convertValue(element, OpenAIChoice.class);
@@ -718,7 +848,11 @@ public class LLM {
                                                             currentToolCall.function = toolCall.function;
                                                         }
                                                         if (Objects.nonNull(toolCall.function.arguments)) {
-                                                            currentToolCall.function.arguments += toolCall.function.arguments;
+                                                            if (currentToolCall.function.arguments == null) {
+                                                                currentToolCall.function.arguments = toolCall.function.arguments;
+                                                            } else {
+                                                                currentToolCall.function.arguments += toolCall.function.arguments;
+                                                            }
                                                         }
                                                     }
                                                     openToolCallsMap.put(toolCall.index, currentToolCall);
@@ -732,6 +866,52 @@ public class LLM {
                             }
                         }
 
+                        // 确保即使没有 [DONE] 标记也能完成响应
+                        log.info("{} 流式响应读取完成，准备构建最终响应", context.getRequestId());
+                        log.info("{} 流式响应统计：stringBuilderAll长度={}, openToolCallsMap大小={}", 
+                                context.getRequestId(), stringBuilderAll.length(), openToolCallsMap.size());
+                        
+                        // 如果没有任何内容但有工具调用，提供默认内容
+                        if (stringBuilderAll.length() == 0) {
+                            if (!openToolCallsMap.isEmpty()) {
+                                log.info("{} 检测到工具调用但无文本内容，添加默认内容", context.getRequestId());
+                                stringBuilderAll.append("正在执行工具调用...");
+                            } else {
+                                log.warn("{} 流式响应为空，返回空内容", context.getRequestId());
+                                log.warn("{} 流式响应为空原因分析：stringBuilderAll={}, openToolCallsMap={}", 
+                                        context.getRequestId(), stringBuilderAll.toString(), openToolCallsMap);
+                                
+                                // 尝试从非流式响应获取内容作为备用
+                                log.info("{} 尝试使用非流式响应作为备用方案", context.getRequestId());
+                                try {
+                                    // 使用原始参数，只修改stream字段
+                                    Map<String, Object> fallbackParams = new HashMap<>(params);
+                                    fallbackParams.put("stream", false);
+                                    
+                                    log.info("{} 备用请求参数: {}", context.getRequestId(), JSONObject.toJSONString(fallbackParams));
+                                    
+                                    CompletableFuture<String> fallbackFuture = callOpenAI(fallbackParams, 30);
+                                    String fallbackResponse = fallbackFuture.get(10, TimeUnit.SECONDS);
+                                    log.info("{} 备用非流式响应: {}", context.getRequestId(), fallbackResponse);
+                                    
+                                    // 解析备用响应
+                                    JsonNode fallbackJson = objectMapper.readTree(fallbackResponse);
+                                    if (fallbackJson.has("choices") && !fallbackJson.get("choices").isEmpty()) {
+                                        JsonNode choice = fallbackJson.get("choices").get(0);
+                                        if (choice.has("message") && choice.get("message").has("content")) {
+                                            String fallbackContent = choice.get("message").get("content").asText();
+                                            if (StringUtils.isNotBlank(fallbackContent)) {
+                                                stringBuilderAll.append(fallbackContent);
+                                                log.info("{} 使用备用响应内容: {}", context.getRequestId(), fallbackContent);
+                                            }
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    log.error("{} 备用非流式响应失败", context.getRequestId(), e);
+                                }
+                            }
+                        }
+                        
                         String contentAll = stringBuilderAll.toString();
                         if ("struct_parse".equals(functionCallType)) {
                             int stopPos = stringBuilder.indexOf("```json");
@@ -840,8 +1020,10 @@ public class LLM {
                     boolean isContent = true;
                     try (ResponseBody responseBody = response.body()) {
                         if (!response.isSuccessful() || responseBody == null) {
-                            log.error("{} ask tool stream response error or empty", context.getRequestId());
-                            future.completeExceptionally(new IOException("Unexpected response code: " + response));
+                            String errorBody = responseBody != null ? responseBody.string() : "No error body";
+                            log.error("{} ask tool stream response error: code={}, message={}, body={}", 
+                                context.getRequestId(), response.code(), response.message(), errorBody);
+                            future.completeExceptionally(new IOException("Unexpected response code: " + response + ", body: " + errorBody));
                             return;
                         }
 
@@ -1030,8 +1212,11 @@ public class LLM {
                 public void onResponse(Call call, Response response) throws IOException {
                     try (ResponseBody responseBody = response.body()) {
                         if (!response.isSuccessful()) {
+                            String errorBody = responseBody != null ? responseBody.string() : "No error body";
+                            log.error("LLM API调用失败: code={}, message={}, body={}", 
+                                response.code(), response.message(), errorBody);
                             future.completeExceptionally(
-                                    new IOException("Unexpected response code: " + response)
+                                    new IOException("Unexpected response code: " + response + ", body: " + errorBody)
                             );
                             return;
                         }

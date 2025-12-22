@@ -217,6 +217,8 @@ function handleContentMessage(
                     {
                       ...eventData.resultMap.resultMap,
                       codeOutput: eventData.resultMap.resultMap.data,
+                      // 确保fileInfo被保留（如果存在）
+                      fileInfo: eventData.resultMap.resultMap.fileInfo || currentChat.multiAgent.tasks[taskIndex][toolIndex].resultMap?.fileInfo || [],
                     };
       } else {
         // 进行中

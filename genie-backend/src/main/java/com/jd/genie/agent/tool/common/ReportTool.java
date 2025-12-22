@@ -5,6 +5,9 @@ import com.jd.genie.agent.agent.AgentContext;
 import com.jd.genie.agent.dto.CodeInterpreterRequest;
 import com.jd.genie.agent.dto.CodeInterpreterResponse;
 import com.jd.genie.agent.dto.File;
+import com.jd.genie.agent.dto.Memory;
+import com.jd.genie.agent.dto.Message;
+import com.jd.genie.agent.enums.RoleType;
 import com.jd.genie.agent.tool.BaseTool;
 import com.jd.genie.agent.util.SpringContextHolder;
 import com.jd.genie.agent.util.StringUtil;
@@ -81,6 +84,57 @@ public class ReportTool implements BaseTool {
             }
 
             List<String> fileNames = agentContext.getProductFiles().stream().map(File::getFileName).collect(Collectors.toList());
+            
+            // 从memory中提取所有TOOL角色的消息content（工具调用结果）
+            List<String> toolResults = new ArrayList<>();
+            Memory memory = agentContext.getMemory();
+            if (memory != null) {
+                List<Message> messages = memory.getMessages();
+                if (messages != null) {
+                    log.info("{} report_tool memory对象: {}, messages列表: {}, 消息数: {}", 
+                            agentContext.getRequestId(), 
+                            memory.getClass().getName(),
+                            messages.getClass().getName(),
+                            messages.size());
+                    int toolCount = 0;
+                    int userCount = 0;
+                    int assistantCount = 0;
+                    for (Message message : messages) {
+                        if (message.getRole() == RoleType.TOOL && message.getContent() != null) {
+                            String content = message.getContent();
+                            toolResults.add(content);
+                            toolCount++;
+                            log.debug("{} report_tool 提取工具结果 {}，长度: {}", agentContext.getRequestId(), toolCount, content.length());
+                        } else if (message.getRole() == RoleType.USER) {
+                            userCount++;
+                        } else if (message.getRole() == RoleType.ASSISTANT) {
+                            assistantCount++;
+                        }
+                    }
+                    log.info("{} report_tool memory统计: USER={}, ASSISTANT={}, TOOL={}", 
+                            agentContext.getRequestId(), userCount, assistantCount, toolCount);
+                    // 如果消息数不为0但TOOL=0，记录警告
+                    if (messages.size() > 0 && toolCount == 0) {
+                        log.warn("{} report_tool 警告: memory中有 {} 条消息，但没有TOOL角色的消息！", 
+                                agentContext.getRequestId(), messages.size());
+                        // 打印前几条消息的角色，用于调试
+                        for (int i = 0; i < Math.min(5, messages.size()); i++) {
+                            Message msg = messages.get(i);
+                            log.warn("{} report_tool 消息 {}: role={}, content长度={}", 
+                                    agentContext.getRequestId(), i, msg.getRole(), 
+                                    msg.getContent() != null ? msg.getContent().length() : 0);
+                        }
+                    }
+                } else {
+                    log.warn("{} report_tool memory不为null，但messages为null", agentContext.getRequestId());
+                }
+            } else {
+                log.warn("{} report_tool memory为null", agentContext.getRequestId());
+            }
+            log.info("{} report_tool 提取到 {} 个工具调用结果，总长度: {}", 
+                    agentContext.getRequestId(), toolResults.size(), 
+                    toolResults.stream().mapToInt(String::length).sum());
+            
             Map<String, Object> streamMode = new HashMap<>();
             streamMode.put("mode", "token");
             streamMode.put("token", 10);
@@ -95,7 +149,9 @@ public class ReportTool implements BaseTool {
                     .contentStream(agentContext.getIsStream())
                     .streamMode(streamMode)
                     .fileType(fileType)
+                    .toolResults(toolResults) // 传递工具调用结果
                     .build();
+            
             // 调用流式 API
             Future future = callCodeAgentStream(request);
             Object object = future.get();
@@ -106,6 +162,53 @@ public class ReportTool implements BaseTool {
 
         }
         return null;
+    }
+
+    /**
+     * 过滤模型输出中的think内容
+     * @param content 原始内容
+     * @return 过滤后的内容
+     */
+    private String filterThinkContent(String content) {
+        if (content == null || content.isEmpty()) {
+            return content;
+        }
+        
+        // 过滤掉明显的think标签内容
+        content = content.replaceAll("(?i)<think>.*?</think>", "");
+        content = content.replaceAll("(?i)<thinking>.*?</thinking>", "");
+        
+        // 过滤掉明显的思考过程标记
+        String[] thinkMarkers = {
+            "思考：", "让我想想", "我需要", "首先", "然后", "接下来",
+            "think:", "thinking:", "let me think", "i need to"
+        };
+        
+        String[] lines = content.split("\n");
+        StringBuilder filteredContent = new StringBuilder();
+        
+        for (String line : lines) {
+            String trimmedLine = line.trim();
+            boolean isThinkLine = false;
+            
+            // 检查是否包含思考过程标记
+            for (String marker : thinkMarkers) {
+                if (trimmedLine.toLowerCase().contains(marker.toLowerCase())) {
+                    isThinkLine = true;
+                    break;
+                }
+            }
+            
+            // 如果不是思考过程行且不为空，则保留
+            if (!isThinkLine && !trimmedLine.isEmpty()) {
+                if (filteredContent.length() > 0) {
+                    filteredContent.append("\n");
+                }
+                filteredContent.append(line);
+            }
+        }
+        
+        return filteredContent.toString();
     }
 
     /**
@@ -129,7 +232,19 @@ public class ReportTool implements BaseTool {
                     JSONObject.toJSONString(codeRequest)
             );
 
-            log.info("{} report_tool request {}", agentContext.getRequestId(), JSONObject.toJSONString(codeRequest));
+            String requestJson = JSONObject.toJSONString(codeRequest);
+            log.info("{} report_tool request {}", agentContext.getRequestId(), requestJson);
+            // 特别检查 toolResults 字段是否在 JSON 中
+            if (codeRequest.getToolResults() != null && !codeRequest.getToolResults().isEmpty()) {
+                log.info("{} report_tool request中包含 {} 个toolResults", agentContext.getRequestId(), codeRequest.getToolResults().size());
+                if (requestJson.contains("toolResults")) {
+                    log.info("{} report_tool JSON中包含toolResults字段", agentContext.getRequestId());
+                } else {
+                    log.warn("{} report_tool JSON中不包含toolResults字段！", agentContext.getRequestId());
+                }
+            } else {
+                log.warn("{} report_tool request中toolResults为空或null", agentContext.getRequestId());
+            }
             Request.Builder requestBuilder = new Request.Builder()
                     .url(url)
                     .post(body);
@@ -198,7 +313,7 @@ public class ReportTool implements BaseTool {
                                     }
                                     agentContext.getPrinter().send(messageId, codeRequest.getFileType(), codeResponse, digitalEmployee, true);
                                 } else {
-                                    stringBuilderIncr.append(codeResponse.getData());
+                                    stringBuilderIncr.append(filterThinkContent(codeResponse.getData()));
                                     if (index == firstInterval || index % sendInterval == 0) {
                                         codeResponse.setData(stringBuilderIncr.toString());
                                         agentContext.getPrinter().send(messageId, codeRequest.getFileType(), codeResponse, digitalEmployee, false);
@@ -214,7 +329,7 @@ public class ReportTool implements BaseTool {
                         return;
                     }
                     // 统一使用data字段，兼容历史codeOutput逻辑
-                    String result = Objects.nonNull(codeResponse.getData()) && !codeResponse.getData().isEmpty() ? codeResponse.getData() : codeResponse.getCodeOutput();
+                    String result = Objects.nonNull(codeResponse.getData()) && !codeResponse.getData().isEmpty() ? filterThinkContent(codeResponse.getData()) : filterThinkContent(codeResponse.getCodeOutput());
                     future.complete(result);
                 }
             });

@@ -19,7 +19,7 @@ if command -v java &> /dev/null; then
     JAVA_VERSION=$(java -version 2>&1 | head -n 1 | cut -d'"' -f2)
     JAVA_MAJOR=$(echo $JAVA_VERSION | cut -d'.' -f1)
     
-    if [[ "$JAVA_VERSION" == *"1."* ]]; then
+    if [ "$JAVA_VERSION" = *"1."* ]; then
         JAVA_MAJOR=$(echo $JAVA_VERSION | cut -d'.' -f2)
     fi
     
@@ -43,8 +43,6 @@ else
     echo -e "${RED}❌ Maven未安装${NC}"
     ALL_PASSED=false
 fi
-
-
 
 # 检查Node.js版本
 echo -e "${BLUE}检查Node.js版本...${NC}"
@@ -80,12 +78,10 @@ else
     ALL_PASSED=false
 fi
 
-
-
 # 检查必要的端口是否被占用
 echo -e "${BLUE}检查端口占用情况...${NC}"
-PORTS=(3000 8080 1601 8188)
-for port in "${PORTS[@]}"; do
+PORTS="3000 8080 1601 8188"
+for port in $PORTS; do
     if lsof -Pi :$port -sTCP:LISTEN -t >/dev/null 2>&1; then
         echo -e "${YELLOW}⚠️  端口 $port 已被占用${NC}"
     else
@@ -95,7 +91,7 @@ done
 
 echo "=================================="
 
-if [ "$ALL_PASSED" = true ]; then
+if [ "$ALL_PASSED" = "true" ]; then
     echo -e "${GREEN}🎉 所有依赖检查通过！可以开始启动服务。${NC}"
     exit 0
 else
