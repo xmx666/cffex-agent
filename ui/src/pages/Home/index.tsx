@@ -7,11 +7,13 @@ import SettingsModal from "@/components/SettingsModal";
 import HistorySidebar from "@/components/HistorySidebar";
 import HistoryDetail from "@/components/HistoryDetail";
 import TemplateSidebar from "@/components/TemplateSidebar";
+import TutorialModal from "@/components/TutorialModal";
+import TemplateConfirmModal from "@/components/TemplateConfirmModal/index";
 import { productList, defaultProduct } from "@/utils/constants";
-import { Image, Button, Tag } from "antd";
+import { Button, Tag, message, Modal } from "antd";
 import { demoList } from "@/utils/constants";
 import { BrowserFingerprint } from "@/utils/browserFingerprint";
-import { SimpleHistoryManager, ChatSession } from "@/utils/historyManager";
+import { ChatSession } from "@/utils/historyManager";
 import { globalTemplateManager, TemplateConfig } from "@/utils/templateManager";
 import "@/styles/history.css";
 
@@ -25,6 +27,13 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
 
   // 用户选择的模板（用户级别）
   const [selectedTemplates, setSelectedTemplates] = useState<Array<{ id: string; name: string; domainName?: string }>>([]);
+  
+  // Confluence搜索结果
+  const [confluenceResults, setConfluenceResults] = useState<Array<{ id: string; title: string; content: string; metadata?: any }>>([]);
+  
+  // Confluence完整内容Modal
+  const [confluenceDetailVisible, setConfluenceDetailVisible] = useState(false);
+  const [confluenceDetail, setConfluenceDetail] = useState<{ id: string; title: string; content: string } | null>(null);
 
   // 加载模板配置
   useEffect(() => {
@@ -103,14 +112,19 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
     deepThink: false,
   });
   const [product, setProduct] = useState(defaultProduct);
-  const [videoModalOpen, setVideoModalOpen] = useState();
   const [settingsVisible, setSettingsVisible] = useState(false);
   const [historySidebarVisible, setHistorySidebarVisible] = useState(false);
   const [historyDetailVisible, setHistoryDetailVisible] = useState(false);
   const [templateSidebarVisible, setTemplateSidebarVisible] = useState(false);
+  const [tutorialVisible, setTutorialVisible] = useState(false);
   const [selectedSession, setSelectedSession] = useState<ChatSession | null>(null);
   const [restoreSession, setRestoreSession] = useState<ChatSession | null>(null);
-  const [isRestoring, setIsRestoring] = useState(false);
+  
+  // 一键优化相关状态
+  const [templateConfirmVisible, setTemplateConfirmVisible] = useState(false);
+  const [recommendedTemplates, setRecommendedTemplates] = useState<Array<{ id: string; name: string; description?: string; domainName?: string }>>([]);
+  const [optimizedQuestion, setOptimizedQuestion] = useState<string>('');
+  const [optimizedValue, setOptimizedValue] = useState<string>(''); // 优化后的输入框值
 
   // 初始化用户标识
   useEffect(() => {
@@ -120,6 +134,150 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
 
   const changeInputInfo = useCallback((info: CHAT.TInputInfo) => {
     setInputInfo(info);
+  }, []);
+
+  // 一键优化处理函数
+  const handleOptimize = useCallback(async (optimizedQuestion: string, recommendedTemplateIds: string[], confluenceSearchResults: Array<{ id: string; title: string; content: string; metadata?: any }> = []) => {
+    // 只更新输入框的显示值，不更新 inputInfo（不自动发送）
+    setOptimizedValue(optimizedQuestion);
+
+    // 保存优化后的问题（用于模板确认Modal显示）
+    setOptimizedQuestion(optimizedQuestion);
+
+    // 保存Confluence搜索结果
+    setConfluenceResults(confluenceSearchResults);
+
+    // 无论是否有推荐的模板，都显示确认框
+    if (recommendedTemplateIds.length > 0) {
+      // 获取推荐的模板详细信息
+      const recommendedTemplatesInfo = recommendedTemplateIds
+        .map(id => {
+          const template = templateConfig.templateList.find(t => t.id === id);
+          if (template) {
+            const domain = templateConfig.domains.find(d => d.id === template.domainId);
+            return {
+              id: template.id,
+              name: template.name,
+              description: template.description,
+              domainName: domain?.name
+            };
+          }
+          return null;
+        })
+        .filter(t => t !== null) as Array<{ id: string; name: string; description?: string; domainName?: string }>;
+
+      setRecommendedTemplates(recommendedTemplatesInfo);
+    } else {
+      // 没有推荐模板时，设置为空数组
+      setRecommendedTemplates([]);
+    }
+    
+    // 始终显示确认框
+    setTemplateConfirmVisible(true);
+  }, [templateConfig]);
+
+  // 处理推荐案例点击，自动触发一键优化
+  const handleDemoClick = useCallback(async (question: string) => {
+    // 先设置输入框的值
+    setOptimizedValue(question);
+    
+    try {
+      // 导入优化工具
+      const { optimizeQuestion, recommendTemplates, searchConfluence } = await import('@/utils/llmOptimizer');
+      
+      // 优化问题
+      const optimized = await optimizeQuestion(question);
+      
+      // 并行执行：推荐模板和搜索Confluence
+      // 注意：Confluence搜索失败不影响模板匹配，会返回空数组
+      const [recommendedTemplateIds, confluenceSearchResults] = await Promise.allSettled([
+        // 推荐模板
+        (async () => {
+          if (templateConfig.templateList.length > 0) {
+            const availableTemplates = templateConfig.templateList.map(t => {
+              const domain = templateConfig.domains.find(d => d.id === t.domainId);
+              return {
+                id: t.id,
+                name: t.name,
+                description: t.description,
+                domainName: domain?.name
+              };
+            });
+            return await recommendTemplates(optimized, availableTemplates);
+          }
+          return [];
+        })(),
+        // 搜索Confluence（top2），失败时返回空数组
+        searchConfluence(optimized, 2).catch(() => [])
+      ]);
+
+      // 提取结果，确保即使失败也有默认值
+      const templateIds = recommendedTemplateIds.status === 'fulfilled' 
+        ? recommendedTemplateIds.value 
+        : [];
+      const confluenceResults = confluenceSearchResults.status === 'fulfilled' 
+        ? confluenceSearchResults.value 
+        : [];
+      
+      // 如果Confluence搜索失败或没有结果，给出友好提示（但不影响流程）
+      if (confluenceSearchResults.status === 'rejected') {
+        console.info('Confluence搜索失败，将继续进行模板匹配');
+      } else if (confluenceSearchResults.status === 'fulfilled' && confluenceResults.length === 0 && optimized.trim()) {
+        console.info('未找到Confluence相关内容，将继续进行模板匹配');
+      }
+      
+      // 调用优化处理函数，显示模板确认框
+      handleOptimize(optimized, templateIds, confluenceResults);
+    } catch (error: any) {
+      console.error('优化失败:', error);
+      message.error(error?.message || '优化失败，请稍后重试');
+      // 即使优化失败，也设置输入框的值
+      setOptimizedValue(question);
+    }
+  }, [templateConfig, handleOptimize]);
+
+  // 确认应用模板
+  const handleConfirmTemplates = useCallback(() => {
+    const recommendedTemplateIds = recommendedTemplates.map(t => t.id);
+    
+    // 先清除当前模板，再应用新的推荐模板（替换而不是追加）
+    // 如果没有推荐模板，则清空所有模板
+    globalTemplateManager.setUserSelectedTemplateIds(recommendedTemplateIds);
+    
+    // 触发模板更新事件
+    window.dispatchEvent(new Event('userSelectedTemplatesChange'));
+    
+    // 刷新模板显示
+    loadUserSelectedTemplates();
+    
+    setTemplateConfirmVisible(false);
+    
+    // 如果有Confluence搜索结果，将其作为额外输入加入到优化后的问题中
+    let finalQuestion = optimizedQuestion;
+    if (confluenceResults.length > 0) {
+      const confluenceContext = confluenceResults.map((result, index) => {
+        return `[Confluence数据${index + 1}]\n标题: ${result.title}\n内容摘要: ${result.content.substring(0, 500)}${result.content.length > 500 ? '...' : ''}`;
+      }).join('\n\n');
+      
+      finalQuestion = `${optimizedQuestion}\n\n---\n相关Confluence知识库数据：\n${confluenceContext}`;
+    }
+    
+    // 设置最终的问题（包含Confluence上下文）
+    setOptimizedValue(finalQuestion);
+    
+    if (recommendedTemplates.length > 0) {
+      message.success(`已成功应用 ${recommendedTemplates.length} 个推荐模板${confluenceResults.length > 0 ? `和 ${confluenceResults.length} 条Confluence数据` : ''}`);
+    } else {
+      message.success(`已清空当前模板${confluenceResults.length > 0 ? `，已添加 ${confluenceResults.length} 条Confluence数据` : ''}`);
+    }
+  }, [recommendedTemplates, optimizedQuestion, confluenceResults]);
+
+  // 取消应用模板
+  const handleCancelTemplates = useCallback(() => {
+    setTemplateConfirmVisible(false);
+    message.info('已跳过模板应用，您可以稍后在模板设置中手动选择');
+    // 清空优化值，避免影响后续输入
+    setOptimizedValue('');
   }, []);
 
   // 监听外部触发查询（localStorage + URL参数）
@@ -221,7 +379,6 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
 
   // 处理继续对话
   const handleContinueChat = useCallback((session: ChatSession) => {
-    setIsRestoring(true);
     setRestoreSession(session);
     // 设置产品类型
     const selectedProduct = productList.find(p => p.type === session.productType) || defaultProduct;
@@ -230,59 +387,9 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
 
   // 处理会话恢复完成
   const handleSessionRestored = useCallback(() => {
-    setIsRestoring(false);
     setRestoreSession(null);
   }, []);
 
-  const CaseCard = ({ title, description, tag, image, url, videoUrl }: any) => {
-    return (
-      <div className="group flex flex-col rounded-lg bg-white pt-16 px-16 shadow-[0_4px_12px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_20px_rgba(0,0,0,0.1)] hover:-translate-y-[5px] transition-all duration-300 ease-in-out cursor-pointer w-full max-w-xs border border-[rgba(233,233,240,1)]">
-        <div className="mb-4 flex items-center justify-between">
-          <div className="text-[14px] font-bold truncate">{title}</div>
-          <div className="shrink-0 inline-block bg-gray-100 text-gray-600 px-[6px] leading-[20px] text-[12px] rounded-[4px]">
-            {tag}
-          </div>
-        </div>
-        <div className="text-[12px] text-[#71717a] h-40 line-clamp-2 leading-[20px]">
-          {description}
-        </div>
-        <div
-          className="text-[#4040ff] group-hover:text-[#656cff] text-[12px] flex items-center mb-6 cursor-pointer transition-colors duration-200"
-          onClick={() => window.open(url)}
-        >
-          <span className="mr-1">查看报告</span>
-          <i className="font_family icon-xinjianjiantou"></i>
-        </div>
-        <div className="relative rounded-t-[10px] overflow-hidden h-100 group-hover:scale-105 transition-transform duration-500 ease">
-          <Image
-            style={{ display: "none" }}
-            preview={{
-              visible: videoModalOpen === videoUrl,
-              destroyOnHidden: true,
-              imageRender: () => (
-                <video muted width="80%" controls autoPlay src={videoUrl} />
-              ),
-              toolbarRender: () => null,
-              onVisibleChange: () => {
-                setVideoModalOpen(undefined);
-              },
-            }}
-            src={image}
-          />
-          <img
-            src={image}
-            className="w-full h-full rounded-t-[10px] mt-[-20px]"
-          ></img>
-          <div
-            className="absolute inset-0 flex items-center justify-center cursor-pointer rounded-t-[10px] group hover:bg-[rgba(0,0,0,0.6)] border border-[#ededed]"
-            onClick={() => setVideoModalOpen(videoUrl)}
-          >
-            <i className="font_family icon-bofang hidden group-hover:block text-[#fff] text-[24px]"></i>
-          </div>
-        </div>
-      </div>
-    );
-  };
 
   const renderContent = () => {
     if (inputInfo.message.length === 0) {
@@ -297,6 +404,19 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
               disabled={false}
               product={product}
               send={changeInputInfo}
+              onOptimize={(optimized, templateIds, confluenceResults = []) => {
+                handleOptimize(optimized, templateIds, confluenceResults);
+              }}
+              optimizedValue={optimizedValue}
+              availableTemplates={templateConfig.templateList.map(t => {
+                const domain = templateConfig.domains.find(d => d.id === t.domainId);
+                return {
+                  id: t.id,
+                  name: t.name,
+                  description: t.description,
+                  domainName: domain?.name
+                };
+              })}
             />
             {/* 显示已选择的模板（用户级别） */}
             {selectedTemplates.length > 0 && (
@@ -304,8 +424,78 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
                 <div className="text-[12px] text-gray-600 mb-4">已使用的模板：</div>
                 <div className="flex flex-wrap gap-4">
                   {selectedTemplates.map(template => (
-                    <Tag key={template.id} color="blue" className="text-[12px]">
+                    <Tag
+                      key={template.id}
+                      color="blue"
+                      className="text-[12px] cursor-pointer"
+                      closable
+                      onClose={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        // 删除该模板
+                        const currentSelectedIds = globalTemplateManager.getUserSelectedTemplateIds();
+                        const newSelectedIds = currentSelectedIds.filter(id => id !== template.id);
+                        globalTemplateManager.setUserSelectedTemplateIds(newSelectedIds);
+                        
+                        // 触发模板更新事件
+                        window.dispatchEvent(new Event('userSelectedTemplatesChange'));
+                        
+                        // 刷新模板显示
+                        loadUserSelectedTemplates();
+                        
+                        message.success(`已删除模板：${template.name}`);
+                      }}
+                    >
                       {template.domainName ? `${template.domainName}: ` : ''}{template.name}
+                    </Tag>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            {/* 显示已使用的Confluence数据 */}
+            {confluenceResults.length > 0 && (
+              <div className="mt-12 px-12 py-8 bg-green-50 rounded-lg border border-green-200">
+                <div className="text-[12px] text-gray-600 mb-4">已使用的Confluence数据：</div>
+                <div className="flex flex-wrap gap-4">
+                  {confluenceResults.map((result, index) => (
+                    <Tag
+                      key={result.id || index}
+                      color="green"
+                      className="text-[12px] cursor-pointer hover:bg-green-200 transition-colors"
+                      onClick={async () => {
+                        try {
+                          const { getConfluenceFullText } = await import('@/utils/llmOptimizer');
+                          const fullText = await getConfluenceFullText(result.id);
+                          if (fullText) {
+                            setConfluenceDetail({
+                              id: fullText.id,
+                              title: fullText.title,
+                              content: fullText.content
+                            });
+                            setConfluenceDetailVisible(true);
+                          } else {
+                            // 如果没有获取到完整内容，使用当前结果
+                            setConfluenceDetail({
+                              id: result.id,
+                              title: result.title,
+                              content: result.content
+                            });
+                            setConfluenceDetailVisible(true);
+                          }
+                        } catch (error) {
+                          console.error('获取Confluence完整内容失败:', error);
+                          // 使用当前结果作为fallback
+                          setConfluenceDetail({
+                            id: result.id,
+                            title: result.title,
+                            content: result.content
+                          });
+                          setConfluenceDetailVisible(true);
+                        }
+                      }}
+                    >
+                      {result.title}
                     </Tag>
                   ))}
                 </div>
@@ -323,6 +513,24 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
                 <div className="ml-[6px]">{item.name}</div>
               </div>
             ))}
+          </div>
+          {/* 使用案例框 */}
+          <div className="w-640 mt-24">
+            <div className="text-[14px] text-[#666] mb-12 text-center">使用案例</div>
+            <div className="grid grid-cols-2 gap-12">
+              {demoList.map((question, index) => (
+                <div
+                  key={index}
+                  onClick={() => handleDemoClick(question)}
+                  className="p-16 bg-white border border-[#E9E9F0] rounded-[8px] cursor-pointer hover:border-[#4040ff] hover:bg-[#f5f7ff] transition-all duration-200 flex items-center justify-between group"
+                >
+                  <div className="text-[14px] text-[#27272A] flex-1 pr-12 line-clamp-2 leading-[22px] group-hover:text-[#4040ff] transition-colors">
+                    {question}
+                  </div>
+                  <i className="font_family icon-youjiantou text-[16px] text-[#999] group-hover:text-[#4040ff] transition-colors shrink-0"></i>
+                </div>
+              ))}
+            </div>
           </div>
           {/* 优秀案例 - 暂时隐藏，后续开发中再选择展示 */}
           {/* <div className="mt-80 mb-120">
@@ -343,7 +551,7 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
       <ChatView
         inputInfo={inputInfo}
         product={product}
-        restoreSession={restoreSession}
+        restoreSession={restoreSession ?? undefined}
         onSessionRestored={handleSessionRestored}
         onBackToHome={() => setInputInfo({ message: "", deepThink: inputInfo.deepThink })}
       />
@@ -370,6 +578,29 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
 
         <div className="flex items-center space-x-16">
           <UserIdentity />
+          {/* 用户手册按钮 - 突出显示 */}
+          <Button
+            size="large"
+            icon={<i className="font_family icon-wendang text-[18px]"></i>}
+            onClick={() => setTutorialVisible(true)}
+            className="border-0 shadow-md hover:shadow-lg transition-all"
+            style={{
+              background: 'linear-gradient(270deg, rgba(64,64,255,1) 0%, rgba(60,196,250,1) 100%)',
+              border: 'none',
+              color: '#ffffff',
+              fontWeight: 500,
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(270deg, rgba(80,80,255,1) 0%, rgba(76,196,250,1) 100%)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(64,64,255,0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = 'linear-gradient(270deg, rgba(64,64,255,1) 0%, rgba(60,196,250,1) 100%)';
+              e.currentTarget.style.boxShadow = '0 2px 8px rgba(0,0,0,0.15)';
+            }}
+          >
+            <span className="font-[500]" style={{ color: '#ffffff' }}>用户手册</span>
+          </Button>
           <Button
             icon={<i className="font_family icon-lishi"></i>}
             onClick={() => setHistorySidebarVisible(true)}
@@ -413,7 +644,10 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
       <HistoryDetail
         session={selectedSession}
         visible={historyDetailVisible}
-        onClose={() => setHistoryDetailVisible(false)}
+        onClose={() => {
+          setHistoryDetailVisible(false);
+          setSelectedSession(null);
+        }}
         onContinueChat={handleContinueChat}
       />
 
@@ -421,6 +655,46 @@ const Home: GenieType.FC<HomeProps> = memo(() => {
       <TemplateSidebar
         visible={templateSidebarVisible}
         onClose={() => setTemplateSidebarVisible(false)}
+      />
+
+      {/* 用户手册教程模态框 */}
+      <TutorialModal
+        visible={tutorialVisible}
+        onClose={() => setTutorialVisible(false)}
+        tutorialUrl="/CffexAgent_instruction.html" // 使用html文件夹中的教程文件
+      />
+
+      {/* Confluence详情Modal */}
+      {confluenceDetailVisible && confluenceDetail && (
+        <Modal
+          title={confluenceDetail.title}
+          open={confluenceDetailVisible}
+          onCancel={() => setConfluenceDetailVisible(false)}
+          footer={[
+            <Button key="close" onClick={() => setConfluenceDetailVisible(false)}>
+              关闭
+            </Button>
+          ]}
+          width={800}
+        >
+          <div className="max-h-[600px] overflow-y-auto">
+            <div className="mb-4">
+              <div className="text-[12px] text-gray-500 mb-2">文档ID: {confluenceDetail.id}</div>
+              <div className="text-[14px] text-gray-800 whitespace-pre-wrap break-words">
+                {confluenceDetail.content || '暂无内容'}
+              </div>
+            </div>
+          </div>
+        </Modal>
+      )}
+
+      {/* 模板确认Modal */}
+      <TemplateConfirmModal
+        visible={templateConfirmVisible}
+        templates={recommendedTemplates}
+        optimizedQuestion={optimizedQuestion}
+        onConfirm={handleConfirmTemplates}
+        onCancel={handleCancelTemplates}
       />
     </div>
   );

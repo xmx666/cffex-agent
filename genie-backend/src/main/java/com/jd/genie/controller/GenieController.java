@@ -18,6 +18,7 @@ import com.jd.genie.agent.tool.common.StockTool;
 import com.jd.genie.agent.tool.common.NewsDataFetchTool;
 import com.jd.genie.agent.tool.common.NewsContentGeneratorTool;
 import com.jd.genie.agent.tool.common.NewsTTSTool;
+import com.jd.genie.agent.tool.common.ConfluenceSearchTool;
 import com.jd.genie.agent.tool.mcp.McpTool;
 import com.jd.genie.agent.util.DateUtil;
 import com.jd.genie.agent.util.ThreadUtil;
@@ -276,6 +277,12 @@ public class GenieController {
         newsTTSTool.setAgentContext(agentContext);
         toolCollection.addTool(newsTTSTool);
 
+        // 新增Confluence搜索工具
+        ConfluenceSearchTool confluenceSearchTool = new ConfluenceSearchTool();
+        confluenceSearchTool.setAgentContext(agentContext);
+        toolCollection.addTool(confluenceSearchTool);
+        log.info("{} 成功注册Confluence搜索工具: confluence_search", agentContext.getRequestId());
+
         // mcp tool
         try {
             McpTool mcpTool = new McpTool();
@@ -341,6 +348,132 @@ public class GenieController {
     @RequestMapping(value = "/web/health", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public ResponseEntity<String> health() {
         return ResponseEntity.ok("ok");
+    }
+
+    /**
+     * Confluence搜索API
+     * 注意：即使搜索失败也返回成功状态，但results为空数组，确保前端可以继续执行其他流程
+     */
+    @PostMapping("/api/tool/confluence-search")
+    public ResponseEntity<Map<String, Object>> confluenceSearch(@RequestBody Map<String, Object> request) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            String query = (String) request.get("query");
+            Integer topk = request.get("topk") != null ? (Integer) request.get("topk") : 2;
+            
+            if (query == null || query.trim().isEmpty()) {
+                // 参数错误时返回空结果，不返回错误状态
+                response.put("status", "success");
+                response.put("results", new JSONArray());
+                response.put("message", "查询参数为空");
+                return ResponseEntity.ok(response);
+            }
+
+            // 创建临时AgentContext用于工具调用
+            AgentContext tempContext = AgentContext.builder()
+                    .requestId("confluence-search-" + System.currentTimeMillis())
+                    .build();
+
+            // 创建Confluence搜索工具
+            ConfluenceSearchTool confluenceSearchTool = new ConfluenceSearchTool();
+            confluenceSearchTool.setAgentContext(tempContext);
+
+            // 构建工具输入参数
+            Map<String, Object> toolInput = new HashMap<>();
+            toolInput.put("query", query);
+            toolInput.put("topk", topk);
+
+            // 执行搜索
+            Object result = confluenceSearchTool.execute(toolInput);
+            
+            if (result instanceof JSONObject) {
+                JSONObject jsonResult = (JSONObject) result;
+                // 即使工具返回错误，也返回成功状态，但results为空数组
+                if ("error".equals(jsonResult.getString("status"))) {
+                    log.warn("Confluence搜索工具返回错误: {}", jsonResult.getString("message"));
+                    response.put("status", "success");
+                    response.put("results", new JSONArray());
+                    response.put("message", "未找到Confluence相关内容");
+                    return ResponseEntity.ok(response);
+                }
+                
+                // 提取results数组
+                JSONArray results = jsonResult.getJSONArray("results");
+                response.put("status", "success");
+                response.put("results", results != null ? results : new JSONArray());
+                if (results == null || results.isEmpty()) {
+                    response.put("message", "未找到Confluence相关内容");
+                }
+            } else {
+                // 格式错误时也返回成功，但results为空
+                log.warn("Confluence搜索结果格式错误");
+                response.put("status", "success");
+                response.put("results", new JSONArray());
+                response.put("message", "未找到Confluence相关内容");
+            }
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            // 捕获所有异常，返回成功状态但results为空，确保不影响前端流程
+            log.warn("Confluence搜索API异常（不影响其他流程）: {}", e.getMessage());
+            response.put("status", "success");
+            response.put("results", new JSONArray());
+            response.put("message", "Confluence服务暂时不可用，已跳过Confluence搜索");
+            return ResponseEntity.ok(response);
+        }
+    }
+
+    /**
+     * 获取Confluence完整内容API
+     */
+    @PostMapping("/api/tool/confluence-fulltext")
+    public ResponseEntity<Map<String, Object>> confluenceFullText(@RequestBody Map<String, Object> request) {
+        Map<String, Object> response = new HashMap<>();
+        
+        try {
+            String articleId = (String) request.get("id");
+            
+            if (articleId == null || articleId.trim().isEmpty()) {
+                response.put("status", "error");
+                response.put("message", "id参数不能为空");
+                return ResponseEntity.badRequest().body(response);
+            }
+
+            // 创建临时AgentContext用于工具调用
+            AgentContext tempContext = AgentContext.builder()
+                    .requestId("confluence-fulltext-" + System.currentTimeMillis())
+                    .build();
+
+            // 创建Confluence搜索工具
+            ConfluenceSearchTool confluenceSearchTool = new ConfluenceSearchTool();
+            confluenceSearchTool.setAgentContext(tempContext);
+
+            // 获取完整内容
+            Object result = confluenceSearchTool.getFullText(articleId);
+            
+            if (result instanceof JSONObject) {
+                JSONObject jsonResult = (JSONObject) result;
+                if ("error".equals(jsonResult.getString("status"))) {
+                    response.put("status", "error");
+                    response.put("message", jsonResult.getString("message"));
+                    return ResponseEntity.ok(response);
+                }
+                
+                response.put("status", "success");
+                response.put("result", jsonResult);
+            } else {
+                response.put("status", "error");
+                response.put("message", "获取内容失败");
+            }
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            log.error("获取Confluence完整内容API错误", e);
+            response.put("status", "error");
+            response.put("message", "获取内容失败: " + e.getMessage());
+            return ResponseEntity.ok(response);
+        }
     }
 
 

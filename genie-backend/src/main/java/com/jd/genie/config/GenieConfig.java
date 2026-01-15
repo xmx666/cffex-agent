@@ -218,6 +218,9 @@ public class GenieConfig {
     @Value("${autobots.autoagent.deep_search_url:}")
     private String DeepSearchUrl;
 
+    @Value("${autobots.autoagent.seek_db_url:}")
+    private String SeekDbUrl;
+
     @Value("${autobots.autoagent.mcp_client_url:}")
     private String mcpClientUrl;
 
